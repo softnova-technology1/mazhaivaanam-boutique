@@ -1,0 +1,144 @@
+.main-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(250, 249, 246, 0.85); /* Slightly matching body bg */
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.logo-icon {
+  font-size: 1.8rem;
+  color: var(--primary);
+  animation: float 3s ease-in-out infinite;
+}
+
+.logo-text {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-main);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px 4px;
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary);
+  transition: var(--transition-fast);
+}
+
+.nav-link.active {
+  color: var(--primary);
+}
+
+.nav-link.active::after {
+  width: 100%;
+}
+
+.cart-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cart-badge {
+  background-color: var(--accent);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.welcome-text {
+  font-size: 0.9rem;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.logout-btn {
+  color: var(--text-light);
+}
+
+.logout-btn:hover {
+  color: #dc2626; /* Warning red */
+}
+
+.logout-btn::after {
+  background-color: #dc2626;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

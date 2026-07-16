@@ -1,0 +1,997 @@
+.trackOrderPageContainer {
+  padding-top: 100px;
+  padding-bottom: 120px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: 80px;
+  padding-right: 80px;
+  background-color: var(--bg-main);
+}
+
+@media (max-width: 768px) {
+  .trackOrderPageContainer {
+    padding-top: 80px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 80px;
+  }
+}
+
+/* Search Hero Section */
+.heroSection {
+  position: relative;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 0;
+  margin-bottom: 80px;
+}
+
+.silkTexture {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0c50 0 50 100 100 100M100 0C50 0 50 100 0 100' stroke='%23C8A34D' stroke-width='0.1' fill='none' opacity='0.2'/%3E%3C/svg%3E");
+  opacity: 0.3;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heroContentWrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+.badgeLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--secondary);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.mainDisplayTitle {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 56px;
+  color: var(--primary);
+  margin: 0 0 24px 0;
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .mainDisplayTitle {
+    font-size: 40px;
+  }
+}
+
+.heroSubText {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto 48px auto;
+}
+
+/* Locate Search Box */
+.searchCardBox {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(240, 230, 210, 0.6);
+  padding: 48px;
+  box-shadow: 0px 24px 64px rgba(26, 26, 26, 0.06);
+  border-radius: 8px;
+  text-align: left;
+}
+
+@media (max-width: 576px) {
+  .searchCardBox {
+    padding: 24px;
+  }
+}
+
+.searchForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+@media (max-width: 640px) {
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.inputWrapper {
+  position: relative;
+  border-bottom: 1px solid var(--accent);
+  padding: 8px 0;
+}
+
+.inputLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.searchField {
+  width: 100%;
+  background: transparent;
+  border: none !important;
+  outline: none !important;
+  color: var(--primary);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 4px 0;
+}
+
+.searchField::placeholder {
+  color: var(--outline-variant);
+  opacity: 0.5;
+}
+
+.errorAlertText {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--error);
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.locateBtn {
+  margin-top: 40px;
+  background-color: var(--primary);
+  color: white;
+  padding: 20px 48px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  align-self: center;
+  transition: all 0.3s;
+}
+
+.locateBtn:hover {
+  background-color: var(--accent);
+  transform: scale(1.02);
+}
+
+/* Status & Timeline Section */
+.statusDetailsSection {
+  margin-bottom: 80px;
+}
+
+.detailsLayoutGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.detailsLeftCol {
+  grid-column: span 7;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.detailsRightCol {
+  grid-column: span 5;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+@media (max-width: 1024px) {
+  .detailsLeftCol {
+    grid-column: span 12;
+  }
+  .detailsRightCol {
+    grid-column: span 12;
+  }
+}
+
+.statusLiveCard {
+  background-color: white;
+  border: 1px solid var(--border-gold);
+  padding: 48px;
+  box-shadow: 0px 12px 32px rgba(26, 26, 26, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 576px) {
+  .statusLiveCard {
+    padding: 24px;
+  }
+}
+
+.goldShimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(200, 163, 77, 0.05) 45%,
+    rgba(200, 163, 77, 0.15) 50%,
+    rgba(200, 163, 77, 0.05) 55%,
+    transparent 100%
+  );
+  animation: shimmer 4s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-30%) translateY(-30%); }
+  100% { transform: translateX(30%) translateY(30%); }
+}
+
+.statusLiveHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(240, 230, 210, 0.5);
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+}
+
+.statusLiveOrderId {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--primary);
+  margin: 0 0 8px 0;
+}
+
+.arrivalScheduleText {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.arrivalDateHighlight {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.transitStatusBadge {
+  background-color: rgba(233, 193, 104, 0.15);
+  color: var(--secondary);
+  border: 1px solid rgba(119, 90, 4, 0.2);
+  padding: 8px 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.statusOverviewRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+@media (max-width: 640px) {
+  .statusOverviewRow {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.overviewBoxItem {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.iconCircleSymbol {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--surface-bright);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metaLabelText {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin: 0 0 4px 0;
+}
+
+.headlineDetailsText {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  color: var(--primary);
+  margin: 0 0 4px 0;
+  font-weight: 500;
+}
+
+.courierTrackLink {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--secondary);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.updatedAgoText {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Timeline component */
+.timelineVisualBox {
+  background-color: var(--surface-container-low);
+  padding: 48px;
+  border: 1px solid rgba(136, 113, 116, 0.15);
+  overflow-x: auto;
+}
+
+.timelineVisualBox::-webkit-scrollbar {
+  display: none;
+}
+
+.timelineLabelTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--secondary);
+  margin: 0 0 48px 0;
+}
+
+.horizontalTimelineWrapper {
+  position: relative;
+  min-width: 768px;
+  padding-bottom: 16px;
+}
+
+.horizontalLineBg {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(136, 113, 116, 0.2);
+  z-index: 1;
+}
+
+.horizontalLineFill {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  height: 2px;
+  background-color: var(--primary);
+  z-index: 2;
+  transition: width 1s ease;
+}
+
+.timelineStepsFlex {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 3;
+}
+
+.timelineStepBlockNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface-container-low);
+  padding: 0 16px;
+}
+
+.timelineCircleNode {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.completedCircleNode {
+  background-color: var(--primary);
+  color: white;
+}
+
+.activeCourierCircleNode {
+  border: 2px solid var(--primary);
+  background-color: white;
+  color: var(--primary);
+}
+
+.pendingCircleNode {
+  border: 1px solid var(--outline-variant);
+  background-color: var(--surface-bright);
+  color: var(--outline-variant);
+}
+
+.pendingDotInner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--outline-variant);
+}
+
+.pulseNode {
+  animation: pulseAnimation 2s infinite;
+}
+
+@keyframes pulseAnimation {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.pendingNode {
+  opacity: 0.4;
+}
+
+.checkIconFill {
+  color: white;
+}
+
+.timelineNodeText {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-top: 16px;
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.activeNodeLabel {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.timelineDateText {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* Delivery Map System */
+.deliveryMapCard {
+  height: 400px;
+  width: 100%;
+  border: 1px solid rgba(136, 113, 116, 0.2);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0px 12px 32px rgba(26, 26, 26, 0.02);
+}
+
+.mapGrayscaleBackground {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAZhNbkK5rFAvaWKD_zLj-wp8G5eA1GYkaI4irreYv5JNskwWDe8BISlPU7EYseBBpVT7WZoK093G7FYjzO7CQMAIe2vEkQZeYmDMPTpu03rmgH-3h8wTP7_33RvKBK8d8tr50phxa-pTYkvctKk4zTlt2IpWJXPd1IApK1gaO3iqb7r8QseTrndtnCcX7jEAyRO0ARS1G8uw4V1NDXT9EHqa-ZpcRT72oeizOjzSvAyjsZ05Wb3BiZ');
+  background-size: cover;
+  filter: grayscale(1) contrast(1.2);
+  opacity: 0.45;
+  transition: transform 12s ease-out;
+}
+
+.deliveryMapCard:hover .mapGrayscaleBackground {
+  transform: scale(1.05);
+}
+
+.mapOverlayGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(252, 249, 248, 0.85) 0%, transparent 80%);
+}
+
+.mapRouteSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mapLocationBadge {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(240, 230, 210, 0.5);
+  border-radius: 4px;
+}
+
+.mapLocationMeta {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin: 0 0 4px 0;
+}
+
+.mapLocationValue {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  color: var(--primary);
+  margin: 0;
+  font-weight: 500;
+}
+
+.mapCountdownBadge {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--primary);
+  color: white;
+  padding: 24px;
+  box-shadow: 0px 12px 32px rgba(26, 26, 26, 0.15);
+}
+
+.countdownMetaLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 8px 0;
+}
+
+.countdownValueBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.countdownDaysValue {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.countdownDaysUnit {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+/* Packaging Experience details */
+.packagingExperienceBox {
+  background-color: var(--surface-container);
+  padding: 40px 32px;
+  border: 1px solid rgba(136, 113, 116, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.packagingHeadline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--primary);
+  margin: 0 0 16px 0;
+}
+
+.packagingDescription {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.packagingImageBox {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.packagingBoxCoverImg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAyoQavRVWK-UMY_pY_Tiz0uYrf79aNFGQqC_YGOcM4CdBbBFP9BgQYPIZQwTwG4m1yfxJvB71cwprLT8lYv6DsiJvyoM0ybKW4RBKxuEs2oFF3rKEOibv8_3Ft2_45WzMWU267VL_fI9YBbwjISJjTkzTOkF2z8g30WJwB8rwnfIS-F_OT9sWE0DMvBq7nD7R8rfBjBBd5K4WnIHQNhlD00Z6jMA_2tD_fZt_h_67sN5m4AxNr05RJ');
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.8s ease;
+}
+
+.packagingExperienceBox:hover .packagingBoxCoverImg {
+  transform: scale(1.08);
+}
+
+/* Behind the Scenes Loom story */
+.btsArtisanSection {
+  background-color: var(--surface-container-lowest);
+  border-top: 1px solid rgba(136, 113, 116, 0.15);
+  border-bottom: 1px solid rgba(136, 113, 116, 0.15);
+  padding: 80px 48px;
+  margin: 80px -80px;
+}
+
+@media (max-width: 768px) {
+  .btsArtisanSection {
+    padding: 48px 24px;
+    margin: 48px -20px;
+  }
+}
+
+.btsContentWrapper {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 64px;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .btsContentWrapper {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+.btsImageLayout {
+  position: relative;
+  width: 100%;
+}
+
+.btsLoomCornerBorderTL {
+  position: absolute;
+  top: -24px;
+  left: -24px;
+  width: 96px;
+  height: 96px;
+  border-top: 1px solid var(--secondary);
+  border-left: 1px solid var(--secondary);
+  opacity: 0.35;
+}
+
+.btsLoomCornerBorderBR {
+  position: absolute;
+  bottom: -24px;
+  right: -24px;
+  width: 96px;
+  height: 96px;
+  border-bottom: 1px solid var(--secondary);
+  border-right: 1px solid var(--secondary);
+  opacity: 0.35;
+}
+
+.btsWeaverImage {
+  width: 100%;
+  height: auto;
+  box-shadow: 0px 24px 64px rgba(26, 26, 26, 0.08);
+  filter: grayscale(0.2);
+  transition: all 1s ease;
+}
+
+.btsWeaverImage:hover {
+  filter: grayscale(0);
+}
+
+.btsTextLayout {
+  padding-left: 32px;
+}
+
+@media (max-width: 1024px) {
+  .btsTextLayout {
+    padding-left: 0;
+  }
+}
+
+.btsBadgeSubheadline {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--secondary);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.btsMainTitle {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 40px;
+  color: var(--primary);
+  margin: 0 0 32px 0;
+  font-weight: 400;
+}
+
+.btsNarrativeQuote {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.btsWeavingStatsGrid {
+  display: flex;
+  gap: 48px;
+}
+
+.statsValueNumber {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px;
+  color: var(--primary);
+  margin: 0 0 4px 0;
+  font-weight: 500;
+}
+
+.statsValueMeta {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Pricing Acquisition Breakdown */
+.pricingAcquisitionSection {
+  margin-top: 80px;
+}
+
+.pricingLayoutGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 64px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .pricingLayoutGrid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+.pricingSectionTitle {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 32px;
+  color: var(--primary);
+  margin: 0 0 16px 0;
+  font-weight: 400;
+}
+
+.pricingSectionDesc {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-bottom: 48px;
+  max-width: 448px;
+}
+
+.pricingTableRowsStack {
+  display: flex;
+  flex-direction: column;
+}
+
+.tablePricingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(136, 113, 116, 0.15);
+}
+
+.tableRowItemName {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.tableRowItemPrice {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.complimentaryBadge {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--secondary);
+}
+
+/* Burgundy Total Card */
+.priceExperienceBurgundyCard {
+  background-color: var(--primary-container);
+  color: white;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 576px) {
+  .priceExperienceBurgundyCard {
+    padding: 24px;
+  }
+}
+
+.burgundyCardGlow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 256px;
+  height: 256px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  filter: blur(48px);
+  margin-right: -128px;
+  margin-top: -128px;
+  pointer-events: none;
+}
+
+.burgundyCardContent {
+  position: relative;
+  z-index: 2;
+}
+
+.burgundyCardHeadline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 48px 0;
+}
+
+.burgundyCardOverviewRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 48px;
+}
+
+.burgundyMetaText {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--on-primary-container);
+  margin: 0 0 8px 0;
+}
+
+.burgundyTotalPaidAmount {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1;
+  margin: 0;
+}
+
+.burgundySavingsTextRight {
+  text-align: right;
+}
+
+.burgundyMetaSavings {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--secondary-fixed);
+  margin: 0 0 8px 0;
+}
+
+.burgundySavingsValueAmount {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px;
+  color: var(--secondary-fixed);
+  margin: 0;
+  font-weight: 500;
+}
+
+.burgundyPointsCard {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.burgundyPointsHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.pointsLabelText {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.pointsValueCount {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pointsBarContainer {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  height: 4px;
+  overflow: hidden;
+}
+
+.pointsBarProgress {
+  background-color: var(--secondary-fixed);
+  height: 100%;
+}
+
+.burgundyPaidFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 32px;
+}
+
+.footerPaidLabel {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 24px;
+}
+
+.footerPaidAmount {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 40px;
+  color: var(--secondary-fixed);
+  font-weight: 700;
+}

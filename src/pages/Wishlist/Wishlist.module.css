@@ -3,9 +3,9 @@
 .wishlist-page-container {
   width: 100%;
   padding-top: 0;
-  background-color: #fcf9f8;
+  background-color: var(--bg-main);
   font-family: 'Inter', sans-serif;
-  color: #1c1b1b;
+  color: var(--text-main);
 }
 
 .wishlist-content-wrapper {
@@ -19,13 +19,13 @@
   position: fixed;
   top: 130px;
   right: 30px;
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
   padding: 12px 24px;
   z-index: 10000;
   font-size: 12px;
   letter-spacing: 1px;
-  border-left: 3px solid #C8A34D;
+  border-left: 3px solid var(--accent);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   animation: slideIn 0.3s ease-out;
 }
@@ -78,14 +78,14 @@
 .hero-content-box h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 3rem;
-  color: #490017;
+  color: var(--primary);
   margin: 0 0 16px 0;
   font-weight: 400;
 }
 
 .hero-content-box p {
   font-size: 16px;
-  color: #554244;
+  color: var(--text-muted);
   line-height: 1.6;
   margin: 0 0 32px 0;
 }
@@ -98,7 +98,7 @@
 }
 
 .share-btn {
-  background: linear-gradient(90deg, #490017 0%, #6b102a 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: #ffffff;
   border: none;
   padding: 14px 32px;
@@ -111,7 +111,7 @@
 }
 
 .share-btn:hover {
-  background: linear-gradient(90deg, #6B102A 0%, #C8A34D 50%, #6B102A 100%);
+  background: linear-gradient(90deg, var(--primary-dark) 0%, var(--accent) 50%, var(--primary-dark) 100%);
   background-size: 200% 100%;
   animation: goldShimmer 1.5s infinite;
   box-shadow: 0 6px 20px rgba(200, 163, 77, 0.3);
@@ -124,8 +124,8 @@
 
 .shopping-btn {
   background-color: transparent;
-  color: #490017;
-  border: 1px solid #490017;
+  color: var(--primary);
+  border: 1px solid var(--primary);
   padding: 14px 32px;
   font-size: 11px;
   font-weight: 600;
@@ -135,7 +135,7 @@
 }
 
 .shopping-btn:hover {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
 }
 
@@ -148,7 +148,7 @@
 }
 
 .stats-card {
-  background-color: #f6f3f2;
+  background-color: var(--surface-container-low);
   border: 1px solid rgba(136, 113, 116, 0.15);
   padding: 32px;
   display: flex;
@@ -163,7 +163,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 2px;
-  color: #775a04;
+  color: var(--accent);
   margin-bottom: 8px;
   text-transform: uppercase;
 }
@@ -171,7 +171,7 @@
 .stats-val {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.5rem;
-  color: #490017;
+  color: var(--primary);
   font-weight: 400;
 }
 
@@ -186,7 +186,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #C8A34D;
+  background-color: var(--accent);
   box-shadow: 0 0 0 rgba(200, 163, 77, 0.4);
   animation: pulseEffect 2s infinite;
 }
@@ -220,7 +220,7 @@
 .section-heading-bar h3 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.8rem;
-  color: #490017;
+  color: var(--primary);
   margin: 0;
   font-weight: 400;
 }
@@ -229,14 +229,14 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 1.5px;
-  color: #554244;
+  color: var(--text-muted);
 }
 
 /* Empty fallback */
 .empty-fallback-box {
   text-align: center;
   padding: 80px 20px;
-  background-color: #f6f3f2;
+  background-color: var(--surface-container-low);
   border: 1px solid rgba(136, 113, 116, 0.1);
   display: flex;
   flex-direction: column;
@@ -260,20 +260,20 @@
 .empty-fallback-box h4 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.4rem;
-  color: #490017;
+  color: var(--primary);
   margin: 0 0 8px 0;
   font-weight: 500;
 }
 
 .empty-fallback-box p {
   font-size: 13.5px;
-  color: #554244;
+  color: var(--text-muted);
   margin: 0 0 24px 0;
   line-height: 1.6;
 }
 
 .explore-weaves-btn {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
   border: none;
   padding: 12px 28px;
@@ -285,7 +285,7 @@
 }
 
 .explore-weaves-btn:hover {
-  background-color: #C8A34D;
+  background-color: var(--accent);
 }
 
 /* Wishlist Grid */
@@ -342,7 +342,7 @@
 }
 
 .tag-badge {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
   font-size: 8px;
   font-weight: 700;
@@ -376,7 +376,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #490017;
+  color: var(--primary);
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
@@ -409,7 +409,7 @@
 }
 
 .overlay-cart-btn {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
   border: none;
   padding: 10px 0;
@@ -422,15 +422,15 @@
 }
 
 .overlay-cart-btn:hover {
-  background: linear-gradient(90deg, #6B102A 0%, #C8A34D 50%, #6B102A 100%);
+  background: linear-gradient(90deg, var(--primary-dark) 0%, var(--accent) 50%, var(--primary-dark) 100%);
   background-size: 200% 100%;
   animation: goldShimmer 1.5s infinite;
 }
 
 .overlay-view-btn {
   background-color: transparent;
-  color: #490017;
-  border: 1px solid #490017;
+  color: var(--primary);
+  border: 1px solid var(--primary);
   padding: 10px 0;
   font-size: 10px;
   font-weight: 600;
@@ -454,7 +454,7 @@
 
 .card-category {
   font-size: 10px;
-  color: #775a04;
+  color: var(--accent);
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -463,7 +463,7 @@
 .card-description-box h4 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.1rem;
-  color: #1c1b1b;
+  color: var(--text-main);
   margin: 0 0 8px 0;
   font-weight: 400;
   cursor: pointer;
@@ -486,13 +486,13 @@
 .card-price-current {
   font-size: 14.5px;
   font-weight: 600;
-  color: #490017;
+  color: var(--primary);
 }
 
 .card-savings-label {
   font-size: 9px;
   font-weight: 600;
-  color: #775a04;
+  color: var(--accent);
   background-color: #ffdf9b;
   padding: 2px 8px;
   margin-bottom: 12px;
@@ -524,14 +524,14 @@
 .mood-header h3 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.8rem;
-  color: #490017;
+  color: var(--primary);
   margin: 0 0 8px 0;
   font-weight: 400;
 }
 
 .mood-header p {
   font-size: 14px;
-  color: #554244;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -616,7 +616,7 @@
 .recommended-header h3 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.8rem;
-  color: #490017;
+  color: var(--primary);
   margin: 0;
   font-weight: 400;
 }
@@ -634,7 +634,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #490017;
+  color: var(--primary);
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -677,7 +677,7 @@
 .rec-card h5 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.1rem;
-  color: #1c1b1b;
+  color: var(--text-main);
   margin: 0 0 4px 0;
   font-weight: 400;
   cursor: pointer;
@@ -686,7 +686,7 @@
 .rec-price {
   font-size: 14px;
   font-weight: 600;
-  color: #490017;
+  color: var(--primary);
   margin: 0;
 }
 
@@ -702,7 +702,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 2px;
-  color: #554244;
+  color: var(--text-muted);
   margin: 0 0 32px 0;
   text-transform: uppercase;
 }
@@ -742,7 +742,7 @@
 
 .recent-item-row span {
   font-size: 14.5px;
-  color: #1c1b1b;
+  color: var(--text-main);
   font-weight: 500;
 }
 
@@ -750,7 +750,7 @@
 .wardrobe-banner-section {
   width: 100%;
   position: relative;
-  background-color: #6b102a;
+  background-color: var(--primary-dark);
   color: #ffffff;
   padding: 80px 40px;
   overflow: hidden;
@@ -773,7 +773,7 @@
 
 .wardrobe-banner-content p {
   font-size: 15px;
-  color: #ffd9dd;
+  color: var(--primary-light);
   line-height: 1.6;
   margin: 0 0 32px 0;
 }
@@ -792,7 +792,7 @@
 }
 
 .wardrobe-discover-btn:hover {
-  background: linear-gradient(90deg, #6B102A 0%, #C8A34D 50%, #6B102A 100%);
+  background: linear-gradient(90deg, var(--primary-dark) 0%, var(--accent) 50%, var(--primary-dark) 100%);
   background-size: 200% 100%;
   animation: goldShimmer 1.5s infinite;
   color: #ffffff;

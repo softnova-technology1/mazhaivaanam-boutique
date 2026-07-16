@@ -1,111 +1,474 @@
+import { useState, useRef } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
-import { Button } from '../../components/common/Button/Button';
+import { 
+  Heart, 
+  Plus, 
+  Minus, 
+  Gift, 
+  Shield, 
+  Lock, 
+  FileText, 
+  Sparkles, 
+  ArrowRight, 
+  ChevronLeft, 
+  ChevronRight, 
+  ShoppingBag 
+} from 'lucide-react';
 import styles from './Cart.module.css';
 
 export const Cart = ({ setCurrentTab }) => {
-  const { cart, updateQuantity, removeFromCart, cartTotal, clearCart } = useCart();
+  const { cart, updateQuantity, removeFromCart, cartTotal, addToCart, clearCart } = useCart();
+  const carouselRef = useRef(null);
 
-  const gst = cartTotal * 0.05; // 5% GST for garments/sarees
-  const shipping = cartTotal >= 10000 || cartTotal === 0 ? 0 : 150;
-  const grandTotal = cartTotal + gst + shipping;
+  // Local interactive states
+  const [couponCode, setCouponCode] = useState('');
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponError, setCouponError] = useState('');
+  const [giftPackaging, setGiftPackaging] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
-  if (cart.length === 0) {
-    return (
-      <div className={`${styles['cart-page']} container`}>
-        <div className={`${styles['empty-cart-card']} glass-card`}>
-          <span className={styles['empty-cart-icon']}>🛒</span>
-          <h2>Your Cart is Empty</h2>
-          <p>Explore our exclusive collection and add products to your cart.</p>
-          <Button variant="primary" onClick={() => setCurrentTab('shop')}>
-            Continue Shopping
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  // Move item to wishlist & remove from cart
+  const handleMoveToWishlist = (item) => {
+    const saved = localStorage.getItem('boutique_wishlist');
+    const wishlistItems = saved ? JSON.parse(saved) : [];
+    
+    if (!wishlistItems.find(w => w.id === item.id)) {
+      const wishItem = {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        category: item.category,
+        fabric: item.fabric || '',
+        color: item.color || '',
+        oldPrice: item.oldPrice || 0,
+        tag: item.tag || ''
+      };
+      wishlistItems.push(wishItem);
+      localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
+    }
+    
+    // Notify Navbar and wishlist listener
+    window.dispatchEvent(new Event('storage'));
+    
+    removeFromCart(item.id);
+    triggerToast(`"${item.name}" moved to your Wishlist.`);
+  };
+
+  // Handlers for Coupon Code
+  const handleApplyCoupon = () => {
+    if (couponCode.toUpperCase().trim() === 'FESTIVAL1000') {
+      setCouponApplied(true);
+      setCouponError('');
+      triggerToast('Coupon FESTIVAL1000 applied! Saved ₹1,000.');
+    } else if (!couponCode.trim()) {
+      setCouponError('Please enter a coupon code.');
+    } else {
+      setCouponError('Invalid code. Try FESTIVAL1000');
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponApplied(false);
+    setCouponCode('');
+    setCouponError('');
+    triggerToast('Coupon removed.');
+  };
+
+  // Carousel Scrolling
+  const scrollCarousel = (direction) => {
+    if (carouselRef.current) {
+      const scrollAmount = 320;
+      carouselRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Convert Hex Colors to descriptive text
+  const getColorName = (colorVal) => {
+    if (!colorVal) return 'Heritage Gold';
+    const c = colorVal.toUpperCase();
+    if (c === '#6B102A') return 'Deep Ruby Maroon';
+    if (c === '#C8A34D') return 'Sunset Amber Gold';
+    if (c === '#004D40') return 'Forest Emerald Green';
+    if (c === '#1A237E') return 'Twilight Indigo Blue';
+    if (c === '#FFF9E3') return 'Royal Ivory Cream';
+    return 'Heritage Gold';
+  };
+
+  // Suggested styling accessories
+  const suggestedLookItems = [
+    {
+      id: 'suggest-1',
+      name: "Mughal Ruby Haar",
+      category: "Jewelry",
+      fabric: "Kundan Work",
+      color: "#C8A34D",
+      price: 124000,
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDAg4PFsYcv_lO-Qc9DEtZZXPZEtOGGlueO_c5WoXqbfqfnj9I7P5U1Dm9e66q0Or07aG_jK72KFmizTqsOgOzZ7ogRSdieccRcLnizoVDlkuKb-YiMz3lR_5j83VM9PkjEXSXWaWGUaoLbw7oRoLXxjeHGqw5Pr78xR9hOADB0UAQkkFGH9nGgRdmedQlTGaT2cjp5jAgfbaELUDVY2S2_ujnubWNaF42_U8TxfAESYHWGqmE26A5T",
+      description: "Exquisite antique gold necklace with deep red rubies and emeralds, designed in a traditional temple jewelry style."
+    },
+    {
+      id: 'suggest-2',
+      name: "Zardosi Brocade Blouse",
+      category: "Blouse",
+      fabric: "Brocade Silk",
+      color: "#C8A34D",
+      price: 12500,
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAfWGH2lJwshDqddKYN2O01gQRP5132vEP2GVQP08gz7ANRawBTK8oby21Kaq7UICEdFmjGaWeDFblLuYAog4AlFJ6SAocK-_TTBcJVJIptsuburm-IDlPop7AcEFGeegPdSuY93k1bnR785faLZXMW1ZAQChu6dRf2kgSTJUBioEMPiEg8PBhmTFaVh4N8l12e1cLppUdMfG1ns7QtlkEND44M_b9kA7mJZGD0ta8nvymT2ezbzHeF",
+      description: "A custom-stitched brocade silk blouse in antique gold with intricate dori work and pearl embellishments on the sleeves."
+    },
+    {
+      id: 'suggest-3',
+      name: "Filigree Jhumkas",
+      category: "Jewelry",
+      fabric: "Gold Filigree",
+      color: "#C8A34D",
+      price: 45200,
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBLC5HZcXBUI5Qg7RdF0ENdxRnsPuRPg-gwJqzVE0k3O2Mqidh4bhGokrfNTokReob82IPn7GdKBRCvwwzl-x7oWWfKIncW6AI2Uzfq-YOAemckufVqTcvW7gTBzio0YMvbUtI2x1OXsR9j2hLaC5IoYcRuzxzXk-7LyGEWer25tQ-9XHMIQw6PgvSG81_HGEnMoPuxp_tX6C2OGPfPc_4QZUG513mVWnS0I43LfEgd11RtbQRgLfMe",
+      description: "Solid gold jhumka earrings featuring delicate gold filigree and tiny pearl drops."
+    },
+    {
+      id: 'suggest-4',
+      name: "Bridal Silk Potli",
+      category: "Accessory",
+      fabric: "Silk",
+      color: "#6B102A",
+      price: 8900,
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCogy0F1ECkHJnGhA9_TTMTAAmRUINfmG0KH-pCPgFbjS5n0-dbBvEo5F5e3aNIgcmD7BPlfsNff5UJF06Jqrbh8hKwTCnUxw4bnzXOF2SKgdryolD__qS9w_wP21aaUmpgS1Ja4IUwnV3-BobWqgx97iNt-FYIreGZoZKPMAECBvnJTWEvfEr65qSxClMrZfk1cxPMwZvy9ghrn_9BqqRqTDiZo4DFiR9KPMUqbpqPZkaF53_KZRDA",
+      description: "A luxurious silk potli bag in deep maroon, matching the ruby saree, with gold embroidery and heavy bead tassels."
+    }
+  ];
+
+  // Dynamic calculations
+  const mrpTotal = cart.reduce((sum, item) => sum + (item.oldPrice || Math.round(item.price * 1.15)) * item.quantity, 0);
+  const subtotal = cartTotal;
+  const exclusivePricingSavings = mrpTotal - subtotal;
+  const festivalDiscount = Math.round(subtotal * 0.05); // 5% discount
+  const couponDiscount = couponApplied ? 1000 : 0;
+  const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
+  const finalAmount = Math.max(0, mrpTotal - totalSavings);
+
+  const handleCheckout = () => {
+    setCurrentTab('checkout');
+  };
 
   return (
-    <div className={`${styles['cart-page']} container`}>
-      <h2 className="page-title">Your Shopping Bag</h2>
+    <div className={styles.cartPageContainer}>
+      {toastMessage && (
+        <div className={styles.toastNotification}>
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Breadcrumbs & Header */}
+      <nav className={styles.breadcrumbs}>
+        <span onClick={() => setCurrentTab('shop')} style={{ cursor: 'pointer' }}>Home</span>
+        <span>/</span>
+        <span className={styles.activeBreadcrumb}>Shopping Bag</span>
+      </nav>
       
-      <div className={styles['cart-content-layout']}>
-        {/* Cart Items List */}
-        <div className={styles['cart-items-section']}>
-          {cart.map((item) => (
-            <div key={item.id} className={`${styles['cart-item']} glass-card`}>
-              <img src={item.image} alt={item.name} className={styles['cart-item-image']} />
-              <div className={styles['cart-item-details']}>
-                <span className={styles['cart-item-category']}>{item.category}</span>
-                <h3 className={styles['cart-item-name']}>{item.name}</h3>
-                <span className={styles['cart-item-price']}>{formatCurrency(item.price)}</span>
+      <header>
+        <h1 className={styles.pageTitle}>Your Shopping Bag</h1>
+        <p className={styles.pageTagline}>Refining elegance, one selection at a time.</p>
+      </header>
+
+      {/* Layout Grid */}
+      <div className={styles.layoutGrid}>
+        {cart.length === 0 ? (
+          /* Empty State Fallback */
+          <div className={styles.emptyCartBox}>
+            <ShoppingBag className={styles.emptyCartIcon} size={48} strokeWidth={1} />
+            <h2 className={styles.emptyCartTitle}>Your Bag is Empty</h2>
+            <p className={styles.emptyCartDesc}>
+              Explore our masterfully woven collections to add handcrafted drapes that tell your heritage story.
+            </p>
+            <button 
+              className={styles.shimmerBtn} 
+              onClick={() => setCurrentTab('catalog')}
+              style={{ maxWidth: '280px', marginTop: '12px' }}
+            >
+              Explore Collections
+              <ArrowRight className={styles.checkoutIcon} size={18} />
+            </button>
+          </div>
+        ) : (
+          /* Main columns with items */
+          <>
+            {/* Left Column: Cart Items */}
+            <div className={styles.leftColumn}>
+              <div className={styles.cartItemsList}>
+                {cart.map((item) => (
+                  <div key={item.id} className={styles.cartItem}>
+                    <div className={styles.imageContainer}>
+                      <img src={item.image} alt={item.name} className={styles.itemImage} />
+                    </div>
+                    <div className={styles.itemDetails}>
+                      <div>
+                        <div className={styles.itemHeader}>
+                          <h3 className={styles.itemName}>{item.name}</h3>
+                          <p className={styles.itemPrice}>{formatCurrency(item.price)}</p>
+                        </div>
+                        <p className={styles.itemCollection}>
+                          Collection: {item.category === 'Banarasi' ? 'Royal Heirlooms' : 'Prakriti Series'}
+                        </p>
+                        <div className={styles.specsGrid}>
+                          <span className={styles.specLabel}>Fabric:</span>
+                          <span className={styles.specValue}>{item.fabric || 'Pure Mulberry Silk'}</span>
+                          
+                          <span className={styles.specLabel}>Border:</span>
+                          <span className={styles.specValue}>
+                            {item.category === 'Banarasi' ? 'Zari Brocade' : 'Gold Temple Border'}
+                          </span>
+                          
+                          <span className={styles.specLabel}>Color:</span>
+                          <span className={styles.specValue}>{getColorName(item.color)}</span>
+                          
+                          <span className={styles.specLabel}>Craft:</span>
+                          <span className={styles.specValue}>
+                            {item.category === 'Cotton' ? 'Handloom Weave' : 'Master Artisan Loom'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className={styles.itemFooter}>
+                        {/* Quantity controls */}
+                        <div className={styles.quantityControls}>
+                          <button 
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className={styles.quantityBtn}
+                            aria-label="Decrease quantity"
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className={styles.quantityValue}>
+                            {item.quantity.toString().padStart(2, '0')}
+                          </span>
+                          <button 
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className={styles.quantityBtn}
+                            aria-label="Increase quantity"
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+
+                        {/* Actions */}
+                        <div className={styles.actionButtons}>
+                          <button 
+                            className={styles.wishlistBtn}
+                            onClick={() => handleMoveToWishlist(item)}
+                          >
+                            Move to Wishlist
+                          </button>
+                          <button 
+                            className={styles.removeBtn}
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className={styles['cart-item-actions']}>
-                <div className={styles['quantity-controls']}>
+
+              {/* Luxury Gift Packaging */}
+              <div className={styles.giftCard}>
+                <div className={styles.giftHeader}>
+                  <div className={styles.giftInfo}>
+                    <Gift className={styles.giftIcon} size={30} />
+                    <div>
+                      <h4 className={styles.giftTitle}>Luxury Gift Packaging</h4>
+                      <p className={styles.giftDescription}>Add a touch of Mazhai Vaanam heritage to your gift.</p>
+                    </div>
+                  </div>
+                  <label className={styles.toggleContainer}>
+                    <input 
+                      type="checkbox" 
+                      checked={giftPackaging}
+                      onChange={(e) => setGiftPackaging(e.target.checked)}
+                      className={styles.toggleInput}
+                    />
+                    <span className={styles.toggleSlider}></span>
+                  </label>
+                </div>
+                <div className={styles.giftOptions}>
+                  <div className={styles.giftOptionItem}>
+                    <Gift className={styles.giftOptionIcon} size={18} />
+                    <span className={styles.giftOptionText}>Complimentary Signature Box</span>
+                  </div>
+                  <div className={styles.giftOptionItem}>
+                    <FileText className={styles.giftOptionIcon} size={18} />
+                    <span className={styles.giftOptionText}>Personalized Message Card</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Sticky Summary */}
+            <div className={styles.rightColumn}>
+              <div className={styles.summaryCard}>
+                <h3 className={styles.summaryTitle}>Order Summary</h3>
+
+                {/* Coupon Code Block */}
+                <div className={styles.couponBlock}>
+                  <label className={styles.couponLabel}>Apply Coupon Code</label>
+                  {couponApplied ? (
+                    <div className={styles.couponAppliedBadge}>
+                      <span>FESTIVAL1000 (-₹1,000)</span>
+                      <button onClick={handleRemoveCoupon} className={styles.removeCouponLink}>
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div className={styles.couponInputWrapper}>
+                      <input 
+                        type="text" 
+                        placeholder="FESTIVAL1000" 
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        className={styles.couponInput}
+                      />
+                      <button onClick={handleApplyCoupon} className={styles.couponBtn}>
+                        Apply
+                      </button>
+                    </div>
+                  )}
+                  {couponError && <p className={styles.couponError}>{couponError}</p>}
+                </div>
+
+                {/* Price Breakdown */}
+                <div className={styles.priceBreakdown}>
+                  <div className={styles.priceRow}>
+                    <span>Subtotal (MRP)</span>
+                    <span className={styles.priceValue}>{formatCurrency(mrpTotal)}</span>
+                  </div>
+                  <div className={styles.priceRow}>
+                    <span>Exclusive Pricing</span>
+                    <span className={styles.priceValue}>{formatCurrency(subtotal)}</span>
+                  </div>
+                  <div className={styles.discountRow}>
+                    <span>Festival Discount</span>
+                    <span className={styles.discountValue}>-{formatCurrency(festivalDiscount)}</span>
+                  </div>
+                  {couponApplied && (
+                    <div className={styles.discountRow}>
+                      <span>Coupon Discount</span>
+                      <span className={styles.discountValue}>-₹1,000</span>
+                    </div>
+                  )}
+                  <div className={styles.priceRow}>
+                    <span>Shipping</span>
+                    <span className={styles.priceValue} style={{ color: 'var(--accent)', fontWeight: '600' }}>
+                      FREE EXPRESS
+                    </span>
+                  </div>
+                </div>
+
+                {/* Savings Badge */}
+                <div className={styles.savingsBadge}>
+                  <p className={styles.savingsText}>Total Savings: {formatCurrency(totalSavings)}</p>
+                </div>
+
+                {/* Total block */}
+                <div className={styles.totalBlock}>
+                  <div>
+                    <p className={styles.totalLabel}>Final Amount</p>
+                    <p className={styles.totalAmount}>{formatCurrency(finalAmount)}</p>
+                  </div>
+                  <span className={styles.taxIncluded}>Incl. of all taxes</span>
+                </div>
+
+                {/* CTA Shimmer button */}
+                <button className={styles.shimmerBtn} onClick={handleCheckout}>
+                  Proceed to Checkout
+                  <ArrowRight className={styles.checkoutIcon} size={18} />
+                </button>
+
+                {/* Trust Badges */}
+                <div className={styles.trustBadges}>
+                  <div className={styles.trustBadgeItem}>
+                    <Shield className={styles.trustBadgeIcon} size={18} />
+                    <span className={styles.trustBadgeText}>100% ORIGINAL</span>
+                  </div>
+                  <div className={styles.trustBadgeItem}>
+                    <Lock className={styles.trustBadgeIcon} size={18} />
+                    <span className={styles.trustBadgeText}>SECURE PAY</span>
+                  </div>
+                  <div className={styles.trustBadgeItem}>
+                    <Sparkles className={styles.trustBadgeIcon} size={18} />
+                    <span className={styles.trustBadgeText}>HANDCRAFTED</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Recommended styling pairings ("Complete the Look") */}
+      <section className={styles.recommendationsSection}>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionTitleBlock}>
+            <h2>Complete the Look</h2>
+            <p>Curated pairings recommended by our master stylists.</p>
+          </div>
+          <div className={styles.carouselArrows}>
+            <button className={styles.arrowBtn} onClick={() => scrollCarousel('left')} aria-label="Scroll left">
+              <ChevronLeft size={16} />
+            </button>
+            <button className={styles.arrowBtn} onClick={() => scrollCarousel('right')} aria-label="Scroll right">
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.productsCarouselWrapper} ref={carouselRef}>
+          {suggestedLookItems.map((rec) => (
+            <div key={rec.id} className={styles.recommendationCard}>
+              <div className={styles.recImageContainer}>
+                <img src={rec.image} alt={rec.name} className={styles.recImage} />
+                <div className={styles.quickAddOverlay}>
                   <button 
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className={styles['quantity-btn']}
+                    className={styles.quickAddBtn}
+                    onClick={() => {
+                      addToCart({
+                        id: rec.id,
+                        name: rec.name,
+                        price: rec.price,
+                        image: rec.image,
+                        category: rec.category,
+                        fabric: rec.fabric,
+                        color: rec.color,
+                        rating: 4.8
+                      }, 1);
+                      triggerToast(`"${rec.name}" added to trousseau!`);
+                    }}
                   >
-                    -
-                  </button>
-                  <span className={styles['quantity-value']}>{item.quantity}</span>
-                  <button 
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className={styles['quantity-btn']}
-                  >
-                    +
+                    Quick Add
                   </button>
                 </div>
-                <button 
-                  onClick={() => removeFromCart(item.id)}
-                  className={styles['remove-item-btn']}
-                >
-                  Remove
-                </button>
+              </div>
+              <div className={styles.recDetails}>
+                <h4 className={styles.recName}>{rec.name}</h4>
+                <p className={styles.recPrice}>{formatCurrency(rec.price)}</p>
               </div>
             </div>
           ))}
-          
-          <div className={styles['cart-extra-actions']}>
-            <Button variant="outline" onClick={clearCart}>
-              Clear Cart
-            </Button>
-          </div>
         </div>
-
-        {/* Order Summary Card */}
-        <div className={styles['cart-summary-section']}>
-          <div className={`${styles['summary-card']} glass-card`}>
-            <h3>Order Summary</h3>
-            <div className={styles['summary-row']}>
-              <span>Subtotal</span>
-              <span>{formatCurrency(cartTotal)}</span>
-            </div>
-            <div className={styles['summary-row']}>
-              <span>GST (5%)</span>
-              <span>{formatCurrency(gst)}</span>
-            </div>
-            <div className={styles['summary-row']}>
-              <span>Estimated Delivery</span>
-              <span>{shipping === 0 ? 'Free' : formatCurrency(shipping)}</span>
-            </div>
-            <hr className={styles['summary-divider']} />
-            <div className={`${styles['summary-row']} ${styles['total-row']}`}>
-              <span>Total Price</span>
-              <span>{formatCurrency(grandTotal)}</span>
-            </div>
-            
-            <Button 
-              variant="primary" 
-              className={styles['checkout-btn']} 
-              onClick={() => alert('Order Placed Successfully! Thank you for shopping with Shanmathi Boutique.')}
-            >
-              Proceed to Checkout
-            </Button>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 };
+
 export default Cart;

@@ -5,26 +5,62 @@
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
-  --primary: #9d1c4c; /* Deep Rose Gold / Burgundy hint */
-  --primary-light: #fbcfe8;
-  --primary-dark: #83123d;
-  --accent: #d97706; /* Warm Amber */
-  --accent-hover: #b45309;
+  /* Theme color mapping */
+  --primary: #7B8467;          /* Primary Sage Green */
+  --primary-light: #AEB49C;    /* Light Sage */
+  --primary-dark: #5F6652;     /* Dark Olive Green (Hover) */
+  --primary-container: #7B8467;
+  --on-primary: #FFFFFF;
+  --on-primary-container: #FFFFFF;
+  
+  --secondary: #B38A4A;        /* Gold Accent */
+  --secondary-container: #E7DDCE;
+  --secondary-fixed: #B38A4A;
+  --secondary-fixed-dim: #B38A4A;
+  --on-secondary: #FFFFFF;
+  --on-secondary-container: #3B3B36;
+  
+  --tertiary: #AEB49C;         /* Light Sage */
+  --tertiary-container: #E7DDCE;
+  --on-tertiary: #FFFFFF;
+  --on-tertiary-container: #3B3B36;
 
-  --bg-main: #faf9f6; /* Soft warm alabaster */
-  --bg-surface: #ffffff;
-  --bg-surface-hover: #f3f4f6;
+  --bg-main: #F7F3EB;          /* Cream Background */
+  --background: #F7F3EB;
+  --on-background: #3B3B36;
+  
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #E7DDCE; /* Warm Beige */
+  --surface: #FFFFFF;
+  --on-surface: #3B3B36;
+  --on-surface-variant: #5d5d56;
+  
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low: #F7F3EB;
+  --surface-container: #E7DDCE;
+  --surface-container-high: #E7DDCE;
+  --surface-container-highest: #D8CCBC; /* Light Sand */
+  --surface-dim: #E7DDCE;
+  --surface-bright: #FFFFFF;
+  
+  --border-color: #D8CCBC;     /* Light Sand (Borders) */
+  --border-color-hover: #c4b6a4;
+  --outline: #D8CCBC;
+  --outline-variant: #D8CCBC;
 
-  --text-main: #1f2937;
-  --text-muted: #6b7280;
-  --text-light: #9ca3af;
-  --text-on-primary: #ffffff;
-
-  --border-color: #e5e7eb;
-  --border-color-hover: #d1d5db;
+  --text-main: #3B3B36;        /* Dark Text (Headings) */
+  --text-muted: #5d5d56;
+  --text-light: #8e8e83;
+  --text-on-primary: #FFFFFF;
+  
+  --accent: #B38A4A;           /* Gold Accent (Highlights) */
+  --accent-hover: #9c7333;
+  --royal-gold: #B38A4A;
+  --deep-maroon: #7B8467;
+  --warm-ivory: #F7F3EB;
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 8px 24px rgba(157, 28, 76, 0.06);
+  --shadow-md: 0 8px 24px rgba(123, 132, 103, 0.06);
   --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.08);
 
   --radius-sm: 8px;

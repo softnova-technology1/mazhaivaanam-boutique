@@ -2,8 +2,8 @@
    LUXURY CATALOG PAGE STYLING (MAZHAI VAANAM BRAND)
    ========================================================================== */
 .catalog-page-container {
-  background-color: #FFFDF8; /* Warm Ivory */
-  color: #1c1b1b;
+  background-color: var(--bg-main); /* Warm Ivory */
+  color: var(--text-main);
   min-height: 100vh;
 }
 
@@ -85,7 +85,7 @@
 .gold-shimmer-btn {
   position: relative;
   overflow: hidden;
-  background-color: #6b102a; /* Burgundy container */
+  background-color: var(--primary-dark); /* Burgundy container */
   color: #ffffff;
   border: none;
   font-family: 'Inter', sans-serif;
@@ -113,14 +113,14 @@
 }
 
 .gold-shimmer-btn:hover {
-  background-color: #C8A34D; /* Gold hover */
+  background-color: var(--accent); /* Gold hover */
 }
 
 /* 2. Signature Weaves Section */
 .signature-weaves-section {
   padding: 100px 80px;
-  background-color: #FFFDF8;
-  border-bottom: 1px solid #F0E6D2;
+  background-color: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .section-header {
@@ -131,7 +131,7 @@
 .section-header h2 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.2rem;
-  color: #490017;
+  color: var(--primary);
   margin-bottom: 15px;
   font-weight: 500;
 }
@@ -139,7 +139,7 @@
 .section-header .divider {
   width: 80px;
   height: 1px;
-  background-color: #490017;
+  background-color: var(--primary);
   margin: 0 auto;
   opacity: 0.3;
 }
@@ -160,7 +160,7 @@
   width: 170px;
   height: 230px;
   overflow: hidden;
-  border: 1px solid #F0E6D2;
+  border: 1px solid var(--border-color);
   transition: all 0.5s ease;
 }
 
@@ -193,7 +193,7 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 2px;
-  color: #490017;
+  color: var(--primary);
   text-transform: uppercase;
 }
 
@@ -216,7 +216,7 @@
   position: sticky;
   top: 150px;
   background-color: #ffffff;
-  border: 1px solid #F0E6D2;
+  border: 1px solid var(--border-color);
   padding: 30px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
@@ -224,7 +224,7 @@
 .sidebar-title {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.5rem;
-  color: #490017;
+  color: var(--primary);
   margin-bottom: 5px;
   font-weight: 500;
 }
@@ -232,12 +232,12 @@
 .sidebar-subtitle {
   font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: #7D756D;
+  color: var(--text-muted);
   margin-bottom: 30px;
 }
 
 .filter-widget {
-  border-bottom: 1px solid #F0E6D2;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 24px;
   margin-bottom: 24px;
 }
@@ -253,7 +253,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #490017;
+  color: var(--primary);
 }
 
 .widget-title-box span {
@@ -271,7 +271,7 @@
 
 .toggle-icon {
   font-size: 18px;
-  color: #7D756D;
+  color: var(--text-muted);
 }
 
 /* Fabric Filter Tags */
@@ -283,24 +283,24 @@
 
 .tag-btn {
   background: transparent;
-  border: 1px solid #F0E6D2;
+  border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 6px 14px;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: #1c1b1b;
+  color: var(--text-main);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .tag-btn:hover {
-  background-color: rgba(73, 0, 23, 0.05);
+  background-color: rgba(123, 132, 103, 0.08);
 }
 
 .tag-btn.active-tag {
-  background-color: rgba(254, 213, 121, 0.2);
-  border-color: #C8A34D;
-  color: #490017;
+  background-color: rgba(123, 132, 103, 0.15);
+  border-color: var(--primary);
+  color: var(--primary-dark);
   font-weight: 600;
 }
 
@@ -314,7 +314,7 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  border: 1px solid #F0E6D2;
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease;
   position: relative;
@@ -349,20 +349,20 @@
   gap: 10px;
   font-family: 'Inter', sans-serif;
   font-size: 13px;
-  color: #554244;
+  color: var(--text-muted);
   cursor: pointer;
 }
 
 .checkbox-label input {
-  accent-color: #490017;
+  accent-color: var(--primary);
   cursor: pointer;
 }
 
 .reset-all-btn {
   width: 100%;
   background: transparent;
-  border: 1px solid #490017;
-  color: #490017;
+  border: 1px solid var(--primary);
+  color: var(--primary);
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
@@ -373,7 +373,7 @@
 }
 
 .reset-all-btn:hover {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
 }
 
@@ -386,7 +386,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  border-bottom: 1px solid #F0E6D2;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 20px;
   margin-bottom: 40px;
 }
@@ -395,7 +395,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #490017;
+  color: var(--primary);
   letter-spacing: 2px;
   text-transform: uppercase;
   margin: 0 0 6px 0;
@@ -404,7 +404,7 @@
 .products-header-left p {
   font-family: 'Inter', sans-serif;
   font-size: 13px;
-  color: #7D756D;
+  color: var(--text-muted);
   margin: 0;
   font-style: italic;
 }
@@ -413,7 +413,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid #C8A34D;
+  border-bottom: 1px solid var(--accent);
   padding-bottom: 6px;
   cursor: pointer;
 }
@@ -432,7 +432,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 600;
-  color: #490017;
+  color: var(--primary);
   cursor: pointer;
   padding-right: 15px;
 }
@@ -480,7 +480,7 @@
   position: absolute;
   top: 358px;
   left: 10px;
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
   font-family: 'Inter', sans-serif;
   font-size: 8px;
@@ -509,7 +509,7 @@
 }
 
 .wishlist-btn:hover {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
 }
 
@@ -524,7 +524,7 @@
 .card-details h4 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.1rem;
-  color: #1c1b1b;
+  color: var(--text-main);
   margin: 0 0 8px 0;
   font-weight: 400;
 }
@@ -540,20 +540,20 @@
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #1c1b1b;
+  color: var(--text-main);
 }
 
 .old-price {
   font-family: 'Inter', sans-serif;
   font-size: 13px;
-  color: #7D756D;
+  color: var(--text-muted);
   text-decoration: line-through;
 }
 
 .add-cart-btn {
   width: auto; /* Compact, not full-width */
   padding: 8px 24px;
-  background-color: #a13b51; /* Rose/burgundy color from mockup */
+  background-color: var(--primary); /* Primary Sage Green */
   color: #ffffff;
   border: none;
   font-family: 'Playfair Display', Georgia, serif; /* Serif typography from mockup */
@@ -565,7 +565,7 @@
 }
 
 .add-cart-btn:hover {
-  background-color: #C8A34D;
+  background-color: var(--primary-dark); /* Dark Olive hover */
 }
 
 /* Pagination */
@@ -583,15 +583,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #F0E6D2;
+  border: 1px solid var(--border-color);
   background: transparent;
-  color: #490017;
+  color: var(--primary);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .pagination-arrow:hover:not(:disabled) {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
 }
 
@@ -609,14 +609,14 @@
 
 .page-num {
   cursor: pointer;
-  color: #7D756D;
+  color: var(--text-muted);
   padding-bottom: 2px;
   transition: color 0.3s ease;
 }
 
 .page-num.active-page {
-  color: #490017;
-  border-bottom: 1.5px solid #490017;
+  color: var(--primary);
+  border-bottom: 1.5px solid var(--primary);
   font-weight: 600;
 }
 
@@ -624,8 +624,8 @@
 .curated-edit-section {
   background-color: #FAF6EE;
   padding: 120px 80px;
-  border-top: 1px solid #F0E6D2;
-  border-bottom: 1px solid #F0E6D2;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .curated-container {
@@ -661,7 +661,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
-  color: #775a04;
+  color: var(--accent);
   letter-spacing: 3px;
   margin-bottom: 15px;
 }
@@ -669,7 +669,7 @@
 .curated-heading {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.8rem;
-  color: #490017;
+  color: var(--primary);
   margin-bottom: 25px;
   line-height: 1.2;
   font-weight: 400;
@@ -679,7 +679,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 15px;
   line-height: 1.8;
-  color: #554244;
+  color: var(--text-muted);
   margin-bottom: 30px;
 }
 
@@ -687,7 +687,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border-left: 2px solid #C8A34D;
+  border-left: 2px solid var(--accent);
   padding-left: 24px;
   margin-bottom: 35px;
 }
@@ -697,11 +697,11 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.5px;
-  color: #490017;
+  color: var(--primary);
 }
 
 .story-btn {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
   border: none;
   font-family: 'Inter', sans-serif;
@@ -715,7 +715,7 @@
 }
 
 .story-btn:hover {
-  background-color: #C8A34D;
+  background-color: var(--accent);
 }
 
 /* 5. Newsletter Section */
@@ -733,7 +733,7 @@
 .newsletter-box h3 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.5rem;
-  color: #490017;
+  color: var(--primary);
   margin-bottom: 12px;
   font-weight: 400;
 }
@@ -741,7 +741,7 @@
 .newsletter-box p {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
-  color: #7D756D;
+  color: var(--text-muted);
   margin-bottom: 35px;
 }
 
@@ -763,7 +763,7 @@
 }
 
 .newsletter-submit-btn {
-  background-color: #490017;
+  background-color: var(--primary);
   color: #ffffff;
   border: none;
   padding: 0 36px;
@@ -777,7 +777,7 @@
 }
 
 .newsletter-submit-btn:hover {
-  background-color: #C8A34D;
+  background-color: var(--accent);
 }
 
 /* Responsive Overrides */
@@ -855,7 +855,7 @@
 .offer-badge:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 18px rgba(73, 0, 23, 0.55);
-  background: linear-gradient(135deg, #b54761 0%, #6B102A 100%);
+  background: linear-gradient(135deg, #b54761 0%, var(--primary-dark) 100%);
 }
 
 .offer-value {

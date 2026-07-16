@@ -13,6 +13,13 @@ import { Contact } from './pages/Contact/Contact';
 import { Footer } from './components/layout/Footer/Footer';
 import { ProductDetail } from './pages/ProductDetail/ProductDetail';
 import { Wishlist } from './pages/Wishlist/Wishlist';
+import { Checkout } from './pages/Checkout/Checkout';
+import { MyOrders } from './pages/MyOrders/MyOrders';
+import { TrackOrder } from './pages/TrackOrder/TrackOrder';
+import { Support } from './pages/Support/Support';
+import { Privacy } from './pages/Privacy/Privacy';
+import { Returns } from './pages/Returns/Returns';
+import { Terms } from './pages/Terms/Terms';
 import './App.css';
 
 function AppContent() {
@@ -38,7 +45,7 @@ function AppContent() {
         } else {
           setCurrentTab('shop');
         }
-      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist'].includes(path.substring(1))) {
+      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms'].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
         setCurrentTab('shop');
@@ -89,13 +96,27 @@ function AppContent() {
       case 'lookbook':
         return <Lookbook setCurrentTab={setCurrentTab} />;
       case 'about':
-        return <About />;
+        return <About setCurrentTab={setCurrentTab} />;
       case 'contact':
-        return <Contact />;
+        return <Contact setCurrentTab={setCurrentTab} />;
+      case 'track-order':
+        return <TrackOrder setCurrentTab={setCurrentTab} />;
       case 'cart':
         return <Cart setCurrentTab={setCurrentTab} />;
+      case 'checkout':
+        return <Checkout setCurrentTab={setCurrentTab} />;
+      case 'my-orders':
+        return <MyOrders setCurrentTab={setCurrentTab} />;
       case 'login':
         return <Login setCurrentTab={setCurrentTab} />;
+      case 'support':
+        return <Support setCurrentTab={setCurrentTab} />;
+      case 'privacy':
+        return <Privacy setCurrentTab={setCurrentTab} />;
+      case 'returns':
+        return <Returns setCurrentTab={setCurrentTab} />;
+      case 'terms':
+        return <Terms setCurrentTab={setCurrentTab} />;
       default:
         return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
     }
@@ -112,7 +133,7 @@ function AppContent() {
       <main className="main-content">
         {renderContent()}
       </main>
-      <Footer />
+      <Footer setCurrentTab={setCurrentTab} />
     </div>
   );
 }

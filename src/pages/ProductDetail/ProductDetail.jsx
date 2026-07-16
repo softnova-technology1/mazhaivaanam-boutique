@@ -214,11 +214,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             
             <div className={styles['ratings-row']}>
               <div className={styles['stars-group']}>
-                <Star size={14} fill="#C8A34D" stroke="#C8A34D" />
-                <Star size={14} fill="#C8A34D" stroke="#C8A34D" />
-                <Star size={14} fill="#C8A34D" stroke="#C8A34D" />
-                <Star size={14} fill="#C8A34D" stroke="#C8A34D" />
-                <Star size={14} fill="#C8A34D" stroke="#C8A34D" />
+                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
+                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
+                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
+                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
+                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
               </div>
               <span className={styles['reviews-count']}>{Math.round(activeProduct.price / 4.5)} verified collectors</span>
             </div>
@@ -492,11 +492,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
           
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
             </div>
             <p className={styles['review-quote']}>
               "The gold zari work is absolutely breathtaking. It sits lighter than expected and drapes like a dream. Truly an heirloom masterpiece."
@@ -515,11 +515,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
             </div>
             <p className={styles['review-quote']}>
               "Wore this for my daughter's wedding reception. The colors are incredibly rich. Everyone asked about the provenance of the fabric."
@@ -538,11 +538,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-              <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
             </div>
             <p className={styles['review-quote']}>
               "The custom teak wooden box packaging itself is worth 5 stars. It felt like receiving a heritage heirloom from another era."

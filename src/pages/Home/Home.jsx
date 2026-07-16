@@ -1,9 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';
 import styles from './Home.module.css';
 
-export const Home = () => {
+export const Home = ({ setCurrentTab }) => {
   const [email, setEmail] = useState('');
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const bestSellers = useMemo(() => [
     {
@@ -48,6 +50,42 @@ export const Home = () => {
     }
   ], []);
 
+  const slides = useMemo(() => [
+    {
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCFCA9k7R_SAF0s8Z2oer0go-OV16Dr0zEOd-7VhVdRIwmxkDOrtLzUYj74V_aL8k6uNp8MNItHjOdn36nY9qLascXy9WgjgpiPEbsTbmYM1Tct3Cat5GNRP6pTXUSfmp87kYsRmQaIh0mi2nwBCztGlBAA_cWD9yoZ7vrm_nK2GqrvxNOnYzz0CStSzzmmd-FpXmjbEuDZCrh8o8tau3bXovxSPvh7krTVVKFjBTwvyb9QuydBUNNl",
+      tag: "Maison Heritage",
+      title: "Elegance Woven Into Every Thread",
+      desc: "Discover handcrafted luxury sarees designed for life's most precious celebrations. A bridge between timeless Indian craftsmanship and contemporary aesthetics."
+    },
+    {
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBiaf59tcalpuVycg_KGWRUiEUXpejpqfUe2PGNhQqO8x6Pr5v9U2wMrshKSH_tdDQLOEpSPvp_jhlYnA8F7r2olm1t4lfy7RqBg5D0Qw2367XV96xoFC6OViYpl6gJYxTNUFY1WW8OSpaUVZ0Duw1OZcX13c9jWpTIyaFHnGwkkwYEiORAY5R4lNtfb6NYr4BAZC0q0QoqIxZNFZ6D8Y2EBRibzJGz84N7sSf0u4SJLDBDaMV_hMxO",
+      tag: "Bridal Masterpieces",
+      title: "The Ruby Collection of Royal Silks",
+      desc: "Woven with authentic gold threads and certified handloom silks, our custom-tailored bridal sarees represent the summit of Kanjeevaram design."
+    },
+    {
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDI6R_12woJKAYaLiudDb0eusyX1BwvaDGetnwQ3d_-BXwI3RxF41KY8785DtXMtPxWzc2pMYPvUzT2tbhUDjgUOMWwVRgSrgB9sD-X6SC75cx3VfMmIjHg86bIcD2Kmq2rTgojUxOnou5HaqqO1v4IkFObWuO7hgZJpVVbWqFpAiqRAcAsjYYU79xmEQuH4mCjmkN94Ju8ZOZ8Z5BmodOtr79Yt8pYCHbNjgwMj7vyHq6hcRKtyltC",
+      tag: "Preserving Craftsmanship",
+      title: "Legacy From the Weaver’s Loom",
+      desc: "Each purchase directly sustains the creative labor of our master weaver cooperatives, ensuring authentic heritage techniques live for generations."
+    }
+  ], []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const handlePrevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const handleNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
   const handleSubscribe = (e) => {
     e.preventDefault();
     if (email.trim()) {
@@ -58,19 +96,58 @@ export const Home = () => {
 
   return (
     <div className={styles['home-wrapper']}>
-      {/* 1. Hero Section */}
-      <section className={styles['hero-section']}>
-        <div className={styles['hero-bg-overlay']}></div>
-        <div className={styles['hero-content']}>
-          <h1>Elegance Woven Into Every Thread</h1>
-          <p>
-            Discover handcrafted luxury sarees designed for life's most precious celebrations.
-            A bridge between timeless Indian craftsmanship and contemporary aesthetics.
-          </p>
-          <div className={styles['hero-actions']}>
-            <button className={styles['btn-explore']}>EXPLORE COLLECTION</button>
-            <button className={styles['btn-custom']}>DISCOVER BRIDAL</button>
+      {/* 1. Hero Carousel Slider */}
+      <section className={styles['hero-slider-section']}>
+        {slides.map((slide, idx) => (
+          <div 
+            key={idx} 
+            className={`${styles['hero-slide']} ${idx === currentSlide ? styles['active-slide'] : ''}`}
+            style={{ backgroundImage: `url(${slide.image})` }}
+          >
+            <div className={styles['hero-bg-overlay']}></div>
+            <div className={styles['hero-content']}>
+              <span className={styles['hero-slide-tag']}>{slide.tag}</span>
+              <h1>{slide.title}</h1>
+              <p>{slide.desc}</p>
+              
+              <div className={styles['hero-actions']}>
+                <button 
+                  onClick={() => setCurrentTab && setCurrentTab('catalog')} 
+                  className={styles['btn-explore']}
+                >
+                  EXPLORE COLLECTION
+                </button>
+                <button 
+                  onClick={() => setCurrentTab && setCurrentTab('contact')} 
+                  className={styles['btn-custom']}
+                >
+                  BOOK CONSULTATION
+                </button>
+              </div>
+            </div>
           </div>
+        ))}
+
+        {/* Navigation Chevrons */}
+        <button onClick={handlePrevSlide} className={`${styles['slide-arrow']} ${styles['arrow-left']}`} aria-label="Previous slide">
+          <ChevronLeft size={24} />
+        </button>
+        <button onClick={handleNextSlide} className={`${styles['slide-arrow']} ${styles['arrow-right']}`} aria-label="Next slide">
+          <ChevronRight size={24} />
+        </button>
+
+        {/* Slide Dash Indicators with progress fillers */}
+        <div className={styles['slide-indicators']}>
+          {slides.map((_, idx) => (
+            <button 
+              key={idx} 
+              onClick={() => setCurrentSlide(idx)}
+              className={`${styles['indicator-bar']} ${idx === currentSlide ? styles['active-indicator'] : ''}`}
+              aria-label={`Go to slide ${idx + 1}`}
+            >
+              <div className={styles['indicator-progress-fill']}></div>
+            </button>
+          ))}
         </div>
       </section>
 

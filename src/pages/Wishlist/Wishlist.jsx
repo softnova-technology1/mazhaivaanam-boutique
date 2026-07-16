@@ -220,7 +220,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                       onClick={() => handleRemoveFromWishlist(item.id, item.name)}
                       title="Remove from Wishlist"
                     >
-                      <Heart size={16} fill="#490017" stroke="#490017" />
+                      <Heart size={16} fill="var(--primary)" stroke="var(--primary)" />
                     </button>
 
                     {/* Quick Add Overlay */}

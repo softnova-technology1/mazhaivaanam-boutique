@@ -232,7 +232,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       {wishlistMessage && (
         <div className="wishlist-toast-banner" style={{
           position: 'fixed', top: '130px', right: '30px',
-          backgroundColor: '#490017', color: '#ffffff',
+          backgroundColor: 'var(--primary)', color: '#ffffff',
           padding: '12px 24px', zIndex: 10000,
           fontFamily: 'Inter, sans-serif', fontSize: '12px',
           letterSpacing: '1px', borderLeft: '3px solid #C8A34D'
@@ -445,7 +445,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
           {products.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px 0', fontFamily: 'Inter, sans-serif' }}>
-              <h3 style={{ color: '#490017', fontFamily: 'Playfair Display, Georgia, serif', fontSize: '20px' }}>No masterpieces match your filters.</h3>
+              <h3 style={{ color: 'var(--primary)', fontFamily: 'Playfair Display, Georgia, serif', fontSize: '20px' }}>No masterpieces match your filters.</h3>
               <p style={{ color: '#7D756D', margin: '10px 0 20px 0' }}>Try adjusting your sidebar criteria or click Reset All.</p>
               <button className={styles['reset-all-btn']} style={{ width: 'auto', padding: '12px 30px' }} onClick={handleResetFilters}>
                 Reset Filters
@@ -490,8 +490,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         {product.name}
                       </h4>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '10px' }}>
-                        <Star size={12} fill="#C8A34D" stroke="#C8A34D" />
-                        <span style={{ fontSize: '12px', fontFamily: 'Inter, sans-serif', fontWeight: 600, color: '#490017' }}>
+                        <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+                        <span style={{ fontSize: '12px', fontFamily: 'Inter, sans-serif', fontWeight: 600, color: 'var(--primary)' }}>
                           {product.rating.toFixed(1)}
                         </span>
                       </div>

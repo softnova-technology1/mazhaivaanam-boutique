@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
+import { useAuth } from '../../../hooks/useAuth';
 import { formatCurrency } from '../../../utils/formatters';
 import styles from './Navbar.module.css';
 
 export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
   const { cart, removeFromCart, updateQuantity, cartTotal, cartItemCount, addToCart } = useCart();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -205,7 +207,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               >
                 <button 
                   className={styles.iconCircle} 
-                  onClick={() => handleTabChange('login')}
+                  onClick={() => handleTabChange(isAuthenticated ? 'my-orders' : 'login')}
                   aria-label="Account"
                 >
                   <User size={18} strokeWidth={1.5} />
@@ -214,13 +216,24 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                 {/* Account dropdown */}
                 {isAccountOpen && (
                   <div className={styles.accountDropdown}>
-                    <button onClick={() => handleTabChange('login')} className={styles.dropdownLink}>My Profile</button>
-                    <button onClick={() => handleTabChange('login')} className={styles.dropdownLink}>My Orders</button>
-                    <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Wishlist</button>
-                    <button onClick={() => handleTabChange('login')} className={styles.dropdownLink}>Saved Address</button>
-                    <button onClick={() => handleTabChange('login')} className={styles.dropdownLink}>Gift Cards</button>
-                    <div className={styles.dropdownDivider}></div>
-                    <button onClick={() => handleTabChange('login')} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>Logout</button>
+                    {isAuthenticated ? (
+                      <>
+                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>My Profile</button>
+                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>My Orders</button>
+                        <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Wishlist</button>
+                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Saved Address</button>
+                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Gift Cards</button>
+                        <div className={styles.dropdownDivider}></div>
+                        <button onClick={() => { logout(); handleTabChange('shop'); setIsAccountOpen(false); }} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>Logout</button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => { handleTabChange('login'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Sign In</button>
+                        <button onClick={() => { handleTabChange('login'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Register</button>
+                        <div className={styles.dropdownDivider}></div>
+                        <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Wishlist</button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -322,6 +335,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('contact')} className={styles.menuLink}>Contact</button>
+              </li>
+              <li className={styles.menuItem}>
+                <button onClick={() => handleTabChange('support')} className={`${styles.menuLink} ${currentTab === 'support' ? styles.active : ''}`}>Support</button>
               </li>
             </ul>
           </div>

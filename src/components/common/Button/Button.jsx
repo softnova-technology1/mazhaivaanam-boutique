@@ -1,4 +1,4 @@
-import './Button.css';
+import styles from './Button.module.css';
 
 export const Button = ({ 
   children, 
@@ -9,15 +9,18 @@ export const Button = ({
   loading = false,
   className = ''
 }) => {
+  const variantClass = styles[`btn-${variant}`] || '';
+  const loadingClass = loading ? styles['btn-loading'] : '';
+
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`btn btn-${variant} ${loading ? 'btn-loading' : ''} ${className}`}
+      className={`${styles.btn} ${variantClass} ${loadingClass} ${className}`}
     >
       {loading ? (
-        <span className="btn-spinner"></span>
+        <span className={styles['btn-spinner']}></span>
       ) : (
         children
       )}

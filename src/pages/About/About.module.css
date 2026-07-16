@@ -1,0 +1,227 @@
+/* ==========================================================================
+   ABOUT PAGE STYLING
+   ========================================================================== */
+.about-page-container {
+  background-color: #faf9f6;
+  padding-bottom: 80px;
+}
+
+.about-hero {
+  position: relative;
+  background-image: url('https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=80');
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.about-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(43, 12, 17, 0.7); /* Luxury burgundy tint */
+}
+
+.about-hero-content {
+  position: relative;
+  z-index: 2;
+  color: #F8F4EE;
+  padding: 0 20px;
+}
+
+.about-subtitle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #B88A44;
+  text-transform: uppercase;
+}
+
+.about-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3rem;
+  font-weight: 400;
+  margin: 12px 0;
+  letter-spacing: 2px;
+}
+
+.about-tagline {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.about-story {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.story-text h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
+  color: #2B0C11;
+  margin: 12px 0 24px 0;
+}
+
+.story-text p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #5D554D;
+  margin-bottom: 20px;
+}
+
+.story-image-wrapper {
+  position: relative;
+}
+
+.story-img {
+  width: 100%;
+  height: 480px;
+  object-fit: cover;
+  border-radius: 4px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.story-img-frame {
+  position: absolute;
+  top: 20px;
+  left: -20px;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #B88A44;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.craft-pillars-section {
+  background-color: #ECE5DC;
+  padding: 80px 0;
+}
+
+.center-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 50px auto;
+}
+
+.center-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
+  color: #2B0C11;
+  margin: 12px 0;
+}
+
+.section-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  color: #5D554D;
+}
+
+.craft-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.craft-card {
+  background-color: #faf9f6;
+  padding: 40px 30px;
+  border-radius: 4px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+  transition: transform 0.3s ease;
+}
+
+.craft-card:hover {
+  transform: translateY(-5px);
+}
+
+.craft-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: rgba(184, 138, 68, 0.3);
+  display: block;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.craft-card h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.3rem;
+  color: #2B0C11;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.craft-card p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #7D756D;
+}
+
+.weaver-commitment {
+  padding: 80px 0;
+}
+
+.commitment-banner {
+  background-image: linear-gradient(to right, rgba(43, 12, 17, 0.95), rgba(43, 12, 17, 0.7)), url('https://images.unsplash.com/photo-1610030469668-93535c17b6b3?auto=format&fit=crop&w=1200&q=80');
+  background-size: cover;
+  background-position: center;
+  padding: 80px;
+  border-radius: 6px;
+  color: #F8F4EE;
+}
+
+.commitment-text {
+  max-width: 600px;
+}
+
+.commitment-text h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+}
+
+.commitment-text p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  opacity: 0.9;
+}
+
+/* Responsiveness overrides */
+@media (max-width: 992px) {
+  .story-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .craft-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .commitment-banner {
+    padding: 40px;
+  }
+  
+  .about-title {
+    font-size: 2.2rem;
+  }
+}

@@ -1,0 +1,57 @@
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 300px);
+  padding: 80px 0;
+}
+
+.login-card {
+  max-width: 420px;
+  width: 100%;
+  padding: 50px 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(157, 28, 76, 0.1);
+  text-align: center;
+}
+
+.login-card h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
+  color: #2B0C11;
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+.auth-error-alert {
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #b91c1c;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.login-submit-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 2px;
+}

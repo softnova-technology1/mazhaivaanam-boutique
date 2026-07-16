@@ -1,0 +1,172 @@
+/* ==========================================================================
+   CONTACT PAGE STYLING
+   ========================================================================== */
+.contact-page-container {
+  background-color: #faf9f6;
+  padding-bottom: 80px;
+}
+
+.contact-hero {
+  background-color: #ECE5DC;
+  padding: 60px 0;
+  text-align: center;
+  border-bottom: 1px solid #E5DDD3;
+}
+
+.contact-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.5rem;
+  color: #2B0C11;
+  margin: 12px 0;
+}
+
+.contact-subtitle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #B88A44;
+}
+
+.contact-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  color: #7D756D;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-main {
+  padding-top: 60px;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 50px;
+}
+
+.contact-form-block {
+  padding: 40px;
+  background-color: #FFFFFF;
+}
+
+.contact-form-block h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.8rem;
+  color: #2B0C11;
+  margin-bottom: 30px;
+}
+
+.premium-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.contact-submit-btn {
+  padding: 14px;
+  background-color: #2B0C11;
+  color: #FFFFFF;
+  border: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.contact-submit-btn:hover {
+  background-color: #8B2332;
+}
+
+.form-success-banner {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: rgba(184, 138, 68, 0.05);
+  border: 1px dashed #B88A44;
+  border-radius: 4px;
+}
+
+.form-success-banner h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: #B88A44;
+  margin-bottom: 12px;
+}
+
+.form-success-banner p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  color: #5D554D;
+  line-height: 1.6;
+}
+
+.flagship-stores-block h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.8rem;
+  color: #2B0C11;
+  margin: 12px 0 30px 0;
+}
+
+.store-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.store-card {
+  background-color: #FFFFFF;
+  padding: 24px;
+  border-radius: 4px;
+  border: 1px solid #E5DDD3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.store-card h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.3rem;
+  color: #2B0C11;
+  font-weight: 600;
+  margin: 0;
+}
+
+.store-card p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  color: #5D554D;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.store-phone, .store-hours {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  color: #7D756D;
+}
+
+/* Responsiveness overrides */
+@media (max-width: 992px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { Button } from '../components/common/Button';
-import './Pages.css';
+import { useAuth } from '../../hooks/useAuth';
+import { Button } from '../../components/common/Button/Button';
+import styles from './Login.module.css';
 
 export const Login = ({ setCurrentTab }) => {
   const { login } = useAuth();
@@ -28,14 +28,14 @@ export const Login = ({ setCurrentTab }) => {
   };
 
   return (
-    <div className="page login-page container">
-      <div className="login-card glass-card">
+    <div className={`${styles['login-page']} container`}>
+      <div className={`${styles['login-card']} glass-card`}>
         <h2>Welcome Back</h2>
-        <p className="login-subtitle">Sign in to your Shanmathi Boutique account</p>
+        <p className={styles['login-subtitle']}>Sign in to your Shanmathi Boutique account</p>
 
-        {error && <div className="auth-error-alert">{error}</div>}
+        {error && <div className={styles['auth-error-alert']}>{error}</div>}
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className={styles['login-form']}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
             <input
@@ -64,7 +64,7 @@ export const Login = ({ setCurrentTab }) => {
             type="submit" 
             variant="primary" 
             loading={loading}
-            className="login-submit-btn"
+            className={styles['login-submit-btn']}
           >
             Sign In
           </Button>

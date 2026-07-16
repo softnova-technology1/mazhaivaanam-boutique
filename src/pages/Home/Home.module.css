@@ -1,0 +1,870 @@
+/* ==========================================================================
+   MAZHAI VAANAM HOMEPAGE STYLING
+   ========================================================================== */
+
+.home-wrapper {
+  background-color: #fcf9f8;
+  color: #1c1b1b;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Shimmer animation keyframes */
+@keyframes shimmerEffect {
+  0% { transform: translateX(-150%) skewX(-25deg); }
+  100% { transform: translateX(150%) skewX(-25deg); }
+}
+
+/* 1. Hero Section */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  background-image: url('../../assets/images/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  color: #FFFFFF;
+}
+
+.hero-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(0deg, rgba(73, 0, 23, 0.5) 0%, rgba(28, 27, 27, 0) 60%);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 80px 80px 96px 80px;
+}
+
+.hero-content h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 72px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  max-width: 750px;
+}
+
+.hero-content p {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 32px;
+  max-width: 680px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.btn-explore {
+  background-color: #6B102A;
+  color: #FFFFFF;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 16px 32px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.btn-explore:hover {
+  background-color: #C8A34D;
+}
+
+.btn-custom {
+  background: transparent;
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 16px 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: #FFFFFF;
+  color: #490017;
+}
+
+/* 2. Stats Section */
+.stats-section {
+  background-color: #fcf9f8;
+  padding: 80px 0;
+  border-bottom: 1px solid #F0E6D2;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: center;
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stats-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 48px;
+  color: #490017;
+}
+
+.stats-star-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.star-icon {
+  color: #775a04;
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.stats-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #554244;
+}
+
+/* 3. Curation of Craft */
+.curation-section {
+  padding: 120px 80px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.curation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 48px;
+  border-bottom: 1px solid #F0E6D2;
+  padding-bottom: 24px;
+}
+
+.curation-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: #1c1b1b;
+  margin: 0;
+}
+
+.view-all-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #490017;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.curation-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+}
+
+.curation-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #f0eded;
+}
+
+.curation-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s ease;
+}
+
+.curation-card:hover img {
+  transform: scale(1.06);
+}
+
+.curation-large {
+  height: 600px;
+}
+
+.curation-right-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.curation-small {
+  height: 284px;
+}
+
+.curation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(360deg, rgba(28, 27, 27, 0.6) 0%, rgba(28, 27, 27, 0.1) 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 40px;
+  color: #FFFFFF;
+}
+
+.curation-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.curation-overlay h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 48px;
+  font-weight: 400;
+  margin: 0 0 16px 0;
+}
+
+.shop-link {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #FFFFFF;
+  border-bottom: 1px solid #FFFFFF;
+  padding-bottom: 4px;
+  width: fit-content;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.shop-link:hover {
+  color: #C8A34D;
+  border-color: #C8A34D;
+}
+
+.curation-small h3 {
+  font-size: 24px;
+  margin: 0;
+}
+
+/* 4. The Best Sellers */
+.bestsellers-section {
+  padding: 120px 80px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.section-header-center {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.section-label-small {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  color: #775a04;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.section-header-center h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: #1c1b1b;
+  margin: 0;
+}
+
+/* 5. The Bridal Edit */
+.bridal-edit-section {
+  background-color: #fcf9f8;
+  border-top: 1px solid #F0E6D2;
+  border-bottom: 1px solid #F0E6D2;
+  box-shadow: 0 0 40px rgba(200, 163, 77, 0.1);
+  overflow: hidden;
+}
+
+.bridal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 700px;
+}
+
+.bridal-image-pane {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.shimmer-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(200, 163, 77, 0) 0%,
+    rgba(200, 163, 77, 0.2) 50%,
+    rgba(200, 163, 77, 0) 100%
+  );
+  animation: shimmerEffect 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.bridal-image-pane img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bridal-image-pane:hover img {
+  transform: scale(1.05);
+}
+
+.bridal-text-pane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px;
+  background-color: #fcf9f8;
+  position: relative;
+}
+
+.bridal-text-content {
+  max-width: 576px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.bridal-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  color: #C8A34D;
+  text-transform: uppercase;
+  display: block;
+}
+
+.bridal-text-content h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 72px;
+  font-weight: 400;
+  color: #6B102A;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.gold-divider {
+  width: 80px;
+  height: 2px;
+  background-color: #C8A34D;
+}
+
+.bridal-quote {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.7;
+  color: #554244;
+  margin: 0;
+}
+
+.btn-bridal-explore {
+  align-self: flex-start;
+  background-color: #6B102A;
+  color: #FFFFFF;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  padding: 20px 48px;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.btn-bridal-explore:hover {
+  background-color: #C8A34D;
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.decor-box {
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 192px;
+  height: 192px;
+  border-right: 1px solid rgba(200, 163, 77, 0.2);
+  border-bottom: 1px solid rgba(200, 163, 77, 0.2);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* 6. Our Story */
+.story-section {
+  padding: 120px 80px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 96px;
+  align-items: center;
+}
+
+.story-image-pane {
+  position: relative;
+  border: 1px solid #F0E6D2;
+  padding: 16px;
+}
+
+.story-image-pane img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.story-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  color: #775a04;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.story-text-pane h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: #490017;
+  margin: 0 0 32px 0;
+  line-height: 1.25;
+}
+
+.story-quote-italic {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.7;
+  color: #554244;
+  margin-bottom: 32px;
+}
+
+.story-text-pane p {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 2;
+  color: #554244;
+  margin-bottom: 32px;
+}
+
+.btn-meet-artisans {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: none;
+  border: none;
+  color: #490017;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.btn-meet-artisans:hover {
+  color: #775a04;
+}
+
+.arrow-icon {
+  transition: transform 0.3s ease;
+}
+
+.btn-meet-artisans:hover .arrow-icon {
+  transform: translateX(8px);
+}
+
+/* 7. Why Choose */
+.values-section {
+  background-color: #fcf9f8;
+  padding: 120px 0;
+  border-top: 1px solid #F0E6D2;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: center;
+}
+
+.values-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px;
+  gap: 16px;
+}
+
+.value-icon {
+  font-size: 36px;
+  color: #775a04;
+  margin-bottom: 16px;
+}
+
+.values-item h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #1c1b1b;
+  margin: 0;
+}
+
+.values-item p {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #554244;
+  line-height: 1.6;
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* 8. Testimonials & Instagram */
+.worn-with-love-section {
+  padding: 120px 80px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.instagram-hashtag {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #775a04;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 16px;
+}
+
+.social-grid {
+  column-count: 3;
+  column-gap: 32px;
+  margin-top: 64px;
+}
+
+.social-grid > div {
+  break-inside: avoid;
+  margin-bottom: 32px;
+}
+
+.social-text-card {
+  background-color: #f6f3f2;
+  border: 1px solid #F0E6D2;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.social-text-card p {
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1c1b1b;
+  margin: 0;
+}
+
+.social-user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ffd9dd; /* soft primary-fixed */
+}
+
+.social-author {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #1c1b1b;
+  display: block;
+}
+
+.social-role {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #554244;
+  display: block;
+}
+
+.social-img-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.social-img-card img {
+  width: 100%;
+  display: block;
+  transition: transform 0.7s ease;
+}
+
+.social-img-card:hover img {
+  transform: scale(1.08);
+}
+
+.social-dark-card {
+  background-color: #490017; /* Primary deep burgundy */
+  border-color: #490017;
+  color: #FFFFFF;
+}
+
+.social-dark-card p {
+  color: #FFFFFF;
+}
+
+.user-avatar-gold {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #775a04;
+}
+
+.social-author-white {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #FFFFFF;
+  display: block;
+}
+
+.social-role-gold {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #ffd9dd;
+  opacity: 0.7;
+  display: block;
+}
+
+/* 9. Newsletter Block */
+.newsletter-section {
+  padding-bottom: 120px;
+}
+
+.newsletter-box {
+  background-color: #f0eded; /* surface-container */
+  border-top: 1px solid #F0E6D2;
+  border-bottom: 1px solid #F0E6D2;
+  padding: 80px 40px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.newsletter-box h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: #1c1b1b;
+  margin-bottom: 24px;
+}
+
+.newsletter-box p {
+  color: #554244;
+  font-size: 16px;
+  opacity: 0.8;
+  max-width: 500px;
+  margin: 0 auto 40px auto;
+  line-height: 1.6;
+}
+
+.newsletter-form {
+  display: flex;
+  max-width: 600px;
+  margin: 0 auto;
+  gap: 16px;
+}
+
+.newsletter-form input {
+  flex-grow: 1;
+  padding: 16px 0;
+  border: none;
+  border-bottom: 1px solid #775a04;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  background-color: transparent;
+  color: #1c1b1b;
+}
+
+.newsletter-form input::placeholder {
+  color: rgba(85, 66, 68, 0.4);
+}
+
+.newsletter-form button {
+  background-color: #6B102A;
+  color: #FFFFFF;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  padding: 16px 40px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.newsletter-form button:hover {
+  background-color: #C8A34D;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .hero-content h1 {
+    font-size: 44px;
+  }
+  
+  .curation-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bridal-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .story-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  
+  .social-grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  
+  .social-grid {
+    column-count: 1;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-content {
+    padding: 80px 20px 48px 20px;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .newsletter-form button {
+    padding: 16px;
+  }
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import './Pages.css';
+import styles from './Lookbook.module.css';
 
 export const Lookbook = ({ setCurrentTab }) => {
   const editorialCampaigns = [
@@ -16,7 +16,7 @@ export const Lookbook = ({ setCurrentTab }) => {
       id: 2,
       title: "Varanasi Whisperings",
       collection: "Authentic Banarasi Brocades",
-      tagline: "Fine pure silk weave patterns depicting ancient Mughal architecture details.",
+      tagline: "Fine pure silk weave patterns depicting ancient heritage architecture details.",
       imageLeft: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=500&q=80",
       imageRight: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=500&q=80",
       colorTheme: "#C97044"
@@ -33,15 +33,15 @@ export const Lookbook = ({ setCurrentTab }) => {
   ];
 
   return (
-    <div className="lookbook-page-container">
+    <div className={styles['lookbook-page-container']}>
       {/* 1. Page Header */}
-      <section className="lookbook-hero">
-        <span className="lookbook-meta">EDITORIAL EDIT</span>
-        <h1 className="lookbook-title">Aaranya Chronicles</h1>
-        <p className="lookbook-lead">Explore our curated seasonal campaigns, blending legacy techniques with modern drapes.</p>
-        <div className="lookbook-scroll-indicator">
+      <section className={styles['lookbook-hero']}>
+        <span className={styles['lookbook-meta']}>EDITORIAL EDIT</span>
+        <h1 className={styles['lookbook-title']}>Aaranya Chronicles</h1>
+        <p className={styles['lookbook-lead']}>Explore our curated seasonal campaigns, blending legacy techniques with modern drapes.</p>
+        <div className={styles['lookbook-scroll-indicator']}>
           <span>SCROLL DOWN</span>
-          <div className="scroll-line"></div>
+          <div className={styles['scroll-line']}></div>
         </div>
       </section>
 
@@ -49,29 +49,29 @@ export const Lookbook = ({ setCurrentTab }) => {
       {editorialCampaigns.map((camp, idx) => (
         <section 
           key={camp.id} 
-          className={`lookbook-block ${idx % 2 === 1 ? 'row-reverse' : ''}`}
+          className={`${styles['lookbook-block']} ${idx % 2 === 1 ? styles['row-reverse'] : ''}`}
           style={{ '--camp-theme': camp.colorTheme }}
         >
-          <div className="container lookbook-grid">
-            <div className="lookbook-images">
-              <div className="img-frame-main">
-                <img src={camp.imageLeft} alt={camp.title} className="camp-img-1" />
+          <div className={`container ${styles['lookbook-grid']}`}>
+            <div className={styles['lookbook-images']}>
+              <div className={styles['img-frame-main']}>
+                <img src={camp.imageLeft} alt={camp.title} />
               </div>
-              <div className="img-frame-sub">
-                <img src={camp.imageRight} alt={camp.title} className="camp-img-2" />
+              <div className={styles['img-frame-sub']}>
+                <img src={camp.imageRight} alt={camp.title} />
               </div>
             </div>
             
-            <div className="lookbook-text">
-              <span className="camp-collection">{camp.collection}</span>
+            <div className={styles['lookbook-text']}>
+              <span className={styles['camp-collection']}>{camp.collection}</span>
               <h2>{camp.title}</h2>
               <p>{camp.tagline}</p>
-              <p className="camp-body">
+              <p className={styles['camp-body']}>
                 Woven over 240 hours using ancient jacquard cards, each border tells a story of local fauna, floral temple reliefs, and traditional motifs. Perfectly balanced with weight and high gold density.
               </p>
               <button 
                 onClick={() => setCurrentTab('shop')} 
-                className="lookbook-shop-btn"
+                className={styles['lookbook-shop-btn']}
               >
                 Shop Campaign
               </button>
@@ -81,12 +81,12 @@ export const Lookbook = ({ setCurrentTab }) => {
       ))}
 
       {/* 3. Quote Block */}
-      <section className="lookbook-quote">
+      <section className={styles['lookbook-quote']}>
         <div className="container">
-          <p className="quote-text">
-            "A saree is not just an attire. It's a memory passed from a mother, a blessing woven by an artisan, and a drape that holds history."
+          <p className={styles['quote-text']}>
+            {"\"A saree is not just an attire. It's a memory passed from a mother, a blessing woven by an artisan, and a drape that holds history.\""}
           </p>
-          <span className="quote-author">— The Aaranya Loom Philosophy</span>
+          <span className={styles['quote-author']}>{"— The Aaranya Loom Philosophy"}</span>
         </div>
       </section>
     </div>

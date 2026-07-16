@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus } from 'lucide-react';
-import { useCart } from '../../hooks/useCart';
-import { formatCurrency } from '../../utils/formatters';
+import { useCart } from '../../../hooks/useCart';
+import { formatCurrency } from '../../../utils/formatters';
 import styles from './Navbar.module.css';
 
 export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
@@ -181,8 +181,8 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
 
             {/* Logo perfectly centered */}
             <div className={styles.centerLogo} onClick={() => handleTabChange('shop')}>
-              <h1 className={styles.brandTitle}>AARANYA</h1>
-              <span className={styles.brandSubtitle}>LUXURY SAREE HOUSE</span>
+              <h1 className={styles.brandTitle}>MAZHAI VAANAM</h1>
+              <span className={styles.brandSubtitle}>HANDLOOM LUXURY</span>
             </div>
 
             {/* Right Side Icons */}
@@ -190,7 +190,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               {/* Wishlist Icon */}
               <button 
                 className={styles.iconCircle} 
-                onClick={() => setIsWishlistOpen(true)}
+                onClick={() => handleTabChange('wishlist')}
                 aria-label="Wishlist"
               >
                 <Heart size={18} strokeWidth={1.5} />
@@ -216,7 +216,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                   <div className={styles.accountDropdown}>
                     <button onClick={() => handleTabChange('login')} className={styles.dropdownLink}>My Profile</button>
                     <button onClick={() => handleTabChange('login')} className={styles.dropdownLink}>My Orders</button>
-                    <button onClick={() => { setIsWishlistOpen(true); setIsAccountOpen(false); }} className={styles.dropdownLink}>Wishlist</button>
+                    <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Wishlist</button>
                     <button onClick={() => handleTabChange('login')} className={styles.dropdownLink}>Saved Address</button>
                     <button onClick={() => handleTabChange('login')} className={styles.dropdownLink}>Gift Cards</button>
                     <div className={styles.dropdownDivider}></div>
@@ -245,7 +245,10 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
           <div className={`${styles.container} ${styles.bottomContainer}`}>
             <ul className={styles.menuList}>
               <li className={styles.menuItem}>
-                <button onClick={() => handleTabChange('shop')} className={styles.menuLink}>Home</button>
+                <button onClick={() => handleTabChange('shop')} className={`${styles.menuLink} ${currentTab === 'shop' ? styles.active : ''}`}>Home</button>
+              </li>
+              <li className={styles.menuItem}>
+                <button onClick={() => handleCatalogClick()} className={`${styles.menuLink} ${currentTab === 'catalog' ? styles.active : ''}`}>Shop</button>
               </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleCatalogClick('Bridal Collection')} className={styles.menuLink}>New Arrivals</button>
@@ -498,7 +501,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
         <div className={styles.drawerOverlay} onClick={() => setIsMobileMenuOpen(false)}>
           <div className={styles.drawer} onClick={(e) => e.stopPropagation()}>
             <div className={styles.drawerHeader}>
-              <span className={styles.drawerLogo}>AARANYA</span>
+              <span className={styles.drawerLogo}>MAZHAI VAANAM</span>
               <button 
                 className={styles.closeBtn} 
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -511,6 +514,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
             <ul className={styles.drawerList}>
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('shop')} className={styles.drawerLink}>Home</button>
+              </li>
+              <li className={styles.drawerItem}>
+                <button onClick={() => handleCatalogClick()} className={styles.drawerLink}>Shop</button>
               </li>
               <li className={styles.drawerItem}>
                 <button onClick={() => handleCatalogClick('Bridal Collection')} className={styles.drawerLink}>New Arrivals</button>
@@ -559,6 +565,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               </li>
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('lookbook')} className={styles.drawerLink}>Lookbook</button>
+              </li>
+              <li className={styles.drawerItem}>
+                <button onClick={() => handleTabChange('wishlist')} className={styles.drawerLink}>Wishlist</button>
               </li>
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('about')} className={styles.drawerLink}>About</button>

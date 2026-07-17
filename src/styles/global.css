@@ -223,3 +223,37 @@ button:hover {
   transition: background-color 0.3s ease;
 }
 
+/* Enforce Kaushan Script font on all hero section titles and tags across all pages */
+[class*="hero"] h1,
+[class*="heroTitle"],
+[class*="hero-slide-tag"],
+[class*="heroCategoryTag"],
+[class*="hero-text"] h1,
+.hero-content h1 {
+  font-family: 'Kaushan Script', cursive !important;
+  font-weight: 400 !important;
+  letter-spacing: 0px !important; /* Cursive fonts should not have wide letter spacing */
+  text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8) !important; /* Black text shadow for readability */
+}
+
+/* We removed the global .hero override here because CSS modules rename classes.
+   Specific hero files will have their heights adjusted individually. */
+
+/* Hero Text Animation (Matches About Page) */
+@keyframes globalHeroFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Apply animation to all hero headings, subtitles, and paragraphs */
+[class*="hero"] h1,
+[class*="heroTitle"],
+[class*="hero-slide-tag"],
+[class*="heroCategoryTag"],
+[class*="hero-text"] h1,
+.hero-content h1,
+[class*="hero"] p,
+.heroSubtitle,
+.hero-content p {
+  animation: globalHeroFadeIn 1s ease-out forwards !important;
+}

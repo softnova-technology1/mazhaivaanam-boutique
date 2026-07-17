@@ -14,15 +14,17 @@
   height: 600px;
   display: flex;
   align-items: center;
+  justify-content: center;
   overflow: hidden;
   background-color: #000000;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: url('/Images/saree6');
+  background-image: url('/Images/saree7.png');
   background-size: cover;
   background-position: center;
   transition: transform 20s cubic-bezier(0.22, 1, 0.36, 1);
@@ -36,7 +38,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 1;
 }
 
@@ -48,13 +50,21 @@
   margin: 0 auto;
   padding: 0 80px;
   color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .hero-text-box {
   max-width: 650px;
+  margin: 0 auto;
   opacity: 0;
   transform: translateY(20px);
   animation: silkFadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero-text-box h1 {

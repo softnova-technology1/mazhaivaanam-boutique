@@ -183,7 +183,11 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
 
             {/* Logo perfectly centered */}
             <div className={styles.centerLogo} onClick={() => handleTabChange('shop')}>
-              <h1 className={styles.brandTitle}>MAZHAI VAANAM</h1>
+              <h1 className={styles.brandTitle}>
+                MAZHAI 
+                <img src="/logo" alt="logo" className={styles.brandLogoIcon} />
+                VANAM
+              </h1>
               <span className={styles.brandSubtitle}>HANDLOOM LUXURY</span>
             </div>
 
@@ -264,12 +268,12 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                 <button onClick={() => handleCatalogClick()} className={`${styles.menuLink} ${currentTab === 'catalog' ? styles.active : ''}`}>Shop</button>
               </li>
               <li className={styles.menuItem}>
-                <button onClick={() => handleCatalogClick('Bridal Collection')} className={styles.menuLink}>New Arrivals</button>
+                <button onClick={() => handleTabChange('new-arrivals')} className={`${styles.menuLink} ${currentTab === 'new-arrivals' ? styles.active : ''}`}>New Arrivals</button>
               </li>
               
               {/* Collections Mega Menu hover trigger */}
               <li className={`${styles.menuItem} ${styles.hasMegaMenu}`}>
-                <button className={styles.menuLink}>Collections ▼</button>
+                <button onClick={() => handleTabChange('collections')} className={`${styles.menuLink} ${currentTab === 'collections' ? styles.active : ''}`}>Collections ▼</button>
                 <div className={styles.megaMenuPanel}>
                   <div className={styles.megaMenuContainer}>
                     <div className={styles.megaMenuGrid}>
@@ -316,7 +320,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               
               {/* Occasions dropdown */}
               <li className={`${styles.menuItem} ${styles.hasDropdown}`}>
-                <button className={styles.menuLink}>Occasions ▼</button>
+                <button onClick={() => handleTabChange('occasions')} className={`${styles.menuLink} ${currentTab === 'occasions' ? styles.active : ''}`}>Occasions ▼</button>
                 <div className={styles.dropdownPanel}>
                   {occasionsList.map(item => (
                     <button key={item.link} onClick={() => handleCatalogClick('', item.label)} className={styles.dropdownPanelLink}>{item.label}</button>
@@ -325,7 +329,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               </li>
 
               <li className={styles.menuItem}>
-                <button onClick={() => handleCatalogClick('Handloom Collection')} className={styles.menuLink}>Best Sellers</button>
+                <button onClick={() => handleTabChange('best-sellers')} className={`${styles.menuLink} ${currentTab === 'best-sellers' ? styles.active : ''}`}>Best Sellers</button>
               </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('limited-offer')} className={`${styles.menuLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
@@ -338,9 +342,6 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('contact')} className={styles.menuLink}>Contact</button>
-              </li>
-              <li className={styles.menuItem}>
-                <button onClick={() => handleTabChange('support')} className={`${styles.menuLink} ${currentTab === 'support' ? styles.active : ''}`}>Support</button>
               </li>
             </ul>
           </div>

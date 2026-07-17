@@ -138,7 +138,19 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [selectedColor, setSelectedColor] = useState('All');
   const [selectedOccasion, setSelectedOccasion] = useState('All');
   const [selectedSort, setSelectedSort] = useState('featured');
-  const [wishlistMessage, setWishlistMessage] = useState('');
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem('boutique_wishlist');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    const checkWishlist = () => {
+      const saved = localStorage.getItem('boutique_wishlist');
+      if (saved) setWishlist(JSON.parse(saved));
+    };
+    window.addEventListener('storage', checkWishlist);
+    return () => window.removeEventListener('storage', checkWishlist);
+  }, []);
 
   const handleProductClick = (product) => {
     if (setSelectedProduct && setCurrentTab) {
@@ -201,17 +213,20 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const handleAddToWishlist = (product) => {
     const saved = localStorage.getItem('boutique_wishlist');
     let wishlistItems = saved ? JSON.parse(saved) : [];
+    const isWishlisted = wishlistItems.some(w => w.id === product.id);
     
-    if (!wishlistItems.find(w => w.id === product.id)) {
+    if (isWishlisted) {
+      // Toggle off
+      wishlistItems = wishlistItems.filter(w => w.id !== product.id);
+      localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
+      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Removed "${product.name}" from Wishlist` } }));
+    } else {
+      // Toggle on
       wishlistItems.push(product);
       localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
       window.dispatchEvent(new Event('storage'));
-      
-      setWishlistMessage(`"${product.name}" added to Wishlist!`);
-      setTimeout(() => setWishlistMessage(''), 3000);
-    } else {
-      setWishlistMessage(`"${product.name}" is already in Wishlist.`);
-      setTimeout(() => setWishlistMessage(''), 3000);
+      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Saved "${product.name}" to Wishlist!` } }));
     }
   };
 
@@ -228,18 +243,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
   return (
     <div className={styles['catalog-page-container']}>
-      {/* Toast Feedback */}
-      {wishlistMessage && (
-        <div className="wishlist-toast-banner" style={{
-          position: 'fixed', top: '130px', right: '30px',
-          backgroundColor: 'var(--primary)', color: '#ffffff',
-          padding: '12px 24px', zIndex: 10000,
-          fontFamily: 'Inter, sans-serif', fontSize: '12px',
-          letterSpacing: '1px', borderLeft: '3px solid #C8A34D'
-        }}>
-          <span>{wishlistMessage}</span>
-        </div>
-      )}
 
       {/* 1. Hero Section */}
       <header className={styles['hero-section']}>
@@ -454,67 +457,89 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
           ) : (
             <>
               <div className={styles['products-grid']}>
-                {products.map((product) => (
-                  <div key={product.id} className={styles['product-card']}>
-                    {product.oldPrice && (
-                      <span className={styles['offer-badge']}>
-                        <span className={styles['offer-value']}>{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%</span>
-                        <span className={styles['offer-text']}>OFF</span>
-                      </span>
-                    )}
-                    <div 
-                      className={styles['image-container']} 
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleProductClick(product)}
-                    >
-                      <img src={product.image} alt={product.name} loading="lazy" />
-                      {product.tag && (
-                        <span className={styles['badge-tag']}>{product.tag}</span>
+                {products.map((product) => {
+                  const isWishlisted = wishlist.some(w => w.id === product.id);
+                  return (
+                    <div key={product.id} className={styles['product-card']}>
+                      {product.oldPrice && (
+                        <span className={styles['offer-badge']}>
+                          <span className={styles['offer-value']}>{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%</span>
+                          <span className={styles['offer-text']}>OFF</span>
+                        </span>
                       )}
-                      <button 
-                        className={styles['wishlist-btn']} 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAddToWishlist(product);
-                        }}
-                        title="Add to Wishlist"
-                      >
-                        <Heart size={16} />
-                      </button>
-                    </div>
-                    <div className={styles['card-details']}>
-                      <h4 
-                        style={{ cursor: 'pointer' }} 
+                      <div 
+                        className={styles['image-container']} 
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleProductClick(product)}
                       >
-                        {product.name}
-                      </h4>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '10px' }}>
-                        <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-                        <span style={{ fontSize: '12px', fontFamily: 'Inter, sans-serif', fontWeight: 600, color: 'var(--primary)' }}>
-                          {product.rating.toFixed(1)}
-                        </span>
-                      </div>
-                      <div className={styles['price-row']}>
-                        <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                        {product.oldPrice && (
-                          <>
-                            <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
-                            <span className={styles['discount-pill']}>
-                              {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
-                            </span>
-                          </>
+                        <img src={product.image} alt={product.name} loading="lazy" />
+                        {product.tag && (
+                          <span className={styles['badge-tag']}>{product.tag}</span>
                         )}
+                        <div 
+                          className={styles['wishlist-btn']} 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToWishlist(product);
+                          }}
+                          role="button"
+                          title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                        >
+                          <Heart 
+                            size={16} 
+                            fill={isWishlisted ? "var(--primary-dark)" : "none"} 
+                            stroke="var(--primary-dark)" 
+                          />
+                        </div>
                       </div>
-                      <button 
-                        className={styles['add-cart-btn']}
-                        onClick={() => addToCart(product, 1)}
-                      >
-                        ADD TO CART
-                      </button>
+                      <div className={styles['card-details']}>
+                        <div className={styles['title-row']}>
+                          <h4 
+                            style={{ cursor: 'pointer' }} 
+                            onClick={() => handleProductClick(product)}
+                          >
+                            {product.name}
+                          </h4>
+                          {product.rating && (
+                            <div className={styles['rating-badge-inline']}>
+                              <Star size={10} fill="#B38A4A" stroke="#B38A4A" />
+                              <span>{product.rating.toFixed(1)}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Product Description */}
+                        {product.description && (
+                          <p className={styles['product-description']}>
+                            {product.description}
+                          </p>
+                        )}
+
+                        <div className={styles['price-row']}>
+                          <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
+                          {product.oldPrice && (
+                            <>
+                              <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                              <span className={styles['discount-pill']}>
+                                {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <button 
+                          className={styles['add-cart-btn']}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToCart(product, 1);
+                            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Cart!` } }));
+                          }}
+                        >
+                          ADD TO CART
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Pagination */}

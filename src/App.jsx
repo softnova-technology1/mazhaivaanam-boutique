@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Heart } from 'lucide-react';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { useCart } from './hooks/useCart';
@@ -21,6 +22,10 @@ import { Privacy } from './pages/Privacy/Privacy';
 import { Returns } from './pages/Returns/Returns';
 import { Terms } from './pages/Terms/Terms';
 import { LimitedOffer } from './pages/LimitedOffer/LimitedOffer';
+import { NewArrivals } from './pages/NewArrivals/NewArrivals';
+import { BestSellers } from './pages/BestSellers/BestSellers';
+import { Collections } from './pages/Collections/Collections';
+import { Occasions } from './pages/Occasions/Occasions';
 import './App.css';
 
 function AppContent() {
@@ -28,6 +33,25 @@ function AppContent() {
   const [catalogFilter, setCatalogFilter] = useState({ category: '', occasion: '', label: 'All Collections' });
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { cartItemCount } = useCart();
+  const [toastMessage, setToastMessage] = useState('');
+
+  // Listen for global toast alerts
+  useEffect(() => {
+    let timer;
+    const handleShowToast = (e) => {
+      setToastMessage(e.detail.message);
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        setToastMessage('');
+      }, 3000);
+    };
+
+    window.addEventListener('show-toast', handleShowToast);
+    return () => {
+      window.removeEventListener('show-toast', handleShowToast);
+      if (timer) clearTimeout(timer);
+    };
+  }, []);
 
   // Handle initial load and back/forward browser navigation
   useEffect(() => {
@@ -47,6 +71,7 @@ function AppContent() {
           setCurrentTab('shop');
         }
       } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms', 'limited-offer'].includes(path.substring(1))) {
+      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms', 'new-arrivals', 'best-sellers', 'collections', 'occasions'].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
         setCurrentTab('shop');
@@ -120,6 +145,14 @@ function AppContent() {
         return <Terms setCurrentTab={setCurrentTab} />;
       case 'limited-offer':
         return <LimitedOffer setCurrentTab={setCurrentTab} />;
+      case 'new-arrivals':
+        return <NewArrivals setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
+      case 'best-sellers':
+        return <BestSellers setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
+      case 'collections':
+        return <Collections setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
+      case 'occasions':
+        return <Occasions setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
       default:
         return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
     }
@@ -137,6 +170,32 @@ function AppContent() {
         {renderContent()}
       </main>
       <Footer setCurrentTab={setCurrentTab} />
+
+      {/* Global Toast Notification */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          bottom: '30px',
+          right: '30px',
+          backgroundColor: 'var(--primary-dark)',
+          color: '#ffffff',
+          padding: '12px 24px',
+          zIndex: 10005,
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '13px',
+          fontWeight: '600',
+          borderRadius: '8px',
+          boxShadow: '0 4px 20px rgba(79, 78, 34, 0.25)',
+          borderLeft: '4px solid var(--accent)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          pointerEvents: 'none'
+        }}>
+          <Heart size={14} fill="var(--accent)" stroke="var(--accent)" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 }

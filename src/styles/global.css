@@ -6,62 +6,62 @@
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
   /* Theme color mapping */
-  --primary: #7B8467;          /* Primary Sage Green */
-  --primary-light: #AEB49C;    /* Light Sage */
-  --primary-dark: #5F6652;     /* Dark Olive Green (Hover) */
-  --primary-container: #7B8467;
+  --primary: #929C7A;          /* Sage Green */
+  --primary-light: #FFBEA2;    /* Blush Peach */
+  --primary-dark: #4F4E22;     /* Deep Olive */
+  --primary-container: #929C7A;
   --on-primary: #FFFFFF;
   --on-primary-container: #FFFFFF;
   
-  --secondary: #B38A4A;        /* Gold Accent */
-  --secondary-container: #E7DDCE;
-  --secondary-fixed: #B38A4A;
-  --secondary-fixed-dim: #B38A4A;
-  --on-secondary: #FFFFFF;
-  --on-secondary-container: #3B3B36;
+  --secondary: #FFBEA2;        /* Blush Peach */
+  --secondary-container: #E9DDC7; /* Warm Sand */
+  --secondary-fixed: #FFBEA2;
+  --secondary-fixed-dim: #FFBEA2;
+  --on-secondary: #4F4E22;
+  --on-secondary-container: #4F4E22;
   
-  --tertiary: #AEB49C;         /* Light Sage */
-  --tertiary-container: #E7DDCE;
+  --tertiary: #929C7A;         /* Sage Green */
+  --tertiary-container: #E9DDC7;
   --on-tertiary: #FFFFFF;
-  --on-tertiary-container: #3B3B36;
+  --on-tertiary-container: #4F4E22;
 
-  --bg-main: #F7F3EB;          /* Cream Background */
-  --background: #F7F3EB;
-  --on-background: #3B3B36;
+  --bg-main: #FFF9EC;          /* Soft Cream */
+  --background: #FFF9EC;
+  --on-background: #4F4E22;
   
   --bg-surface: #FFFFFF;
-  --bg-surface-hover: #E7DDCE; /* Warm Beige */
+  --bg-surface-hover: #E9DDC7; /* Warm Sand */
   --surface: #FFFFFF;
-  --on-surface: #3B3B36;
-  --on-surface-variant: #5d5d56;
+  --on-surface: #4F4E22;
+  --on-surface-variant: #696738;
   
   --surface-container-lowest: #FFFFFF;
-  --surface-container-low: #F7F3EB;
-  --surface-container: #E7DDCE;
-  --surface-container-high: #E7DDCE;
-  --surface-container-highest: #D8CCBC; /* Light Sand */
-  --surface-dim: #E7DDCE;
+  --surface-container-low: #FFF9EC;
+  --surface-container: #E9DDC7;
+  --surface-container-high: #E9DDC7;
+  --surface-container-highest: #E9DDC7;
+  --surface-dim: #E9DDC7;
   --surface-bright: #FFFFFF;
   
-  --border-color: #D8CCBC;     /* Light Sand (Borders) */
-  --border-color-hover: #c4b6a4;
-  --outline: #D8CCBC;
-  --outline-variant: #D8CCBC;
+  --border-color: #E9DDC7;     /* Warm Sand */
+  --border-color-hover: #d1c6b2;
+  --outline: #E9DDC7;
+  --outline-variant: #E9DDC7;
 
-  --text-main: #3B3B36;        /* Dark Text (Headings) */
-  --text-muted: #5d5d56;
-  --text-light: #8e8e83;
+  --text-main: #4F4E22;        /* Deep Olive */
+  --text-muted: #696738;       /* Lighter Olive */
+  --text-light: #929C7A;       /* Sage Green */
   --text-on-primary: #FFFFFF;
   
-  --accent: #B38A4A;           /* Gold Accent (Highlights) */
-  --accent-hover: #9c7333;
-  --royal-gold: #B38A4A;
-  --deep-maroon: #7B8467;
-  --warm-ivory: #F7F3EB;
+  --accent: #FFBEA2;           /* Blush Peach */
+  --accent-hover: #ff9b75;     /* Darker Peach */
+  --royal-gold: #FFBEA2;       
+  --deep-maroon: #4F4E22;      
+  --warm-ivory: #FFF9EC;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 8px 24px rgba(123, 132, 103, 0.06);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 8px rgba(79, 78, 34, 0.04);
+  --shadow-md: 0 8px 24px rgba(79, 78, 34, 0.06);
+  --shadow-lg: 0 16px 40px rgba(79, 78, 34, 0.08);
 
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -185,20 +185,42 @@ a {
   background-color: #FFFFFF;
 }
 
-.material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
+/* Fluffy Cloud Shape for all buttons globally */
+button {
+  position: relative;
+  border-radius: 40px !important;
+  background-color: var(--primary); /* Fallback */
+  border: none;
+  z-index: 1;
+  transition: background-color 0.4s ease;
 }
 
+button::before, button::after {
+  content: '';
+  position: absolute;
+  background-color: inherit;
+  border-radius: 50%;
+  z-index: -1;
+}
+
+button::before {
+  width: 40%;
+  height: 80%;
+  top: -20%;
+  left: 15%;
+}
+
+button::after {
+  width: 50%;
+  height: 90%;
+  top: -25%;
+  right: 15%;
+}
+
+button:hover {
+  background-color: var(--primary-dark) !important;
+  color: #ffffff !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 

@@ -22,7 +22,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: url('../../assets/images/shop_hero.jpg');
+  background-image: url('/Images/saree6');
   background-size: cover;
   background-position: center;
   transition: transform 20s cubic-bezier(0.22, 1, 0.36, 1);
@@ -498,43 +498,90 @@
   right: 15px;
   width: 36px;
   height: 36px;
-  background-color: rgba(0, 0, 0, 0.4); /* Transparent Dark Circle */
+  background-color: #ffffff;
   border-radius: 50%;
   border: none;
+  box-shadow: 0 4px 12px rgba(79, 78, 34, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff; /* White icon */
+  color: var(--text-main);
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: 5;
 }
 
 .wishlist-btn:hover {
-  background-color: var(--primary);
-  color: #ffffff;
+  background-color: #ffffff;
+  transform: scale(1.1);
+}
+
+.wishlist-btn:hover svg {
+  fill: var(--primary-dark);
+  stroke: var(--primary-dark);
 }
 
 .card-details {
-  padding: 16px 0 0 0; /* Left aligned, zero horizontal padding */
+  padding: 16px 8px 8px 8px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Left-aligned */
+  align-items: flex-start;
   flex-grow: 1;
 }
 
-.card-details h4 {
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.title-row h4 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.1rem;
   color: var(--text-main);
-  margin: 0 0 8px 0;
+  margin: 0;
   font-weight: 400;
+  flex-grow: 1;
+}
+
+.rating-badge-inline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #FFF9E6;
+  color: #B38A4A;
+  border: 1px solid #FFE7A5;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 8px;
+  box-shadow: 0 1px 4px rgba(79, 78, 34, 0.04);
+}
+
+.product-description {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
 }
 
 .price-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .current-price {

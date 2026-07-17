@@ -328,6 +328,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                 <button onClick={() => handleCatalogClick('Handloom Collection')} className={styles.menuLink}>Best Sellers</button>
               </li>
               <li className={styles.menuItem}>
+                <button onClick={() => handleTabChange('limited-offer')} className={`${styles.menuLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
+              </li>
+              <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('lookbook')} className={styles.menuLink}>Lookbook</button>
               </li>
               <li className={styles.menuItem}>
@@ -578,6 +581,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
 
               <li className={styles.drawerItem}>
                 <button onClick={() => handleCatalogClick('Handloom Collection')} className={styles.drawerLink}>Best Sellers</button>
+              </li>
+              <li className={styles.drawerItem}>
+                <button onClick={() => handleTabChange('limited-offer')} className={`${styles.drawerLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
               </li>
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('lookbook')} className={styles.drawerLink}>Lookbook</button>

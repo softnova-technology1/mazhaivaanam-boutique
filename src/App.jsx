@@ -20,6 +20,7 @@ import { Support } from './pages/Support/Support';
 import { Privacy } from './pages/Privacy/Privacy';
 import { Returns } from './pages/Returns/Returns';
 import { Terms } from './pages/Terms/Terms';
+import { LimitedOffer } from './pages/LimitedOffer/LimitedOffer';
 import './App.css';
 
 function AppContent() {
@@ -45,7 +46,7 @@ function AppContent() {
         } else {
           setCurrentTab('shop');
         }
-      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms'].includes(path.substring(1))) {
+      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms', 'limited-offer'].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
         setCurrentTab('shop');
@@ -117,6 +118,8 @@ function AppContent() {
         return <Returns setCurrentTab={setCurrentTab} />;
       case 'terms':
         return <Terms setCurrentTab={setCurrentTab} />;
+      case 'limited-offer':
+        return <LimitedOffer setCurrentTab={setCurrentTab} />;
       default:
         return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
     }

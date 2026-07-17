@@ -327,6 +327,20 @@
   transform-origin: left;
 }
 
+.limitedOfferLink {
+  color: var(--secondary) !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px;
+}
+
+.limitedOfferLink::after {
+  background-color: var(--secondary) !important;
+}
+
+.limitedOfferLink:hover {
+  color: var(--accent-hover) !important;
+}
+
 /* Collections Mega Menu Styling */
 .hasMegaMenu {
   position: static;

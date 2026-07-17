@@ -217,7 +217,8 @@
   top: 150px;
   background-color: #ffffff;
   border: 1px solid var(--border-color);
-  padding: 30px;
+  padding: 45px 30px 30px 30px;
+  border-radius: 80px 80px 16px 16px; /* Dome Arch Top to match product cards */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
@@ -903,3 +904,73 @@
   display: inline-block;
   margin-left: 5px;
 }
+
+/* Pagination Styling */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 60px;
+  margin-bottom: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.pagination-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background-color: transparent;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.pagination-arrow:hover:not(:disabled) {
+  background-color: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.pagination-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: var(--border-color);
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-num {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.page-num:hover:not(.active-page) {
+  background-color: rgba(123, 132, 103, 0.08);
+  color: var(--primary);
+}
+
+.page-num.active-page {
+  background-color: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+

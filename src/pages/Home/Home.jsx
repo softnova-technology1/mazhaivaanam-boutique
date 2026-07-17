@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShieldCheck, Leaf, LockKeyhole, Gift } from 'lucide-react';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';
 import styles from './Home.module.css';
 
@@ -52,22 +52,22 @@ export const Home = ({ setCurrentTab }) => {
 
   const slides = useMemo(() => [
     {
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCFCA9k7R_SAF0s8Z2oer0go-OV16Dr0zEOd-7VhVdRIwmxkDOrtLzUYj74V_aL8k6uNp8MNItHjOdn36nY9qLascXy9WgjgpiPEbsTbmYM1Tct3Cat5GNRP6pTXUSfmp87kYsRmQaIh0mi2nwBCztGlBAA_cWD9yoZ7vrm_nK2GqrvxNOnYzz0CStSzzmmd-FpXmjbEuDZCrh8o8tau3bXovxSPvh7krTVVKFjBTwvyb9QuydBUNNl",
-      tag: "Maison Heritage",
-      title: "Elegance Woven Into Every Thread",
-      desc: "Discover handcrafted luxury sarees designed for life's most precious celebrations. A bridge between timeless Indian craftsmanship and contemporary aesthetics."
+      image: "/Images/saree4",
+      tag: "Festive Collection",
+      title: "Grace In Every Fold",
+      desc: "Celebrate the spirit of festivities with our handpicked heirloom sarees."
     },
     {
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBiaf59tcalpuVycg_KGWRUiEUXpejpqfUe2PGNhQqO8x6Pr5v9U2wMrshKSH_tdDQLOEpSPvp_jhlYnA8F7r2olm1t4lfy7RqBg5D0Qw2367XV96xoFC6OViYpl6gJYxTNUFY1WW8OSpaUVZ0Duw1OZcX13c9jWpTIyaFHnGwkkwYEiORAY5R4lNtfb6NYr4BAZC0q0QoqIxZNFZ6D8Y2EBRibzJGz84N7sSf0u4SJLDBDaMV_hMxO",
+      image: "/Images/saree3",
+      tag: "New Arrivals",
+      title: "Timeless Classic Saree",
+      desc: "Experience the timeless elegance with our newly arrived exclusive collection."
+    },
+    {
+      image: "/Images/saree5",
       tag: "Bridal Masterpieces",
-      title: "The Ruby Collection of Royal Silks",
-      desc: "Woven with authentic gold threads and certified handloom silks, our custom-tailored bridal sarees represent the summit of Kanjeevaram design."
-    },
-    {
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDI6R_12woJKAYaLiudDb0eusyX1BwvaDGetnwQ3d_-BXwI3RxF41KY8785DtXMtPxWzc2pMYPvUzT2tbhUDjgUOMWwVRgSrgB9sD-X6SC75cx3VfMmIjHg86bIcD2Kmq2rTgojUxOnou5HaqqO1v4IkFObWuO7hgZJpVVbWqFpAiqRAcAsjYYU79xmEQuH4mCjmkN94Ju8ZOZ8Z5BmodOtr79Yt8pYCHbNjgwMj7vyHq6hcRKtyltC",
-      tag: "Preserving Craftsmanship",
-      title: "Legacy From the Weaver’s Loom",
-      desc: "Each purchase directly sustains the creative labor of our master weaver cooperatives, ensuring authentic heritage techniques live for generations."
+      title: "Elegance Woven Into Every Thread",
+      desc: "Discover handcrafted luxury sarees designed for life's most precious celebrations."
     }
   ], []);
 
@@ -236,26 +236,20 @@ export const Home = ({ setCurrentTab }) => {
       </section>
 
       {/* 5. The Bridal Edit */}
-      <section className={styles['bridal-edit-section']}>
-        <div className={styles['bridal-grid']}>
-          <div className={styles['bridal-image-pane']}>
-            <div className={styles['shimmer-overlay']}></div>
-            <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeOMYzJBNcryzep-_2-r9Fz1-5SKo_I9QTJrqOKlCKckqxIB4_BwGhGQzp35GnHmfatMRV5F-ij-SCJ3GWFHwB7xfD6wRrvx1M5v4w4Yi408oM2F9u2a9G_3wEeuZTzHR76bc9sbt27WRBClTui8Epc-_plc0PAoDt1bqlRvEcLQjDEVAmzolmfFVFbiNAjJCXgl5ybA90naM6gwgIRo9SqtFLWJsfUeywoVWx4RrZB383FaUaUWO4" 
-              alt="Bridal Edit Model" 
-            />
-          </div>
-          <div className={styles['bridal-text-pane']}>
-            <div className={styles['bridal-text-content']}>
-              <span className={styles['bridal-label']}>THE CEREMONY</span>
-              <h2>The Bridal Edit</h2>
-              <div className={styles['gold-divider']}></div>
-              <p className={styles['bridal-quote']}>
-                "For the most sacred moments, we weave dreams into silk. Discover our exclusive bridal collection, where every thread is a testament to tradition and every weave is a blessing."
-              </p>
-              <button className={styles['btn-bridal-explore']}>DISCOVER THE COLLECTION</button>
-            </div>
-            <div className={styles['decor-box']}></div>
+      <section 
+        className={styles['bridal-edit-section']}
+        style={{ backgroundImage: `url('/Images/saree2.png')` }}
+      >
+        <div className={styles['bridal-overlay']}></div>
+        <div className={styles['bridal-text-pane']}>
+          <div className={styles['bridal-text-content']}>
+            <span className={styles['bridal-label']}>THE CEREMONY</span>
+            <h2>The Bridal Edit</h2>
+            <div className={styles['gold-divider']}></div>
+            <p className={styles['bridal-quote']}>
+              "For the most sacred moments, we weave dreams into silk. Discover our exclusive bridal collection, where every thread is a testament to tradition and every weave is a blessing."
+            </p>
+            <button className={styles['btn-bridal-explore']}>DISCOVER THE COLLECTION</button>
           </div>
         </div>
       </section>
@@ -290,22 +284,30 @@ export const Home = ({ setCurrentTab }) => {
         <div className="container">
           <div className={styles['values-grid']}>
             <div className={styles['values-item']}>
-              <div className={styles['value-icon']}>🛡️</div>
+              <div className={styles['value-icon']}>
+                <ShieldCheck size={32} strokeWidth={1.5} />
+              </div>
               <h4>100% ORIGINAL</h4>
               <p>Silk Mark Certified and ethically sourced directly from looms.</p>
             </div>
             <div className={styles['values-item']}>
-              <div className={styles['value-icon']}>🌿</div>
+              <div className={styles['value-icon']}>
+                <Leaf size={32} strokeWidth={1.5} />
+              </div>
               <h4>PREMIUM FABRICS</h4>
               <p>Only the finest mulberry silk and long-staple cotton threads.</p>
             </div>
             <div className={styles['values-item']}>
-              <div className={styles['value-icon']}>🔒</div>
+              <div className={styles['value-icon']}>
+                <LockKeyhole size={32} strokeWidth={1.5} />
+              </div>
               <h4>SECURE PAYMENTS</h4>
               <p>PCI-DSS compliant encrypted transactions for your peace of mind.</p>
             </div>
             <div className={styles['values-item']}>
-              <div className={styles['value-icon']}>📦</div>
+              <div className={styles['value-icon']}>
+                <Gift size={32} strokeWidth={1.5} />
+              </div>
               <h4>LUXURY PACKAGING</h4>
               <p>Every piece arrives in a handcrafted, eco-friendly heritage box.</p>
             </div>

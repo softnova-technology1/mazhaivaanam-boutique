@@ -20,6 +20,10 @@ import { Support } from './pages/Support/Support';
 import { Privacy } from './pages/Privacy/Privacy';
 import { Returns } from './pages/Returns/Returns';
 import { Terms } from './pages/Terms/Terms';
+import { NewArrivals } from './pages/NewArrivals/NewArrivals';
+import { BestSellers } from './pages/BestSellers/BestSellers';
+import { Collections } from './pages/Collections/Collections';
+import { Occasions } from './pages/Occasions/Occasions';
 import './App.css';
 
 function AppContent() {
@@ -45,7 +49,7 @@ function AppContent() {
         } else {
           setCurrentTab('shop');
         }
-      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms'].includes(path.substring(1))) {
+      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms', 'new-arrivals', 'best-sellers', 'collections', 'occasions'].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
         setCurrentTab('shop');
@@ -117,6 +121,14 @@ function AppContent() {
         return <Returns setCurrentTab={setCurrentTab} />;
       case 'terms':
         return <Terms setCurrentTab={setCurrentTab} />;
+      case 'new-arrivals':
+        return <NewArrivals setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
+      case 'best-sellers':
+        return <BestSellers setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
+      case 'collections':
+        return <Collections setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
+      case 'occasions':
+        return <Occasions setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
       default:
         return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
     }

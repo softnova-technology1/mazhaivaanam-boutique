@@ -18,7 +18,7 @@
 /* 1. Hero Carousel Slider */
 .hero-slider-section {
   position: relative;
-  height: 75vh;
+  height: 600px;
   width: 100%;
   overflow: hidden;
   background-color: #000;

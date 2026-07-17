@@ -6,19 +6,20 @@
 /* Cinematic Hero */
 .heroSection {
   position: relative;
-  height: 100vh;
+  height: 600px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   margin-bottom: 120px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 .heroBackgroundImage {
   position: absolute;
   inset: 0;
-  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBsRmZgFLRqWEPymuQlpHFupuvxkBTW1mddIAaP3FKNpo2sThX1jVm2Cl-rGc_Ec0bGLgS8feiRKKD0nW_aTytWiAbKfxXk_KQeHOgX9Vp4qEl4R9M9WVNCStpUbPNcbocUm__qfZJM3l2l1rcdqRwKhtJujCUAie8zQ2_SAL_5EdeyuNpnAoxb3AqAj8wqjeFS7_c0sPEpwA0KI8Sfdkr2TsaQZUm9LHbxw0cR2YYNeXkSo_96d24r');
+  background-image: url('/Images/saree12.png');
   background-size: cover;
   background-position: center;
   transform: scale(1.05);
@@ -33,7 +34,7 @@
 .heroGradientOverlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(26, 26, 26, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 2;
 }
 

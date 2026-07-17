@@ -42,6 +42,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 @media (max-width: 768px) {
@@ -53,7 +54,7 @@
 .heroBackgroundImage {
   position: absolute;
   inset: 0;
-  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB_tiWdbk7xnis38vo01t_6nSNOA4V-OjUqn4BBPTSOVqV46IjEI9X_4oH0mngdsHBiNVqsTDUKgMl08J3sW3F3JILjotnL8q3-d53KeLPY3j8Sr1Br3kcePtBcEwGtVHxQ4xPATlbcnJE-JTIn4QZnZx_6nzUZmYWv6_XxxooIzUuZJFQhzH9HWSScqm0s6FutWXJlE1qFkOWWWk3sICUYEgK0yxJUJ1PX3Al2rKAQY5PxOEsldIey');
+  background-image: url('/Images/saree13.png');
   background-size: cover;
   background-position: center;
   transform: scale(1.03);
@@ -69,7 +70,7 @@
 .heroGradientOverlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(26, 26, 26, 0.45);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 2;
 }
 
@@ -88,14 +89,15 @@
 }
 
 .heroSubtitle {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.25em;
-  color: rgba(255, 255, 255, 0.85);
-  text-transform: uppercase;
-  margin-bottom: 16px;
+  font-family: 'Kaushan Script', cursive;
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-transform: none;
+  margin-bottom: 8px;
   display: block;
+  text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
 }
 
 .heroTitle {

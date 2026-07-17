@@ -186,7 +186,8 @@ a {
 }
 
 /* Fluffy Cloud Shape for all buttons globally */
-button {
+/* Fluffy Cloud Shape for all buttons globally, excluding navbar/header, dropdowns, icons, close buttons, quantity controls, delete buttons, pagination, and tags */
+button:not(header button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]) {
   position: relative;
   border-radius: 40px !important;
   background-color: var(--primary); /* Fallback */
@@ -195,7 +196,8 @@ button {
   transition: background-color 0.4s ease;
 }
 
-button::before, button::after {
+button:not(header button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"])::before,
+button:not(header button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"])::after {
   content: '';
   position: absolute;
   background-color: inherit;
@@ -203,24 +205,58 @@ button::before, button::after {
   z-index: -1;
 }
 
-button::before {
+button:not(header button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"])::before {
   width: 40%;
   height: 80%;
   top: -20%;
   left: 15%;
 }
 
-button::after {
+button:not(header button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"])::after {
   width: 50%;
   height: 90%;
   top: -25%;
   right: 15%;
 }
 
-button:hover {
+button:not(header button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):hover {
   background-color: var(--primary-dark) !important;
   color: #ffffff !important;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
+/* Enforce Kaushan Script font on all hero section titles and tags across all pages */
+[class*="hero"] h1,
+[class*="heroTitle"],
+[class*="hero-slide-tag"],
+[class*="heroCategoryTag"],
+[class*="hero-text"] h1,
+.hero-content h1 {
+  font-family: 'Kaushan Script', cursive !important;
+  font-weight: 400 !important;
+  letter-spacing: 0px !important; /* Cursive fonts should not have wide letter spacing */
+  text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8) !important; /* Black text shadow for readability */
+}
+
+/* We removed the global .hero override here because CSS modules rename classes.
+   Specific hero files will have their heights adjusted individually. */
+
+/* Hero Text Animation (Matches About Page) */
+@keyframes globalHeroFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Apply animation to all hero headings, subtitles, and paragraphs */
+[class*="hero"] h1,
+[class*="heroTitle"],
+[class*="hero-slide-tag"],
+[class*="heroCategoryTag"],
+[class*="hero-text"] h1,
+.hero-content h1,
+[class*="hero"] p,
+.heroSubtitle,
+.hero-content p {
+  animation: globalHeroFadeIn 1s ease-out forwards !important;
+}

@@ -1,11 +1,95 @@
-import { useState, useMemo, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ShieldCheck, Leaf, LockKeyhole, Gift } from 'lucide-react';
+
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight, ShieldCheck, Leaf, LockKeyhole, Gift, Star } from 'lucide-react';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';
 import styles from './Home.module.css';
+
+const AnimatedCounter = ({ end, duration = 2000, suffix = '', decimals = 0 }) => {
+  const [count, setCount] = useState(0);
+  const [hasStarted, setHasStarted] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasStarted(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!hasStarted) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const currentValue = progress * end;
+      setCount(currentValue);
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }, [hasStarted, end, duration]);
+
+  const displayValue = decimals > 0 ? count.toFixed(decimals) : Math.floor(count);
+  return (
+    <span ref={ref}>
+      {displayValue}{suffix}
+    </span>
+  );
+};
 
 export const Home = ({ setCurrentTab, setSelectedProduct }) => {
   const [email, setEmail] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const reviews = useMemo(() => [
+    {
+      id: 1,
+      name: "Ananya Ravishankar",
+      role: "Verified Buyer",
+      initials: "AR",
+      rating: 5,
+      drape: "Ruby Petal Pure Silk Saree",
+      text: "The saree is even more beautiful in person. The zari work is incredibly fine, and the drape is absolute perfection. Truly an heirloom piece that I will cherish forever!"
+    },
+    {
+      id: 2,
+      name: "Megha Sundaram",
+      role: "Fashion Stylist",
+      initials: "MS",
+      rating: 5,
+      drape: "Snow Elegance Banarasi Saree",
+      text: "Mazhai Vaanam has redefined what luxury handloom means to me. The packaging itself was a work of art, and the fabric has a beautiful, rich weight to it. Absolute class."
+    },
+    {
+      id: 3,
+      name: "Priya Govind",
+      role: "Verified Patron",
+      initials: "PG",
+      rating: 5,
+      drape: "Sunset Glow Cotton Saree",
+      text: "Perfect lightweight cotton drape for festive summers. It breathes so well, holds its pleats beautifully, and the natural dyes give it a gorgeous warm glow."
+    },
+    {
+      id: 4,
+      name: "Devi Narayanan",
+      role: "Collector",
+      initials: "DN",
+      rating: 5,
+      drape: "Mystic Forest Banarasi Saree",
+      text: "A masterpiece of heritage weaving. The emerald green color is deeply saturated and the floral zari jaal looks absolutely regal. Excellent client support too."
+    }
+  ], []);
 
   const bestSellers = useMemo(() => [
     {
@@ -156,20 +240,28 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
         <div className="container">
           <div className={styles['stats-grid']}>
             <div className={styles['stats-item']}>
-              <span className={styles['stats-num']}>50k+</span>
+              <span className={styles['stats-num']}>
+                <AnimatedCounter end={50} suffix="k+" />
+              </span>
               <span className={styles['stats-label']}>Happy Customers</span>
             </div>
             <div className={styles['stats-item']}>
-              <span className={styles['stats-num']}>250+</span>
+              <span className={styles['stats-num']}>
+                <AnimatedCounter end={250} suffix="+" />
+              </span>
               <span className={styles['stats-label']}>Exclusive Designs</span>
             </div>
             <div className={styles['stats-item']}>
-              <span className={styles['stats-num']}>20+</span>
+              <span className={styles['stats-num']}>
+                <AnimatedCounter end={20} suffix="+" />
+              </span>
               <span className={styles['stats-label']}>Saree Collections</span>
             </div>
             <div className={styles['stats-item']}>
               <div className={styles['stats-star-row']}>
-                <span className={styles['stats-num']}>4.9</span>
+                <span className={styles['stats-num']}>
+                  <AnimatedCounter end={4.9} decimals={1} />
+                </span>
                 <span className={styles['star-icon']}>★</span>
               </div>
               <span className={styles['stats-label']}>5 Star Rating</span>
@@ -329,14 +421,15 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
           <h2>Worn With Love</h2>
           <span className={styles['instagram-hashtag']}>#MAZHAIVAANAMHERITAGE</span>
         </div>
-        <div className={styles['social-grid']}>
-          {/* Card 1: Text Testimonial */}
-          <div className={styles['social-text-card']}>
+        <div className={styles['social-bento-grid']}>
+          {/* Card 1: Text Testimonial (Spans 2 cols, 1 row) */}
+          <div className={`${styles['social-text-card']} ${styles['bento-col-2']}`}>
+            <span className={styles['quote-mark']}>“</span>
             <p>
               "The saree is even more beautiful in person. The zari work is incredibly fine, and the drape is absolute perfection. Highly recommend!"
             </p>
             <div className={styles['social-user-info']}>
-              <div className={styles['user-avatar']}></div>
+              <div className={styles['user-avatar']}>AR</div>
               <div>
                 <span className={styles['social-author']}>ANANYA R.</span>
                 <span className={styles['social-role']}>Verified Buyer</span>
@@ -344,29 +437,50 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
             </div>
           </div>
 
-          {/* Card 2: Image */}
-          <div className={styles['social-img-card']}>
+          {/* Card 2: Image (Spans 2 cols, 2 rows) */}
+          <div className={`${styles['social-img-card']} ${styles['bento-col-2']} ${styles['bento-row-2']}`}>
             <img 
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9J_Q7jOWawajmiqySs-_LfCpGRtiFFoUpmqQQo7c561Iwdz08UwJ-4ppCiBCt7uwZc5TR5Wmu1uUegKCMeJcA2mwKhGi3suCNgjjdJJNQMHlgo74O1ApnWH0uIZfuS7SQl2vJSet5RV57sbCzr2fOKI2EaOQURbOETeI2_cUkJsXebCgDSanEaGhQ9KYiT5cf1AvahdPU1T77J0OM4Fcmq7H8JMMFNda_0VWh_Z6oFBnrFI0mLUZ_" 
               alt="Woman in garden" 
             />
+            <div className={styles['social-img-caption']}>
+              <span className={styles['caption-hashtag']}>#HeritageDrape</span>
+              <span className={styles['caption-handle']}>@ananya_r</span>
+            </div>
           </div>
 
-          {/* Card 3: Image */}
+          {/* Card 3: Image (1 col, 1 row) */}
           <div className={styles['social-img-card']}>
             <img 
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS5dUlDrXgcLXeAfrtbm6bpkLMa2De10OTD3E3O0UkWLKvxvyu5fgIfEjC_3LlMUUIAlLm1WLAsLNJoWy4B8JQ7bREVnsTsSyuxGgDEkVFVIBn4_vtUYVpafMFpJ-90CcAGpWpDXIc09AII3rZ-rmBvJxPTzqF3PI-abBrLpmFyI9uXrtbohocYODzHv9a43pHQmYLapQ8XbjBa1SL7XgkVVR3z8xt_4fH535evmyXhoNglxq5OHuw" 
               alt="Bride hands touching saree" 
             />
+            <div className={styles['social-img-caption']}>
+              <span className={styles['caption-hashtag']}>#BridalCouture</span>
+              <span className={styles['caption-handle']}>@bridal_drapes</span>
+            </div>
           </div>
 
-          {/* Card 4: Text Testimonial */}
-          <div className={`${styles['social-text-card']} ${styles['social-dark-card']}`}>
+          {/* Card 5: Image (1 col, 1 row) */}
+          <div className={styles['social-img-card']}>
+            <img 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYuFjAXKyW_0p4At-q11yX2qN1DLHsS-4VZyF7WXFWipfqs_q3-ftdMhmOHQGUA-2G52g_AWD_21kSRTW9raBfQUjGPsb8vxE8uTK-D6sq8z2IUj-RTHeoShoKhtXWuTs661ynsWHOIFJ9-m862hzskYxRcPQ3PILDgSxbFD7Ll34R4JaR711wOMrT7-gJHQDP55nrlWkUBHEAO2-pMR7QaRDBkQY2RZgJCM0tzrYtpJg3Nu2_2EvA" 
+              alt="Folded Silk Sarees" 
+            />
+            <div className={styles['social-img-caption']}>
+              <span className={styles['caption-hashtag']}>#KanchipuramLoom</span>
+              <span className={styles['caption-handle']}>@mazhaivaanam</span>
+            </div>
+          </div>
+
+          {/* Card 4: Text Testimonial (Spans 2 cols, 1 row) */}
+          <div className={`${styles['social-text-card']} ${styles['social-dark-card']} ${styles['bento-col-2']}`}>
+            <span className={styles['quote-mark']}>“</span>
             <p>
               "Mazhai Vaanam has redefined what luxury handloom means to me. The packaging itself was a work of art."
             </p>
             <div className={styles['social-user-info']}>
-              <div className={styles['user-avatar-gold']}></div>
+              <div className={styles['user-avatar-gold']}>MS</div>
               <div>
                 <span className={styles['social-author-white']}>MEGHA S.</span>
                 <span className={styles['social-role-gold']}>Fashion Stylist</span>
@@ -374,12 +488,64 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
             </div>
           </div>
 
-          {/* Card 5: Image */}
-          <div className={styles['social-img-card']}>
-            <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYuFjAXKyW_0p4At-q11yX2qN1DLHsS-4VZyF7WXFWipfqs_q3-ftdMhmOHQGUA-2G52g_AWD_21kSRTW9raBfQUjGPsb8vxE8uTK-D6sq8z2IUj-RTHeoShoKhtXWuTs661ynsWHOIFJ9-m862hzskYxRcPQ3PILDgSxbFD7Ll34R4JaR711wOMrT7-gJHQDP55nrlWkUBHEAO2-pMR7QaRDBkQY2RZgJCM0tzrYtpJg3Nu2_2EvA" 
-              alt="Folded Silk Sarees" 
-            />
+          {/* Card 6: Community CTA (Spans 2 cols, 1 row) */}
+          <div className={`${styles['social-cta-card']} ${styles['bento-col-2']}`}>
+            <div className={styles['cta-content']}>
+              <h4>Join Our Community</h4>
+              <p>Share your stories and drapes with us to get featured in our seasonal lookbook gallery.</p>
+              <button 
+                onClick={() => setCurrentTab && setCurrentTab('contact')}
+                className={styles['cta-btn']}
+              >
+                SHARE YOUR MOMENT
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8.5. Patron Voices (Continuous Scrolling Reviews Marquee) */}
+      <section className={styles['reviews-slider-section']}>
+        <div className={styles['section-header-center']}>
+          <span className={styles['review-section-tag']}>PATRON VOICES</span>
+          <h2>Words From Our Family</h2>
+          <div className={styles['header-line']}></div>
+        </div>
+
+        <div className={styles['reviews-marquee-viewport']}>
+          <div className={styles['reviews-marquee-track']}>
+            {/* Render reviews list twice for seamless infinite looping */}
+            {[...reviews, ...reviews].map((rev, idx) => (
+              <div 
+                key={`${rev.id}-${idx}`} 
+                className={styles['review-marquee-card']}
+              >
+                <span className={styles['review-quote-icon']}>“</span>
+                <div className={styles['rating-stars']}>
+                  {[...Array(rev.rating)].map((_, i) => (
+                    <Star key={i} size={16} fill="#FFC107" stroke="#FFC107" />
+                  ))}
+                </div>
+                <p className={styles['review-text-content']}>
+                  "{rev.text}"
+                </p>
+                <div className={styles['review-purchased-badge']}>
+                  Purchased: <strong>{rev.drape}</strong>
+                </div>
+                
+                <div className={styles['reviewer-profile']}>
+                  <div className={styles['reviewer-initials-avatar']}>
+                    {rev.initials}
+                  </div>
+                  <div className={styles['reviewer-metadata']}>
+                    <span className={styles['reviewer-name']}>{rev.name}</span>
+                    <span className={styles['reviewer-status']}>
+                      <span className={styles['verified-check-badge']}>✓</span> {rev.role}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

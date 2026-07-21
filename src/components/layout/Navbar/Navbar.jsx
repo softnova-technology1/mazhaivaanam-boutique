@@ -184,9 +184,8 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
             {/* Logo perfectly centered */}
             <div className={styles.centerLogo} onClick={() => handleTabChange('shop')}>
               <h1 className={styles.brandTitle}>
-                MAZHAI 
                 <img src="/logo" alt="logo" className={styles.brandLogoIcon} />
-                VANAM
+                MAZHAI VAANAM
               </h1>
               <span className={styles.brandSubtitle}>HANDLOOM LUXURY</span>
             </div>

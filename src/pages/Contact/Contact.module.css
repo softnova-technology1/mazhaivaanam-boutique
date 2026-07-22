@@ -483,28 +483,27 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: background-color 0.3s;
+  border-radius: 4px !important;
 }
 
 .submitMessageBtn:hover {
   background-color: var(--accent);
 }
 
-/* Appointment calendar box styling */
-.calendarSectionBox {
+.submitMessageBtn::before,
+.submitMessageBtn::after,
+.enquireBtn::before,
+.enquireBtn::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Contact Details & Info Card */
+.contactDetailsBox {
   padding-top: 24px;
 }
 
-.exclusiveBadge {
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  color: var(--secondary);
-  display: block;
-  margin-bottom: 16px;
-}
-
-.calendarTitle {
+.detailsTitle {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 32px;
   color: var(--primary);
@@ -512,128 +511,73 @@
   font-weight: 400;
 }
 
-.calendarDesc {
+.detailsDesc {
   font-family: 'Inter', sans-serif;
   font-size: 15px;
   color: var(--text-muted);
   line-height: 1.6;
-  margin-bottom: 48px;
-}
-
-.calendarWidget {
-  border: 1px solid rgba(136, 113, 116, 0.2);
-  padding: 32px;
-  background-color: var(--surface-container-lowest);
-}
-
-.calendarWidgetHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 32px;
 }
 
-.calChevronBtn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 8px;
+.infoCardsList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.calendarMonthTitle {
+.infoCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background-color: var(--surface-container-lowest);
+  border: 1px solid rgba(136, 113, 116, 0.15);
+  border-radius: 4px;
+}
+
+.infoCardIcon {
+  color: #B5893D;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoCardText h4 {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--primary);
-}
-
-.calendarDaysGridHeader {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 16px;
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.calendarDaysGridHeader div {
-  font-family: 'Inter', sans-serif;
-  font-size: 9px;
+  font-size: 16px;
+  color: var(--primary-dark);
+  margin: 0 0 4px 0;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  opacity: 0.5;
 }
 
-.calendarDaysGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.outOfMonthDay {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  color: var(--text-muted);
-  opacity: 0.2;
-}
-
-.calendarDayCell {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.infoCardText p {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   color: var(--text-main);
-  cursor: pointer;
-  transition: all 0.3s;
+  margin: 0 0 4px 0;
 }
 
-.calendarDayCell:hover {
-  background-color: var(--surface-bright);
-}
-
-.selectedDayCell {
-  border: 1px solid var(--primary);
-  color: var(--primary) !important;
-  font-weight: 700;
-}
-
-.availableSlotDay {
-  background-color: rgba(119, 90, 4, 0.08);
-  color: var(--secondary);
-}
-
-.availableSlotDay:hover {
-  background-color: var(--secondary);
-  color: white !important;
-}
-
-.confirmSelectionBtn {
-  width: 100%;
-  padding: 16px;
-  background-color: transparent;
-  border: 1px solid var(--primary);
-  color: var(--primary);
+.infoCardText span {
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s;
+  font-size: 12px;
+  color: var(--text-muted);
+  display: block;
 }
 
-.confirmSelectionBtn:hover {
-  background-color: var(--primary);
-  color: white;
+.whatsappLink,
+.emailLink {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #B5893D;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 4px;
+  transition: color 0.3s;
+}
+
+.whatsappLink:hover,
+.emailLink:hover {
+  color: var(--primary-dark);
 }
 
 /* Boutique locations flagship store cards */
@@ -766,120 +710,88 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: background-color 0.3s;
+  border-radius: 4px !important;
 }
 
 .locationActionBtn:hover {
   background-color: var(--accent);
 }
 
-/* Global Presence map relative indicators */
-.globalPresenceMapSection {
+.locationActionBtn::before,
+.locationActionBtn::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Locate Our Boutiques Maps Section */
+.mapsSection {
+  padding: 60px 0;
   width: 100%;
-  height: 500px;
-  position: relative;
-  background-color: var(--surface-container-low);
-  filter: grayscale(1) contrast(1.25);
-  margin: 80px -80px;
-  padding: 0 80px;
 }
 
-@media (max-width: 768px) {
-  .globalPresenceMapSection {
-    margin: 48px -20px;
-    padding: 0 20px;
-  }
+.mapsHeader {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.globalPresenceTitleWrapper {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.3;
-  pointer-events: none;
-}
-
-.globalPresenceMainHeader {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 48px;
-  color: var(--outline-variant);
-  letter-spacing: 0.5em;
-  text-transform: uppercase;
-  user-select: none;
-}
-
-@media (max-width: 768px) {
-  .globalPresenceMainHeader {
-    font-size: 24px;
-    letter-spacing: 0.2em;
-  }
-}
-
-.locationPinBlock {
-  position: absolute;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.pinWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pingCircleAnimation {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: rgba(73, 0, 23, 0.2);
-  animation: pingAnimation 2s infinite;
-}
-
-@keyframes pingAnimation {
-  0% { transform: scale(0.5); opacity: 1; }
-  100% { transform: scale(1.8); opacity: 0; }
-}
-
-.pinDotSolid {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--primary);
-  z-index: 2;
-  border: 2px solid white;
-}
-
-.pinHoverCard {
-  position: absolute;
-  bottom: 100%;
-  margin-bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  padding: 8px 16px;
-  border: 1px solid rgba(240, 230, 210, 0.5);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-
-.locationPinBlock:hover .pinHoverCard {
-  opacity: 1;
-}
-
-.pinHoverCard p {
+.mapsTag {
   font-family: 'Inter', sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.3em;
+  color: var(--secondary);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.mapsHeader h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 32px;
   color: var(--primary);
   margin: 0;
+  font-weight: 400;
+}
+
+.divider {
+  width: 60px;
+  height: 2px;
+  background-color: var(--secondary);
+  margin: 16px auto 0 auto;
+}
+
+.mapsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+@media (max-width: 768px) {
+  .mapsGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.mapCard {
+  background-color: var(--surface-container-lowest);
+  border: 1px solid rgba(136, 113, 116, 0.15);
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.mapCard h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  color: var(--primary-dark);
+  margin: 0 0 16px 0;
+  font-weight: 600;
+}
+
+.mapFrameWrapper {
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  line-height: 0;
 }
 
 /* FAQ Lounge list of accordions */

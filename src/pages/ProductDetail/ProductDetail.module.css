@@ -430,6 +430,20 @@
   box-shadow: 0 0 0 2px #fff, inset 0 2px 4px rgba(0,0,0,0.15) !important;
 }
 
+.preorder-disclaimer-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(181, 137, 61, 0.08);
+  border: 1px dashed rgba(181, 137, 61, 0.4);
+  padding: 12px 18px;
+  border-radius: 4px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  color: var(--primary-dark);
+  margin-bottom: 24px;
+}
+
 /* Actions wrapper CTA */
 .actions-wrapper {
   display: flex;

@@ -772,6 +772,37 @@
   background-color: var(--primary-dark); /* Dark Olive hover */
 }
 
+.preorder-badge-pill {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #C55A44;
+  background-color: rgba(197, 90, 68, 0.08);
+  border: 1px solid rgba(197, 90, 68, 0.2);
+  padding: 4px 8px;
+  border-radius: 2px;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+.preorder-btn {
+  width: auto;
+  padding: 8px 24px;
+  background-color: #B5893D;
+  color: #ffffff;
+  border: none;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 4px;
+  border-radius: 3px;
+}
+
+.preorder-btn:hover {
+  background-color: var(--primary-dark);
+}
+
 /* Pagination */
 .pagination {
   margin-top: 80px;

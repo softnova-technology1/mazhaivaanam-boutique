@@ -31,7 +31,7 @@ export const Login = ({ setCurrentTab }) => {
     <div className={`${styles['login-page']} container`}>
       <div className={`${styles['login-card']} glass-card`}>
         <h2>Welcome Back</h2>
-        <p className={styles['login-subtitle']}>Sign in to your Shanmathi Boutique account</p>
+        <p className={styles['login-subtitle']}>Sign in to your Mazhai Vaanam Boutique account</p>
 
         {error && <div className={styles['auth-error-alert']}>{error}</div>}
 

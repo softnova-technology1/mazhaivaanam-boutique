@@ -430,18 +430,141 @@
   color: var(--primary-dark) !important;
 }
 
-.dropdown-option-item.active {
-  background-color: rgba(146, 156, 122, 0.1) !important;
-  color: var(--primary-dark) !important;
+
+/* 5. Behind the Loom Section */
+.behind-loom-section {
+  padding: 100px 0;
+  background-color: #FFFFFF;
+  border-top: 1px solid var(--border-color);
 }
 
-/* Responsive Breakpoints */
+.behind-loom-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--primary);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  display: block;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 60px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-header h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 36px;
+  color: var(--primary-dark);
+  margin-bottom: 20px;
+}
+
+.divider {
+  width: 60px;
+  height: 2px;
+  background-color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.section-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.loom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.loom-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.loom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.loom-image-box {
+  position: relative;
+  height: 220px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.loom-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.loom-card:hover .loom-image-box img {
+  transform: scale(1.05);
+}
+
+.step-badge {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: var(--primary-dark);
+  color: #FFFFFF;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 600;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.loom-info {
+  padding: 30px;
+}
+
+.loom-info h4 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  color: var(--primary-dark);
+  margin-bottom: 12px;
+}
+
+.loom-info p {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
 @media (max-width: 1024px) {
   .product-grid {
     grid-template-columns: repeat(3, 1fr);
   }
   .hero-content h1 {
     font-size: 44px;
+  }
+  .loom-grid {
+    gap: 20px;
+  }
+  .section-header h2 {
+    font-size: 30px;
   }
 }
 
@@ -465,6 +588,15 @@
   }
   .spotlight-box {
     padding: 40px;
+  }
+  .loom-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .behind-loom-section {
+    padding: 60px 0;
   }
 }
 

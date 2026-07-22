@@ -30,9 +30,11 @@ export const ALL_PRODUCTS = [
     price: 28599,
     oldPrice: 32000,
     rating: 4.8,
-    tag: "NEW ARRIVAL",
+    tag: "ON THE LOOM",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1gzWEB9tKWsjoudWNb3uApBhCDiPTe9M1N6lnbt5UlryqNZaDDCJ8tb4LpOZS3_Q_f3ai28aCck4TTiRvoW6rCLqG9z1MjEjojxWwCDsU5oehBjjZEL6UZBCOtrTrsrJT3cZGJ3rrgRrbu1lbSKpbMJ5GHQ2uffEq5JqZ_7clzRy6vknPvSSzVkFqaC08HUPLxpQbswti0TkQQCUl6LopJnDFIkxphZNhU5XYWEa2AjlwakWy0rtm",
-    description: "Warm yellow and gold handloom cotton saree woven with traditional patterns, ideal for festive elegance."
+    description: "Warm yellow and gold handloom cotton saree woven with traditional patterns, ideal for festive elegance.",
+    isPreorder: true,
+    deposit: 5000
   },
   {
     id: 'prod-catalog-3',
@@ -125,9 +127,11 @@ export const ALL_PRODUCTS = [
     price: 43769,
     oldPrice: 49999,
     rating: 5.0,
-    tag: "NEW ARRIVAL",
+    tag: "ON THE LOOM",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB99n9r4dbP7WA7__f11wrB_Ipn6Q7GJSe8zMy54tocsgng5Z1Lpt40VzWbYoU1eR2drwe6bdmrWtZUkRPdbQGsUCWo1IBvdJJwiiQ4Sv9ncSwDIKofKTG8qx4YEiYlvuIv_XgQ6B2Z4xVVVvquVHEiV4BznQPCbp8fgL9DgvHqKdq45bT_Yy_gbfOWsdfybCeY0bzHqWfgyJH519MupLNrDTaOzaeGV9f5ckgTYE_FLmrqEByj3pLr",
-    description: "Modern designer drape featuring rich scarlet highlights on an ebony dark background."
+    description: "Modern designer drape featuring rich scarlet highlights on an ebony dark background.",
+    isPreorder: true,
+    deposit: 5000
   },
   {
     id: 'prod-catalog-10',
@@ -167,9 +171,11 @@ export const ALL_PRODUCTS = [
     price: 29500,
     oldPrice: 34000,
     rating: 4.9,
-    tag: "NEW ARRIVAL",
+    tag: "ON THE LOOM",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_",
-    description: "Deep crimson Banarasi silk saree handwoven with dense gold zari and floral scroll patterns."
+    description: "Deep crimson Banarasi silk saree handwoven with dense gold zari and floral scroll patterns.",
+    isPreorder: true,
+    deposit: 5000
   },
   {
     id: 'prod-catalog-13',
@@ -195,9 +201,11 @@ export const ALL_PRODUCTS = [
     price: 48000,
     oldPrice: 55000,
     rating: 5.0,
-    tag: "NEW ARRIVAL",
+    tag: "ON THE LOOM",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDkRuajLDcBWPazr6lv5c906qF0pGWB4-Ke1cY7Qc8LFWNUDGlM9MNsyuVAK0B81OaDi7a3eX5PWLvar4UFlcXzFx4T6i9mYoZh8zFPHjbz_jJt7XkBwKgO4LVbEI45hkE3Fu4G8IBh2ls5xV7ThxPW06QCHp43P2GvOXaFJW2FNHZJr5sQFJbSWWX1qSMsS7YGQGCMc-VawrfXqWOQwiXMpM7C4tbBmlD5coSua7GF66oDsIY1_ASD",
-    description: "Premium ivory Kanchipuram silk saree featuring exquisite double-warp gold zari and floral patterns."
+    description: "Premium ivory Kanchipuram silk saree featuring exquisite double-warp gold zari and floral patterns.",
+    isPreorder: true,
+    deposit: 5000
   },
   {
     id: 'prod-catalog-15',
@@ -737,24 +745,32 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
                         <div className={styles['price-row']}>
                           <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                          {product.oldPrice && (
-                            <>
-                              <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
-                              <span className={styles['discount-pill']}>
-                                {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
-                              </span>
-                            </>
+                          {product.isPreorder ? (
+                            <span className={styles['preorder-badge-pill']}>Deposit: {formatCurrency(product.deposit)}</span>
+                          ) : (
+                            product.oldPrice && (
+                              <>
+                                <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                                <span className={styles['discount-pill']}>
+                                  {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
+                                </span>
+                              </>
+                            )
                           )}
                         </div>
                         <button 
-                          className={styles['add-cart-btn']}
+                          className={product.isPreorder ? styles['preorder-btn'] : styles['add-cart-btn']}
                           onClick={(e) => {
                             e.stopPropagation();
-                            addToCart(product, 1);
-                            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Cart!` } }));
+                            if (product.isPreorder) {
+                              handleProductClick(product);
+                            } else {
+                              addToCart(product, 1);
+                              window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Cart!` } }));
+                            }
                           }}
                         >
-                          ADD TO CART
+                          {product.isPreorder ? 'PRE-BOOK NOW' : 'ADD TO CART'}
                         </button>
                       </div>
                     </div>

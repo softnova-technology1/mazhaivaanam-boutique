@@ -116,7 +116,17 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   const thumbnails = getThumbnails();
 
   const handleAddToCartClick = () => {
-    addToCart(activeProduct, 1);
+    if (activeProduct.isPreorder) {
+      const preorderItem = {
+        ...activeProduct,
+        name: `[Pre-Order] ${activeProduct.name}`,
+        price: activeProduct.price,
+        isPreorder: true
+      };
+      addToCart(preorderItem, 1);
+    } else {
+      addToCart(activeProduct, 1);
+    }
     setIsAddedToCart(true);
     setTimeout(() => setIsAddedToCart(false), 3000);
   };
@@ -147,7 +157,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
       <nav className={styles['breadcrumb-nav']}>
         <button onClick={() => setCurrentTab('shop')} className={styles['breadcrumb-link']}>Home</button>
         <span className={styles['breadcrumb-separator']}>&gt;</span>
-        <button onClick={() => setCurrentTab('catalog')} className={styles['breadcrumb-link']}>Shop Collections</button>
+        {activeProduct.isPreorder ? (
+          <button onClick={() => setCurrentTab('pre-booking')} className={styles['breadcrumb-link']}>Pre-Reservations</button>
+        ) : (
+          <button onClick={() => setCurrentTab('catalog')} className={styles['breadcrumb-link']}>Shop Collections</button>
+        )}
         <span className={styles['breadcrumb-separator']}>&gt;</span>
         <span className={styles['breadcrumb-active']}>{activeProduct.name} Saree</span>
       </nav>
@@ -228,35 +242,62 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
           <div className={styles['price-card']}>
             <div className={styles['card-shimmer']} />
             <div className={styles['price-card-content']}>
-              <div className={styles['price-card-row']}>
-                <span>Original Showroom Price</span>
-                <span className={styles['old-price-slashed']}>{formatCurrency(boutiquePrice)}</span>
-              </div>
-              <div className={styles['price-card-row']}>
-                <span>Mazhai Vaanam Base Price</span>
-                <span className={styles['medium-price']}>{formatCurrency(activeProduct.price)}</span>
-              </div>
-              <div className={styles['price-card-row']}>
-                <span className={styles['offer-savings-text']}>Festival Offer</span>
-                <span className={styles['offer-savings-amount']}>- {formatCurrency(festivalDiscount)}</span>
-              </div>
-              <div className={styles['price-card-row']}>
-                <span className={styles['offer-savings-text']}>WELCOME500 Applied</span>
-                <span className={styles['offer-savings-amount']}>- {formatCurrency(welcomeDiscount)}</span>
-              </div>
-              
-              <div className={styles['price-card-footer']}>
-                <div className={styles['final-price-box']}>
-                  <p className={styles['final-price-lbl']}>FINAL BESPOKE PRICE</p>
-                  <p className={styles['final-price-amt']}>
-                    {formatCurrency(finalPrice)}
-                  </p>
-                </div>
-                <div className={styles['savings-banner']}>
-                  <p className={styles['savings-lbl']}>SAVINGS {formatCurrency(totalSavings)}</p>
-                  <p className={styles['savings-pct']}>{totalDiscountPct}% OFF ATELIER VALUE</p>
-                </div>
-              </div>
+              {activeProduct.isPreorder ? (
+                <>
+                  <div className={styles['price-card-row']}>
+                    <span>Original Retail Value</span>
+                    <span className={styles['old-price-slashed']}>{formatCurrency(activeProduct.oldPrice || Math.round(activeProduct.price * 1.15))}</span>
+                  </div>
+                  <div className={styles['price-card-row']}>
+                    <span style={{ color: '#C55A44', fontWeight: 'bold' }}>Special Pre-Order Offer</span>
+                    <span style={{ color: '#C55A44', fontWeight: 'bold' }}>{formatCurrency(activeProduct.price)}</span>
+                  </div>
+                  <div className={styles['price-card-footer']}>
+                    <div className={styles['final-price-box']}>
+                      <p className={styles['final-price-lbl']}>FINAL TOTAL PRICE</p>
+                      <p className={styles['final-price-amt']}>
+                        {formatCurrency(activeProduct.price)}
+                      </p>
+                    </div>
+                    <div className={styles['savings-banner']} style={{ backgroundColor: 'rgba(181, 137, 61, 0.1)' }}>
+                      <p className={styles['savings-lbl']} style={{ color: '#B5893D' }}>LOCKED DISCOUNT</p>
+                      <p className={styles['savings-pct']} style={{ color: '#B5893D' }}>DISPATCH IN 30-45 DAYS</p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={styles['price-card-row']}>
+                    <span>Original Showroom Price</span>
+                    <span className={styles['old-price-slashed']}>{formatCurrency(boutiquePrice)}</span>
+                  </div>
+                  <div className={styles['price-card-row']}>
+                    <span>Mazhai Vaanam Base Price</span>
+                    <span className={styles['medium-price']}>{formatCurrency(activeProduct.price)}</span>
+                  </div>
+                  <div className={styles['price-card-row']}>
+                    <span className={styles['offer-savings-text']}>Festival Offer</span>
+                    <span className={styles['offer-savings-amount']}>- {formatCurrency(festivalDiscount)}</span>
+                  </div>
+                  <div className={styles['price-card-row']}>
+                    <span className={styles['offer-savings-text']}>WELCOME500 Applied</span>
+                    <span className={styles['offer-savings-amount']}>- {formatCurrency(welcomeDiscount)}</span>
+                  </div>
+                  
+                  <div className={styles['price-card-footer']}>
+                    <div className={styles['final-price-box']}>
+                      <p className={styles['final-price-lbl']}>FINAL BESPOKE PRICE</p>
+                      <p className={styles['final-price-amt']}>
+                        {formatCurrency(finalPrice)}
+                      </p>
+                    </div>
+                    <div className={styles['savings-banner']}>
+                      <p className={styles['savings-lbl']}>SAVINGS {formatCurrency(totalSavings)}</p>
+                      <p className={styles['savings-pct']}>{totalDiscountPct}% OFF ATELIER VALUE</p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -287,13 +328,25 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             </div>
           </div>
 
+          {activeProduct.isPreorder && (
+            <div className={styles['preorder-disclaimer-banner']}>
+              <ShieldCheck size={18} style={{ color: '#B5893D' }} />
+              <span>Weaving time is 30-45 days. Custom sizing &amp; fully insured dispatch included.</span>
+            </div>
+          )}
+ 
           {/* Call to Actions */}
           <div className={styles['actions-wrapper']}>
             <button 
               className={styles['add-trousseau-btn']}
               onClick={handleAddToCartClick}
+              style={activeProduct.isPreorder ? { backgroundColor: '#B5893D', borderColor: '#B5893D' } : {}}
             >
-              {isAddedToCart ? 'ADDED TO TROUSSEAU' : 'ADD TO TROUSSEAU'}
+              {activeProduct.isPreorder ? (
+                isAddedToCart ? 'PRE-ORDER ADDED TO BAG' : `PRE-BOOK (PAY TOTAL: ${formatCurrency(activeProduct.price)})`
+              ) : (
+                isAddedToCart ? 'ADDED TO TROUSSEAU' : 'ADD TO TROUSSEAU'
+              )}
               <ArrowRight size={16} />
             </button>
             <button 

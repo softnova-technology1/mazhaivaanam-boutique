@@ -184,7 +184,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
             {/* Logo perfectly centered */}
             <div className={styles.centerLogo} onClick={() => handleTabChange('shop')}>
               <h1 className={styles.brandTitle}>
-                <img src="/logo" alt="logo" className={styles.brandLogoIcon} />
+                <img src="/logo.png" alt="logo" className={styles.brandLogoIcon} />
                 MAZHAI VAANAM
               </h1>
               <span className={styles.brandSubtitle}>HANDLOOM LUXURY</span>
@@ -297,18 +297,26 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                       
                       {/* Image Banners */}
                       <div className={styles.megaMenuBanners}>
-                        <div className={styles.megaBannerCard}>
-                          <img src="https://images.unsplash.com/photo-1610030469668-93535c17b6b3?auto=format&fit=crop&w=250&q=80" alt="Kanjeevaram Heritage" />
+                        <div 
+                          className={styles.megaBannerCard} 
+                          onClick={() => handleTabChange('limited-offer')}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=250&q=80" alt="Limited Offer Deal" />
                           <div className={styles.bannerInfo}>
-                            <span>Kanjeevaram</span>
-                            <button onClick={() => handleCatalogClick('Kanchipuram Silk')}>Shop Bridal</button>
+                            <span>Limited Offer</span>
+                            <button onClick={(e) => { e.stopPropagation(); handleTabChange('limited-offer'); }}>Spin to Win</button>
                           </div>
                         </div>
-                        <div className={styles.megaBannerCard}>
-                          <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=250&q=80" alt="Banarasi Legacy" />
+                        <div 
+                          className={styles.megaBannerCard} 
+                          onClick={() => handleCatalogClick()}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=250&q=80" alt="New Saree Collection" />
                           <div className={styles.bannerInfo}>
-                            <span>Banarasi</span>
-                            <button onClick={() => handleCatalogClick('Banarasi')}>Explore Weaves</button>
+                            <span>Shop Collection</span>
+                            <button onClick={(e) => { e.stopPropagation(); handleCatalogClick(); }}>Shop Now</button>
                           </div>
                         </div>
                       </div>
@@ -332,6 +340,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('limited-offer')} className={`${styles.menuLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
+              </li>
+              <li className={styles.menuItem}>
+                <button onClick={() => handleTabChange('pre-booking')} className={`${styles.menuLink} ${styles.preBookingLink} ${currentTab === 'pre-booking' ? styles.active : ''}`}>Pre-Booking</button>
               </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('lookbook')} className={styles.menuLink}>Lookbook</button>

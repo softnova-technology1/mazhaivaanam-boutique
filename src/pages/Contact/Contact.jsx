@@ -3,13 +3,15 @@ import {
   Search, 
   MapPin, 
   Clock, 
-  Calendar, 
   ArrowRight, 
   Paperclip,
   Share2, 
   Mail,
   ChevronDown,
-  Info
+  Info,
+  Phone,
+  MessageCircle,
+  Store
 } from 'lucide-react';
 import styles from './Contact.module.css';
 
@@ -19,10 +21,6 @@ export const Contact = ({ setCurrentTab }) => {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('GENERAL INQUIRY');
   const [message, setMessage] = useState('');
-
-  // Calendar booking slot states
-  const [selectedDay, setSelectedDay] = useState(1); // default active 1st
-  const [bookingConfirmed, setBookingConfirmed] = useState(false);
 
   // Accordion indices state
   const [activeFaq, setActiveFaq] = useState(null);
@@ -40,11 +38,6 @@ export const Contact = ({ setCurrentTab }) => {
       setEmail('');
       setMessage('');
     }, 4000);
-  };
-
-  const handleConfirmCalendar = () => {
-    setBookingConfirmed(true);
-    setTimeout(() => setBookingConfirmed(false), 4000);
   };
 
   const faqs = [
@@ -73,11 +66,6 @@ export const Contact = ({ setCurrentTab }) => {
       {formSubmitted && (
         <div className={styles.toastNotification}>
           <span>Inquiry Submitted! Our Concierge will email you shortly.</span>
-        </div>
-      )}
-      {bookingConfirmed && (
-        <div className={styles.toastNotification} style={{ borderLeftColor: 'var(--secondary)' }}>
-          <span>Slot Confirmed for Oct {selectedDay}, 2026! Check your inbox.</span>
         </div>
       )}
 
@@ -243,109 +231,53 @@ export const Contact = ({ setCurrentTab }) => {
             </form>
           </div>
 
-          {/* Private Appointment Booking (Calendar) */}
-          <div className={styles.calendarSectionBox}>
-            <span className={styles.exclusiveBadge}>EXCLUSIVE SERVICE</span>
-            <h2 className={styles.calendarTitle}>Private Appointment Booking</h2>
-            <p className={styles.calendarDesc}>
-              Experience Mazhai Vaanam in a one-on-one session with our lead designers. Available both in-person and virtually.
+          {/* Contact Details & Info Card */}
+          <div className={styles.contactDetailsBox}>
+            <span className={styles.exclusiveBadge}>CONNECT WITH US</span>
+            <h2 className={styles.detailsTitle}>Reach Out to Our Atelier</h2>
+            <p className={styles.detailsDesc}>
+              Whether you need assistance with custom styling, custom sizing, or order status, our curating team is ready to help.
             </p>
 
-            <div className={styles.calendarWidget}>
-              <div className={styles.calendarWidgetHeader}>
-                <button onClick={() => alert("Previous month limits reached")} className={styles.calChevronBtn}>
-                  &lt;
-                </button>
-                <span className={styles.calendarMonthTitle}>OCTOBER 2026</span>
-                <button onClick={() => alert("Next month coming soon")} className={styles.calChevronBtn}>
-                  &gt;
-                </button>
-              </div>
-
-              {/* Grid week headings */}
-              <div className={styles.calendarDaysGridHeader}>
-                <div>MON</div>
-                <div>TUE</div>
-                <div>WED</div>
-                <div>THU</div>
-                <div>FRI</div>
-                <div>SAT</div>
-                <div>SUN</div>
-              </div>
-
-              {/* Grid days layout */}
-              <div className={styles.calendarDaysGrid}>
-                {/* Out of month days */}
-                <div className={styles.outOfMonthDay}>26</div>
-                <div className={styles.outOfMonthDay}>27</div>
-                <div className={styles.outOfMonthDay}>28</div>
-                <div className={styles.outOfMonthDay}>29</div>
-                <div className={styles.outOfMonthDay}>30</div>
-                
-                {/* Month Days */}
-                <div 
-                  onClick={() => setSelectedDay(1)}
-                  className={`${styles.calendarDayCell} ${selectedDay === 1 ? styles.selectedDayCell : ''}`}
-                >
-                  1
-                </div>
-                <div 
-                  onClick={() => setSelectedDay(2)}
-                  className={`${styles.calendarDayCell} ${selectedDay === 2 ? styles.selectedDayCell : ''}`}
-                >
-                  2
-                </div>
-                
-                {/* Available Slot 1 */}
-                <div 
-                  onClick={() => setSelectedDay(3)}
-                  className={`${styles.calendarDayCell} ${styles.availableSlotDay} ${selectedDay === 3 ? styles.selectedDayCell : ''}`}
-                >
-                  3
-                </div>
-                <div 
-                  onClick={() => setSelectedDay(4)}
-                  className={`${styles.calendarDayCell} ${selectedDay === 4 ? styles.selectedDayCell : ''}`}
-                >
-                  4
-                </div>
-                <div 
-                  onClick={() => setSelectedDay(5)}
-                  className={`${styles.calendarDayCell} ${selectedDay === 5 ? styles.selectedDayCell : ''}`}
-                >
-                  5
-                </div>
-                <div 
-                  onClick={() => setSelectedDay(6)}
-                  className={`${styles.calendarDayCell} ${selectedDay === 6 ? styles.selectedDayCell : ''}`}
-                >
-                  6
-                </div>
-                <div 
-                  onClick={() => setSelectedDay(7)}
-                  className={`${styles.calendarDayCell} ${selectedDay === 7 ? styles.selectedDayCell : ''}`}
-                >
-                  7
-                </div>
-                
-                {/* Available Slot 2 */}
-                <div 
-                  onClick={() => setSelectedDay(8)}
-                  className={`${styles.calendarDayCell} ${styles.availableSlotDay} ${selectedDay === 8 ? styles.selectedDayCell : ''}`}
-                >
-                  8
-                </div>
-                <div 
-                  onClick={() => setSelectedDay(9)}
-                  className={`${styles.calendarDayCell} ${selectedDay === 9 ? styles.selectedDayCell : ''}`}
-                >
-                  9
+            <div className={styles.infoCardsList}>
+              <div className={styles.infoCard}>
+                <Phone size={18} className={styles.infoCardIcon} />
+                <div className={styles.infoCardText}>
+                  <h4>Phone Support</h4>
+                  <p>+91 44 4829 1102</p>
+                  <span>Mon - Sat: 11:00 AM - 8:00 PM IST</span>
                 </div>
               </div>
 
-              <button onClick={handleConfirmCalendar} className={styles.confirmSelectionBtn}>
-                CONFIRM SELECTION (OCTOBER {selectedDay})
-              </button>
+              <div className={styles.infoCard}>
+                <MessageCircle size={18} className={styles.infoCardIcon} />
+                <div className={styles.infoCardText}>
+                  <h4>WhatsApp Concierge</h4>
+                  <a href="https://wa.me/919840123456" target="_blank" rel="noopener noreferrer" className={styles.whatsappLink}>
+                    +91 98401 23456 &rarr;
+                  </a>
+                  <span>Instant stylist chat assistance</span>
+                </div>
+              </div>
+
+              <div className={styles.infoCard}>
+                <Mail size={18} className={styles.infoCardIcon} />
+                <div className={styles.infoCardText}>
+                  <h4>Email Support</h4>
+                  <a href="mailto:concierge@mazhaivaanam.com" className={styles.emailLink}>
+                    concierge@mazhaivaanam.com
+                  </a>
+                  <span>Expected response within 24 hours</span>
+                </div>
+              </div>
+
+              <div className={styles.infoCard}>
+                <Store size={18} className={styles.infoCardIcon} />
+                <div className={styles.infoCardText}>
+                  <h4>Our Flagship Boutique</h4>
+                  <p>No. 42, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -372,8 +304,8 @@ export const Contact = ({ setCurrentTab }) => {
                   <p className={styles.locationHoursLabel}>Hours</p>
                   <p className={styles.locationHoursValue}>Mon - Sat: 11 AM - 8 PM<br />Sun: 12 PM - 6 PM</p>
                 </div>
-                <button onClick={() => { setSelectedDay(3); alert("Redirected to Private Calendar. Please confirm selection."); }} className={styles.locationActionBtn}>
-                  BOOK APPOINTMENT
+                <button onClick={() => window.open("https://maps.google.com", "_blank")} className={styles.locationActionBtn}>
+                  GET DIRECTIONS
                 </button>
               </div>
             </div>
@@ -393,8 +325,8 @@ export const Contact = ({ setCurrentTab }) => {
                   <p className={styles.locationHoursLabel}>Hours</p>
                   <p className={styles.locationHoursValue}>Tue - Sun: 11 AM - 8 PM<br />Mon: Closed</p>
                 </div>
-                <button onClick={() => { setSelectedDay(8); alert("Redirected to Private Calendar. Please confirm selection."); }} className={styles.locationActionBtn}>
-                  BOOK APPOINTMENT
+                <button onClick={() => window.open("https://maps.google.com", "_blank")} className={styles.locationActionBtn}>
+                  GET DIRECTIONS
                 </button>
               </div>
             </div>
@@ -402,31 +334,43 @@ export const Contact = ({ setCurrentTab }) => {
           </div>
         </section>
 
-        {/* Global Presence Map placeholder with relative pins */}
-        <section className={styles.globalPresenceMapSection}>
-          <div className={styles.globalPresenceTitleWrapper}>
-            <span className={styles.globalPresenceMainHeader}>Global Presence</span>
+        {/* Boutique Interactive Maps */}
+        <section className={styles.mapsSection}>
+          <div className={styles.mapsHeader}>
+            <span className={styles.mapsTag}>FIND US ON THE MAP</span>
+            <h2>Locate Our Boutiques</h2>
+            <div className={styles.divider} />
           </div>
-          
-          {/* Pin 1: Chennai */}
-          <div className={styles.locationPinBlock} style={{ top: '45%', left: '55%' }}>
-            <div className={styles.pinWrapper}>
-              <div className={styles.pingCircleAnimation}></div>
-              <div className={styles.pinDotSolid}></div>
+          <div className={styles.mapsGrid}>
+            <div className={styles.mapCard}>
+              <h4>The Chennai Flagship</h4>
+              <div className={styles.mapFrameWrapper}>
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.29177114674!2d80.25055047585093!3d13.061730013175853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a526615e45a2789%3A0xc36c7c40d7c71d6f!2sKhader%20Nawaz%20Khan%20Rd%2C%20Nungambakkam%2C%20Chennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1716382103445!5m2!1sen!2sin" 
+                  width="100%" 
+                  height="350" 
+                  style={{ border: 0 }} 
+                  allowFullScreen="" 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Chennai Flagship Store Map"
+                ></iframe>
+              </div>
             </div>
-            <div className={`${styles.pinHoverCard} ${styles.glassCard}`}>
-              <p>CHENNAI FLAGSHIP</p>
-            </div>
-          </div>
-
-          {/* Pin 2: Bangalore */}
-          <div className={styles.locationPinBlock} style={{ top: '55%', left: '52%' }}>
-            <div className={styles.pinWrapper} style={{ color: 'var(--secondary)' }}>
-              <div className={styles.pingCircleAnimation} style={{ backgroundColor: 'rgba(119, 90, 4, 0.2)' }}></div>
-              <div className={styles.pinDotSolid} style={{ backgroundColor: 'var(--secondary)' }}></div>
-            </div>
-            <div className={`${styles.pinHoverCard} ${styles.glassCard}`} style={{ color: 'var(--secondary)' }}>
-              <p>BANGALORE STUDIO</p>
+            <div className={styles.mapCard}>
+              <h4>The Bangalore Studio</h4>
+              <div className={styles.mapFrameWrapper}>
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.9806497259164!2d77.59628047584898!3d12.973099714856424!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae167b5eb46115%3A0xe5cdcdadbe3ff98d!2sLavelle%20Road%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1716382142103!5m2!1sen!2sin" 
+                  width="100%" 
+                  height="350" 
+                  style={{ border: 0 }} 
+                  allowFullScreen="" 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Bangalore Studio Map"
+                ></iframe>
+              </div>
             </div>
           </div>
         </section>

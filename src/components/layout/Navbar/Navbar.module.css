@@ -358,6 +358,20 @@
   color: #E2725B !important;
 }
 
+.preBookingLink {
+  color: #B5893D !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px;
+}
+
+.preBookingLink::after {
+  background-color: #B5893D !important;
+}
+
+.preBookingLink:hover {
+  color: #D4AF37 !important;
+}
+
 /* Collections Mega Menu Styling */
 .hasMegaMenu {
   position: static;
@@ -483,19 +497,33 @@
 }
 
 .bannerInfo button {
-  background: none;
+  background-color: var(--accent);
   border: none;
-  color: var(--primary);
+  color: var(--primary-dark);
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
-  text-align: left;
-  padding: 0;
-  margin-top: 6px;
+  text-align: center;
+  padding: 6px 14px;
+  margin-top: 8px;
   width: fit-content;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s ease, color 0.2s ease;
+}
+
+.bannerInfo button:hover {
+  background-color: #ffffff;
+  color: var(--primary-dark);
+}
+
+.megaBannerCard:hover .bannerInfo button {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Occasions Dropdown Styling */

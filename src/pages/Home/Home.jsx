@@ -136,19 +136,19 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
 
   const slides = useMemo(() => [
     {
-      image: "/Images/saree4",
+      image: "/Images/saree4.png",
       tag: "Festive Collection",
       title: "Grace In Every Fold",
       desc: "Celebrate the spirit of festivities with our handpicked heirloom sarees."
     },
     {
-      image: "/Images/saree3",
+      image: "/Images/saree3.png",
       tag: "New Arrivals",
       title: "Timeless Classic Saree",
       desc: "Experience the timeless elegance with our newly arrived exclusive collection."
     },
     {
-      image: "/Images/saree5",
+      image: "/Images/saree5.png",
       tag: "Bridal Masterpieces",
       title: "Elegance Woven Into Every Thread",
       desc: "Discover handcrafted luxury sarees designed for life's most precious celebrations."

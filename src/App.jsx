@@ -26,12 +26,45 @@ import { NewArrivals } from './pages/NewArrivals/NewArrivals';
 import { BestSellers } from './pages/BestSellers/BestSellers';
 import { Collections } from './pages/Collections/Collections';
 import { Occasions } from './pages/Occasions/Occasions';
+import { PreBooking, PREORDER_PRODUCTS } from './pages/PreBooking/PreBooking';
 import './App.css';
 
+function getInitialState() {
+  const path = window.location.pathname;
+  let tab = 'shop';
+  let prod = null;
+  
+  if (path === '/' || path === '') {
+    tab = 'shop';
+  } else if (path === '/catalog') {
+    tab = 'catalog';
+  } else if (path.startsWith('/product/')) {
+    const productId = path.replace('/product/', '');
+    const found = ALL_PRODUCTS.find(p => p.id === productId) || PREORDER_PRODUCTS.find(p => p.id === productId);
+    if (found) {
+      prod = found;
+      tab = 'product-detail';
+    }
+  } else {
+    const tabName = path.substring(1);
+    const validTabs = [
+      'lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
+      'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
+      'limited-offer', 'new-arrivals', 'best-sellers', 'collections', 'occasions',
+      'pre-booking'
+    ];
+    if (validTabs.includes(tabName)) {
+      tab = tabName;
+    }
+  }
+  return { tab, prod };
+}
+
 function AppContent() {
-  const [currentTab, setCurrentTab] = useState('shop');
+  const initialState = getInitialState();
+  const [currentTab, setCurrentTab] = useState(initialState.tab);
   const [catalogFilter, setCatalogFilter] = useState({ category: '', occasion: '', label: 'All Collections' });
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(initialState.prod);
   const { cartItemCount } = useCart();
   const [toastMessage, setToastMessage] = useState('');
 
@@ -63,15 +96,19 @@ function AppContent() {
         setCurrentTab('catalog');
       } else if (path.startsWith('/product/')) {
         const productId = path.replace('/product/', '');
-        const prod = ALL_PRODUCTS.find(p => p.id === productId);
+        const prod = ALL_PRODUCTS.find(p => p.id === productId) || PREORDER_PRODUCTS.find(p => p.id === productId);
         if (prod) {
           setSelectedProduct(prod);
           setCurrentTab('product-detail');
         } else {
           setCurrentTab('shop');
         }
-      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms', 'limited-offer'].includes(path.substring(1))) {
-      } else if (['lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout', 'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms', 'new-arrivals', 'best-sellers', 'collections', 'occasions'].includes(path.substring(1))) {
+      } else if ([
+        'lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
+        'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
+        'limited-offer', 'new-arrivals', 'best-sellers', 'collections', 'occasions',
+        'pre-booking'
+      ].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
         setCurrentTab('shop');
@@ -153,6 +190,8 @@ function AppContent() {
         return <Collections setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
       case 'occasions':
         return <Occasions setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
+      case 'pre-booking':
+        return <PreBooking setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
       default:
         return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
     }

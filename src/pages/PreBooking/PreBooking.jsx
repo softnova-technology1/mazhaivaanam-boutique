@@ -7,7 +7,7 @@ export const PREORDER_PRODUCTS = [
   {
     id: 'pre-1',
     name: "Sona Roopa Kanjeevaram",
-    category: "Silk",
+    category: "Blended South Cotton",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Wedding",
@@ -23,7 +23,7 @@ export const PREORDER_PRODUCTS = [
   {
     id: 'pre-2',
     name: "Shahi Shikargah Banarasi",
-    category: "Banarasi",
+    category: "Handloom Sarees",
     fabric: "Pure Silk",
     color: "#C8A34D",
     occasion: "Wedding",
@@ -39,7 +39,7 @@ export const PREORDER_PRODUCTS = [
   {
     id: 'pre-3',
     name: "Chanderi Indigo Bloom",
-    category: "Silk",
+    category: "Linen Cotton",
     fabric: "Pure Silk",
     color: "#1A237E",
     occasion: "Party Wear",
@@ -55,7 +55,7 @@ export const PREORDER_PRODUCTS = [
   {
     id: 'pre-4',
     name: "Organic Sage Cotton",
-    category: "Cotton",
+    category: "Chanderi Cotton",
     fabric: "Cotton",
     color: "#004D40",
     occasion: "Festival",

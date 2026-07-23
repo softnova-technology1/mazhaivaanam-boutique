@@ -74,20 +74,16 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const popularSearches = ['Kanchipuram', 'Wedding Sarees', 'Organza', 'Cotton', 'Designer'];
+  const popularSearches = ['Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton', 'Mul Mul Cotton'];
 
   const collectionsList = [
-    { label: 'Silk Sarees', link: 'silk' },
-    { label: 'Kanchipuram Silk', link: 'kanchipuram' },
-    { label: 'Banarasi', link: 'banarasi' },
-    { label: 'Soft Silk', link: 'soft-silk' },
-    { label: 'Cotton Sarees', link: 'cotton' },
-    { label: 'Organza', link: 'organza' },
-    { label: 'Linen', link: 'linen' },
-    { label: 'Tissue Sarees', link: 'tissue' },
-    { label: 'Designer Sarees', link: 'designer' },
-    { label: 'Handloom Collection', link: 'handloom' },
-    { label: 'Bridal Collection', link: 'bridal' }
+    { label: 'Blended South Cotton', link: 'blended-south-cotton' },
+    { label: 'Handloom Sarees', link: 'handloom-sarees' },
+    { label: 'Linen Cotton', link: 'linen-cotton' },
+    { label: 'Chanderi Cotton', link: 'chanderi-cotton' },
+    { label: 'Kalyani Cotton Sarees', link: 'kalyani-cotton-sarees' },
+    { label: 'Khadi Cotton Saree', link: 'khadi-cotton-saree' },
+    { label: 'Mul Mul Cotton', link: 'mul-mul-cotton' }
   ];
 
 

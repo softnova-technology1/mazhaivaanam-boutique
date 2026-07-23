@@ -17,9 +17,9 @@ export const Footer = ({ setCurrentTab }) => {
         <div className={styles['footer-links']}>
           <div className={styles['footer-link-group']}>
             <h4>Collections</h4>
-            <a onClick={() => handleTabChange('catalog')} style={{ cursor: 'pointer' }}>Kanjeevaram</a>
-            <a onClick={() => handleTabChange('catalog')} style={{ cursor: 'pointer' }}>Banarasi</a>
-            <a onClick={() => handleTabChange('catalog')} style={{ cursor: 'pointer' }}>Lehengas</a>
+            <a onClick={() => handleTabChange('catalog')} style={{ cursor: 'pointer' }}>Blended South Cotton</a>
+            <a onClick={() => handleTabChange('catalog')} style={{ cursor: 'pointer' }}>Handloom Sarees</a>
+            <a onClick={() => handleTabChange('catalog')} style={{ cursor: 'pointer' }}>Linen Cotton</a>
           </div>
           <div className={styles['footer-link-group']}>
             <h4>Services</h4>

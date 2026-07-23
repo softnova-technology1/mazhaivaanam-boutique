@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus } from 'lucide-react';
+import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus, MapPin, Gift, LogOut } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
 import { useAuth } from '../../../hooks/useAuth';
 import { formatCurrency } from '../../../utils/formatters';
@@ -220,13 +220,25 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                   <div className={styles.accountDropdown}>
                     {isAuthenticated ? (
                       <>
-                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>My Profile</button>
-                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>My Orders</button>
-                        <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Wishlist</button>
-                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Saved Address</button>
-                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Gift Cards</button>
+                        <button onClick={() => { handleTabChange('my-profile'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <User size={14} className={styles.dropdownIcon} /> My Profile
+                        </button>
+                        <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <ShoppingBag size={14} className={styles.dropdownIcon} /> My Orders
+                        </button>
+                        <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <Heart size={14} className={styles.dropdownIcon} /> Wishlist
+                        </button>
+                        <button onClick={() => { handleTabChange('saved-address'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <MapPin size={14} className={styles.dropdownIcon} /> Saved Address
+                        </button>
+                        <button onClick={() => { handleTabChange('gift-cards'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <Gift size={14} className={styles.dropdownIcon} /> Gift Cards
+                        </button>
                         <div className={styles.dropdownDivider}></div>
-                        <button onClick={() => { logout(); handleTabChange('shop'); setIsAccountOpen(false); }} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>Logout</button>
+                        <button onClick={() => { logout(); handleTabChange('shop'); setIsAccountOpen(false); }} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>
+                          <LogOut size={14} className={styles.dropdownIcon} /> Logout
+                        </button>
                       </>
                     ) : (
                       <>

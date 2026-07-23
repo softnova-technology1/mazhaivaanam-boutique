@@ -801,6 +801,11 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
       {/* 4. Curated Edit Section */}
       <section className={styles['curated-edit-section']}>
+        <img 
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4EfBPaPdPDqLR-Rynn0CdBpWEu5GnScNJ0P7TcAJMUlneT5ULxMjW7no9g7oggZiGPQ_3RDBuC6F4hB30FN4kRf8Ixqc9AcAwCWKHDSAiow5UiSsA23QSTL1nh_7CTPoHcZfJS1Fs-mg4CnhazB4V0JNBiMxr9oWd4za5pzvZpMWiQfGSJcLGgPTOGhCh0zcpjE_-fuCyNYUOU9a8sTqqdjJVFqG_TVvJInGjJ0cNzraqo3w3JOGR" 
+          alt="Curated Edit Background" 
+          className={styles['curated-bg-image']}
+        />
         <div className={styles['curated-container']}>
           <div className={styles['curated-image-box']}>
             <div className={styles['curated-image-frame']}>

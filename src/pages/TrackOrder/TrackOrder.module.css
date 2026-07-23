@@ -20,13 +20,14 @@
 /* Search Hero Section */
 .heroSection {
   position: relative;
-  min-height: 50vh;
+  height: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 48px 0;
   margin-bottom: 80px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 .silkTexture {

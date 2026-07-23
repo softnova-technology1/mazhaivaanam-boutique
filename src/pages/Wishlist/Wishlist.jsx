@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
-import { Heart, Star, TrendingDown, ChevronLeft, ChevronRight, Trash2, ArrowRight } from 'lucide-react';
+import { Heart, Star, TrendingDown, ChevronLeft, ChevronRight, Trash2, ArrowRight, Sparkles, X } from 'lucide-react';
 import styles from './Wishlist.module.css';
 
 export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
@@ -39,7 +39,10 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
   const handleAddToCart = (product) => {
     addToCart(product, 1);
     setToastMessage(`"${product.name}" Saree added to Trousseau!`);
-    setTimeout(() => setToastMessage(''), 3000);
+    if (setCurrentTab) {
+      window.history.pushState(null, '', '/cart');
+      setCurrentTab('cart');
+    }
   };
 
   const handleProductClick = (product) => {
@@ -152,16 +155,22 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
       {/* Statistics section */}
       <section className={styles['stats-section']}>
         <div className={styles['stats-card']}>
+          <div className={styles['stats-icon-badge']}>
+            <Heart size={18} className={styles['stats-icon']} />
+          </div>
           <span className={styles['stats-lbl']}>TOTAL ITEMS</span>
           <span className={styles['stats-val']}>{totalItems.toString().padStart(2, '0')}</span>
         </div>
         <div className={styles['stats-card']}>
+          <div className={styles['stats-icon-badge']}>
+            <Sparkles size={18} className={styles['stats-icon']} />
+          </div>
           <span className={styles['stats-lbl']}>WISHLIST VALUE</span>
           <span className={styles['stats-val']}>{formatCurrency(wishlistValue)}</span>
         </div>
         <div className={styles['stats-card']}>
-          <div className={styles['pulse-indicator']}>
-            <span className={styles['pulse-dot']} />
+          <div className={styles['stats-icon-badge']}>
+            <TrendingDown size={18} className={styles['stats-icon']} />
           </div>
           <span className={styles['stats-lbl']}>PRICE DROPS</span>
           <span className={styles['stats-val']}>{priceDropsCount.toString().padStart(2, '0')}</span>
@@ -195,6 +204,18 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
               
               return (
                 <div key={item.id} className={styles['wishlist-item-card']}>
+                  {/* Remove Close Button - Top Right */}
+                  <button 
+                    className={`${styles['remove-card-btn']} close-btn`} 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveFromWishlist(item.id, item.name);
+                    }}
+                    title="Remove from Wishlist"
+                  >
+                    <X size={15} />
+                  </button>
+
                   <div className={styles['card-image-box']}>
                     <img 
                       src={item.image} 
@@ -203,7 +224,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                       onClick={() => handleProductClick(item)}
                     />
                     
-                    {/* Corner Tag */}
+                    {/* Corner Tag - Top Left */}
                     <div className={styles['card-badge-container']}>
                       {hasDrop ? (
                         <span className={styles['price-drop-badge']}>Price Drop</span>
@@ -213,36 +234,11 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                         <span className={styles['limited-badge']}>Limited Edition</span>
                       )}
                     </div>
-
-                    {/* Wishlist Heart Toggle */}
-                    <button 
-                      className={styles['heart-toggle-btn']} 
-                      onClick={() => handleRemoveFromWishlist(item.id, item.name)}
-                      title="Remove from Wishlist"
-                    >
-                      <Heart size={16} fill="var(--primary)" stroke="var(--primary)" />
-                    </button>
-
-                    {/* Quick Add Overlay */}
-                    <div className={styles['card-hover-overlay']}>
-                      <button 
-                        className={styles['overlay-cart-btn']}
-                        onClick={() => handleAddToCart(item)}
-                      >
-                        Add to Trousseau
-                      </button>
-                      <button 
-                        className={styles['overlay-view-btn']}
-                        onClick={() => handleProductClick(item)}
-                      >
-                        Quick View
-                      </button>
-                    </div>
                   </div>
 
                   <div className={styles['card-description-box']}>
                     <span className={styles['card-category']}>{item.fabric || item.category || 'Mulberry Silk'}</span>
-                    <h4 onClick={() => handleProductClick(item)}>{item.name} Saree</h4>
+                    <h4 onClick={() => handleProductClick(item)} style={{ cursor: 'pointer' }}>{item.name} Saree</h4>
                     <div className={styles['card-prices-row']}>
                       {hasDrop && <span className={styles['card-price-old']}>{formatCurrency(item.oldPrice)}</span>}
                       <span className={styles['card-price-current']}>{formatCurrency(item.price)}</span>
@@ -256,6 +252,16 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                       <div className={styles['hue-circle']} style={{ backgroundColor: '#004D40' }} />
                       <div className={styles['hue-circle']} style={{ backgroundColor: '#C8A34D' }} />
                     </div>
+
+                    <button 
+                      className={styles['card-bottom-cart-btn']}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(item);
+                      }}
+                    >
+                      ADD TO CART
+                    </button>
                   </div>
                 </div>
               );
@@ -264,50 +270,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
         )}
       </section>
 
-      {/* Mood Categorizer */}
-      <section className={styles['mood-categorizer-section']}>
-        <div className={styles['mood-header']}>
-          <h3>Organized by Mood</h3>
-          <p>Your wishlist, beautifully categorized for your big moments.</p>
-        </div>
-        <div className={styles['mood-grid']}>
-          <div className={styles['mood-card']} onClick={() => setCurrentTab('catalog')}>
-            <div 
-              className={styles['mood-bg']} 
-              style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDGXtRibo2XKEybWcW-YHZQp05rH8SQ7kJfuyHtiJRnBQ72_bctdwhAjLnh6smnp1GBO17bHOv58gbmDcqW1AjXm49GyATmlKBBmTEFG6-6TEw6dGqi-zYglb1nPQAWDHVkiS_eMAHD2-H3rLUvc046woUa7LYWLWXInaQLccuH_gTSsy59nZwkDfO5eAa6irCQiqu1xJVg_YbWJxm1Fc2MqL3XUl76C_MtSDtDsFrpNvfDaFU-7TgX')` }}
-            />
-            <div className={styles['mood-overlay']} />
-            <div className={styles['mood-info']}>
-              <span className={styles['mood-count']}>04 ITEMS</span>
-              <h4>Wedding Collection</h4>
-            </div>
-          </div>
 
-          <div className={styles['mood-card']} onClick={() => setCurrentTab('catalog')}>
-            <div 
-              className={styles['mood-bg']} 
-              style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuBm9OGsI5e_gtc8crtmDhVUHNjqTax547Skqwbd-_cKZ1YBOne8aUwu1DF7gQbrIROCRy4acY7SA_8ulv0aE1eRQnWI7b2Z339jzwyuP0q8yqy55xXd1NmbE6Ocoit3v9cNeWqfpew8xo-6TNvDJC-hla6nd278mRvRTrGPVmEd-rkNPWPLmj9sF3bp3QhNToV84UwEfy585RCJz3Dg815BVIhTkaVIVZvBNcmKfVlbL7i2y5cjlI8-')` }}
-            />
-            <div className={styles['mood-overlay']} />
-            <div className={styles['mood-info']}>
-              <span className={styles['mood-count']}>06 ITEMS</span>
-              <h4>Office Wear</h4>
-            </div>
-          </div>
-
-          <div className={styles['mood-card']} onClick={() => setCurrentTab('catalog')}>
-            <div 
-              className={styles['mood-bg']} 
-              style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuDMnMJQt1m4OmZXMBfmP4rrDt6DvFR6jEaUZrdaDA52jPSRoEOu2zxFr8GMyBcuWevLVK-MiDqeTFQcbyJyCSN9dChaErS_cxHAmK-cejaCcJO-UFkmr8aBc-30Ne1za_KN9EmlB3FSLGXsTirURLwLt50aly7XLlJxXwsuIvG7Eqa7V4miSswYYp5vO2i748BsejaVWqQkKIuHequ1N9cgsk2cqdipEZp2g8RbG-vncKFSmBqqIWvG')` }}
-            />
-            <div className={styles['mood-overlay']} />
-            <div className={styles['mood-info']}>
-              <span className={styles['mood-count']}>02 ITEMS</span>
-              <h4>Bridal Edit</h4>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Recommended Carousel */}
       <section className={styles['recommended-section']}>
@@ -347,47 +310,92 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
         </div>
       </section>
 
-      {/* Recently Viewed */}
+      {/* Recently Viewed Luxury Showcase */}
       <section className={styles['recently-viewed-section']}>
-        <h3>RECENTLY VIEWED</h3>
-        <div className={styles['recent-items-container']}>
-          <div className={styles['recent-item-row']} onClick={() => setCurrentTab('catalog')}>
-            <div className={styles['recent-thumb']}>
-              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcJblDJrLmd27oPFCauspoVqreUEA3wjnHTlpb4C-heRtyYySKX_1vzs6LTJFvRbRPl7XQgmKv-bPFKBwXNexk_43AqS2ky_9ksz6Jo0FtyBbBdW3J7jDbD0t8yJ8qpYfw-oPFHaFjVH30x1oPGLO35jTzQtIbhEad6k3K5Y_hkoQdygnK3PvJKR_gypyTxd6_eXl-lnBMhEeIl3oDtIyqsq5QLI4GMfyYBeYZfF5uYBu2NNay1CT9" alt="Classic Maroon thumbnail" />
+        <div className={styles['recent-section-header']}>
+          <span className={styles['recent-subtitle']}>CURATED MEMORIES</span>
+          <h3 className={styles['recent-title']}>Recently Viewed Weaves</h3>
+          <div className={styles['recent-gold-line']} />
+        </div>
+
+        <div className={styles['recent-items-grid']}>
+          <div className={styles['recent-item-card']} onClick={() => setCurrentTab('catalog')}>
+            <div className={styles['recent-thumb-wrapper']}>
+              <img 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcJblDJrLmd27oPFCauspoVqreUEA3wjnHTlpb4C-heRtyYySKX_1vzs6LTJFvRbRPl7XQgmKv-bPFKBwXNexk_43AqS2ky_9ksz6Jo0FtyBbBdW3J7jDbD0t8yJ8qpYfw-oPFHaFjVH30x1oPGLO35jTzQtIbhEad6k3K5Y_hkoQdygnK3PvJKR_gypyTxd6_eXl-lnBMhEeIl3oDtIyqsq5QLI4GMfyYBeYZfF5uYBu2NNay1CT9" 
+                alt="Classic Maroon" 
+                className={styles['recent-img']}
+              />
             </div>
-            <span>Classic Maroon</span>
+            <div className={styles['recent-info']}>
+              <span className={styles['recent-category']}>PURE KANJIVARAM</span>
+              <h4 className={styles['recent-name']}>Classic Maroon</h4>
+              <span className={styles['recent-price']}>₹24,500</span>
+            </div>
+            <div className={styles['recent-arrow']}>
+              <ArrowRight size={16} />
+            </div>
           </div>
 
-          <div className={styles['recent-item-row']} onClick={() => setCurrentTab('catalog')}>
-            <div className={styles['recent-thumb']}>
-              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_vcIyf5sMWsujKf0WxuZHmhTeyArEjn0Ir9r7c93HhVV7SPi5w8K0b8bf5ePlbFVQJIeC8KkzQgoUhj79NHGsW70eb6C1dMAaHUnNeMUANcvnArycmTHMk6UyyTGgVWmdHOMjvTnGmMCzHWMqxd3cWIeSclAyjVEdbE2etWGQY6OIv5j1qOaZPvYuoMBtQgj5ajrj5B-t_k6JMuyLNn-jVYW2pV76NsmvRKmyjYTep2wcdmhube5J" alt="Teal Handloom thumbnail" />
+          <div className={styles['recent-item-card']} onClick={() => setCurrentTab('catalog')}>
+            <div className={styles['recent-thumb-wrapper']}>
+              <img 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_vcIyf5sMWsujKf0WxuZHmhTeyArEjn0Ir9r7c93HhVV7SPi5w8K0b8bf5ePlbFVQJIeC8KkzQgoUhj79NHGsW70eb6C1dMAaHUnNeMUANcvnArycmTHMk6UyyTGgVWmdHOMjvTnGmMCzHWMqxd3cWIeSclAyjVEdbE2etWGQY6OIv5j1qOaZPvYuoMBtQgj5ajrj5B-t_k6JMuyLNn-jVYW2pV76NsmvRKmyjYTep2wcdmhube5J" 
+                alt="Teal Handloom" 
+                className={styles['recent-img']}
+              />
             </div>
-            <span>Teal Handloom</span>
+            <div className={styles['recent-info']}>
+              <span className={styles['recent-category']}>HANDLOOM SILK</span>
+              <h4 className={styles['recent-name']}>Teal Handloom</h4>
+              <span className={styles['recent-price']}>₹18,900</span>
+            </div>
+            <div className={styles['recent-arrow']}>
+              <ArrowRight size={16} />
+            </div>
           </div>
 
-          <div className={styles['recent-item-row']} onClick={() => setCurrentTab('catalog')}>
-            <div className={styles['recent-thumb']}>
-              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBttIDSSOlda3E_xxLDP9YtTr2yl-4WMoR-Lx16sqAQ9pZ2fkrcD7sPRW9-K2Oe3WBrlgjcBFiwFEj43S9XZa3r9H9ZGQAnxCSwAm6n3Dmh_ioo9mR2pCOvn0almpibaMGhuXODDME80veh4c8EBMmKUSqIiBZfpI4f9lxYs1KQUqVk6M6pkkOX9gfoCOS0CWrmMroUkTOr77RleooJxYUDAp0T_CuWddBTCUR8J6Mjmt-j4QJm5A9H" alt="Zari White thumbnail" />
+          <div className={styles['recent-item-card']} onClick={() => setCurrentTab('catalog')}>
+            <div className={styles['recent-thumb-wrapper']}>
+              <img 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBttIDSSOlda3E_xxLDP9YtTr2yl-4WMoR-Lx16sqAQ9pZ2fkrcD7sPRW9-K2Oe3WBrlgjcBFiwFEj43S9XZa3r9H9ZGQAnxCSwAm6n3Dmh_ioo9mR2pCOvn0almpibaMGhuXODDME80veh4c8EBMmKUSqIiBZfpI4f9lxYs1KQUqVk6M6pkkOX9gfoCOS0CWrmMroUkTOr77RleooJxYUDAp0T_CuWddBTCUR8J6Mjmt-j4QJm5A9H" 
+                alt="Zari White" 
+                className={styles['recent-img']}
+              />
             </div>
-            <span>Zari White</span>
+            <div className={styles['recent-info']}>
+              <span className={styles['recent-category']}>HERITAGE ZARI</span>
+              <h4 className={styles['recent-name']}>Zari White</h4>
+              <span className={styles['recent-price']}>₹31,000</span>
+            </div>
+            <div className={styles['recent-arrow']}>
+              <ArrowRight size={16} />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Wardrobe Banner */}
+      </div> {/* Closing wishlist-content-wrapper */}
+
+      {/* Full-Width Edge-to-Edge Parallax Wardrobe Banner */}
       <section className={styles['wardrobe-banner-section']}>
+        <div className={styles['wardrobe-banner-overlay']} />
         <div className={styles['wardrobe-banner-content']}>
+          <span className={styles['wardrobe-subtitle']}>THE MAZHAI VAANAM ATELIER</span>
           <h3>Curate Your Entire Wardrobe</h3>
+          <div className={styles['wardrobe-gold-divider']}>
+            <Sparkles size={16} className={styles['wardrobe-sparkle']} />
+          </div>
           <p>Explore our latest arrivals in Silk, Cotton, and Bridal couture. Handcrafted specifically for the connoisseur of heritage.</p>
           <button 
-            className={styles['wardrobe-discover-btn']}
+            className={`${styles['wardrobe-discover-btn']} pill-btn`}
             onClick={() => setCurrentTab('catalog')}
           >
-            DISCOVER NEW ARRIVALS
+            <span>DISCOVER NEW ARRIVALS</span>
+            <ArrowRight size={16} />
           </button>
         </div>
       </section>
-      </div> {/* Closing wishlist-content-wrapper */}
     </div>
   );
 };

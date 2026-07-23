@@ -7,9 +7,56 @@ import {
   MapPin,
   Flame,
   Star,
-  Quote
+  Quote,
+  Palette,
+  Layers,
+  Scissors,
+  Package,
+  Compass
 } from 'lucide-react';
 import styles from './About.module.css';
+
+const AnimatedCounter = ({ target, suffix = '', duration = 2000 }) => {
+  const [count, setCount] = React.useState(0);
+  const ref = React.useRef(null);
+  const [hasAnimated, setHasAnimated] = React.useState(false);
+
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          let startTime = null;
+          const animate = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(easeProgress * target));
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              setCount(target);
+            }
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [target, duration, hasAnimated]);
+
+  return (
+    <span ref={ref}>
+      {count.toLocaleString()}{suffix}
+    </span>
+  );
+};
 
 export const About = ({ setCurrentTab }) => {
 
@@ -48,10 +95,6 @@ export const About = ({ setCurrentTab }) => {
           </div>
         </div>
 
-        <div className={styles.scrollDownBadge} onClick={handleScrollToStory}>
-          <span className={styles.scrollDownLabel}>SCROLL</span>
-          <span className={styles.scrollChevron}>↓</span>
-        </div>
       </section>
 
       {/* Our Story */}
@@ -67,19 +110,23 @@ export const About = ({ setCurrentTab }) => {
           </div>
 
           <div className={styles.storyTextContainer}>
-            <span className={styles.sinceLabel}>SINCE 1984</span>
-            <h3 className={styles.storySectionTitle}>A Dream Preserved In Silk</h3>
+           
+            <h3 className={styles.storySectionTitle}>About Mazhai Vaanam</h3>
 
             <div className={styles.storyBodyParagraphs}>
               <p>
-                Born from the monsoon-kissed looms of Southern India, Mazhai Vaanam — meaning 'Rainy Sky' — was founded on a singular vision: to bring the soul of Indian weaving to the global stage.
+                At Mazhai Vaanam, we celebrate the timeless beauty of Indian ethnic fashion. Inspired by grace and tradition, we curate premium sarees that blend classic craftsmanship with modern elegance.
               </p>
               <p>
-                What began in a small digital atelier has evolved into a movement. We don't just sell sarees; we archive the rhythmic tap-tap of the handloom and the whispers of artisans who have carried these patterns in their blood for generations.
+                From everyday cottons to luxurious silks for special occasions, every collection is thoughtfully selected for quality, comfort, and style. Our mission is to help every woman express her unique elegance with confidence.
               </p>
               <p>
-                Our dream is a world where every woman drapes herself not just in fabric, but in the pride, history, and uncompromising grace of an authentic masterpiece.
+                Mazhai Vaanam is more than a boutique—it’s where tradition, beauty, and timeless style come together.
               </p>
+              <div className={styles.storyTaglineBox}>
+                <span className={styles.taglineLine}></span>
+                <p className={styles.storyTagline}>Wear Elegance. Celebrate Tradition.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -170,123 +217,92 @@ export const About = ({ setCurrentTab }) => {
         </div>
       </section>
 
-      {/* Journey of a Saree (Horizontal Timeline) */}
+      {/* Journey of a Saree (Horizontal Timeline - Luxury Stepper) */}
       <section className={styles.sareeJourneySection}>
+        <div className={styles.sareeJourneyBackgroundGlow}></div>
+
         <div className={styles.sareeJourneyHeader}>
+          <span className={styles.sareeJourneyBadge}>ARTISANAL CRAFTSMANSHIP</span>
           <h3 className={styles.sareeJourneyTitle}>From Loom to Love</h3>
-          <p className={styles.sareeJourneySub}>The meticulous seven-step journey of your masterpiece.</p>
+          <div className={styles.goldDivider}></div>
+          <p className={styles.sareeJourneySub}>The meticulous seven-step journey of your handcrafted masterpiece.</p>
         </div>
 
         <div className={styles.horizontalScrollWrapper}>
           <div className={styles.timelineHorizontalTrack}>
+            <div className={styles.timelineProgressLine}></div>
 
             {/* Step 1 */}
             <div className={styles.timelineNodeBlock}>
-              <div className={styles.timelineNodeCircle}>1</div>
+              <div className={styles.timelineNodeCircle}>
+                <Palette size={22} className={styles.nodeIcon} />
+                <span className={styles.stepNum}>01</span>
+              </div>
               <h5 className={styles.timelineNodeTitle}>Design</h5>
-              <p className={styles.timelineNodeDesc}>Conceptualizing patterns inspired by nature and architecture.</p>
+              <p className={styles.timelineNodeDesc}>Conceptualizing motifs inspired by nature & royal temple art.</p>
             </div>
 
             {/* Step 2 */}
             <div className={styles.timelineNodeBlock}>
-              <div className={styles.timelineNodeCircle}>2</div>
+              <div className={styles.timelineNodeCircle}>
+                <Layers size={22} className={styles.nodeIcon} />
+                <span className={styles.stepNum}>02</span>
+              </div>
               <h5 className={styles.timelineNodeTitle}>Material</h5>
-              <p className={styles.timelineNodeDesc}>Sourcing the finest Grade-A mulberry silk and pure cotton.</p>
+              <p className={styles.timelineNodeDesc}>Sourcing Grade-A mulberry silk & pure gold-plated zari yarn.</p>
             </div>
 
             {/* Step 3 */}
             <div className={styles.timelineNodeBlock}>
-              <div className={styles.timelineNodeCircle}>3</div>
+              <div className={styles.timelineNodeCircle}>
+                <Scissors size={22} className={styles.nodeIcon} />
+                <span className={styles.stepNum}>03</span>
+              </div>
               <h5 className={styles.timelineNodeTitle}>Weaving</h5>
-              <p className={styles.timelineNodeDesc}>15-20 days of rhythmic, patient handloom weaving.</p>
+              <p className={styles.timelineNodeDesc}>15–20 days of patient, rhythmic handloom weaving by master artisans.</p>
             </div>
 
             {/* Step 4 */}
             <div className={styles.timelineNodeBlock}>
-              <div className={styles.timelineNodeCircle}>4</div>
+              <div className={styles.timelineNodeCircle}>
+                <Sparkles size={22} className={styles.nodeIcon} />
+                <span className={styles.stepNum}>04</span>
+              </div>
               <h5 className={styles.timelineNodeTitle}>Detailing</h5>
-              <p className={styles.timelineNodeDesc}>Hand-finished tassels and intricate embroidery work.</p>
+              <p className={styles.timelineNodeDesc}>Hand-knotted tassels & intricate zari border finishing.</p>
             </div>
 
             {/* Step 5 */}
             <div className={styles.timelineNodeBlock}>
-              <div className={styles.timelineNodeCircle}>5</div>
+              <div className={styles.timelineNodeCircle}>
+                <ShieldCheck size={22} className={styles.nodeIcon} />
+                <span className={styles.stepNum}>05</span>
+              </div>
               <h5 className={styles.timelineNodeTitle}>Quality</h5>
-              <p className={styles.timelineNodeDesc}>Meticulous check for every thread, zari, and color bleed.</p>
+              <p className={styles.timelineNodeDesc}>Meticulous 30-point check for thread weave & color perfection.</p>
             </div>
 
             {/* Step 6 */}
             <div className={styles.timelineNodeBlock}>
-              <div className={styles.timelineNodeCircle}>6</div>
+              <div className={styles.timelineNodeCircle}>
+                <Package size={22} className={styles.nodeIcon} />
+                <span className={styles.stepNum}>06</span>
+              </div>
               <h5 className={styles.timelineNodeTitle}>Packaging</h5>
-              <p className={styles.timelineNodeDesc}>Eco-luxury boxing with a personalized artisan story card.</p>
+              <p className={styles.timelineNodeDesc}>Eco-luxury heirloom boxing with a personalized weaver story card.</p>
             </div>
 
             {/* Step 7 */}
             <div className={styles.timelineNodeBlock}>
-              <div className={styles.timelineNodeCircle}>7</div>
+              <div className={styles.timelineNodeCircle}>
+                <Compass size={22} className={styles.nodeIcon} />
+                <span className={styles.stepNum}>07</span>
+              </div>
               <h5 className={styles.timelineNodeTitle}>Delivery</h5>
-              <p className={styles.timelineNodeDesc}>Global white-glove shipping to your doorstep.</p>
+              <p className={styles.timelineNodeDesc}>Global white-glove insured delivery right to your doorstep.</p>
             </div>
 
           </div>
-        </div>
-      </section>
-
-      {/* Signature Curated Collection Previews */}
-      <section className={styles.curatedSection}>
-        <h3 className={styles.curatedTitle}>Curated For Moments</h3>
-
-        <div className={styles.curatedLayoutGrid}>
-          {/* Box 1 */}
-          <div className={styles.curatedMainBox} onClick={() => setCurrentTab('catalog')}>
-            <img
-              src="/Images/wedding.png"
-              alt="Bridal red saree draped elegantly"
-            />
-            <div className={styles.curatedHoverContent}>
-              <span className={styles.hoverCategoryLabel}>SIGNATURE</span>
-              <h4>Wedding Collection</h4>
-            </div>
-          </div>
-
-          {/* Box 2 */}
-          <div className={styles.curatedSecondaryBox} onClick={() => setCurrentTab('catalog')}>
-            <img
-              src="/Images/festival.png"
-              alt="Green and gold silk saree on wooden chair"
-            />
-            <div className={styles.curatedHoverContent}>
-              <span className={styles.hoverCategoryLabel}>VIBRANT</span>
-              <h4>Festival</h4>
-            </div>
-          </div>
-
-          {/* Box 3 Stack */}
-          <div className={styles.curatedStackColumn}>
-
-            <div className={styles.curatedStackHalfBox} onClick={() => setCurrentTab('catalog')}>
-              <img
-                src="/Images/office.png"
-                alt="Minimalist cotton silk saree art gallery"
-              />
-              <div className={styles.curatedHoverContentSmall}>
-                <h4>Office Minimal</h4>
-              </div>
-            </div>
-
-            <div className={styles.curatedStackHalfBox} onClick={() => setCurrentTab('catalog')}>
-              <img
-                src="/Images/party.png"
-                alt="Silver blue organza saree cocktail lounge"
-              />
-              <div className={styles.curatedHoverContentSmall}>
-                <h4>Party Shimmer</h4>
-              </div>
-            </div>
-
-          </div>
-
         </div>
       </section>
 
@@ -321,19 +337,27 @@ export const About = ({ setCurrentTab }) => {
       <section className={styles.metricsSection}>
         <div className={styles.metricsLayoutGrid}>
           <div>
-            <p className={styles.metricVal}>25K+</p>
+            <p className={styles.metricVal}>
+              <AnimatedCounter target={25} suffix="K+" />
+            </p>
             <p className={styles.metricMeta}>Global Customers</p>
           </div>
           <div>
-            <p className={styles.metricVal}>150+</p>
+            <p className={styles.metricVal}>
+              <AnimatedCounter target={150} suffix="+" />
+            </p>
             <p className={styles.metricMeta}>Unique Designs</p>
           </div>
           <div>
-            <p className={styles.metricVal}>500+</p>
+            <p className={styles.metricVal}>
+              <AnimatedCounter target={500} suffix="+" />
+            </p>
             <p className={styles.metricMeta}>Cities Served</p>
           </div>
           <div>
-            <p className={styles.metricVal}>1200+</p>
+            <p className={styles.metricVal}>
+              <AnimatedCounter target={1200} suffix="+" />
+            </p>
             <p className={styles.metricMeta}>Artisans Empowered</p>
           </div>
         </div>

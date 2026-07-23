@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  margin-bottom: 120px;
+  margin-bottom: 60px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
@@ -34,7 +34,7 @@
 .heroGradientOverlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+   background-color: rgba(0, 0, 0, 0.6);
   z-index: 2;
 }
 
@@ -157,8 +157,8 @@
 
 /* Our Story Details */
 .storySection {
-  max-w: 1440px;
-  margin: 0 auto 120px auto;
+  max-width: 1440px;
+  margin: 0 auto 60px auto;
   padding: 0 80px;
 }
 
@@ -214,6 +214,7 @@
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 2;
+  height: 30pc;
 }
 
 .storyImageContainer:hover .storyMainImg {
@@ -265,19 +266,19 @@
 /* Our Philosophy Principles */
 .principlesSection {
   background-color: var(--surface-container-low);
-  padding: 120px 80px;
-  margin-bottom: 120px;
+  padding: 60px 80px;
+  margin-bottom: 60px;
 }
 
 @media (max-width: 768px) {
   .principlesSection {
-    padding: 80px 20px;
+    padding: 40px 20px;
   }
 }
 
 .principlesHeader {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 40px;
 }
 
 .principlesMainTitle {
@@ -615,9 +616,11 @@
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 48px;
   color: var(--primary);
-  margin: 0 0 64px 0;
+  margin: 0 auto 64px auto;
   text-align: center;
   font-weight: 400;
+  width: 100%;
+  display: block;
 }
 
 .curatedLayoutGrid {
@@ -770,28 +773,35 @@
 
 /* Why Brand Difference */
 .whyBrandSection {
+  width: 100%;
+  box-sizing: border-box;
   background-color: var(--surface-container);
-  padding: 120px 80px;
+  padding: 140px 80px 120px 80px;
+  margin-bottom: 120px;
 }
 
 @media (max-width: 768px) {
   .whyBrandSection {
-    padding: 80px 20px;
+    padding: 90px 20px 80px 20px;
   }
 }
 
 .whyBrandWrapper {
   max-width: 1440px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .whyBrandTitle {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 48px;
   color: var(--primary);
-  margin: 0 0 64px 0;
+  margin: 40px auto 64px auto;
   text-align: center;
   font-weight: 400;
+  width: 100%;
+  display: block;
 }
 
 .whyBrandGrid {
@@ -911,10 +921,11 @@
 .newsletterThreadBackground {
   position: absolute;
   inset: 0;
-  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBY5XJlYA2-7dpFM7HCCSuXDsuMM69iibcGv4G2R_GACvT5AzCG8cNpM9dIdWZQjpcRHKNIQn0CSATe3kYWs5A9luE32ULHTiklEeELkuEACV3xMAWW4tTJ24Fbbd1U1c6tf1CnVCfnDULlT2RhhwxRYrwHQcYb78VJZGQFpj1lzhYihQxB8pcmkLdErWsPTydYF3l_B1wJMC7tO7PloA46UYomU3xXxROFpx_TN9Giep8AE9Pg1UtH');
+  background-image: url('/Images/bg.png');
   background-size: cover;
   background-position: center;
-  opacity: 0.15;
+  background-attachment: fixed;
+  opacity: 1.90;
   z-index: 1;
 }
 

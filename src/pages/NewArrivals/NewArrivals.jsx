@@ -73,8 +73,8 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
         <div className={styles['hero-overlay']} />
         <div className={styles['hero-content']}>
           <span className={styles['hero-slide-tag']}>Fresh From The Looms</span>
-          <h1>New Arrivals</h1>
-          <p>Discover our newest handwoven additions curated for seasonal celebrations and timeless beauty.</p>
+          <h1>Fresh Styles, <span className={`italic serif font-light ${styles['text-shimmer']}`}>Timeless Elegance</span></h1>
+          <p>Explore our latest arrivals featuring contemporary designs blended with traditional craftsmanship. Stay ahead with fresh collections that celebrate beauty, comfort, and elegance.</p>
           <div className={styles['hero-actions']}>
             <button 
               className={styles['btn-explore']}

@@ -116,10 +116,9 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
         <div className={styles.heroGradientOverlay}></div>
         <div className={styles.heroContent}>
           <span className={styles.heroTag}>EXCLUSIVE RESERVATIONS</span>
-          <h1 className={styles.heroTitle}>Reserve Your Masterpiece</h1>
+          <h1 className={styles.heroTitle}>Reserve Your Favorite Before It Arrives</h1>
           <p className={styles.heroSubtitle}>
-            Secure highly anticipated, limited-edition designs while they are still in production.
-            Hand-woven on ancient looms, crafted only for you.
+            Be the first to own our upcoming exclusive collections. Pre-book your favorite sarees in advance and ensure you never miss a limited-edition design.
           </p>
         </div>
       </header>

@@ -106,12 +106,13 @@
 
 .hero-content h1 {
   font-family: 'Kaushan Script', cursive;
-  font-size: 5rem;
+  font-size: clamp(2rem, 4.5vw, 4.5rem);
   font-weight: 400;
   letter-spacing: 0px;
   line-height: 1.15;
   margin-bottom: 24px;
-  max-width: 750px;
+  max-width: 100%;
+  white-space: nowrap;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   color: #FFFFFF;
 }
@@ -266,7 +267,7 @@
 /* 2. Stats Section */
 .stats-section {
   background-color: var(--bg-main);
-  padding: 80px 0;
+  padding: 40px 0;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -314,7 +315,7 @@
 
 /* 3. Curation of Craft */
 .curation-section {
-  padding: 120px 80px;
+  padding: 60px 80px;
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -445,7 +446,7 @@
 
 /* 4. The Best Sellers */
 .bestsellers-section {
-  padding: 120px 80px;
+  padding: 60px 80px;
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -577,7 +578,7 @@
 
 /* 6. Our Story */
 .story-section {
-  padding: 120px 80px;
+  padding: 60px 80px;
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -675,48 +676,70 @@
 /* 7. Why Choose */
 .values-section {
   background-color: var(--bg-main);
-  padding: 120px 0;
-  border-top: 1px solid var(--border-color);
+  padding: 60px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.values-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  z-index: 0;
 }
 
 .values-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
+  gap: 20px;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .values-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 32px;
-  gap: 20px;
-  background-color: #FFFFFF;
-  border: 1px solid rgba(200, 163, 77, 0.2);
-  border-radius: 12px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.03);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  padding: 20px 32px;
+  gap: 32px;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  transition: transform 0.6s ease;
+  position: relative;
+}
+
+.values-item::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 15%;
+  height: 70%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(200, 163, 77, 0.3), transparent);
+}
+
+.values-item:last-child::after {
+  display: none;
 }
 
 .values-item:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.08);
 }
 
 .value-icon {
-  width: 72px;
-  height: 72px;
-  background-color: rgba(200, 163, 77, 0.1);
-  /* Faint gold */
+  width: 80px;
+  height: 80px;
+  background-color: transparent;
   color: var(--primary);
-  /* Deep Maroon */
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
-  border: 1px solid rgba(200, 163, 77, 0.3);
+  border: 1px solid rgba(200, 163, 77, 0.4);
+  transform: rotate(45deg);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -725,54 +748,61 @@
 .value-icon::before {
   content: '';
   position: absolute;
-  top: 100%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  width: 160px;
+  height: 160px;
+  top: -40px;
+  left: -40px;
   background-color: var(--primary);
-  border-radius: 40%;
-  transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translate(110px, 110px) rotate(-45deg);
   z-index: -1;
-  transform: rotate(0deg);
-}
-
-.values-item:hover .value-icon::before {
-  top: -50%;
-  transform: rotate(360deg);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .value-icon svg {
-  position: relative;
-  z-index: 2;
-  transition: color 0.4s ease, stroke 0.4s ease;
+  transform: rotate(-45deg);
+  width: 32px;
+  height: 32px;
+  stroke-width: 1.5;
+  transition: all 0.6s ease;
+}
+
+.values-item:hover .value-icon {
+  border-color: var(--primary);
+  box-shadow: 0 0 30px rgba(200, 163, 77, 0.25);
+  transform: rotate(45deg);
+  color: #FFFFFF;
+}
+
+.values-item:hover .value-icon::before {
+  transform: translate(0px, 0px) rotate(-45deg);
 }
 
 .values-item:hover .value-icon svg {
-  color: #FFFFFF !important;
-  stroke: #FFFFFF !important;
+  transform: rotate(-45deg);
 }
 
 .values-item h4 {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.15em;
-  color: var(--text-main);
+  color: var(--primary-dark);
   margin: 0;
+  text-transform: uppercase;
 }
 
 .values-item p {
   font-family: 'Inter', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
-  line-height: 1.6;
-  opacity: 0.7;
+  line-height: 1.8;
+  font-weight: 400;
   margin: 0;
 }
 
 /* 8. Testimonials & Instagram */
 .worn-with-love-section {
-  padding: 120px 80px;
+  padding: 60px 80px;
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -791,9 +821,9 @@
 .social-bento-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: minmax(280px, auto);
-  gap: 32px;
-  margin-top: 64px;
+  grid-auto-rows: minmax(220px, auto);
+  gap: 24px;
+  margin-top: 48px;
 }
 
 .bento-col-2 {
@@ -807,12 +837,12 @@
 .social-text-card {
   background-color: var(--surface-container-low);
   border: 1px solid var(--border-color);
-  padding: 40px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 24px;
-  border-radius: 24px;
+  gap: 20px;
+  border-radius: 4px;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   box-shadow: var(--shadow-sm);
   position: relative;
@@ -906,7 +936,7 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  border-radius: 140px 140px 24px 24px;
+  border-radius: 4px;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   box-shadow: var(--shadow-sm);
 }
@@ -1008,11 +1038,11 @@
 .social-cta-card {
   background-color: var(--secondary-container); /* Warm Sand cream */
   border: 1px solid var(--border-color);
-  padding: 40px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-radius: 24px;
+  border-radius: 4px;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   box-shadow: var(--shadow-sm);
 }

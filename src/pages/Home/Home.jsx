@@ -137,20 +137,20 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
   const slides = useMemo(() => [
     {
       image: "/Images/saree4.png",
-      tag: "Festive Collection",
-      title: "Grace In Every Fold",
-      desc: "Celebrate the spirit of festivities with our handpicked heirloom sarees."
+      tag: "Wear Confidence",
+      title: "Fashion Rooted in Tradition.",
+      desc: "Your Style, Your Story."
     },
     {
       image: "/Images/saree3.png",
-      tag: "New Arrivals",
-      title: "Timeless Classic Saree",
-      desc: "Experience the timeless elegance with our newly arrived exclusive collection."
+      tag: "Where Beauty Meets Tradition.",
+      title: "Celebrate Every Moment with Elegance.",
+      desc: "From Our Collection to Your Celebration."
     },
     {
       image: "/Images/saree5.png",
-      tag: "Bridal Masterpieces",
-      title: "Elegance Woven Into Every Thread",
+      tag: "Mazhai Vaanam",
+      title: "Grace Begins with Mazhai Vaanam.",
       desc: "Discover handcrafted luxury sarees designed for life's most precious celebrations."
     }
   ], []);
@@ -270,7 +270,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
 
 
       {/* 3. Curation of Craft - Premium Redesign */}
-      <section className="py-16 md:py-24 px-4 md:px-10 max-w-[1400px] mx-auto">
+      <section className="py-10 md:py-16 px-4 md:px-10 max-w-[1400px] mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 relative">
           <div className="relative pl-4 border-l-2 border-[#D4AF37]">
             <span className="font-label-caps text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase mb-3 block">Handpicked For You</span>

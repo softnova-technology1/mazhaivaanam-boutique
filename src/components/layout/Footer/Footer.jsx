@@ -23,7 +23,6 @@ export const Footer = ({ setCurrentTab }) => {
           </div>
           <div className={styles['footer-link-group']}>
             <h4>Services</h4>
-            <a onClick={() => handleTabChange('contact')} style={{ cursor: 'pointer' }}>Custom Tailoring</a>
             <a onClick={() => handleTabChange('about')} style={{ cursor: 'pointer' }}>Our Story</a>
             <a onClick={() => handleTabChange('support')} style={{ cursor: 'pointer' }}>Customer Support</a>
           </div>
@@ -31,7 +30,8 @@ export const Footer = ({ setCurrentTab }) => {
             <h4>Legal</h4>
             <a onClick={() => handleTabChange('privacy')} style={{ cursor: 'pointer' }}>Privacy Policy</a>
             <a onClick={() => handleTabChange('terms')} style={{ cursor: 'pointer' }}>Terms &amp; Conditions</a>
-            <a onClick={() => handleTabChange('returns')} style={{ cursor: 'pointer' }}>Shipping &amp; Returns</a>
+            <a onClick={() => handleTabChange('shipping-policy')} style={{ cursor: 'pointer' }}>Shipping Charges</a>
+            <a onClick={() => handleTabChange('returns')} style={{ cursor: 'pointer' }}>Return & Refund Policy</a>
             <a onClick={() => handleTabChange('contact')} style={{ cursor: 'pointer' }}>Contact Us</a>
           </div>
         </div>

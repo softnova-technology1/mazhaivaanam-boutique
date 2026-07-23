@@ -22,8 +22,8 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
     <div className={styles['collections-page']}>
       <div className={styles.hero}>
         <div className={styles['hero-content']}>
-          <h1>Our Collections</h1>
-          <p>Explore our wide range of meticulously crafted sarees, each telling a story of heritage and artistry.</p>
+          <h1>A Collection for Every Occasion</h1>
+          <p>Discover thoughtfully curated saree collections, from breathable cottons and graceful linens to luxurious silks and festive weaves. Find the perfect saree for every celebration and every moment.</p>
         </div>
       </div>
       

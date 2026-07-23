@@ -408,8 +408,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
         <div className={styles['hero-overlay']} />
         <div className={styles['hero-content']}>
           <div className={styles['hero-text-box']}>
-            <h1>Discover Every Weave, <br />Crafted with Elegance</h1>
-            <p>Explore our complete collection of handcrafted sarees designed for weddings, festivals, and timeless everyday beauty.</p>
+            <h1>Discover Timeless Sarees</h1>
+            <p>Browse our carefully curated collection of premium sarees, crafted to suit every occasion. From elegant everyday wear to festive and wedding collections, find the perfect drape that reflects your style.</p>
             <div className={styles['hero-actions']}>
               <button 
                 className={styles['gold-shimmer-btn']}

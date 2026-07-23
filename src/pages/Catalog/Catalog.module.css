@@ -57,7 +57,7 @@
 }
 
 .hero-text-box {
-  max-width: 650px;
+  max-width: 900px;
   margin: 0 auto;
   opacity: 0;
   transform: translateY(20px);
@@ -69,7 +69,7 @@
 
 .hero-text-box h1 {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 3.5rem;
+  font-size: 42px;
   line-height: 1.15;
   margin-bottom: 20px;
   font-weight: 400;

@@ -145,7 +145,15 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     <>
       {/* 1. announcement banner */}
       <div className={styles.announcementBar}>
-        <p>✨ Free Shipping Above ₹2,999 | Store Locator | Book Video Shopping</p>
+        <div className={styles.sliderContainer}>
+          <div className={styles.slider}>
+            <div className={styles.slide}>✨ Handwoven Luxury, Delivered Worldwide.</div>
+            <div className={styles.slide}>🥻 Unveiling Authentic Kanjeevaram Heritage.</div>
+            <div className={styles.slide}>📞 Book a Personalized Video Shopping Experience.</div>
+            {/* Duplicate first slide for smooth infinite loop */}
+            <div className={styles.slide}>✨ Handwoven Luxury, Delivered Worldwide.</div>
+          </div>
+        </div>
       </div>
 
       <header className={`${styles.navbarWrapper} ${isSticky ? styles.sticky : ''}`}>

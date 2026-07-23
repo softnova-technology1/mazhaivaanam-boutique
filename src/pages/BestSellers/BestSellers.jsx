@@ -11,7 +11,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   const [gridView, setGridView] = useState(3);
   const [sortOption, setSortOption] = useState('best-selling');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isPremiumOpen, setIsPremiumOpen] = useState(false);
+  const [isPremiumOpen, setIsPremiumOpen] = useState(true);
 
   const SORT_OPTIONS = [
     { value: 'featured', label: 'Featured' },

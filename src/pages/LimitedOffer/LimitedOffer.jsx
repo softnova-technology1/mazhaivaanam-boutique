@@ -9,6 +9,8 @@ export const LimitedOffer = ({ setCurrentTab }) => {
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinText, setSpinText] = useState("SPIN THE WHEEL");
+  const [wonPrize, setWonPrize] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
   
   // Copy Coupons State
   const [copiedCode, setCopiedCode] = useState(null);
@@ -16,133 +18,9 @@ export const LimitedOffer = ({ setCurrentTab }) => {
   // WebGL Canvas Ref
   const canvasRef = useRef(null);
 
-  // Dynamically load Google Fonts & Material Symbols
-  useEffect(() => {
-    const fontsLink = document.createElement('link');
-    fontsLink.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,300&family=Inter:wght@300;400;500;600&display=swap';
-    fontsLink.rel = 'stylesheet';
-    document.head.appendChild(fontsLink);
 
-    const symbolsLink = document.createElement('link');
-    symbolsLink.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap';
-    symbolsLink.rel = 'stylesheet';
-    document.head.appendChild(symbolsLink);
 
-    return () => {
-      fontsLink.remove();
-      symbolsLink.remove();
-    };
-  }, []);
 
-  // Tailwind Play CDN dynamic load and configuration
-  useEffect(() => {
-    // Check if the script is already added
-    let tailwindScript = document.getElementById('tailwind-cdn');
-    if (!tailwindScript) {
-      tailwindScript = document.createElement('script');
-      tailwindScript.src = 'https://cdn.tailwindcss.com?plugins=forms,container-queries';
-      tailwindScript.id = 'tailwind-cdn';
-      document.head.appendChild(tailwindScript);
-      
-      tailwindScript.onload = () => {
-        setupTailwindConfig();
-      };
-    } else {
-      setupTailwindConfig();
-    }
-
-    function setupTailwindConfig() {
-      if (window.tailwind) {
-        window.tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              colors: {
-                primary: "#7B8467",          // Sage Green
-                "primary-container": "#5F6652", // Dark Olive
-                secondary: "#B38A4A",        // Gold Accent
-                "secondary-container": "#E7DDCE", // Warm Beige
-                background: "#F7F3EB",       // Cream Background
-                surface: "#FFFFFF",
-                "on-background": "#3B3B36",
-                "on-surface": "#3B3B36",
-                "on-surface-variant": "#5D5D56",
-                "outline-variant": "#D8CCBC",
-                "primary-fixed": "#AEB49C",
-                "secondary-fixed": "#B38A4A",
-                "on-primary": "#FFFFFF",
-                "on-secondary": "#FFFFFF",
-                "tertiary-fixed": "#f5e1af",
-                "surface-container-highest": "#e5e2e1",
-                "surface-tint": "#7B8467",
-                "secondary-fixed-dim": "#e9c168",
-                "surface-container-low": "#F7F3EB",
-                "inverse-on-surface": "#f3f0ef",
-                "surface-dim": "#dcd9d9",
-                "outline": "#887174",
-                "tertiary-container": "#bcaa7c",
-                "error-container": "#ffdad6",
-                "on-secondary-container": "#B38A4A",
-                "surface-variant": "#e5e2e1",
-                "primary-fixed-dim": "#AEB49C",
-                "surface-bright": "#FFFFFF",
-                "error": "#ba1a1a",
-                "on-secondary-fixed": "#251a00",
-                "on-primary-fixed-variant": "#5F6652",
-                "tertiary-fixed-dim": "#d8c595",
-                "inverse-surface": "#313030",
-                "surface-container-high": "#eae7e7",
-                "surface-container": "#f0eded",
-                "on-error-container": "#93000a",
-                "on-error": "#ffffff",
-                "on-tertiary-fixed": "#241a00",
-                "inverse-primary": "#ffb2bc",
-                "surface-container-lowest": "#ffffff",
-                "on-primary-fixed": "#400013",
-                "on-tertiary-container": "#4b3e1a"
-              },
-              borderRadius: {
-                DEFAULT: "0.125rem",
-                lg: "0.25rem",
-                xl: "0.5rem",
-                full: "0.75rem"
-              },
-              spacing: {
-                "stack-sm": "8px",
-                "margin-desktop": "80px",
-                "container-max": "1440px",
-                "stack-md": "16px",
-                "gutter": "32px",
-                "stack-lg": "32px",
-                "section-gap": "120px",
-                "margin-mobile": "20px"
-              },
-              fontFamily: {
-                "display-lg": ["Playfair Display"],
-                "headline-lg": ["Playfair Display"],
-                "body-md": ["Inter"],
-                "headline-xl": ["Playfair Display"],
-                "display-lg-mobile": ["Playfair Display"],
-                "body-lg": ["Inter"],
-                "headline-md": ["Playfair Display"],
-                "label-caps": ["Inter"]
-              },
-              fontSize: {
-                "display-lg": ["72px", {lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "400"}],
-                "headline-lg": ["32px", {lineHeight: "1.3", fontWeight: "400"}],
-                "body-md": ["16px", {lineHeight: "1.6", fontWeight: "400"}],
-                "headline-xl": ["48px", {lineHeight: "1.2", fontWeight: "400"}],
-                "display-lg-mobile": ["44px", {lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "400"}],
-                "body-lg": ["18px", {lineHeight: "1.7", fontWeight: "400"}],
-                "headline-md": ["24px", {lineHeight: "1.4", fontWeight: "500"}],
-                "label-caps": ["12px", {lineHeight: "1.4", letterSpacing: "0.15em", fontWeight: "600"}]
-              }
-            }
-          }
-        };
-      }
-    }
-  }, []);
 
   // WebGL Canvas animation setup
   useEffect(() => {
@@ -295,7 +173,15 @@ void main() {
     setTimeout(() => {
       setIsSpinning(false);
       setSpinText("SPIN AGAIN");
-      alert("Congratulations! You've won a 'Special Blouse Customization' voucher. Check your email for details!");
+      
+      // Calculate which prize the wheel landed on
+      // 0 deg points to the first slice. Wheel spins clockwise.
+      const winningAngle = (360 - (newRotation % 360)) % 360;
+      const winningIndex = Math.floor(winningAngle / 60);
+      const prizes = ['Premium Saree', '10% Discount', 'Free Styling', 'Surprise Box', 'Artisan Blouse', 'Free Shipping'];
+      
+      setWonPrize(prizes[winningIndex]);
+      setShowPopup(true);
     }, 4100);
   };
 
@@ -319,73 +205,80 @@ void main() {
     <div className="bg-background text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
       <main className="pt-0">
         {/* Hero Section */}
-        <section className="relative h-screen flex items-center justify-center overflow-hidden">
-          {/* Shader Canvas Background */}
-          <div className="absolute inset-0 w-full h-full" style={{ display: 'block' }}>
-            <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }}></canvas>
-          </div>
+        <section 
+          className="relative h-[600px] flex flex-col items-center justify-center text-center px-4 overflow-hidden"
+          style={{ 
+            backgroundImage: "url('/Images/limited.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            boxShadow: '0 15px 40px rgba(0, 0, 0, 0.6)'
+          }}
+        >
+          {/* Dark Overlay matching Best Sellers */}
+          <div className="absolute inset-0 bg-black/60 z-0"></div>
           
-          {/* Cinematic Background Mask */}
-          <div 
-            className="absolute inset-0 opacity-70 bg-cover bg-center mix-blend-overlay" 
-            style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida/AP1WRLsdmmnAkFIfCbDHoYUCbpJDRacCZmG781UOyCNRxlk8pRidDUsxJ6XnZ5GEQ4RU0LryrPmASKBbkxZvg0KPbQwM1PX33K_nni-MQEN68p2tJo8xg2rV6gdlmCJjb78qCyDqdNAP6wcZAuJ5RIVIrcq8MIYDGTXWjXics7nPgZZ337zx60e3wvrW2Yu93OXdvxNaZ_6LymgM-l5azsfQkpMxdksGvVjFNxBMZZH3cNJrjqRw_dxvhbXpkg')" }}
-          ></div>
-          
-          <div className="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-4xl">
-            <div className="inline-flex items-center px-4 py-1 mb-8 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
-              <span className="font-label-caps text-label-caps text-white/90 tracking-[0.2em]">Limited Exclusive Offer</span>
+          <div className="relative z-10 hero-content flex flex-col items-center justify-center">
+            <div className="inline-flex items-center px-5 py-2 mb-6 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
+              <span className="font-label-caps text-[10px] text-white tracking-[0.2em] uppercase">Limited Exclusive Offer</span>
             </div>
             
-            <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg text-white mb-8 leading-[1.1] drop-shadow-sm">
+            <h1 className="font-display-lg text-4xl md:text-[64px] text-white mb-4 leading-[1.1] drop-shadow-2xl">
               Celebrate Every Festival <br/>
-              <span className="italic serif font-light text-secondary">In Timeless Elegance</span>
+              <span className={`italic serif font-light ${styles['text-shimmer']}`}>In Timeless Elegance</span>
             </h1>
             
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+            <p className="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
+              Discover our hand-woven silk collections designed to make every occasion unforgettable. Shop now to avail our exclusive festive perks.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <button 
                 onClick={() => setCurrentTab('catalog')}
-                className="px-10 py-4 bg-primary text-on-primary rounded-full hover:bg-secondary hover:text-on-secondary transition-colors duration-300 font-label-caps text-label-caps tracking-widest shadow-xl"
+                className="w-full sm:w-auto px-10 py-4 bg-secondary text-white rounded-full hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
               >
                 EXPLORE COLLECTION
               </button>
               <button 
                 onClick={() => setCurrentTab('about')}
-                className="px-10 py-4 border border-white text-white rounded-full hover:bg-white hover:text-primary transition-all duration-300 font-label-caps text-label-caps tracking-widest"
+                className="w-full sm:w-auto px-10 py-4 border border-white text-white rounded-full hover:bg-white hover:text-primary transition-all duration-500 font-label-caps text-label-caps tracking-widest bg-black/20 backdrop-blur-sm transform hover:-translate-y-1"
               >
                 OUR HERITAGE
               </button>
             </div>
           </div>
-          
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/70">
-            <span className="font-label-caps text-[10px] tracking-widest uppercase">Scroll to Discover</span>
-            <div className="w-px h-12 bg-gradient-to-b from-white to-transparent"></div>
-          </div>
         </section>
 
         {/* Live Offer Countdown */}
         <section className="relative -mt-24 z-20 px-margin-mobile md:px-margin-desktop">
-          <div className="max-w-container-max mx-auto bg-white/70 backdrop-blur-xl border border-outline-variant/30 p-10 md:p-16 rounded-xl flex flex-col md:flex-row items-center justify-between gap-12 shadow-2xl">
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="font-display-lg text-headline-xl text-primary mb-4">The Grand Gala Sale</h2>
-              <p className="text-on-surface-variant max-w-md">Our most prestigious annual celebration ends in limited time. Secure your heritage pieces today.</p>
+          <div className="max-w-5xl mx-auto bg-[#FDFBF7] border border-[#D4AF37]/40 p-10 md:p-14 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_20px_50px_rgba(179,138,74,0.15)] relative overflow-hidden">
+            {/* Subtle decorative background pattern */}
+            <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "radial-gradient(#D4AF37 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
+            
+            {/* Subtle glow effect */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent"></div>
+            
+            <div className="flex-1 text-center md:text-left relative z-10">
+              <span className="font-label-caps text-[10px] text-[#D4AF37] tracking-[0.3em] uppercase block mb-4">Time is running out</span>
+              <h2 className="font-display-lg font-bold tracking-tight text-4xl md:text-5xl mb-5 text-[#B38A4A]">The Grand Gala Sale</h2>
+              <p className="text-on-surface-variant max-w-md mx-auto md:mx-0 text-sm md:text-base leading-relaxed">
+                Our most prestigious annual celebration ends soon. Secure your heritage pieces today before they return to the vault.
+              </p>
             </div>
             
-            <div className="flex gap-4 md:gap-8 text-center" id="countdown">
-              <div className="flex flex-col gap-2 min-w-[80px]">
-                <span className="font-display-lg text-headline-xl text-primary">{timeLeft.days.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[10px] text-on-surface-variant tracking-[0.2em]">DAYS</span>
+            <div className="flex gap-3 md:gap-5 text-center relative z-10" id="countdown">
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-4 min-w-[90px] shadow-sm">
+                <span className="font-display-lg text-4xl text-primary">{timeLeft.days.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[9px] text-[#D4AF37] tracking-[0.2em] mt-2">DAYS</span>
               </div>
-              <div className="font-display-lg text-headline-xl text-primary opacity-30">:</div>
-              <div className="flex flex-col gap-2 min-w-[80px]">
-                <span className="font-display-lg text-headline-xl text-primary">{timeLeft.hours.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[10px] text-on-surface-variant tracking-[0.2em]">HOURS</span>
+              <div className="font-display-lg text-4xl text-primary/30 self-center -mt-6">:</div>
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-4 min-w-[90px] shadow-sm">
+                <span className="font-display-lg text-4xl text-primary">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[9px] text-[#D4AF37] tracking-[0.2em] mt-2">HOURS</span>
               </div>
-              <div className="font-display-lg text-headline-xl text-primary opacity-30">:</div>
-              <div className="flex flex-col gap-2 min-w-[80px]">
-                <span className="font-display-lg text-headline-xl text-primary">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[10px] text-on-surface-variant tracking-[0.2em]">MINS</span>
+              <div className="font-display-lg text-4xl text-primary/30 self-center -mt-6">:</div>
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-4 min-w-[90px] shadow-sm">
+                <span className="font-display-lg text-4xl text-primary">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[9px] text-[#D4AF37] tracking-[0.2em] mt-2">MINS</span>
               </div>
             </div>
           </div>
@@ -398,168 +291,227 @@ void main() {
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                 alt="A multi-generational Indian family dressed in opulent silk attire, celebrating together in a heritage courtyard." 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVs-LD_aZSAZJV2S-LaKTUfg2odLlfh7eA3LY11bmMjsQVq7ZUTGbEM5CYEjtfaEwOxzy7sc_lRAJeaqbKmRfzBAwbW4X_AUlyOnxkx5ceamjSOXh47kKQ3L5K95pwzF0zSs59v925rd6t1DF1gWQ6G6kuzVIMzNFeDSa3JIik6WtFdTySXPpZPlDCYl_t4OGTpW2RN6voqFxOS3HmmGjbSQJmW7yvBgjTGBUNlPJIqnFQ7UPOnDGb"
+                src="/Images/heritage.png"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
             </div>
             
-            <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <span className="text-secondary font-label-caps text-label-caps tracking-widest block mb-6">CURATED FESTIVAL DUO</span>
-              <h2 className="font-display-lg text-display-lg-mobile md:text-headline-xl text-primary mb-8 leading-tight">
-                The Heritage Gift: <br/>Buy 2 Sarees, <br/>Get 1 Free
+            <div className={`transition-all duration-1000 flex flex-col justify-center ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-12 h-px bg-[#D4AF37]"></div>
+                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Curated Festival Duo</span>
+              </div>
+              
+              <h2 className="font-display-lg text-4xl md:text-[56px] text-primary mb-3 leading-[1.1]">
+                The Heritage Gift
               </h2>
-              <p className="text-on-surface-variant text-body-lg mb-10 leading-relaxed">
-                Embrace the tradition of gifting. Choose from our hand-woven silk collections and receive a complimentary heritage piece as a symbol of our festive gratitude.
+              
+              <div className="font-label-caps text-[12px] md:text-[14px] tracking-[0.2em] text-[#B38A4A] mb-8 uppercase font-medium">
+                Buy 2 Sarees, Get 1 Free
+              </div>
+              
+              <p className="text-[#4A4F40] text-base md:text-lg mb-12 leading-[1.8] max-w-lg font-light">
+                Embrace the timeless tradition of gifting. Choose from our exquisite hand-woven silk collections and receive a complimentary heritage piece as a symbol of our festive gratitude.
               </p>
-              <button 
-                onClick={() => setCurrentTab('catalog')} 
-                className="inline-flex items-center gap-4 text-primary font-label-caps text-label-caps tracking-widest group"
-              >
-                SHOP THE COLLECTION
-                <span className="material-symbols-outlined group-hover:translate-x-2 transition-transform">arrow_right_alt</span>
-              </button>
+              
+              <div>
+                <div 
+                  onClick={() => setCurrentTab('catalog')} 
+                  className="inline-flex items-center justify-center gap-4 px-12 py-4 bg-transparent border-[1.5px] border-primary text-primary font-label-caps text-[11px] tracking-[0.25em] uppercase hover:bg-primary hover:text-white transition-colors duration-500 group cursor-pointer"
+                >
+                  <span>Explore Collection</span>
+                  <span className="material-symbols-outlined text-[16px] group-hover:translate-x-2 transition-transform duration-500">east</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Product Grid */}
         <section className="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-          <div className="flex justify-between items-end mb-16">
+          <div className="flex justify-between items-end mb-14">
             <div>
-              <span className="text-secondary font-label-caps text-label-caps tracking-widest block mb-4 uppercase">Eligible Selection</span>
-              <h3 className="font-display-lg text-headline-xl text-primary">The Buy 2 Get 1 Gallery</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-px bg-[#D4AF37]"></div>
+                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Eligible Selection</span>
+              </div>
+              <h3 className="font-display-lg text-4xl md:text-5xl text-primary leading-tight">The Buy 2 Get 1 Gallery</h3>
             </div>
             <div className="hidden md:flex gap-4">
-              <button className="p-2 border border-outline rounded-full hover:bg-primary hover:text-on-primary transition-colors">
-                <span className="material-symbols-outlined">chevron_left</span>
-              </button>
-              <button className="p-2 border border-outline rounded-full hover:bg-primary hover:text-on-primary transition-colors">
-                <span className="material-symbols-outlined">chevron_right</span>
-              </button>
+              <div role="button" className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-[12px] text-[#D4AF37] hover:bg-[#F2A987] hover:border-[#F2A987] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
+                <span className="material-symbols-outlined text-[20px]">west</span>
+              </div>
+              <div role="button" className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-[12px] text-[#D4AF37] hover:bg-[#F2A987] hover:border-[#F2A987] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
+                <span className="material-symbols-outlined text-[20px]">east</span>
+              </div>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {/* Product Card 1 */}
-            <div className="group cursor-pointer" onClick={() => setCurrentTab('catalog')}>
-              <div className="relative aspect-[3/4] overflow-hidden mb-6 bg-surface-container-high rounded-sm">
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                  alt="Close-up of a deep maroon silk saree with intricate antique gold zari borders." 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiws1LqlrLrZC3jcnsCtT5_Rku07pHF2AlAn7Zyj1gO2Sam7TcnCtkrPrhBfdF_BOMAWWOU0SUREtD1wIyNSDP3dqQV5uU58sfI1KUYmJx8KnyPQnAdhw-EbPeEOqsWH8JU3TVWcMOKKM_SIVyDKWaiWZJiHMR3edgYspjB9OHkEmy82KsiXdiS06-88TnLGP2c_xctj2Ybvh47BXpYvsvjX8nG0HX88Bol8iYSomxPmNzeKJg-zXY"
-                />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1">
-                  <span className="text-primary font-label-caps text-[10px] tracking-tighter">FESTIVAL CHOICE</span>
+            <div className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
+              <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
+                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
+                  <img 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                    alt="Close-up of a deep maroon silk saree with intricate antique gold zari borders." 
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiws1LqlrLrZC3jcnsCtT5_Rku07pHF2AlAn7Zyj1gO2Sam7TcnCtkrPrhBfdF_BOMAWWOU0SUREtD1wIyNSDP3dqQV5uU58sfI1KUYmJx8KnyPQnAdhw-EbPeEOqsWH8JU3TVWcMOKKM_SIVyDKWaiWZJiHMR3edgYspjB9OHkEmy82KsiXdiS06-88TnLGP2c_xctj2Ybvh47BXpYvsvjX8nG0HX88Bol8iYSomxPmNzeKJg-zXY"
+                  />
+                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 shadow-sm border border-white/40">
+                    <span className="text-[#B38A4A] font-label-caps text-[8.5px] tracking-[0.2em] uppercase font-bold">FESTIVAL CHOICE</span>
+                  </div>
                 </div>
               </div>
-              <div className="text-center">
-                <h4 className="font-display-lg text-body-lg text-on-surface mb-2">Banarasi Silk Elegance</h4>
-                <p className="text-secondary font-medium">₹ 14,500</p>
+              <div className="text-center flex-1 flex flex-col justify-start px-2">
+                <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors">Banarasi Silk Elegance</h4>
+                <div className="flex items-center justify-center gap-3 mt-1">
+                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                  <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">₹ 14,500</p>
+                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                </div>
               </div>
             </div>
 
             {/* Product Card 2 */}
-            <div className="group cursor-pointer" onClick={() => setCurrentTab('catalog')}>
-              <div className="relative aspect-[3/4] overflow-hidden mb-6 bg-surface-container-high rounded-sm">
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                  alt="A gold-toned Kanchipuram silk saree draped artistically over a vintage wooden frame." 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDgVmqwuLg4cRCmfYi1gTvh-1pWOTm42ozSAB0G-QGoHRFNM2GM9Qw31SxFySO36kmEw3Egv5p25Ues8POMis97hEgmfCZKLBnfeNosKbtpvlJlzObawUlUHRVI5rVuBKu8ZTI10IrlFS7UciPSrmsGb5dYxkKDvNavM_fWz5Rn-emc-ti2v2U_BlTJLv35gntt22r4PaHCn8LF-1nUd6Pe7gWrEZgRHIG5dwB0sAUtvlw4XeUK3HR"
-                />
+            <div className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
+              <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
+                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
+                  <img 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                    alt="A gold-toned Kanchipuram silk saree draped artistically over a vintage wooden frame." 
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDgVmqwuLg4cRCmfYi1gTvh-1pWOTm42ozSAB0G-QGoHRFNM2GM9Qw31SxFySO36kmEw3Egv5p25Ues8POMis97hEgmfCZKLBnfeNosKbtpvlJlzObawUlUHRVI5rVuBKu8ZTI10IrlFS7UciPSrmsGb5dYxkKDvNavM_fWz5Rn-emc-ti2v2U_BlTJLv35gntt22r4PaHCn8LF-1nUd6Pe7gWrEZgRHIG5dwB0sAUtvlw4XeUK3HR"
+                  />
+                </div>
               </div>
-              <div className="text-center">
-                <h4 className="font-display-lg text-body-lg text-on-surface mb-2">Golden Temple Kanchipuram</h4>
-                <p class="text-secondary font-medium">₹ 22,800</p>
+              <div className="text-center flex-1 flex flex-col justify-start px-2">
+                <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors">Golden Temple Kanchipuram</h4>
+                <div className="flex items-center justify-center gap-3 mt-1">
+                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                  <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">₹ 22,800</p>
+                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                </div>
               </div>
             </div>
 
             {/* Product Card 3 */}
-            <div className="group cursor-pointer" onClick={() => setCurrentTab('catalog')}>
-              <div className="relative aspect-[3/4] overflow-hidden mb-6 bg-surface-container-high rounded-sm">
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                  alt="A delicate blush pink organza saree with hand-painted floral motifs." 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5sgxRjroNTNCuoxkwsqyIDePKlQiHflxsCP7kxClGHeksK7eqj_r46kvqTvbuwD-n4FSyRIpjl15vqvbsptSdrRRjlcOvZ_Tg3G2g0XTx7hgYdnPfBvkyysP_hIjytE65LdgWCxmcDn7K4TgKyWB_4Fm5HDy8urdJvci79Z9xUldtkCO_J74BlU95VdXnxazJ9yknpEBkXGMCV_ejzdAS--iDT1UPnqFzbmJ86ZHPzMHqGocFzP31"
-                />
-                <div className="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1">
-                  <span className="font-label-caps text-[10px] tracking-tighter">BESTSELLER</span>
+            <div className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
+              <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
+                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
+                  <img 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                    alt="A delicate blush pink organza saree with hand-painted floral motifs." 
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5sgxRjroNTNCuoxkwsqyIDePKlQiHflxsCP7kxClGHeksK7eqj_r46kvqTvbuwD-n4FSyRIpjl15vqvbsptSdrRRjlcOvZ_Tg3G2g0XTx7hgYdnPfBvkyysP_hIjytE65LdgWCxmcDn7K4TgKyWB_4Fm5HDy8urdJvci79Z9xUldtkCO_J74BlU95VdXnxazJ9yknpEBkXGMCV_ejzdAS--iDT1UPnqFzbmJ86ZHPzMHqGocFzP31"
+                  />
+                  <div className="absolute top-3 left-3 bg-primary text-white px-2.5 py-1 shadow-sm border border-white/20">
+                    <span className="font-label-caps text-[8.5px] tracking-[0.2em] uppercase font-bold">BESTSELLER</span>
+                  </div>
                 </div>
               </div>
-              <div className="text-center">
-                <h4 className="font-display-lg text-body-lg text-on-surface mb-2">Hand-Painted Organza</h4>
-                <p className="text-secondary font-medium">₹ 11,200</p>
+              <div className="text-center flex-1 flex flex-col justify-start px-2">
+                <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors">Hand-Painted Organza</h4>
+                <div className="flex items-center justify-center gap-3 mt-1">
+                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                  <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">₹ 11,200</p>
+                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                </div>
               </div>
             </div>
 
             {/* Product Card 4 */}
-            <div className="group cursor-pointer" onClick={() => setCurrentTab('catalog')}>
-              <div className="relative aspect-[3/4] overflow-hidden mb-6 bg-surface-container-high rounded-sm">
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                  alt="A rich emerald green silk saree with a wide contrast border." 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa97nLerZJ32cFOROn_rj1WxFojT9ps_a64W4pdZXgcWLH-wCKzsGXaUOZwYjNiX2aBWVopyRyxJ-Jn_KZbJgMgKbsz9mmMBZ9f18wZs9IC6wBjr7PPJwLAjTVFf-rvAYjuEag1YaqaRBUyJDN_ulJIXQK2viX3czJjP9AYKwSowNhNx81blxVR4ybDVYfnd28RewkE8YCjkt8lRkF-vm4vp8kFC0Ps4hMVcy0cDpgzeIWtLsMzXB2"
-                />
+            <div className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
+              <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
+                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
+                  <img 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                    alt="A rich emerald green silk saree with a wide contrast border." 
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa97nLerZJ32cFOROn_rj1WxFojT9ps_a64W4pdZXgcWLH-wCKzsGXaUOZwYjNiX2aBWVopyRyxJ-Jn_KZbJgMgKbsz9mmMBZ9f18wZs9IC6wBjr7PPJwLAjTVFf-rvAYjuEag1YaqaRBUyJDN_ulJIXQK2viX3czJjP9AYKwSowNhNx81blxVR4ybDVYfnd28RewkE8YCjkt8lRkF-vm4vp8kFC0Ps4hMVcy0cDpgzeIWtLsMzXB2"
+                  />
+                </div>
               </div>
-              <div className="text-center">
-                <h4 className="font-display-lg text-body-lg text-on-surface mb-2">Emerald Heritage Pattu</h4>
-                <p className="text-secondary font-medium">₹ 18,900</p>
+              <div className="text-center flex-1 flex flex-col justify-start px-2">
+                <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors">Emerald Heritage Pattu</h4>
+                <div className="flex items-center justify-center gap-3 mt-1">
+                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                  <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">₹ 18,900</p>
+                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Offer Categories (Bento Grid Style) */}
-        <section className="py-section-gap px-margin-mobile md:px-margin-desktop bg-primary text-on-primary">
-          <div className="max-w-container-max mx-auto">
-            <div className="mb-16 text-center">
-              <span className="text-secondary-fixed font-label-caps text-label-caps tracking-widest block mb-4 uppercase">Curation of Joy</span>
-              <h2 className="font-display-lg text-headline-xl">Bespoke Offer Tiers</h2>
+        <section 
+          className="relative py-12 md:py-16 px-margin-mobile md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
+          style={{ backgroundImage: "url('/Images/offer.png')" }}
+        >
+          {/* Dark Overlay for Readability */}
+          <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]"></div>
+          
+          <div className="relative z-10 max-w-container-max mx-auto">
+            <div className="mb-10 flex flex-col items-center text-center">
+              <div className="flex items-center justify-center gap-4 mb-3">
+                <div className="w-12 h-px bg-[#D4AF37]"></div>
+                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Curation of Joy</span>
+                <div className="w-12 h-px bg-[#D4AF37]"></div>
+              </div>
+              <h2 className="font-display-lg text-4xl md:text-[52px] leading-tight text-[#FDFBF7]">Bespoke Offer Tiers</h2>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto md:h-[600px]">
-              <div className="md:col-span-8 relative group overflow-hidden rounded-xl border border-white/10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 h-auto md:h-[360px] pt-2">
+              {/* Card 1 */}
+              <div className="relative group overflow-hidden rounded-t-full rounded-b-md border border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setCurrentTab('catalog')}>
                 <img 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                   alt="A vibrant Diwali celebration scene at a luxury estate." 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfFmZDi3Rp4XsPRuJl4bhrwOKb-Ug8D3a5FtXouZVZ5pp1w0EDGPH_lyVsWYhX0ZHzCWRg3c7xcdYwCAhA3L743Dtm7lfmFf2iNUEGRm8P0jLg5aq0mkrt1pZi-A0seYDTwb0qmLspzbZT6DznH0JBo2C4lH5cD7Toeamt6fkxkIMgFw8Q3-HJBU2SXq6femflS-Rn_PeaHiBAjrMLrSJMFn0DEdNvFcoLtodpveAlOWPaTH-Ykdft"
+                  src="/Images/diwali.png"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/20 to-transparent"></div>
-                <div className="absolute bottom-10 left-10">
-                  <h3 className="font-display-lg text-headline-xl mb-4">Diwali Offers</h3>
-                  <p className="text-on-primary/70 mb-6 max-w-sm">Illuminate your wardrobe with up to 40% off on signature silks.</p>
-                  <button 
-                    onClick={() => setCurrentTab('catalog')}
-                    className="px-8 py-3 bg-secondary-fixed text-on-secondary font-label-caps text-label-caps tracking-widest hover:bg-white hover:text-primary transition-colors"
-                  >
-                    VIEW ALL
-                  </button>
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
+                
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] bg-black/40 backdrop-blur-md border border-[#D4AF37]/30 p-5 flex flex-col items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
+                  <h3 className="font-display-lg text-2xl md:text-[28px] mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Diwali Offers</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
+                    <span className="font-label-caps text-[9px] tracking-[0.2em] text-[#D4AF37]">UP TO 40% OFF</span>
+                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
+                  </div>
                 </div>
               </div>
               
-              <div className="md:col-span-4 grid grid-rows-2 gap-8">
-                <div className="relative group overflow-hidden rounded-xl border border-white/10">
-                  <img 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
-                    alt="Bridal silk sarees in shades of crimson and gold." 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVRB6R0q71IWGPli0PjFqKnmtnibOmZ9XsSdau4mKBkxZ5_bhMsVMXmFdo26bNL4N4zBLBUze8fqTskHoFTixPG26CvZTSJl8SiY0T-oQX7Z9NmfbCEixNagihf3h1TRtIKbSHwejdLJMxHxVuVogTurW7akrg9Bw4Pt-3bZU8M0X-VAUwu5PvYnSknBkN-ZvckeMZ3zg9rH_5-y7Igs1g5RasWookgebkfBYCvSE6RTBxCOS7_oxK"
-                  />
-                  <div className="absolute inset-0 bg-primary/60 backdrop-blur-sm group-hover:backdrop-blur-none transition-all"></div>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center" onClick={() => setCurrentTab('catalog')}>
-                    <h3 className="font-display-lg text-headline-md mb-2">Bridal Offers</h3>
-                    <span className="font-label-caps text-[10px] tracking-widest text-secondary-container">20% OFF WEDDING TRUSSEAU</span>
+              {/* Card 2 */}
+              <div className="relative group overflow-hidden rounded-t-full rounded-b-md border border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setCurrentTab('catalog')}>
+                <img 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                  alt="Bridal silk sarees in shades of crimson and gold." 
+                  src="/Images/bridal.png"
+                />
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
+                
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] bg-black/40 backdrop-blur-md border border-[#D4AF37]/30 p-5 flex flex-col items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
+                  <h3 className="font-display-lg text-2xl md:text-[28px] mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Bridal Offers</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
+                    <span className="font-label-caps text-[9px] tracking-[0.2em] text-[#D4AF37]">20% OFF TRUSSEAU</span>
+                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
                   </div>
                 </div>
+              </div>
+              
+              {/* Card 3 */}
+              <div className="relative group overflow-hidden rounded-t-full rounded-b-md border border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setCurrentTab('catalog')}>
+                <img 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                  alt="A collection of vibrant festival sarees in bright colors." 
+                  src="/Images/wedding.png"
+                />
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
                 
-                <div className="relative group overflow-hidden rounded-xl border border-white/10">
-                  <img 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
-                    alt="A collection of vibrant festival sarees in bright colors." 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDf9St4SOd627r_IIaeNObi0TEI6pTyBBQKTamzwXjgu3bDA_cjzbtn4X0bhpnvcq4N36MkVaJXPImmJKhxnTethp3lFDsNtqlAGNbq0YtnRyE0rapfmjDQVct_UBr3Hv4K4s8-Q0VT9br3rYdn7haoSAD0rcoOOUDdOYV3_0t00yjgurMl1SKoPt9i5-8UaeD59hBl8E6nbFMjkZZlo_JvH3SPuV1HcrQ-9PwfdNJPpfj_Zwo58zJF"
-                  />
-                  <div className="absolute inset-0 bg-primary/60 backdrop-blur-sm group-hover:backdrop-blur-none transition-all"></div>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center" onClick={() => setCurrentTab('catalog')}>
-                    <h3 className="font-display-lg text-headline-md mb-2">Wedding Combo</h3>
-                    <span className="font-label-caps text-[10px] tracking-widest text-secondary-container">SAVE ₹ 5,000 ON SETS</span>
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] bg-black/40 backdrop-blur-md border border-[#D4AF37]/30 p-5 flex flex-col items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
+                  <h3 className="font-display-lg text-2xl md:text-[28px] mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Wedding Combo</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
+                    <span className="font-label-caps text-[9px] tracking-[0.2em] text-[#D4AF37]">SAVE ₹ 5,000 ON SETS</span>
+                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
                   </div>
                 </div>
               </div>
@@ -569,113 +521,113 @@ void main() {
 
         {/* Combo Offers Horizontal */}
         <section className="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-          <h3 className="font-display-lg text-headline-xl text-primary mb-12 text-center">Festive Bundle Savings</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 border border-outline-variant hover:border-primary transition-all duration-300 group">
-              <div className="flex justify-between items-start mb-8">
-                <span className="material-symbols-outlined text-4xl text-secondary">workspace_premium</span>
-                <div className="bg-primary-fixed px-3 py-1 rounded-full text-primary font-label-caps text-[10px]">SAVE 25%</div>
-              </div>
-              <h4 className="font-display-lg text-headline-md mb-4 text-primary">The Wedding Combo</h4>
-              <p className="text-on-surface-variant mb-8">Bridal Saree + Reception Saree + Matching Blouse Fabrics.</p>
-              <div className="flex items-end gap-2 mb-8">
-                <span className="text-headline-md font-bold text-primary">₹ 45,999</span>
-                <span className="text-on-surface-variant line-through mb-1">₹ 61,000</span>
-              </div>
-              <button 
-                onClick={() => alert("The Wedding Combo has been reserved. Our personal shopper will contact you shortly!")}
-                className="w-full py-4 border border-primary text-primary font-label-caps text-label-caps tracking-widest group-hover:bg-primary group-hover:text-on-primary transition-all"
-              >
-                RESERVE BUNDLE
-              </button>
+          <div className="flex flex-col items-center text-center mb-12">
+            <div className="flex items-center justify-center gap-4 mb-3">
+              <div className="w-12 h-px bg-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Curated For You</span>
+              <div className="w-12 h-px bg-[#D4AF37]"></div>
             </div>
-            
-            <div className="bg-white p-8 border border-outline-variant hover:border-primary transition-all duration-300 group">
-              <div className="flex justify-between items-start mb-8">
-                <span className="material-symbols-outlined text-4xl text-secondary">celebration</span>
-                <div className="bg-primary-fixed px-3 py-1 rounded-full text-primary font-label-caps text-[10px]">SAVE 15%</div>
-              </div>
-              <h4 className="font-display-lg text-headline-md mb-4 text-primary">Family Combo</h4>
-              <p className="text-on-surface-variant mb-8">Saree for Mother + Saree for Daughter + Kurta for Father.</p>
-              <div className="flex items-end gap-2 mb-8">
-                <span className="text-headline-md font-bold text-primary">₹ 32,500</span>
-                <span className="text-on-surface-variant line-through mb-1">₹ 38,000</span>
-              </div>
-              <button 
-                onClick={() => alert("The Family Combo has been reserved. Our personal shopper will contact you shortly!")}
-                className="w-full py-4 border border-primary text-primary font-label-caps text-label-caps tracking-widest group-hover:bg-primary group-hover:text-on-primary transition-all"
-              >
-                RESERVE BUNDLE
-              </button>
-            </div>
-            
-            <div className="bg-white p-8 border border-outline-variant hover:border-primary transition-all duration-300 group">
-              <div className="flex justify-between items-start mb-8">
-                <span className="material-symbols-outlined text-4xl text-secondary">auto_awesome</span>
-                <div className="bg-primary-fixed px-3 py-1 rounded-full text-primary font-label-caps text-[10px]">SAVE 20%</div>
-              </div>
-              <h4 className="font-display-lg text-headline-md mb-4 text-primary">Classic Trio</h4>
-              <p className="text-on-surface-variant mb-8">Three Daily-Wear Heritage Silks in assorted jewel tones.</p>
-              <div className="flex items-end gap-2 mb-8">
-                <span className="text-headline-md font-bold text-primary">₹ 21,999</span>
-                <span className="text-on-surface-variant line-through mb-1">₹ 27,500</span>
-              </div>
-              <button 
-                onClick={() => alert("The Classic Trio has been reserved. Our personal shopper will contact you shortly!")}
-                className="w-full py-4 border border-primary text-primary font-label-caps text-label-caps tracking-widest group-hover:bg-primary group-hover:text-on-primary transition-all"
-              >
-                RESERVE BUNDLE
-              </button>
-            </div>
+            <h3 className="font-display-lg text-4xl md:text-[44px] text-[#2D3326]">Festive Bundle Savings</h3>
           </div>
-        </section>
-
-        {/* Member Exclusive Banner */}
-        <section className="px-margin-mobile md:px-margin-desktop mb-section-gap">
-          <div className="max-w-container-max mx-auto bg-primary-container p-12 md:p-20 rounded-xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-secondary-fixed/20 to-transparent"></div>
-            <div className="relative z-10 grid md:grid-cols-2 items-center gap-12">
-              <div>
-                <span className="material-symbols-outlined text-secondary-fixed-dim text-6xl mb-6">stars</span>
-                <h2 className="font-display-lg text-headline-xl text-on-primary mb-6">Mazhai Vaanam Gold Membership</h2>
-                <p className="text-primary-fixed text-body-lg mb-10">Get an additional 10% off on all festival offers and gain 24-hour early access to upcoming launches.</p>
-                <button 
-                  onClick={() => alert("Thank you for your interest! Gold Membership registration is temporarily offline.")}
-                  className="px-10 py-4 bg-secondary text-on-secondary font-label-caps text-label-caps tracking-widest hover:bg-white hover:text-primary transition-colors shadow-lg"
-                >
-                  JOIN EXCLUSIVE CIRCLE
-                </button>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Combo 1 */}
+            <div className="bg-white p-8 border border-[#D4AF37]/30 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group rounded-sm flex flex-col">
+              <div className="flex justify-between items-start mb-8">
+                <span className="material-symbols-outlined text-4xl text-[#B38A4A] group-hover:scale-110 transition-transform duration-500">workspace_premium</span>
+                <div className="bg-[#FDFBF7] border border-[#D4AF37]/30 px-3 py-1 rounded-sm text-[#B38A4A] font-label-caps text-[10px] tracking-widest">SAVE 25%</div>
               </div>
+              <h4 className="font-display-lg text-3xl mb-4 text-[#2D3326] group-hover:text-[#B38A4A] transition-colors duration-300">The Wedding Combo</h4>
+              <p className="text-[#2D3326]/70 mb-8 font-light flex-grow">Bridal Saree + Reception Saree + Matching Blouse Fabrics.</p>
               
-              <div className="flex justify-center">
-                <div className="w-64 h-64 border-2 border-dashed border-secondary/30 rounded-full flex items-center justify-center animate-[spin_12s_linear_infinite]">
-                  <div className="w-48 h-48 bg-secondary/10 rounded-full flex items-center justify-center backdrop-blur-md">
-                    <span className="font-display-lg text-headline-xl text-secondary">10%</span>
-                  </div>
+              <div className="mb-8">
+                <div className="w-8 h-[1px] bg-[#D4AF37]/40 mb-4"></div>
+                <div className="flex items-end gap-3">
+                  <span className="text-3xl font-display-lg text-[#B38A4A]">₹ 45,999</span>
+                  <span className="text-[#2D3326]/50 line-through mb-1 text-sm">₹ 61,000</span>
                 </div>
               </div>
+              
+              <button 
+                onClick={() => alert("The Wedding Combo has been reserved. Our personal shopper will contact you shortly!")}
+                className="w-full py-4 border border-[#D4AF37] text-black font-bold font-label-caps text-[11px] tracking-[0.2em] uppercase group-hover:bg-[#D4AF37] group-hover:text-white transition-all duration-500"
+              >
+                Reserve Bundle
+              </button>
+            </div>
+            
+            {/* Combo 2 */}
+            <div className="bg-white p-8 border border-[#D4AF37]/30 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group rounded-sm flex flex-col">
+              <div className="flex justify-between items-start mb-8">
+                <span className="material-symbols-outlined text-4xl text-[#B38A4A] group-hover:scale-110 transition-transform duration-500">celebration</span>
+                <div className="bg-[#FDFBF7] border border-[#D4AF37]/30 px-3 py-1 rounded-sm text-[#B38A4A] font-label-caps text-[10px] tracking-widest">SAVE 15%</div>
+              </div>
+              <h4 className="font-display-lg text-3xl mb-4 text-[#2D3326] group-hover:text-[#B38A4A] transition-colors duration-300">Family Combo</h4>
+              <p className="text-[#2D3326]/70 mb-8 font-light flex-grow">Saree for Mother + Saree for Daughter + Kurta for Father.</p>
+              
+              <div className="mb-8">
+                <div className="w-8 h-[1px] bg-[#D4AF37]/40 mb-4"></div>
+                <div className="flex items-end gap-3">
+                  <span className="text-3xl font-display-lg text-[#B38A4A]">₹ 32,500</span>
+                  <span className="text-[#2D3326]/50 line-through mb-1 text-sm">₹ 38,000</span>
+                </div>
+              </div>
+              
+              <button 
+                onClick={() => alert("The Family Combo has been reserved. Our personal shopper will contact you shortly!")}
+                className="w-full py-4 border border-[#D4AF37] text-black font-bold font-label-caps text-[11px] tracking-[0.2em] uppercase group-hover:bg-[#D4AF37] group-hover:text-white transition-all duration-500"
+              >
+                Reserve Bundle
+              </button>
+            </div>
+            
+            {/* Combo 3 */}
+            <div className="bg-white p-8 border border-[#D4AF37]/30 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group rounded-sm flex flex-col">
+              <div className="flex justify-between items-start mb-8">
+                <span className="material-symbols-outlined text-4xl text-[#B38A4A] group-hover:scale-110 transition-transform duration-500">auto_awesome</span>
+                <div className="bg-[#FDFBF7] border border-[#D4AF37]/30 px-3 py-1 rounded-sm text-[#B38A4A] font-label-caps text-[10px] tracking-widest">SAVE 20%</div>
+              </div>
+              <h4 className="font-display-lg text-3xl mb-4 text-[#2D3326] group-hover:text-[#B38A4A] transition-colors duration-300">Classic Trio</h4>
+              <p className="text-[#2D3326]/70 mb-8 font-light flex-grow">Three Daily-Wear Heritage Silks in assorted jewel tones.</p>
+              
+              <div className="mb-8">
+                <div className="w-8 h-[1px] bg-[#D4AF37]/40 mb-4"></div>
+                <div className="flex items-end gap-3">
+                  <span className="text-3xl font-display-lg text-[#B38A4A]">₹ 21,999</span>
+                  <span className="text-[#2D3326]/50 line-through mb-1 text-sm">₹ 27,500</span>
+                </div>
+              </div>
+              
+              <button 
+                onClick={() => alert("The Classic Trio has been reserved. Our personal shopper will contact you shortly!")}
+                className="w-full py-4 border border-[#D4AF37] text-black font-bold font-label-caps text-[11px] tracking-[0.2em] uppercase group-hover:bg-[#D4AF37] group-hover:text-white transition-all duration-500"
+              >
+                Reserve Bundle
+              </button>
             </div>
           </div>
         </section>
 
+
         {/* Lucky Draw Spinning Wheel */}
-        <section className="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container overflow-hidden">
-          <div className="max-w-container-max mx-auto grid md:grid-cols-2 gap-20 items-center">
+        <section className="py-12 md:py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+          <div className="bg-[#FDFBF7] rounded-[2rem] border border-[#D4AF37]/30 shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 md:p-16 overflow-hidden relative">
+            <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center relative z-10">
             <div className="reveal-on-scroll">
-              <h3 className="font-display-lg text-headline-xl text-primary mb-6">Festival Lucky Draw</h3>
-              <p className="text-on-surface-variant text-body-lg mb-8 leading-relaxed">Spin the heritage wheel for a chance to win exclusive gift cards, artisan blouses, or a signature silk saree from our royal vault.</p>
+              <h3 className="font-display-lg text-4xl md:text-[52px] text-[#2D3326] mb-6">Festival Lucky Draw</h3>
+              <p className="text-[#2D3326]/70 text-lg mb-10 font-light leading-relaxed max-w-lg">Spin the heritage wheel for a chance to win exclusive gift cards, artisan blouses, or a signature silk saree from our royal vault.</p>
               
               <ul className="space-y-4 mb-10">
-                <li className="flex items-center gap-3 text-on-surface">
-                  <span className="material-symbols-outlined text-secondary">check_circle</span>
+                <li className="flex items-center gap-3 text-[#2D3326]">
+                  <span className="material-symbols-outlined text-[#D4AF37]">check_circle</span>
                   <span>Grand Prize: Royal Banarasi Saree</span>
                 </li>
-                <li className="flex items-center gap-3 text-on-surface">
-                  <span className="material-symbols-outlined text-secondary">check_circle</span>
+                <li className="flex items-center gap-3 text-[#2D3326]">
+                  <span className="material-symbols-outlined text-[#D4AF37]">check_circle</span>
                   <span>Gift Cards worth ₹ 10,000</span>
                 </li>
-                <li className="flex items-center gap-3 text-on-surface">
-                  <span className="material-symbols-outlined text-secondary">check_circle</span>
+                <li className="flex items-center gap-3 text-[#2D3326]">
+                  <span className="material-symbols-outlined text-[#D4AF37]">check_circle</span>
                   <span>Artisan Blouse Customizations</span>
                 </li>
               </ul>
@@ -683,104 +635,113 @@ void main() {
               <button 
                 onClick={handleSpinWheel}
                 disabled={isSpinning}
-                className="px-10 py-4 bg-primary text-on-primary font-label-caps text-label-caps tracking-widest rounded-full shadow-xl hover:scale-105 transition-transform active:scale-95 disabled:opacity-50" 
+                className="px-10 py-4 bg-primary text-on-primary font-label-caps tracking-widest rounded-full shadow-xl hover:scale-105 transition-transform active:scale-95 disabled:opacity-50" 
                 id="spin-btn"
               >
                 {spinText}
               </button>
             </div>
             
-            <div className="relative flex justify-center">
+            <div className="relative flex justify-center py-6">
               <div 
-                className="w-80 h-80 md:w-[450px] md:h-[450px] rounded-full border-8 border-primary relative shadow-2xl overflow-hidden bg-white" 
+                className="w-72 h-72 md:w-[420px] md:h-[420px] border-8 border-[#D4AF37] relative shadow-[0_10px_30px_rgba(0,0,0,0.1)] overflow-hidden bg-white" 
                 id="wheel"
                 style={{
+                  borderRadius: '50%',
                   transform: `rotate(${rotation}deg)`,
                   transition: isSpinning ? 'transform 4s cubic-bezier(0.15, 0, 0.15, 1)' : 'none'
                 }}
               >
-                {/* Simulated wheel segments with gradients */}
-                <div className="absolute inset-0 flex items-center justify-center">
+                {/* Simulated wheel segments with brand design colors */}
+                <div className="absolute inset-0 flex items-center justify-center" style={{ borderRadius: '50%', overflow: 'hidden' }}>
                   <div 
                     className="w-full h-full" 
                     style={{ 
-                      background: 'conic-gradient(#7B8467 0deg 60deg, #B38A4A 60deg 120deg, #5F6652 120deg 180deg, #E7DDCE 180deg 240deg, #7B8467 240deg 300deg, #B38A4A 300deg 360deg)' 
+                      borderRadius: '50%',
+                      background: 'conic-gradient(#490017 0deg 60deg, #fed579 60deg 120deg, #a13b51 120deg 180deg, #ffb2bc 180deg 240deg, #6b102a 240deg 300deg, #775a04 300deg 360deg)' 
                     }}
                   ></div>
+                  
+                  {/* Text for each section */}
+                  {[
+                    { text: 'Premium Saree', color: 'text-white' },
+                    { text: '10% Discount', color: 'text-[#490017]' },
+                    { text: 'Free Styling', color: 'text-white' },
+                    { text: 'Surprise Box', color: 'text-[#490017]' },
+                    { text: 'Artisan Blouse', color: 'text-white' },
+                    { text: 'Free Shipping', color: 'text-white' }
+                  ].map((prize, i) => {
+                    // Flip text for the bottom half of the wheel so it's readable
+                    const isBottomHalf = i > 1 && i < 5;
+                    return (
+                      <div 
+                        key={i} 
+                        className="absolute inset-0 flex items-start justify-center"
+                        style={{ transform: `rotate(${i * 60 + 30}deg)` }}
+                      >
+                        <div className={`pt-6 md:pt-10 w-24 text-center font-display-lg text-[11px] md:text-sm tracking-wide leading-tight ${prize.color}`}>
+                          <span className="block" style={{ transform: isBottomHalf ? 'rotate(180deg)' : 'none' }}>
+                            {prize.text}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
                 
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-4 h-4 bg-white rounded-full z-10 shadow-lg"></div>
+                  <div 
+                    className={`w-10 h-10 bg-white rounded-full z-10 shadow-xl border-4 border-[#D4AF37] pointer-events-auto flex items-center justify-center transition-all duration-300 ${isSpinning ? 'opacity-80' : 'cursor-pointer hover:scale-110 hover:shadow-2xl'}`}
+                    onClick={isSpinning ? undefined : handleSpinWheel}
+                    title={isSpinning ? "Spinning..." : "Click to Spin!"}
+                  >
+                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                  </div>
                 </div>
               </div>
               
-              {/* Indicator */}
+              {/* Golden Indicator */}
               <div 
-                className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-12 bg-primary z-20" 
+                className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-12 bg-[#D4AF37] z-20 drop-shadow-md" 
                 style={{ clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }}
               ></div>
+            </div>
             </div>
           </div>
         </section>
 
-        {/* Premium Coupons */}
-        <section className="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-          <h3 className="font-display-lg text-headline-xl text-primary mb-12 text-center">Unlock Your Exclusive Vouchers</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-            <div className="relative overflow-hidden group">
-              <div className="bg-surface-container-high p-8 border-2 border-dashed border-outline-variant hover:border-primary transition-all text-center">
-                <span className="font-label-caps text-[10px] text-secondary tracking-widest block mb-4">MIN PURCHASE ₹ 20,000</span>
-                <h5 className="font-display-lg text-headline-md text-primary mb-6">FESTIVE3000</h5>
-                <button 
-                  className={`px-6 py-2 text-on-primary font-label-caps text-label-caps tracking-widest hover:opacity-80 transition-opacity ${copiedCode === 'FESTIVE3000' ? 'bg-secondary' : 'bg-primary'}`}
-                  onClick={() => handleCopyCode('FESTIVE3000')}
-                >
-                  {copiedCode === 'FESTIVE3000' ? 'COPIED!' : 'COPY CODE'}
-                </button>
+        {/* Prize Popup Modal */}
+        {showPopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+            <div className="bg-[#FDFBF7] rounded-[2rem] border-2 border-[#D4AF37] p-10 max-w-md w-full text-center shadow-2xl relative animate-in zoom-in-95 duration-500">
+              <button 
+                onClick={() => setShowPopup(false)}
+                className="absolute top-6 right-6 text-[#2D3326]/50 hover:text-[#2D3326] transition-colors"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+              <div className="w-20 h-20 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mx-auto mb-6 text-[#D4AF37]">
+                <span className="material-symbols-outlined text-4xl">workspace_premium</span>
               </div>
-            </div>
-            
-            <div className="relative overflow-hidden group">
-              <div className="bg-surface-container-high p-8 border-2 border-dashed border-outline-variant hover:border-primary transition-all text-center">
-                <span className="font-label-caps text-[10px] text-secondary tracking-widest block mb-4">PRE-WEDDING PACKS</span>
-                <h5 className="font-display-lg text-headline-md text-primary mb-6">BRIDE2024</h5>
-                <button 
-                  className={`px-6 py-2 text-on-primary font-label-caps text-label-caps tracking-widest hover:opacity-80 transition-opacity ${copiedCode === 'BRIDE2024' ? 'bg-secondary' : 'bg-primary'}`}
-                  onClick={() => handleCopyCode('BRIDE2024')}
-                >
-                  {copiedCode === 'BRIDE2024' ? 'COPIED!' : 'COPY CODE'}
-                </button>
+              <h3 className="font-display-lg text-3xl text-[#2D3326] mb-2">Congratulations!</h3>
+              <p className="text-[#2D3326]/70 mb-6">You've unlocked an exclusive boutique reward.</p>
+              
+              <div className="bg-white border border-[#D4AF37]/30 rounded-xl py-6 px-4 mb-8 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#490017] via-[#D4AF37] to-[#490017]"></div>
+                <span className="block font-label-caps text-[#D4AF37] text-[10px] tracking-widest uppercase mb-2">Your Prize</span>
+                <span className="font-display-lg text-[32px] text-[#490017] font-bold leading-none">{wonPrize}</span>
               </div>
-            </div>
-            
-            <div className="relative overflow-hidden group">
-              <div className="bg-surface-container-high p-8 border-2 border-dashed border-outline-variant hover:border-primary transition-all text-center">
-                <span className="font-label-caps text-[10px] text-secondary tracking-widest block mb-4">FIRST FESTIVAL ORDER</span>
-                <h5 className="font-display-lg text-headline-md text-primary mb-6">MAZHAI15</h5>
-                <button 
-                  className={`px-6 py-2 text-on-primary font-label-caps text-label-caps tracking-widest hover:opacity-80 transition-opacity ${copiedCode === 'MAZHAI15' ? 'bg-secondary' : 'bg-primary'}`}
-                  onClick={() => handleCopyCode('MAZHAI15')}
-                >
-                  {copiedCode === 'MAZHAI15' ? 'COPIED!' : 'COPY CODE'}
-                </button>
-              </div>
-            </div>
-            
-            <div className="relative overflow-hidden group">
-              <div className="bg-surface-container-high p-8 border-2 border-dashed border-outline-variant hover:border-primary transition-all text-center">
-                <span className="font-label-caps text-[10px] text-secondary tracking-widest block mb-4">ACCESSORY BUNDLE</span>
-                <h5 className="font-display-lg text-headline-md text-primary mb-6">GRACE10</h5>
-                <button 
-                  className={`px-6 py-2 text-on-primary font-label-caps text-label-caps tracking-widest hover:opacity-80 transition-opacity ${copiedCode === 'GRACE10' ? 'bg-secondary' : 'bg-primary'}`}
-                  onClick={() => handleCopyCode('GRACE10')}
-                >
-                  {copiedCode === 'GRACE10' ? 'COPIED!' : 'COPY CODE'}
-                </button>
-              </div>
+              
+              <button 
+                onClick={() => setShowPopup(false)}
+                className="w-full py-4 bg-[#D4AF37] text-white font-bold font-label-caps text-[11px] tracking-[0.2em] uppercase hover:bg-[#490017] transition-all duration-300 rounded-full shadow-lg hover:shadow-xl"
+              >
+                Claim Reward
+              </button>
             </div>
           </div>
-        </section>
+        )}
+
       </main>
     </div>
   );

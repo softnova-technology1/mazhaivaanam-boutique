@@ -8,7 +8,6 @@ import { Home } from './pages/Home/Home';
 import { Cart } from './pages/Cart/Cart';
 import { Login } from './pages/Login/Login';
 import { Catalog, ALL_PRODUCTS } from './pages/Catalog/Catalog';
-import { Lookbook } from './pages/Lookbook/Lookbook';
 import { About } from './pages/About/About';
 import { Contact } from './pages/Contact/Contact';
 import { Footer } from './components/layout/Footer/Footer';
@@ -25,7 +24,7 @@ import { LimitedOffer } from './pages/LimitedOffer/LimitedOffer';
 import { NewArrivals } from './pages/NewArrivals/NewArrivals';
 import { BestSellers } from './pages/BestSellers/BestSellers';
 import { Collections } from './pages/Collections/Collections';
-import { Occasions } from './pages/Occasions/Occasions';
+
 import { PreBooking, PREORDER_PRODUCTS } from './pages/PreBooking/PreBooking';
 import './App.css';
 
@@ -48,9 +47,9 @@ function getInitialState() {
   } else {
     const tabName = path.substring(1);
     const validTabs = [
-      'lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
+      'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
       'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
-      'limited-offer', 'new-arrivals', 'best-sellers', 'collections', 'occasions',
+      'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
       'pre-booking'
     ];
     if (validTabs.includes(tabName)) {
@@ -104,9 +103,9 @@ function AppContent() {
           setCurrentTab('shop');
         }
       } else if ([
-        'lookbook', 'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
+        'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
         'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
-        'limited-offer', 'new-arrivals', 'best-sellers', 'collections', 'occasions',
+        'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
         'pre-booking'
       ].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
@@ -156,8 +155,7 @@ function AppContent() {
         return <ProductDetail product={selectedProduct} setCurrentTab={setCurrentTab} />;
       case 'wishlist':
         return <Wishlist setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
-      case 'lookbook':
-        return <Lookbook setCurrentTab={setCurrentTab} />;
+
       case 'about':
         return <About setCurrentTab={setCurrentTab} />;
       case 'contact':
@@ -188,8 +186,7 @@ function AppContent() {
         return <BestSellers setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
       case 'collections':
         return <Collections setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
-      case 'occasions':
-        return <Occasions setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
+
       case 'pre-booking':
         return <PreBooking setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
       default:

@@ -6,7 +6,7 @@
 }
 
 .text-shimmer {
-    background: linear-gradient(90deg, #7B8467, #B38A4A, #7B8467);
+    background: linear-gradient(90deg, #D4AF37, #FFF8DC, #D4AF37);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

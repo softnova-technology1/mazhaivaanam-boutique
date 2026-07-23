@@ -34,7 +34,7 @@
 .heroGradientOverlay {
   position: absolute;
   inset: 0;
-   background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 2;
 }
 
@@ -63,8 +63,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .heroSubtext {
@@ -91,7 +98,8 @@
   }
 }
 
-.primaryActionBtn, .secondaryActionBtn {
+.primaryActionBtn,
+.secondaryActionBtn {
   padding: 20px 40px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
@@ -129,8 +137,8 @@
 /* Our Story Details */
 .storySection {
   max-width: 1440px;
-  margin: 0 auto 30px auto;
-  padding: 0 80px;
+  margin: 0 auto 80px auto;
+  padding: 80px 80px 0 80px;
 }
 
 @media (max-width: 768px) {
@@ -272,8 +280,8 @@
 /* Our Philosophy Principles */
 .principlesSection {
   background-color: var(--surface-container-low);
-  padding: 50px 80px 80px 80px;
-  margin-bottom: 30px;
+  padding: 80px 80px 120px 80px;
+  margin-bottom: 80px;
 }
 
 @media (max-width: 768px) {
@@ -375,7 +383,7 @@
 /* Founder's Message */
 .founderSection {
   max-width: 1440px;
-  margin: 0 auto 30px auto;
+  margin: 80px auto 100px auto;
   padding: 0 80px;
 }
 
@@ -400,7 +408,7 @@
 
 .founderPortraitImg {
   width: 100%;
-  aspect-ratio: 3/4;
+  aspect-ratio: 1/1;
   object-fit: cover;
   box-shadow: 0px 24px 64px rgba(26, 26, 26, 0.08);
 }
@@ -449,6 +457,7 @@
   .founderImageBox {
     grid-column: span 12;
   }
+
   .founderTextDetails {
     grid-column: span 12;
     padding-left: 0;
@@ -462,7 +471,7 @@
 
 .founderBlockquote {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 32px;
+  font-size: 25px;
   font-style: italic;
   color: var(--primary);
   line-height: 1.3;
@@ -478,7 +487,7 @@
 
 .founderBodyDesc {
   font-family: 'Inter', sans-serif;
-  font-size: 18px;
+  font-size: 15px;
   color: var(--text-muted);
   line-height: 1.75;
   margin: 0;
@@ -605,11 +614,10 @@
   left: 70px;
   right: 70px;
   height: 2px;
-  background: linear-gradient(90deg, 
-    rgba(230, 198, 135, 0.15) 0%, 
-    rgba(230, 198, 135, 0.7) 50%, 
-    rgba(230, 198, 135, 0.15) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(230, 198, 135, 0.15) 0%,
+      rgba(230, 198, 135, 0.7) 50%,
+      rgba(230, 198, 135, 0.15) 100%);
   z-index: 1;
 }
 
@@ -717,8 +725,8 @@
 .whyBrandSection {
   width: 100%;
   box-sizing: border-box;
-  background-color: var(--surface-container);
-  padding: 40px 80px;
+ background-color: var(--bg-main);
+  padding: 80px 80px;
   margin-bottom: 0;
 }
 
@@ -739,7 +747,7 @@
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 38px;
   color: var(--primary);
-  margin: 0 auto 28px auto;
+  margin: 0 auto 48px auto;
   text-align: center;
   font-weight: 400;
   width: 100%;
@@ -800,7 +808,7 @@
 .metricsSection {
   background-color: var(--primary);
   color: white;
-  padding: 40px 80px;
+  padding: 80px 80px;
 }
 
 @media (max-width: 768px) {
@@ -853,7 +861,7 @@
 /* Family Newsletter Section */
 .newsletterSection {
   position: relative;
-  padding: 50px 80px;
+  padding: 100px 80px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -871,7 +879,7 @@
 .newsletterThreadBackground {
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     radial-gradient(circle at center, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 100%),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%),
     url('/Images/bg.png');

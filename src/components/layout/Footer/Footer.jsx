@@ -10,7 +10,7 @@ export const Footer = ({ setCurrentTab }) => {
     <footer className={styles['main-footer']}>
       <div className={`container ${styles['footer-container']}`}>
         <div className={styles['footer-brand']}>
-          <span className={styles['footer-logo']}>✧</span>
+          <img src="/logo.png" alt="Mazhai Vaanam Logo" className={styles['footer-logo-img']} />
           <h3 onClick={() => handleTabChange('shop')} style={{ cursor: 'pointer' }}>MAZHAI VAANAM</h3>
           <p>Handpicked heritage fabrics & luxury ensembles, tailored to perfection.</p>
         </div>

@@ -326,13 +326,13 @@ void main() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <button 
                 onClick={() => setCurrentTab('catalog')}
-                className="w-full sm:w-auto px-10 py-4 bg-secondary text-white rounded-full hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
+                className="w-full sm:w-auto px-10 py-4 bg-secondary text-white hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
               >
                 EXPLORE COLLECTION
               </button>
               <button 
                 onClick={() => setCurrentTab('about')}
-                className="w-full sm:w-auto px-10 py-4 border border-white text-white rounded-full hover:bg-white hover:text-primary transition-all duration-500 font-label-caps text-label-caps tracking-widest bg-black/20 backdrop-blur-sm transform hover:-translate-y-1"
+                className="pill rounded-full w-full sm:w-auto px-10 py-4 border border-white text-white bg-transparent hover:bg-white hover:text-primary transition-all duration-500 font-label-caps text-label-caps tracking-widest transform hover:-translate-y-1"
               >
                 OUR HERITAGE
               </button>

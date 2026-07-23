@@ -421,7 +421,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 EXPLORE NOW
               </button>
               <button 
-                className={styles['gold-shimmer-btn-outline']}
+                className={`${styles['gold-shimmer-btn-outline']} pill`}
                 onClick={() => {
                   if (setCurrentTab) setCurrentTab('contact');
                 }}

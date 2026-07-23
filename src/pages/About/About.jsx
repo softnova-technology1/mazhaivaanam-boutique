@@ -82,13 +82,13 @@ export const About = ({ setCurrentTab }) => {
           <div className={styles.heroActionRow}>
             <button
               onClick={() => setCurrentTab('catalog')}
-              className={`load-more-btn ${styles.primaryActionBtn}`}
+              className={`${styles.primaryActionBtn}`}
             >
               Explore Collection
             </button>
             <button
               onClick={handleScrollToStory}
-              className={`load-more-btn ${styles.secondaryActionBtn}`}
+              className={`pill ${styles.secondaryActionBtn}`}
             >
               Discover Our Story
             </button>

@@ -86,7 +86,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
               EXPLORE NEW PIECES
             </button>
             <button 
-              className={styles['btn-custom']}
+              className={`${styles['btn-custom']} pill`}
               onClick={() => setCurrentTab && setCurrentTab('about')}
             >
               OUR ARTISAN STORIES

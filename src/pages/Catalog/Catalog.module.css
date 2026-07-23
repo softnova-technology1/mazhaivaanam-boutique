@@ -123,6 +123,7 @@
   background-color: transparent !important;
   border: 1px solid #FFFFFF !important;
   color: #FFFFFF !important;
+  border-radius: 9999px !important;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
@@ -134,9 +135,9 @@
 }
 
 .gold-shimmer-btn-outline:hover {
-  background-color: var(--primary-dark) !important;
-  color: #FFFFFF !important;
-  border-color: transparent !important;
+  background-color: #FFFFFF !important;
+  color: var(--primary) !important;
+  border-color: #FFFFFF !important;
 }
 
 /* 2. Signature Weaves Section */

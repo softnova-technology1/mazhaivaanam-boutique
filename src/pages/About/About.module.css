@@ -125,6 +125,7 @@
   background-color: transparent;
   border: 1px solid white;
   color: white;
+  border-radius: 9999px !important;
 }
 
 .secondaryActionBtn:hover {

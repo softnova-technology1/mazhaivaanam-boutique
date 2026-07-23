@@ -203,7 +203,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
                 </button>
                 <button 
                   onClick={() => setCurrentTab && setCurrentTab('contact')} 
-                  className={styles['btn-custom']}
+                  className={`${styles['btn-custom']} pill`}
                 >
                   BOOK CONSULTATION
                 </button>

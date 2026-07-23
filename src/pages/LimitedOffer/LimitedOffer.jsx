@@ -210,7 +210,8 @@ void main() {
           style={{ 
             backgroundImage: "url('/Images/limited.png')",
             backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            backgroundPosition: 'center',
+            boxShadow: '0 15px 40px rgba(0, 0, 0, 0.6)'
           }}
         >
           {/* Dark Overlay matching Best Sellers */}

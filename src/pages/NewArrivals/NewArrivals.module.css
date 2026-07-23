@@ -8,13 +8,14 @@
 /* 1. Hero Banner */
 .hero-section {
   position: relative;
-  height: 500px;
+  height: 600px;
   width: 100%;
   overflow: hidden;
   background-color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 .hero-bg {

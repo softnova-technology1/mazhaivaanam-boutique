@@ -45,12 +45,13 @@
   justify-content: center;
   overflow: hidden;
   margin-bottom: 60px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(252, 249, 248, 0.85) 0%, rgba(252, 249, 248, 0) 50%, rgba(252, 249, 248, 0) 100%);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 2;
 }
 

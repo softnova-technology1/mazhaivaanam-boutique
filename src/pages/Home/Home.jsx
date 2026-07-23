@@ -235,79 +235,109 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
         </div>
       </section>
 
-      {/* 2. Stats Section */}
-      <section className={styles['stats-section']}>
-        <div className="container">
-          <div className={styles['stats-grid']}>
-            <div className={styles['stats-item']}>
-              <span className={styles['stats-num']}>
-                <AnimatedCounter end={50} suffix="k+" />
-              </span>
-              <span className={styles['stats-label']}>Happy Customers</span>
-            </div>
-            <div className={styles['stats-item']}>
-              <span className={styles['stats-num']}>
-                <AnimatedCounter end={250} suffix="+" />
-              </span>
-              <span className={styles['stats-label']}>Exclusive Designs</span>
-            </div>
-            <div className={styles['stats-item']}>
-              <span className={styles['stats-num']}>
-                <AnimatedCounter end={20} suffix="+" />
-              </span>
-              <span className={styles['stats-label']}>Saree Collections</span>
-            </div>
-            <div className={styles['stats-item']}>
-              <div className={styles['stats-star-row']}>
-                <span className={styles['stats-num']}>
-                  <AnimatedCounter end={4.9} decimals={1} />
+      {/* 1.5. Circular Categories */}
+      <section className="bg-background pt-12 pb-6 border-b border-outline-variant/30">
+        <div className="container overflow-hidden">
+          <div className="flex gap-6 md:gap-10 overflow-x-auto pb-4 justify-start md:justify-center px-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {[
+              { name: 'Kanchipuram', img: '/Images/saree1.png' },
+              { name: 'Banarasi', img: '/Images/saree2.png' },
+              { name: 'Bridal Silk', img: '/Images/bridal.png' },
+              { name: 'Soft Silk', img: '/Images/saree4.png' },
+              { name: 'Gadwal', img: '/Images/saree5.png' },
+              { name: 'Mysore Silk', img: '/Images/saree6.png' },
+              { name: 'Cotton', img: '/Images/saree7.png' },
+              { name: 'Designer', img: '/Images/saree8.png' },
+            ].map((category, index) => (
+              <div key={index} className="flex flex-col items-center gap-3 cursor-pointer group flex-shrink-0">
+                <div className="w-20 h-20 md:w-[104px] md:h-[104px] rounded-full p-1 border-[1.5px] border-outline-variant group-hover:border-secondary transition-colors duration-300">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-surface-container-high shadow-sm">
+                    <img 
+                      src={category.img} 
+                      alt={category.name} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                    />
+                  </div>
+                </div>
+                <span className="font-label-caps text-[10px] md:text-xs text-on-surface tracking-widest uppercase group-hover:text-secondary transition-colors">
+                  {category.name}
                 </span>
-                <span className={styles['star-icon']}>★</span>
               </div>
-              <span className={styles['stats-label']}>5 Star Rating</span>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 3. Curation of Craft */}
-      <section className={`${styles['curation-section']} container`}>
-        <div className={styles['curation-header']}>
-          <h2>Curation of Craft</h2>
-          <span className={styles['view-all-link']}>VIEW ALL COLLECTIONS</span>
+
+      {/* 3. Curation of Craft - Premium Redesign */}
+      <section className="py-16 md:py-24 px-4 md:px-10 max-w-[1400px] mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 relative">
+          <div className="relative pl-4 border-l-2 border-[#D4AF37]">
+            <span className="font-label-caps text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase mb-3 block">Handpicked For You</span>
+            <h2 className="font-display-lg text-4xl md:text-5xl text-[#2D3326] m-0">Curation of Craft</h2>
+          </div>
+          <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#D4AF37] text-[#2D3326] font-label-caps text-[10px] tracking-widest hover:bg-[#D4AF37] hover:text-white transition-colors cursor-pointer mt-6 md:mt-0">
+            VIEW ALL COLLECTIONS
+            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+          </span>
         </div>
-        <div className={styles['curation-grid']}>
+
+        <div className="flex flex-col md:flex-row gap-6">
           {/* Left Large Card */}
-          <div className={`${styles['curation-card']} ${styles['curation-large']}`}>
+          <div className="w-full md:w-7/12 relative group overflow-hidden rounded-sm shadow-2xl cursor-pointer min-h-[400px] md:min-h-[650px] outline outline-1 outline-[#D4AF37]/60 outline-offset-[-12px] flex">
             <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8hK8cCTT5l1H7rvdu0MdPi2ETnx9YOisxFbOBZyW6hxKyf8_6cckRKn5scEecA1T1M8EHTQzvTgUYEljNm4MNSIhEQPDo5hKvfUG6rIIQA4ZUQySgpmaFnhZRKjXk34DIQyUgSODa5koKke322WAUMknEZqCVjNTLp5pOUkFxGBYJzgF9DMyLYfWRGYuiRAClV0KBKxjdr38b5DeGtIN_iIhruZBErRgMzt52dv105noxkLIynwtv" 
+              src="/Images/banasari.png" 
               alt="Banarasi Collection" 
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
             />
-            <div className={styles['curation-overlay']}>
-              <span className={styles['curation-tag']}>HERITAGE</span>
-              <h3>Banarasi Collection</h3>
-              <span className={styles['shop-link']}>EXPLORE</span>
+            {/* Deep Neutral Shadow Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10 p-10 md:p-14 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">HERITAGE</span>
+              <h3 className="font-display-lg text-3xl md:text-[56px] leading-tight text-white mb-3 drop-shadow-lg transform group-hover:-translate-y-2 transition-transform duration-500">Banarasi Collection</h3>
+              <p className="text-white/80 text-sm font-body font-light mb-6 md:mb-8 pr-4 md:pr-12 leading-relaxed transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
+                Woven with golden threads of heritage, these pure Banarasi silks bring timeless royal grandeur and unparalleled craftsmanship to your everyday wardrobe.
+              </p>
+              <div className="flex items-center gap-2 text-white font-label-caps text-xs tracking-widest group-hover:text-[#D4AF37] transition-colors pointer-events-auto">
+                <span className="border-b border-[#D4AF37] pb-1">EXPLORE COLLECTION</span>
+                <span className="material-symbols-outlined text-sm transform group-hover:translate-x-2 transition-transform">east</span>
+              </div>
             </div>
           </div>
 
-          {/* Right Stacked Cards */}
-          <div className={styles['curation-right-stack']}>
-            <div className={`${styles['curation-card']} ${styles['curation-small']}`}>
+          {/* Right Stacked Cards - Perfectly Aligned */}
+          <div className="w-full md:w-5/12 flex flex-col gap-6">
+            {/* Top Right Card */}
+            <div className="flex-1 relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[300px]">
               <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkuMc4sudSIWYxnpcnI9Z4RR8u6OTeOPpiMEC17tWtM8uAobELpUL5akoL3RttXWQj0A9pD4ebMu5P6Mk9rYF9kpqGmTs8CGIvkI2QjxheNF2ohZ92YMwzdr7XCLZF1175j8ph6u9gQAai4qQwI3RVa2Lact8fMq5QicG-GEdKI1rHxTdTKkIN7Oxp3uNxOHC5OyZOvMi0AjqGLYveuhu68O1nLoV82uqy6L163L0CkAV0-1dL78JT" 
+                src="/Images/kanchi.png" 
                 alt="Kanchipuram Silk" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
               />
-              <div className={styles['curation-overlay']}>
-                <h3>Kanchipuram Silk</h3>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 p-8 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
+                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Kanchipuram Silk</h3>
+                <p className="text-white/80 text-xs font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
+                  Exquisite temple motifs and rich zari work handwoven by the master artisans of Kanchipuram.
+                </p>
+                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-auto">VIEW COLLECTION →</span>
               </div>
             </div>
-            <div className={`${styles['curation-card']} ${styles['curation-small']}`}>
+
+            {/* Bottom Right Card */}
+            <div className="flex-1 relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[300px]">
               <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBtySipCJXeT7GvcVNCFnydBGV44GJnI-1UUv4aLHVPflSBaEAtYBEBbVXdcAOMFbn4ojElM8iRVlfQYMt7DpiUEBqiGtDds46y0NKgpsY_p6AZ0ZfI0PfSOX0j2-x1kM5MU_a-pJZJBMk6H8WsUm8uezI_ctYUnnACSDC-FmubUTLlr_gPRC762Ha3fp0xyig22HTf9nDJM2ZBu1EMLgWnTC11VAJ6xVTyFmM-LiCwnNIs4Z7cnRT" 
+                src="/Images/cotton.png" 
                 alt="Soft Cotton" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
               />
-              <div className={styles['curation-overlay']}>
-                <h3>Soft Cotton</h3>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 p-8 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
+                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Soft Cotton</h3>
+                <p className="text-white/80 text-xs font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
+                  Breathable, lightweight, and effortlessly elegant cotton drapes designed for your everyday grace.
+                </p>
+                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-auto">VIEW COLLECTION →</span>
               </div>
             </div>
           </div>
@@ -492,7 +522,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
           <div className={`${styles['social-cta-card']} ${styles['bento-col-2']}`}>
             <div className={styles['cta-content']}>
               <h4>Join Our Community</h4>
-              <p>Share your stories and drapes with us to get featured in our seasonal lookbook gallery.</p>
+              <p>Share your stories and drapes with us to get featured in our seasonal gallery.</p>
               <button 
                 onClick={() => setCurrentTab && setCurrentTab('contact')}
                 className={styles['cta-btn']}
@@ -565,6 +595,41 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
             />
             <button type="submit">SUBSCRIBE</button>
           </form>
+        </div>
+      </section>
+
+      {/* Stats Section Moved to Bottom */}
+      <section className={styles['stats-section']}>
+        <div className="container">
+          <div className={styles['stats-grid']}>
+            <div className={styles['stats-item']}>
+              <span className={styles['stats-num']}>
+                <AnimatedCounter end={50} suffix="k+" />
+              </span>
+              <span className={styles['stats-label']}>Happy Customers</span>
+            </div>
+            <div className={styles['stats-item']}>
+              <span className={styles['stats-num']}>
+                <AnimatedCounter end={250} suffix="+" />
+              </span>
+              <span className={styles['stats-label']}>Exclusive Designs</span>
+            </div>
+            <div className={styles['stats-item']}>
+              <span className={styles['stats-num']}>
+                <AnimatedCounter end={20} suffix="+" />
+              </span>
+              <span className={styles['stats-label']}>Saree Collections</span>
+            </div>
+            <div className={styles['stats-item']}>
+              <div className={styles['stats-star-row']}>
+                <span className={styles['stats-num']}>
+                  <AnimatedCounter end={4.9} decimals={1} />
+                </span>
+                <span className={styles['star-icon']}>★</span>
+              </div>
+              <span className={styles['stats-label']}>5 Star Rating</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>

@@ -19,7 +19,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
   
   // Mobile accordion states
   const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState(false);
-  const [mobileOccasionsOpen, setMobileOccasionsOpen] = useState(false);
+
   
   // Search input state
   const [searchQuery, setSearchQuery] = useState('');
@@ -90,16 +90,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     { label: 'Bridal Collection', link: 'bridal' }
   ];
 
-  const occasionsList = [
-    { label: 'Wedding', link: 'wedding' },
-    { label: 'Reception', link: 'reception' },
-    { label: 'Engagement', link: 'engagement' },
-    { label: 'Festival', link: 'festival' },
-    { label: 'Office Wear', link: 'office' },
-    { label: 'Casual Wear', link: 'casual' },
-    { label: 'Party Wear', link: 'party' },
-    { label: 'Traditional', link: 'traditional' }
-  ];
+
 
   const handleWishlistToCart = (item) => {
     addToCart({
@@ -325,15 +316,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                 </div>
               </li>
               
-              {/* Occasions dropdown */}
-              <li className={`${styles.menuItem} ${styles.hasDropdown}`}>
-                <button onClick={() => handleTabChange('occasions')} className={`${styles.menuLink} ${currentTab === 'occasions' ? styles.active : ''}`}>Occasions ▼</button>
-                <div className={styles.dropdownPanel}>
-                  {occasionsList.map(item => (
-                    <button key={item.link} onClick={() => handleCatalogClick('', item.label)} className={styles.dropdownPanelLink}>{item.label}</button>
-                  ))}
-                </div>
-              </li>
+
 
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('best-sellers')} className={`${styles.menuLink} ${currentTab === 'best-sellers' ? styles.active : ''}`}>Best Sellers</button>
@@ -344,9 +327,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('pre-booking')} className={`${styles.menuLink} ${styles.preBookingLink} ${currentTab === 'pre-booking' ? styles.active : ''}`}>Pre-Booking</button>
               </li>
-              <li className={styles.menuItem}>
-                <button onClick={() => handleTabChange('lookbook')} className={styles.menuLink}>Lookbook</button>
-              </li>
+
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('about')} className={styles.menuLink}>About</button>
               </li>
@@ -571,24 +552,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                 )}
               </li>
               
-              {/* Accordion Occasions */}
-              <li className={styles.drawerItem}>
-                <button 
-                  className={`${styles.drawerLink} ${styles.accordionTrigger}`}
-                  onClick={() => setMobileOccasionsOpen(!mobileOccasionsOpen)}
-                >
-                  Occasions {mobileOccasionsOpen ? '▲' : '▼'}
-                </button>
-                {mobileOccasionsOpen && (
-                  <ul className={styles.drawerSubList}>
-                    {occasionsList.map(item => (
-                      <li key={item.link}>
-                        <button onClick={() => handleCatalogClick('', item.label)} className={styles.drawerSubLink}>{item.label}</button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
+
 
               <li className={styles.drawerItem}>
                 <button onClick={() => handleCatalogClick('Handloom Collection')} className={styles.drawerLink}>Best Sellers</button>
@@ -596,9 +560,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('limited-offer')} className={`${styles.drawerLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
               </li>
-              <li className={styles.drawerItem}>
-                <button onClick={() => handleTabChange('lookbook')} className={styles.drawerLink}>Lookbook</button>
-              </li>
+
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('wishlist')} className={styles.drawerLink}>Wishlist</button>
               </li>

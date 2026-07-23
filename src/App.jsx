@@ -24,6 +24,9 @@ import { LimitedOffer } from './pages/LimitedOffer/LimitedOffer';
 import { NewArrivals } from './pages/NewArrivals/NewArrivals';
 import { BestSellers } from './pages/BestSellers/BestSellers';
 import { Collections } from './pages/Collections/Collections';
+import { MyProfile } from './pages/MyProfile/MyProfile';
+import { SavedAddress } from './pages/SavedAddress/SavedAddress';
+import { GiftCards } from './pages/GiftCards/GiftCards';
 
 import { PreBooking, PREORDER_PRODUCTS } from './pages/PreBooking/PreBooking';
 import './App.css';
@@ -50,7 +53,7 @@ function getInitialState() {
       'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
       'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
       'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
-      'pre-booking'
+      'pre-booking', 'my-profile', 'saved-address', 'gift-cards'
     ];
     if (validTabs.includes(tabName)) {
       tab = tabName;
@@ -106,7 +109,7 @@ function AppContent() {
         'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
         'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
         'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
-        'pre-booking'
+        'pre-booking', 'my-profile', 'saved-address', 'gift-cards'
       ].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
@@ -168,6 +171,12 @@ function AppContent() {
         return <Checkout setCurrentTab={setCurrentTab} />;
       case 'my-orders':
         return <MyOrders setCurrentTab={setCurrentTab} />;
+      case 'my-profile':
+        return <MyProfile setCurrentTab={setCurrentTab} />;
+      case 'saved-address':
+        return <SavedAddress setCurrentTab={setCurrentTab} />;
+      case 'gift-cards':
+        return <GiftCards setCurrentTab={setCurrentTab} />;
       case 'login':
         return <Login setCurrentTab={setCurrentTab} />;
       case 'support':

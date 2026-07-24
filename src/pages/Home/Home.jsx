@@ -293,10 +293,10 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
             {/* Deep Neutral Shadow Gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="relative z-10 p-10 md:p-14 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">HERITAGE</span>
-              <h3 className="font-display-lg text-3xl md:text-[56px] leading-tight text-white mb-3 drop-shadow-lg transform group-hover:-translate-y-2 transition-transform duration-500">Banarasi Collection</h3>
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">ARTISANAL WEAVES</span>
+              <h3 className="font-display-lg text-3xl md:text-[56px] leading-tight text-white mb-3 drop-shadow-lg transform group-hover:-translate-y-2 transition-transform duration-500">Handloom Sarees</h3>
               <p className="text-white/80 text-sm font-body font-light mb-6 md:mb-8 pr-4 md:pr-12 leading-relaxed transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                Woven with golden threads of heritage, these pure Banarasi silks bring timeless royal grandeur and unparalleled craftsmanship to your everyday wardrobe.
+                Authentic weaves crafted with passion, bringing you the timeless beauty of traditional Indian craftsmanship in every drape.
               </p>
               <div className="flex items-center gap-2 text-white font-label-caps text-xs tracking-widest group-hover:text-[#D4AF37] transition-colors pointer-events-auto">
                 <span className="border-b border-[#D4AF37] pb-1">EXPLORE COLLECTION</span>
@@ -316,9 +316,9 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10 p-8 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Kanchipuram Silk</h3>
+                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Linen Cotton</h3>
                 <p className="text-white/80 text-xs font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                  Exquisite temple motifs and rich zari work handwoven by the master artisans of Kanchipuram.
+                  Experience the perfect blend of crisp linen and soft cotton for a sophisticated, contemporary look.
                 </p>
                 <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-auto">VIEW COLLECTION →</span>
               </div>
@@ -333,9 +333,9 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10 p-8 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Soft Cotton</h3>
+                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Mul Mul Cotton</h3>
                 <p className="text-white/80 text-xs font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                  Breathable, lightweight, and effortlessly elegant cotton drapes designed for your everyday grace.
+                  Cloud-like softness and unparalleled breathability make these sheer drapes an absolute delight to wear.
                 </p>
                 <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-auto">VIEW COLLECTION →</span>
               </div>

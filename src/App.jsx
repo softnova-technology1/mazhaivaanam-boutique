@@ -141,6 +141,9 @@ function AppContent() {
     if (path !== expectedPath) {
       window.history.pushState(null, '', expectedPath);
     }
+    
+    // Scroll to top on page navigation
+    window.scrollTo(0, 0);
   }, [currentTab, selectedProduct]);
 
   const renderContent = () => {

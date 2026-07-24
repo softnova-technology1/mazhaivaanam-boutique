@@ -149,7 +149,7 @@ function AppContent() {
   const renderContent = () => {
     switch (currentTab) {
       case 'shop':
-        return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
+        return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} setCatalogFilter={setCatalogFilter} />;
       case 'catalog':
         return (
           <Catalog 

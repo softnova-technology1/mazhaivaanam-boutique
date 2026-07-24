@@ -48,7 +48,7 @@ const AnimatedCounter = ({ end, duration = 2000, suffix = '', decimals = 0 }) =>
   );
 };
 
-export const Home = ({ setCurrentTab, setSelectedProduct }) => {
+export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) => {
   const [email, setEmail] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -178,6 +178,15 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
     }
   };
 
+  const handleCategoryClick = (category) => {
+    if (setCatalogFilter) {
+      setCatalogFilter({ category: category, occasion: '', label: category });
+    }
+    if (setCurrentTab) {
+      setCurrentTab('catalog');
+    }
+  };
+
   return (
     <div className={styles['home-wrapper']}>
       {/* 1. Hero Carousel Slider */}
@@ -235,39 +244,6 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
         </div>
       </section>
 
-      {/* 1.5. Circular Categories */}
-      <section className="bg-background pt-12 pb-6 border-b border-outline-variant/30">
-        <div className="container overflow-hidden">
-          <div className="flex gap-6 md:gap-10 overflow-x-auto pb-4 justify-start md:justify-center px-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {[
-              { name: 'Kanchipuram', img: '/Images/saree1.png' },
-              { name: 'Banarasi', img: '/Images/saree2.png' },
-              { name: 'Bridal Silk', img: '/Images/bridal.png' },
-              { name: 'Soft Silk', img: '/Images/saree4.png' },
-              { name: 'Gadwal', img: '/Images/saree5.png' },
-              { name: 'Mysore Silk', img: '/Images/saree6.png' },
-              { name: 'Cotton', img: '/Images/saree7.png' },
-              { name: 'Designer', img: '/Images/saree8.png' },
-            ].map((category, index) => (
-              <div key={index} className="flex flex-col items-center gap-3 cursor-pointer group flex-shrink-0">
-                <div className="w-20 h-20 md:w-[104px] md:h-[104px] rounded-full p-1 border-[1.5px] border-outline-variant group-hover:border-secondary transition-colors duration-300">
-                  <div className="w-full h-full rounded-full overflow-hidden bg-surface-container-high shadow-sm">
-                    <img 
-                      src={category.img} 
-                      alt={category.name} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                    />
-                  </div>
-                </div>
-                <span className="font-label-caps text-[10px] md:text-xs text-on-surface tracking-widest uppercase group-hover:text-secondary transition-colors">
-                  {category.name}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
 
       {/* 3. Curation of Craft - Premium Redesign */}
       <section className="py-10 md:py-16 px-4 md:px-10 max-w-[1400px] mx-auto">
@@ -282,62 +258,87 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
           </span>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Left Large Card */}
-          <div className="w-full md:w-7/12 relative group overflow-hidden rounded-sm shadow-2xl cursor-pointer min-h-[400px] md:min-h-[650px] outline outline-1 outline-[#D4AF37]/60 outline-offset-[-12px] flex">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Card 1: Everyday Elegance */}
+          <div onClick={() => handleCategoryClick('Everyday Elegance')} className="relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[350px]">
             <img 
-              src="/Images/banasari.png" 
-              alt="Banarasi Collection" 
+              src="/Images/cotton3.png" 
+              alt="Everyday Elegance" 
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
             />
-            {/* Deep Neutral Shadow Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10 p-10 md:p-14 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">ARTISANAL WEAVES</span>
-              <h3 className="font-display-lg text-3xl md:text-[56px] leading-tight text-white mb-3 drop-shadow-lg transform group-hover:-translate-y-2 transition-transform duration-500">Handloom Sarees</h3>
-              <p className="text-white/80 text-sm font-body font-light mb-6 md:mb-8 pr-4 md:pr-12 leading-relaxed transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                Authentic weaves crafted with passion, bringing you the timeless beauty of traditional Indian craftsmanship in every drape.
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">CASUAL & CHIC</span>
+              <h3 className="font-display-lg text-3xl md:text-4xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Everyday Elegance</h3>
+              <p className="text-white/80 text-sm font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
+                Breathable comfort meets sophisticated style. Premium cotton sarees crafted for seamless day-to-night wear.
               </p>
-              <div className="flex items-center gap-2 text-white font-label-caps text-xs tracking-widest group-hover:text-[#D4AF37] transition-colors pointer-events-auto">
+              <div className="flex items-center gap-2 text-white font-label-caps text-xs tracking-widest group-hover:text-[#D4AF37] transition-colors pointer-events-auto opacity-0 group-hover:opacity-100">
                 <span className="border-b border-[#D4AF37] pb-1">EXPLORE COLLECTION</span>
-                <span className="material-symbols-outlined text-sm transform group-hover:translate-x-2 transition-transform">east</span>
+                <span className="material-symbols-outlined text-sm">east</span>
               </div>
             </div>
           </div>
 
-          {/* Right Stacked Cards - Perfectly Aligned */}
-          <div className="w-full md:w-5/12 flex flex-col gap-6">
-            {/* Top Right Card */}
-            <div className="flex-1 relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[300px]">
-              <img 
-                src="/Images/kanchi.png" 
-                alt="Kanchipuram Silk" 
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10 p-8 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Linen Cotton</h3>
-                <p className="text-white/80 text-xs font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                  Experience the perfect blend of crisp linen and soft cotton for a sophisticated, contemporary look.
-                </p>
-                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-auto">VIEW COLLECTION →</span>
+          {/* Card 2: Festive Glow */}
+          <div onClick={() => handleCategoryClick('Festive Glow')} className="relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[350px]">
+            <img 
+              src="/Images/silk1.png" 
+              alt="Festive Glow" 
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">CELEBRATION READY</span>
+              <h3 className="font-display-lg text-3xl md:text-4xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Festive Glow</h3>
+              <p className="text-white/80 text-sm font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
+                Illuminate your celebrations. Exquisite pure silk sarees woven with rich traditional zari motifs.
+              </p>
+              <div className="flex items-center gap-2 text-white font-label-caps text-xs tracking-widest group-hover:text-[#D4AF37] transition-colors pointer-events-auto opacity-0 group-hover:opacity-100">
+                <span className="border-b border-[#D4AF37] pb-1">EXPLORE COLLECTION</span>
+                <span className="material-symbols-outlined text-sm">east</span>
               </div>
             </div>
+          </div>
 
-            {/* Bottom Right Card */}
-            <div className="flex-1 relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[300px]">
-              <img 
-                src="/Images/cotton.png" 
-                alt="Soft Cotton" 
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10 p-8 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Mul Mul Cotton</h3>
-                <p className="text-white/80 text-xs font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                  Cloud-like softness and unparalleled breathability make these sheer drapes an absolute delight to wear.
-                </p>
-                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-auto">VIEW COLLECTION →</span>
+          {/* Card 3: Style Studio */}
+          <div onClick={() => handleCategoryClick('Style Studio')} className="relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[350px]">
+            <img 
+              src="/Images/fancy1.png" 
+              alt="Style Studio" 
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">MODERN TRENDS</span>
+              <h3 className="font-display-lg text-3xl md:text-4xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Style Studio</h3>
+              <p className="text-white/80 text-sm font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
+                Step into the spotlight. Fashion-forward fancy sarees featuring modern patterns and unique textures.
+              </p>
+              <div className="flex items-center gap-2 text-white font-label-caps text-xs tracking-widest group-hover:text-[#D4AF37] transition-colors pointer-events-auto opacity-0 group-hover:opacity-100">
+                <span className="border-b border-[#D4AF37] pb-1">EXPLORE COLLECTION</span>
+                <span className="material-symbols-outlined text-sm">east</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 4: Black Magic */}
+          <div onClick={() => handleCategoryClick('Black Magic')} className="relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[350px]">
+            <img 
+              src="/Images/black1.png" 
+              alt="Black Magic" 
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">BOLD & BEAUTIFUL</span>
+              <h3 className="font-display-lg text-3xl md:text-4xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Black Magic</h3>
+              <p className="text-white/80 text-sm font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
+                Embrace the midnight allure. Deeply glamorous dark-hued masterpieces for unforgettable evenings.
+              </p>
+              <div className="flex items-center gap-2 text-white font-label-caps text-xs tracking-widest group-hover:text-[#D4AF37] transition-colors pointer-events-auto opacity-0 group-hover:opacity-100">
+                <span className="border-b border-[#D4AF37] pb-1">EXPLORE COLLECTION</span>
+                <span className="material-symbols-outlined text-sm">east</span>
               </div>
             </div>
           </div>
@@ -392,33 +393,6 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
         </div>
       </section>
 
-      {/* 6. Our Story */}
-      <section className={`${styles['story-section']} container`}>
-        <div className={styles['story-grid']}>
-          <div className={styles['story-image-pane']}>
-            <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCikpQ9GWpGx4o_O9UH9sn_G1jaqTxvOOqN3-nDWsM1UqPPM7YlHjC-L580RsvNjQbMmWCjJWoK_Bi6-yQEuEdXxztXe65K5niFoqvx817_Rp02ldELr7DouQ32JSISkx9OG-kV2unqSOGhDCOH4JSGJeZLqOEvlZvD2934b0i_GcWlsSLqiMFwE89s2N_6dObA46O9hM1_J7Khb9i2Tr7kNYw4iS0nleQLZs1iCEVXPO4V5XD4NHwS" 
-              alt="Artisans weaving tradition" 
-            />
-          </div>
-          <div className={styles['story-text-pane']}>
-            <span className={styles['story-label']}>OUR STORY</span>
-            <h2>Every Thread Carries Tradition</h2>
-            <p className={styles['story-quote-italic']}>
-              "For centuries, the loom has been the heartbeat of our heritage. At Mazhai Vaanam, we don't just sell sarees; we preserve the rhythmic dance of the artisan's hands."
-            </p>
-            <p>
-              Our journey began with a single loom in the heart of Tamil Nadu. Today, we work with over 200 master artisans across India to bring you pieces that are as unique as the women who wear them. Each Mazhai Vaanam saree takes 15-20 days to weave, ensuring that the legacy of slow fashion thrives in a fast-paced world.
-            </p>
-            <button 
-              className={styles['btn-meet-artisans']}
-              onClick={() => setCurrentTab('about')}
-            >
-              MEET OUR ARTISANS <span className={styles['arrow-icon']}>→</span>
-            </button>
-          </div>
-        </div>
-      </section>
 
       {/* 7. Why Choose */}
       <section className={styles['values-section']}>

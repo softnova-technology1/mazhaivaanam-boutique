@@ -807,8 +807,8 @@
 
 /* Metrics Section */
 .metricsSection {
-  background-color: var(--primary);
-  color: white;
+ 
+  color: rgb(0, 0, 0);
   padding: 80px 80px;
 }
 
@@ -837,7 +837,7 @@
 .metricVal {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 42px;
-  color: white;
+  color: rgb(13, 24, 5);
   margin: 0 0 4px 0;
   font-weight: 450;
   line-height: 1.1;

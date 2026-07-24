@@ -445,51 +445,56 @@
 
 /* Collections Mega Menu Styling */
 .hasMegaMenu {
-  position: static;
-  /* Position static is key for full-width panels */
+  position: relative;
 }
 
 .megaMenuPanel {
   position: absolute;
   top: 100%;
-  left: 0;
-  width: 100%;
+  left: 50%;
+  width: 220px;
   background-color: var(--bg-main);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
-  padding: 40px 0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  padding: 20px;
   box-sizing: border-box;
   opacity: 0;
   visibility: hidden;
   z-index: 999;
-  transform: translateY(10px);
+  transform: translateX(-50%) translateY(10px);
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .hasMegaMenu:hover .megaMenuPanel {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 .megaMenuContainer {
-  max-width: 1450px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 40px;
   box-sizing: border-box;
 }
 
 .megaMenuGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr) 2fr;
-  gap: 40px;
+  grid-template-columns: 1fr auto;
+  gap: 30px;
+  align-items: center;
 }
 
 .megaMenuColumn {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.headingsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 32px;
 }
 
 .megaMenuColumn h4 {
@@ -518,6 +523,29 @@
 .megaMenuLink:hover {
   color: var(--primary);
   padding-left: 4px;
+}
+
+.megaMenuHeadingBtn {
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  width: fit-content;
+}
+
+.megaMenuHeadingBtn h4 {
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.megaMenuHeadingBtn:hover {
+  transform: translateX(4px);
+}
+
+.megaMenuHeadingBtn:hover h4 {
+  color: var(--primary);
 }
 
 /* Image banners inside collections */

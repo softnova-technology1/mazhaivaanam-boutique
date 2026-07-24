@@ -9,7 +9,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-1',
     name: "Ruby Petal",
-    category: "Blended South Cotton",
+    category: "Everyday Elegance",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Wedding",
@@ -23,7 +23,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-2',
     name: "Sunset Glow",
-    category: "Handloom Sarees",
+    category: "Festive Glow",
     fabric: "Cotton",
     color: "#C8A34D",
     occasion: "Festival",
@@ -39,7 +39,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-3',
     name: "Snow Elegance",
-    category: "Linen Cotton",
+    category: "Style Studio",
     fabric: "Pure Silk",
     color: "#C8A34D",
     occasion: "Wedding",
@@ -53,7 +53,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-4',
     name: "Night Veil",
-    category: "Chanderi Cotton",
+    category: "Black Magic",
     fabric: "Tussar",
     color: "#1A237E",
     occasion: "Party Wear",
@@ -67,7 +67,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-5',
     name: "Azure Dream",
-    category: "Kalyani Cotton Sarees",
+    category: "Everyday Elegance",
     fabric: "Pure Silk",
     color: "#1A237E",
     occasion: "Wedding",
@@ -80,7 +80,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-6',
     name: "Royal Orchid",
-    category: "Khadi Cotton Saree",
+    category: "Festive Glow",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Reception",
@@ -93,7 +93,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-7',
     name: "Golden Harvest",
-    category: "Mul Mul Cotton",
+    category: "Style Studio",
     fabric: "Cotton",
     color: "#C8A34D",
     occasion: "Traditional",
@@ -107,7 +107,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-8',
     name: "Mystic Forest",
-    category: "Blended South Cotton",
+    category: "Black Magic",
     fabric: "Pure Silk",
     color: "#004D40",
     occasion: "Festival",
@@ -120,7 +120,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-9',
     name: "Ebony Scarlet",
-    category: "Handloom Sarees",
+    category: "Black Magic",
     fabric: "Tussar",
     color: "#6B102A",
     occasion: "Reception",
@@ -136,7 +136,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-10',
     name: "Sienna Bloom",
-    category: "Linen Cotton",
+    category: "Festive Glow",
     fabric: "Tussar",
     color: "#C8A34D",
     occasion: "Festival",
@@ -150,7 +150,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-11',
     name: "Lavender Mist",
-    category: "Chanderi Cotton",
+    category: "Style Studio",
     fabric: "Organza",
     color: "#6B102A",
     occasion: "Party Wear",
@@ -164,7 +164,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-12',
     name: "Crimson Heritage",
-    category: "Kalyani Cotton Sarees",
+    category: "Festive Glow",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Wedding",
@@ -180,7 +180,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-13',
     name: "Mint Charm",
-    category: "Khadi Cotton Saree",
+    category: "Everyday Elegance",
     fabric: "Cotton",
     color: "#004D40",
     occasion: "Festival",
@@ -194,7 +194,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-14',
     name: "Ivory Symphony",
-    category: "Mul Mul Cotton",
+    category: "Festive Glow",
     fabric: "Pure Silk",
     color: "#C8A34D",
     occasion: "Wedding",
@@ -210,7 +210,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-15',
     name: "Marigold Breeze",
-    category: "Blended South Cotton",
+    category: "Everyday Elegance",
     fabric: "Cotton",
     color: "#C8A34D",
     occasion: "Traditional",
@@ -224,7 +224,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-16',
     name: "Coral Petals",
-    category: "Handloom Sarees",
+    category: "Style Studio",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Reception",
@@ -238,7 +238,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-17',
     name: "Indigo Weave",
-    category: "Linen Cotton",
+    category: "Black Magic",
     fabric: "Pure Silk",
     color: "#1A237E",
     occasion: "Festival",
@@ -252,7 +252,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-18',
     name: "Orchid Glow",
-    category: "Chanderi Cotton",
+    category: "Everyday Elegance",
     fabric: "Organza",
     color: "#6B102A",
     occasion: "Party Wear",
@@ -265,6 +265,29 @@ export const ALL_PRODUCTS = [
   }
 ];
 
+const CATEGORY_CONTENT = {
+  'All': {
+    title: 'The Masterpiece Collection',
+    description: 'Explore our curated anthology of premium handloom luxury. From breathless cottons for daily grace to majestic silks for your grandest moments, discover drapes that speak your style.'
+  },
+  'Everyday Elegance': {
+    title: 'Pure Cotton Elegance',
+    description: 'Breathe easy in our meticulously handwoven cotton sarees designed for seamless day-to-night transitions. Experience unmatched comfort without ever compromising on your sophisticated everyday style.'
+  },
+  'Festive Glow': {
+    title: 'Heritage Silk Weaves',
+    description: 'Illuminate your celebrations with our exquisite collection of pure silk sarees. Woven with rich traditional zari motifs, these radiant drapes are destined to make you the center of attention.'
+  },
+  'Style Studio': {
+    title: 'Fancy Drapes',
+    description: 'Step into the spotlight with our trending, fashion-forward saree silhouettes. Featuring modern patterns and unique textures, this collection is crafted for the bold, contemporary woman.'
+  },
+  'Black Magic': {
+    title: 'The Black Magic Edit',
+    description: 'Embrace the midnight allure with our exclusive range of stunning black sarees. Dark, sophisticated, and deeply glamorous—these masterpieces are tailored for your most unforgettable evening events.'
+  }
+};
+
 export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
   const [products, setProducts] = useState(ALL_PRODUCTS);
@@ -272,8 +295,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   // States matching filters
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedFabric, setSelectedFabric] = useState('All');
-  const [selectedColor, setSelectedColor] = useState('All');
-  const [selectedOccasion, setSelectedOccasion] = useState('All');
+  const [selectedAvailability, setSelectedAvailability] = useState('All');
+  const [maxPrice, setMaxPrice] = useState(50000);
   const [selectedSort, setSelectedSort] = useState('featured');
   const [wishlist, setWishlist] = useState(() => {
     const saved = localStorage.getItem('boutique_wishlist');
@@ -313,11 +336,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       setSelectedCategory('All');
     }
     
-    if (activeFilter.occasion) {
-      setSelectedOccasion(activeFilter.occasion);
-    } else {
-      setSelectedOccasion('All');
-    }
+
   }, [activeFilter]);
 
   // Handle product filtering & sorting logic
@@ -345,27 +364,39 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       filtered = filtered.filter(p => p.fabric.toLowerCase() === selectedFabric.toLowerCase());
     }
 
-    // Filter by Color
-    if (selectedColor && selectedColor !== 'All') {
-      filtered = filtered.filter(p => p.color.toLowerCase() === selectedColor.toLowerCase());
+    // Filter by Availability
+    if (selectedAvailability !== 'All') {
+      if (selectedAvailability === 'In Stock') {
+        filtered = filtered.filter(p => p.inStock !== false);
+      } else if (selectedAvailability === 'Out of Stock') {
+        filtered = filtered.filter(p => p.inStock === false);
+      }
     }
 
-    // Filter by Occasion
-    if (selectedOccasion && selectedOccasion !== 'All') {
-      filtered = filtered.filter(p => p.occasion.toLowerCase() === selectedOccasion.toLowerCase());
-    }
+    // Filter by Max Price
+    filtered = filtered.filter(p => p.price <= maxPrice);
 
     // Sort Logic
     if (selectedSort === 'price-low') {
       filtered.sort((a, b) => a.price - b.price);
     } else if (selectedSort === 'price-high') {
       filtered.sort((a, b) => b.price - a.price);
-    } else if (selectedSort === 'rating') {
-      filtered.sort((a, b) => b.rating - a.rating);
+    } else if (selectedSort === 'alpha-asc') {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (selectedSort === 'alpha-desc') {
+      filtered.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (selectedSort === 'best-selling') {
+      filtered.sort((a, b) => b.rating - a.rating); // using rating as a proxy for best selling
+    } else if (selectedSort === 'date-old') {
+      filtered.sort((a, b) => ALL_PRODUCTS.indexOf(a) - ALL_PRODUCTS.indexOf(b));
+    } else if (selectedSort === 'date-new') {
+      filtered.sort((a, b) => ALL_PRODUCTS.indexOf(b) - ALL_PRODUCTS.indexOf(a));
+    } else if (selectedSort === 'featured' || selectedSort === 'relevant') {
+      filtered.sort((a, b) => ALL_PRODUCTS.indexOf(a) - ALL_PRODUCTS.indexOf(b));
     }
 
     setProducts(filtered);
-  }, [selectedCategory, selectedFabric, selectedColor, selectedOccasion, selectedSort, searchQuery]);
+  }, [selectedCategory, selectedFabric, selectedAvailability, maxPrice, selectedSort, searchQuery]);
 
   const handleAddToWishlist = (product) => {
     const saved = localStorage.getItem('boutique_wishlist');
@@ -390,8 +421,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const handleResetFilters = () => {
     setSelectedCategory('All');
     setSelectedFabric('All');
-    setSelectedColor('All');
-    setSelectedOccasion('All');
+    setSelectedAvailability('All');
+    setMaxPrice(50000);
     setSelectedSort('featured');
     setSearchQuery('');
     if (setActiveFilter) {
@@ -399,95 +430,67 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     }
   };
 
+  const handleWeaveClick = (cat) => {
+    setSelectedFabric('All');
+    setSelectedAvailability('All');
+    setMaxPrice(50000);
+    setSelectedSort('featured');
+    setSearchQuery('');
+    if (setActiveFilter) {
+      setActiveFilter({ category: cat, occasion: '', label: cat });
+    } else {
+      setSelectedCategory(cat);
+    }
+  };
+
   return (
     <div className={styles['catalog-page-container']}>
-
-      {/* 1. Hero Section */}
-      <header className={styles['hero-section']}>
-        <div className={styles['hero-bg']} />
-        <div className={styles['hero-overlay']} />
-        <div className={styles['hero-content']}>
-          <div className={styles['hero-text-box']}>
-            <h1>Discover Timeless Sarees</h1>
-            <p>Browse our carefully curated collection of premium sarees, crafted to suit every occasion. From elegant everyday wear to festive and wedding collections, find the perfect drape that reflects your style.</p>
-            <div className={styles['hero-actions']}>
-              <button 
-                className={styles['gold-shimmer-btn']}
-                onClick={() => {
-                  const element = document.getElementById('catalog-explore-anchor');
-                  if (element) element.scrollIntoView({ behavior: 'smooth' });
-                }}
-              >
-                EXPLORE NOW
-              </button>
-              <button 
-                className={`${styles['gold-shimmer-btn-outline']} pill`}
-                onClick={() => {
-                  if (setCurrentTab) setCurrentTab('contact');
-                }}
-              >
-                BOOK CONSULTATION
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      
+      {/* Breadcrumb Section */}
+      <div className={styles['breadcrumb-container']}>
+        <span className={styles['breadcrumb-link']} onClick={() => window.location.href='/'}>Home</span>
+        <span className={styles['breadcrumb-separator']}>/</span>
+        <span className={selectedCategory === 'All' ? styles['breadcrumb-current'] : styles['breadcrumb-link']} onClick={handleResetFilters}>Shop</span>
+        {selectedCategory !== 'All' && (
+          <>
+            <span className={styles['breadcrumb-separator']}>/</span>
+            <span className={styles['breadcrumb-current']}>{selectedCategory}</span>
+          </>
+        )}
+      </div>
 
       {/* 2. Signature Weaves Section */}
       <section className={styles['signature-weaves-section']} id="catalog-explore-anchor">
         <div className={styles['section-header']}>
           <h2>Our Signature Weaves</h2>
-          <div className={styles['divider']} />
         </div>
         <div className={styles['weave-cards-container']}>
-          <div className={styles['weave-card']} onClick={() => setSelectedCategory('Silk')}>
+          <div className={styles['weave-card']} onClick={() => handleWeaveClick('Everyday Elegance')}>
             <div className={`${styles['weave-image-frame']} ${styles['frame-silk']}`}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-hN0onELnDgdOswyfAzJdw98YnefT7Zi-Dt0g7IxzqYuKK0TaBE4ZTit86sthNhhHWaETP5U6EPkJdQ2TF8NiA7csqXaXCMDhY3VfyoT7yodibzxkenJWfVDdPFIj9YQwTe_B2qlA3e4Sg8KUXPv4QX9GkevPmAgmVVpnY1xGSJkIONEBGz60tPRpNkxygpulKi7xC5gVJ_NCnFJG5nHKVTU98HQAfzC7nM8QYjmgbIyBBYSsnJFz" 
-                alt="Silk sarees curation" 
-              />
+              <img src="/Images/cotton3.jpg" alt="Everyday Elegance" />
             </div>
-            <p>SILK</p>
+            <p>EVERYDAY ELEGANCE</p>
           </div>
 
-          <div className={styles['weave-card']} onClick={() => setSelectedCategory('Cotton')}>
+          <div className={styles['weave-card']} onClick={() => handleWeaveClick('Festive Glow')}>
             <div className={`${styles['weave-image-frame']} ${styles['frame-cotton']}`}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1gzWEB9tKWsjoudWNb3uApBhCDiPTe9M1N6lnbt5UlryqNZaDDCJ8tb4LpOZS3_Q_f3ai28aCck4TTiRvoW6rCLqG9z1MjEjojxWwCDsU5oehBjjZEL6UZBCOtrTrsrJT3cZGJ3rrgRrbu1lbSKpbMJ5GHQ2uffEq5JqZ_7clzRy6vknPvSSzVkFqaC08HUPLxpQbswti0TkQQCUl6LopJnDFIkxphZNhU5XYWEa2AjlwakWy0rtm" 
-                alt="Cotton weaves curation" 
-              />
+              <img src="/Images/silk.webp" alt="Festive Glow" />
             </div>
-            <p>COTTON</p>
+            <p>FESTIVE GLOW</p>
           </div>
 
-          <div className={styles['weave-card']} onClick={() => setSelectedCategory('Banarasi')}>
+          <div className={styles['weave-card']} onClick={() => handleWeaveClick('Style Studio')}>
             <div className={`${styles['weave-image-frame']} ${styles['frame-banarasi']}`}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_" 
-                alt="Banarasi looms curation" 
-              />
+              <img src="/Images/fancy.jpg" alt="Style Studio" />
             </div>
-            <p>BANARASI</p>
+            <p>STYLE STUDIO</p>
           </div>
 
-          <div className={styles['weave-card']} onClick={() => setSelectedCategory('Organza')}>
+          <div className={styles['weave-card']} onClick={() => handleWeaveClick('Black Magic')}>
             <div className={`${styles['weave-image-frame']} ${styles['frame-organza']}`}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB99n9r4dbP7WA7__f11wrB_Ipn6Q7GJSe8zMy54tocsgng5Z1Lpt40VzWbYoU1eR2drwe6bdmrWtZUkRPdbQGsUCWo1IBvdJJwiiQ4Sv9ncSwDIKofKTG8qx4YEiYlvuIv_XgQ6B2Z4xVVVvquVHEiV4BznQPCbp8fgL9DgvHqKdq45bT_Yy_gbfOWsdfybCeY0bzHqWfgyJH519MupLNrDTaOzaeGV9f5ckgTYE_FLmrqEByj3pLr" 
-                alt="Organza sarees curation" 
-              />
+              <img src="/Images/black.jpg" alt="Black Magic" />
             </div>
-            <p>ORGANZA</p>
-          </div>
-
-          <div className={styles['weave-card']} onClick={() => setSelectedCategory('Bridal')}>
-            <div className={`${styles['weave-image-frame']} ${styles['frame-bridal']}`}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4EfBPaPdPDqLR-Rynn0CdBpWEu5GnScNJ0P7TcAJMUlneT5ULxMjW7no9g7oggZiGPQ_3RDBuC6F4hB30FN4kRf8Ixqc9AcAwCWKHDSAiow5UiSsA23QSTL1nh_7CTPoHcZfJS1Fs-mg4CnhazB4V0JNBiMxr9oWd4za5pzvZpMWiQfGSJcLGgPTOGhCh0zcpjE_-fuCyNYUOU9a8sTqqdjJVFqG_TVvJInGjJ0cNzraqo3w3JOGR" 
-                alt="Bridal trousseau curation" 
-              />
-            </div>
-            <p>BRIDAL</p>
+            <p>BLACK MAGIC</p>
           </div>
         </div>
       </section>
@@ -500,89 +503,89 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
             <p className={styles['sidebar-subtitle']}>Curated for elegance</p>
 
             <div className={styles['space-y-6']}>
-              {/* Fabric Filter Widget */}
+              {/* Collection Filter Widget */}
               <div className={styles['filter-widget']}>
                 <div className={styles['filter-widget-header']}>
                   <div className={styles['widget-title-box']}>
                     <span className="material-symbols-outlined">texture</span>
-                    <h4>Fabric</h4>
+                    <h4>Collection</h4>
                   </div>
                 </div>
                 <div className={styles['fabric-tags']}>
-                  {['All', 'Blended South Cotton', 'Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton Sarees', 'Khadi Cotton Saree', 'Mul Mul Cotton'].map(fab => (
+                  {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
                     <button 
-                      key={fab} 
-                      onClick={() => setSelectedFabric(fab)}
-                      className={`${styles['tag-btn']} ${selectedFabric === fab ? styles['active-tag'] : ''}`}
+                      key={cat} 
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`${styles['tag-btn']} ${selectedCategory === cat ? styles['active-tag'] : ''}`}
                     >
-                      {fab}
+                      {cat}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Color Filter Widget */}
+              {/* Availability Filter Widget */}
               <div className={styles['filter-widget']}>
                 <div className={styles['filter-widget-header']}>
                   <div className={styles['widget-title-box']}>
-                    <span className="material-symbols-outlined">palette</span>
-                    <h4>Color</h4>
+                    <span className="material-symbols-outlined">inventory_2</span>
+                    <h4>Availability</h4>
                   </div>
                 </div>
-                <div className={styles['color-circles']}>
-                  <div 
-                    onClick={() => setSelectedColor('All')} 
-                    className={`${styles['color-dot']} ${selectedColor === 'All' ? styles['active-color'] : ''}`}
-                    style={{ backgroundColor: '#ccc' }}
-                    title="All Colors"
-                  />
-                  <div 
-                    onClick={() => setSelectedColor('#6B102A')} 
-                    className={`${styles['color-dot']} ${selectedColor === '#6B102A' ? styles['active-color'] : ''}`}
-                    style={{ backgroundColor: '#6B102A' }}
-                    title="Burgundy"
-                  />
-                  <div 
-                    onClick={() => setSelectedColor('#004D40')} 
-                    className={`${styles['color-dot']} ${selectedColor === '#004D40' ? styles['active-color'] : ''}`}
-                    style={{ backgroundColor: '#004D40' }}
-                    title="Green"
-                  />
-                  <div 
-                    onClick={() => setSelectedColor('#1A237E')} 
-                    className={`${styles['color-dot']} ${selectedColor === '#1A237E' ? styles['active-color'] : ''}`}
-                    style={{ backgroundColor: '#1A237E' }}
-                    title="Blue"
-                  />
-                  <div 
-                    onClick={() => setSelectedColor('#C8A34D')} 
-                    className={`${styles['color-dot']} ${selectedColor === '#C8A34D' ? styles['active-color'] : ''}`}
-                    style={{ backgroundColor: '#C8A34D' }}
-                    title="Gold"
-                  />
+                <div style={{ padding: '8px 0' }}>
+                  <select 
+                    value={selectedAvailability} 
+                    onChange={(e) => setSelectedAvailability(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: '4px',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: 'transparent',
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      fontSize: '14px',
+                      color: 'var(--text-main)',
+                      outline: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value="All">All Status</option>
+                    <option value="In Stock">In Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                  </select>
                 </div>
               </div>
 
-              {/* Occasions Checkbox List */}
+              {/* Price Range Filter Widget */}
               <div className={styles['filter-widget']}>
                 <div className={styles['filter-widget-header']}>
                   <div className={styles['widget-title-box']}>
-                    <span className="material-symbols-outlined">auto_awesome</span>
-                    <h4>Occasion</h4>
+                    <span className="material-symbols-outlined">payments</span>
+                    <h4>Price Range</h4>
                   </div>
                 </div>
-                <div className={styles['occasion-list']}>
-                  {['All', 'Wedding', 'Festival', 'Reception', 'Party Wear', 'Traditional'].map(occ => (
-                    <label key={occ} className={styles['checkbox-label']}>
-                      <input 
-                        type="radio" 
-                        name="occasion-filter" 
-                        checked={selectedOccasion === occ}
-                        onChange={() => setSelectedOccasion(occ)}
-                      />
-                      <span>{occ}</span>
-                    </label>
-                  ))}
+                <div style={{ padding: '16px 0 8px 0' }}>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="50000" 
+                    step="1000" 
+                    value={maxPrice} 
+                    onChange={(e) => setMaxPrice(Number(e.target.value))}
+                    style={{ width: '100%', accentColor: 'var(--primary)' }}
+                  />
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    marginTop: '12px', 
+                    fontSize: '13px', 
+                    color: 'var(--text-muted)',
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontWeight: '500'
+                  }}>
+                    <span>₹0</span>
+                    <span style={{ color: 'var(--primary)', fontWeight: '700' }}>Up to ₹{maxPrice}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -595,9 +598,19 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
         {/* Right side: Product Grid */}
         <section className={styles['products-panel']}>
+          {/* Dynamic Category Content Banner */}
+          <div className={styles['category-content-banner']}>
+            <h2 className={styles['category-content-title']}>
+              {CATEGORY_CONTENT[selectedCategory]?.title || selectedCategory}
+            </h2>
+            <div className={styles['category-divider']}></div>
+            <p className={styles['category-content-description']}>
+              {CATEGORY_CONTENT[selectedCategory]?.description || ''}
+            </p>
+          </div>
+
           <div className={styles['products-header']}>
             <div className={styles['products-header-left']}>
-              <h3>SHOP THE FULL CATALOGUE</h3>
               <p>Showing {products.length} of {ALL_PRODUCTS.length} Masterpieces</p>
             </div>
             
@@ -632,10 +645,15 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   }}
                   type="button"
                 >
-                  {selectedSort === 'featured' && 'RELEVANCE'}
-                  {selectedSort === 'price-low' && 'PRICE: LOW TO HIGH'}
-                  {selectedSort === 'price-high' && 'PRICE: HIGH TO LOW'}
-                  {selectedSort === 'rating' && 'PATRON RATING'}
+                  {selectedSort === 'featured' && 'Featured'}
+                  {selectedSort === 'relevant' && 'Most relevant'}
+                  {selectedSort === 'best-selling' && 'Best selling'}
+                  {selectedSort === 'alpha-asc' && 'Alphabetically, A-Z'}
+                  {selectedSort === 'alpha-desc' && 'Alphabetically, Z-A'}
+                  {selectedSort === 'price-low' && 'Price, low to high'}
+                  {selectedSort === 'price-high' && 'Price, high to low'}
+                  {selectedSort === 'date-old' && 'Date, old to new'}
+                  {selectedSort === 'date-new' && 'Date, new to old'}
                   <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
                 </button>
                 {isSortOpen && (
@@ -645,28 +663,63 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                       onClick={() => setSelectedSort('featured')}
                       type="button"
                     >
-                      RELEVANCE
+                      Featured
+                    </button>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'relevant' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('relevant')}
+                      type="button"
+                    >
+                      Most relevant
+                    </button>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'best-selling' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('best-selling')}
+                      type="button"
+                    >
+                      Best selling
+                    </button>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-asc' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('alpha-asc')}
+                      type="button"
+                    >
+                      Alphabetically, A-Z
+                    </button>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-desc' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('alpha-desc')}
+                      type="button"
+                    >
+                      Alphabetically, Z-A
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}
                       onClick={() => setSelectedSort('price-low')}
                       type="button"
                     >
-                      PRICE: LOW TO HIGH
+                      Price, low to high
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'price-high' ? styles['active'] : ''}`}
                       onClick={() => setSelectedSort('price-high')}
                       type="button"
                     >
-                      PRICE: HIGH TO LOW
+                      Price, high to low
                     </button>
                     <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'rating' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('rating')}
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'date-old' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('date-old')}
                       type="button"
                     >
-                      PATRON RATING
+                      Date, old to new
+                    </button>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'date-new' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('date-new')}
+                      type="button"
+                    >
+                      Date, new to old
                     </button>
                   </div>
                 )}

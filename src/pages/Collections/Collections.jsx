@@ -2,12 +2,10 @@ import React from 'react';
 import styles from './Collections.module.css';
 
 const COLLECTIONS = [
-  { id: 'silk', label: 'Silk Sarees', image: '/Images/saree1.png', gridClass: 'card-wide', subtitle: 'HERITAGE SILKS' },
-  { id: 'kanchipuram', label: 'Kanchipuram Silk', image: '/Images/saree11.png', gridClass: 'card-tall', subtitle: 'ROYAL WEAVES' },
-  { id: 'banarasi', label: 'Banarasi', image: '/Images/saree12.png', gridClass: 'card-half', subtitle: 'VARANASI BROCADES' },
-  { id: 'cotton', label: 'Cotton Sarees', image: '/Images/saree2.png', gridClass: 'card-half', subtitle: 'FINE HANDLOOM' },
-  { id: 'organza', label: 'Organza', image: '/Images/saree6.png', gridClass: 'card-equal', subtitle: 'SHEER GRACE' },
-  { id: 'designer', label: 'Designer Sarees', image: '/Images/saree7.png', gridClass: 'card-equal', subtitle: 'MODERN EDITS' }
+  { id: 'everyday-elegance', label: 'Everyday Elegance', image: '/Images/saree1.png', gridClass: 'card-wide', subtitle: 'CASUAL & CHIC' },
+  { id: 'festive-glow', label: 'Festive Glow', image: '/Images/silk1.png', gridClass: 'card-tall', subtitle: 'CELEBRATION READY' },
+  { id: 'style-studio', label: 'Style Studio', image: '/Images/fancy1.png', gridClass: 'card-half', subtitle: 'MODERN TRENDS' },
+  { id: 'black-magic', label: 'Black Magic', image: '/Images/black1.png', gridClass: 'card-half', subtitle: 'BOLD & BEAUTIFUL' }
 ];
 
 export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
@@ -20,14 +18,17 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
 
   return (
     <div className={styles['collections-page']}>
-      <div className={styles.hero}>
-        <div className={styles['hero-content']}>
-          <h1>A Collection for Every Occasion</h1>
-          <p>Discover thoughtfully curated saree collections, from breathable cottons and graceful linens to luxurious silks and festive weaves. Find the perfect saree for every celebration and every moment.</p>
-        </div>
-      </div>
-      
       <div className="container" style={{ padding: '80px 0 0 0' }}>
+        <div className={styles['guide-header']} style={{ marginBottom: '60px' }}>
+          <span className={styles['guide-tag']}>OUR COLLECTIONS</span>
+          <h1 style={{ fontSize: '42px', color: 'var(--primary)', marginBottom: '16px', fontFamily: "'Playfair Display', Georgia, serif" }}>
+            A Collection for Every Occasion
+          </h1>
+          <p style={{ maxWidth: '800px', textAlign: 'center', margin: '0 auto 24px auto', color: 'var(--text-muted)' }}>
+            Discover thoughtfully curated collections, from casual chic and modern trends to bold statements and festive wear. Find the perfect ensemble for every celebration and every moment.
+          </p>
+          <div className={styles['divider']} />
+        </div>
         <div className={styles['collections-grid']}>
           {COLLECTIONS.map(collection => (
             <div 
@@ -63,118 +64,114 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
           </div>
 
           <div className={styles['guide-timeline']}>
-            {/* Weave 1: Kanchipuram */}
+            {/* Collection 1: Everyday Elegance */}
             <div className={styles['guide-row']}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/saree12.png" 
-                  alt="Kanchipuram Silk Saree" 
+                  src="/Images/cotton3.png" 
+                  alt="Everyday Elegance" 
                 />
               </div>
               <div className={styles['guide-text-box']}>
-                <span className={styles['weave-badge']}>THE QUEEN OF SILKS</span>
-                <h3>Kanchipuram Silk</h3>
+                <span className={styles['weave-badge']}>CASUAL & CHIC</span>
+                <h3>Everyday Elegance</h3>
                 <p>
-                  Handwoven in the temple towns of Tamil Nadu, Kanchipuram sarees are renowned for their heavy double-warp mulberry silk threads and contrasting solid borders. 
-                  The body and border are woven separately and then joined with a zig-zag interlocking weave (known as *korvai*), guaranteeing unmatched durability.
+                  Discover the perfect blend of comfort and style for your daily wear. These sarees are handpicked to provide effortless grace and breathable comfort, keeping you elegantly draped throughout your busy day without compromising on tradition.
                 </p>
                 <div className={styles['weave-specs']}>
-                  <p><strong>Fabric:</strong> Double-warp Pure Mulberry Silk</p>
-                  <p><strong>Accent:</strong> Certified 24k Gold &amp; Silver Zari</p>
-                  <p><strong>Ideal For:</strong> Weddings, Bridal Trousseau</p>
+                  <p><strong>Focus:</strong> Comfort & Easy Drape</p>
+                  <p><strong>Vibe:</strong> Subtle Elegance</p>
+                  <p><strong>Ideal For:</strong> Daily Wear, Office, Casual Outings</p>
                 </div>
                 <button 
                   className={styles['guide-cta-btn']}
-                  onClick={() => handleCollectionClick('Kanchipuram Silk')}
+                  onClick={() => handleCollectionClick('Everyday Elegance')}
                 >
-                  EXPLORE KANCHIPURAM →
+                  EXPLORE EVERYDAY ELEGANCE →
                 </button>
               </div>
             </div>
 
-            {/* Weave 2: Banarasi */}
+            {/* Collection 2: Festive Glow */}
             <div className={`${styles['guide-row']} ${styles['row-reverse']}`}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/saree13.png" 
-                  alt="Banarasi Silk Saree" 
+                  src="/Images/silk1.png" 
+                  alt="Festive Glow" 
                 />
               </div>
               <div className={styles['guide-text-box']}>
-                <span className={styles['weave-badge']}>IMPERIAL BROCADES</span>
-                <h3>Banarasi Silk</h3>
+                <span className={styles['weave-badge']}>CELEBRATION READY</span>
+                <h3>Festive Glow</h3>
                 <p>
-                  Originating from the holy city of Varanasi, Banarasi sarees are famous for their gold and silver brocade work. 
-                  Master artisans weave intricate floral lattices (*jaal*) and foliage motifs into heavy silk, creating a metallic, regal weight that drapes beautifully.
+                  Illuminate every celebration with our Festive Glow collection. Rich fabrics, intricate zari work, and vibrant festive colors come together beautifully to make you the center of attention at every auspicious occasion and celebration.
                 </p>
                 <div className={styles['weave-specs']}>
-                  <p><strong>Fabric:</strong> Pure Mulberry Katan Silk</p>
-                  <p><strong>Accent:</strong> Heavy Metallic Zari Brocade</p>
-                  <p><strong>Ideal For:</strong> Receptions, Galas, Festivities</p>
+                  <p><strong>Focus:</strong> Rich Embellishments</p>
+                  <p><strong>Vibe:</strong> Vibrant & Celebratory</p>
+                  <p><strong>Ideal For:</strong> Weddings, Festivals, Grand Functions</p>
                 </div>
                 <button 
                   className={styles['guide-cta-btn']}
-                  onClick={() => handleCollectionClick('Banarasi')}
+                  onClick={() => handleCollectionClick('Festive Glow')}
                 >
-                  EXPLORE BANARASI →
+                  EXPLORE FESTIVE GLOW →
                 </button>
               </div>
             </div>
 
-            {/* Weave 3: Organza & Tussar */}
+            {/* Collection 3: Style Studio */}
             <div className={styles['guide-row']}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/saree6.png" 
-                  alt="Organza Saree" 
+                  src="/Images/fancy1.png" 
+                  alt="Style Studio" 
                 />
               </div>
               <div className={styles['guide-text-box']}>
-                <span className={styles['weave-badge']}>SHEER ELEGANCE</span>
-                <h3>Organza &amp; Tussar</h3>
+                <span className={styles['weave-badge']}>MODERN TRENDS</span>
+                <h3>Style Studio</h3>
                 <p>
-                  For the modern patron, our Organza and Tussar collection blends sheer transparency with structured drape. 
-                  Lightweight and airy, these sarees feature delicate silver thread borders, natural textured weaves, and hand-painted pastel details.
+                  Step into the modern era of saree draping. The Style Studio collection features contemporary designs, unique geometric patterns, and trendy motifs specially designed for the modern, fashion-forward woman who loves to experiment.
                 </p>
                 <div className={styles['weave-specs']}>
-                  <p><strong>Fabric:</strong> Sheer Fine Silk &amp; Tussar Blend</p>
-                  <p><strong>Accent:</strong> Subtle Zari Borders, Handpaint</p>
-                  <p><strong>Ideal For:</strong> Evening Parties, Receptions</p>
+                  <p><strong>Focus:</strong> Contemporary Designs</p>
+                  <p><strong>Vibe:</strong> Trendy & Fashion-forward</p>
+                  <p><strong>Ideal For:</strong> Parties, Social Events, Fashion Shows</p>
                 </div>
                 <button 
                   className={styles['guide-cta-btn']}
-                  onClick={() => handleCollectionClick('Organza')}
+                  onClick={() => handleCollectionClick('Style Studio')}
                 >
-                  EXPLORE ORGANZA →
+                  EXPLORE STYLE STUDIO →
                 </button>
               </div>
             </div>
 
-            {/* Weave 4: Fine Cotton */}
+            {/* Collection 4: Black Magic */}
             <div className={`${styles['guide-row']} ${styles['row-reverse']}`}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/saree2.png" 
-                  alt="Cotton Saree" 
+                  src="/Images/black1.png" 
+                  alt="Black Magic" 
                 />
               </div>
               <div className={styles['guide-text-box']}>
-                <span className={styles['weave-badge']}>BREATHABLE HERITAGE</span>
-                <h3>Fine Cotton Looms</h3>
+                <span className={styles['weave-badge']}>BOLD & BEAUTIFUL</span>
+                <h3>Black Magic</h3>
                 <p>
-                  Handcrafted from premium organic cotton fibers, our cotton collection celebrates comfortable luxury. 
-                  Woven on traditional frame looms, these sarees feature subtle textures, minimal borders, and natural dyes that breathe easily in the warmest climates.
+                  Embrace the bold and mysterious allure of black. A carefully curated selection of stunning dark-hued masterpieces that offer an unmatched statement of sophistication, power, and unapologetic glamour for your special evening events.
                 </p>
                 <div className={styles['weave-specs']}>
-                  <p><strong>Fabric:</strong> Fine Organic Handloom Cotton</p>
-                  <p><strong>Accent:</strong> Thread-work borders, Minimal Zari</p>
-                  <p><strong>Ideal For:</strong> Daily Wear, Daytime Festivals</p>
+                  <p><strong>Focus:</strong> Dark Hues & Contrast Accents</p>
+                  <p><strong>Vibe:</strong> Sophisticated & Powerful</p>
+                  <p><strong>Ideal For:</strong> Cocktail Parties, Evening Galas, Receptions</p>
                 </div>
                 <button 
                   className={styles['guide-cta-btn']}
-                  onClick={() => handleCollectionClick('Cotton')}
+                  onClick={() => handleCollectionClick('Black Magic')}
                 >
-                  EXPLORE COTTON →
+                  EXPLORE BLACK MAGIC →
                 </button>
               </div>
             </div>

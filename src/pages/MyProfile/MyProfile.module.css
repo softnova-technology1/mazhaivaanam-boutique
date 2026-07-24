@@ -1,0 +1,963 @@
+/* MyProfile.module.css */
+
+.profileContainer {
+  background-color: #FAF6F0; /* Soft warm ivory backdrop */
+  background-image: 
+    radial-gradient(rgba(200, 163, 77, 0.555) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+  min-height: 100vh;
+  padding: 30px 24px;
+  font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+  color: #3B3B36; /* On-background dark charcoal-olive */
+}
+
+.profileWrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 16px;
+  text-align: center;
+  position: relative;
+}
+
+.pageHeader::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1.5px;
+  background-color: #f1e5d0; /* Antique Gold separator line */
+  margin: 16px auto 0;
+}
+
+.pageTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem;
+  color: #363618; /* Deep Olive Brand primary */
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.pageSubtitle {
+  font-size: 0.75rem;
+  color: #8C886B; /* Soft Sage Olive */
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (min-width: 992px) {
+  .layoutGrid {
+    grid-template-columns: 310px 1fr;
+  }
+}
+
+/* Sidebar Styling - Luxury Rounded Card with Gold Trim */
+.sidebarCard {
+  background: #FFFFFF;
+  border: 1px solid rgba(200, 163, 77, 0.25);
+  border-radius: 16px; /* Soft luxury edges */
+  box-shadow: 0 12px 32px rgba(79, 78, 34, 0.03);
+  position: sticky;
+  top: 120px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.profileSummary {
+  padding: 40px 24px 32px;
+  text-align: center;
+  background-color: #FFFDFB;
+  border-bottom: 1px solid rgba(200, 163, 77, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatarCircle {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4F4E22 0%, #7B8467 100%); /* Deep Olive to Sage Green */
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 500;
+  border: 1px solid #FAF6F0;
+  box-shadow: 0 8px 24px rgba(79, 78, 34, 0.12);
+  position: relative;
+}
+
+.avatarCircle::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 1px solid #C8A34D;
+  opacity: 0.6;
+}
+
+.userName {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: #4F4E22;
+  font-weight: 500;
+  margin: 4px 0 0;
+}
+
+.userEmail {
+  font-size: 0.8rem;
+  color: #8C886B;
+  letter-spacing: 0.02em;
+}
+
+.loyaltyBadge {
+  background: #FFFDF8;
+  color: #C8A34D;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 1px solid #C8A34D;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(200, 163, 77, 0.05);
+}
+
+.navigationList {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 30px !important; /* Premium rounded pill corners */
+  color: #5D5D56; /* On-surface-variant */
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Remove cloud button overlays for sidebar navigation */
+.menuButton::before, .menuButton::after {
+  display: none !important;
+}
+
+.menuButtonActive {
+  background-color: #FAF8F4 !important;
+  color: #4F4E22 !important;
+  border-left: 3px solid #4F4E22 !important;
+  font-weight: 700;
+}
+
+.menuButton:hover:not(.menuButtonActive) {
+  background-color: #FAF8F4;
+  color: #C8A34D;
+  border-left: 3px solid #C8A34D;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 30px !important; /* Matches active pill corners */
+  color: #BA1A1A; /* Error Red */
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 16px;
+  border-top: 1px solid rgba(200, 163, 77, 0.15);
+  padding-top: 24px;
+}
+
+.logoutButton::before, .logoutButton::after {
+  display: none !important;
+}
+
+.logoutButton:hover {
+  background-color: #FFF5F5;
+  color: #93000A;
+}
+
+/* Main Content Pane - Pristine White with Golden Trim */
+.mainContentArea {
+  background: #FFFFFF;
+  border: 1px solid rgba(200, 163, 77, 0.25);
+  border-radius: 16px; /* Soft luxury edges */
+  box-shadow: 0 12px 40px rgba(79, 78, 34, 0.02);
+  padding: 40px;
+  min-height: 600px;
+}
+
+@media (max-width: 576px) {
+  .mainContentArea {
+    padding: 24px;
+  }
+}
+
+.tabSection {
+  animation: elegantFade 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes elegantFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sectionHeader {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: #4F4E22;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+
+.sectionSubtitle {
+  font-size: 0.8rem;
+  color: #696738; /* Lighter Olive */
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+}
+
+.sectionDivider {
+  height: 1px;
+  background-color: rgba(200, 163, 77, 0.2);
+  margin-bottom: 40px;
+}
+
+/* Premium Gold bottom-border Inputs */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px 24px;
+}
+
+@media (min-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formLabel {
+  font-size: 0.65rem;
+  color: #8C886B;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.formInput {
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid rgba(200, 163, 77, 0.4);
+  background-color: transparent;
+  color: #3B3B36;
+  font-size: 0.95rem;
+  outline: none;
+  border-radius: 0;
+  transition: border-color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.formInput:focus {
+  border-bottom-color: #4F4E22;
+}
+
+.subSectionTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: #4F4E22;
+  margin-top: 56px;
+  margin-bottom: 24px;
+  font-weight: 400;
+  border-bottom: 1px solid rgba(200, 163, 77, 0.15);
+  padding-bottom: 12px;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 48px;
+}
+
+.submitBtn {
+  background-color: #4F4E22 !important;
+  color: #FFFFFF !important;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 14px 36px;
+  border-radius: 30px !important; /* Consistent pill submit buttons */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  border: 1px solid #4F4E22;
+}
+
+.submitBtn::before, .submitBtn::after {
+  display: none !important;
+}
+
+.submitBtn:hover {
+  background-color: #FFFFFF !important;
+  color: #4F4E22 !important;
+  box-shadow: 0 8px 24px rgba(79, 78, 34, 0.08);
+}
+
+/* Saved Addresses - High End Gallery Cards */
+.addressGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .addressGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.addressCard {
+  border: 1px solid rgba(200, 163, 77, 0.25);
+  border-radius: 12px;
+  padding: 32px;
+  background-color: #FFFDFB;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+}
+
+.addressCard:hover {
+  border-color: #4F4E22;
+  box-shadow: 0 12px 32px rgba(79, 78, 34, 0.04);
+}
+
+.addressCardDefault {
+  border-color: #C8A34D;
+  background-color: #FFFDF8;
+}
+
+.defaultBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #C8A34D;
+  color: #FFFFFF;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 4px 10px;
+  text-transform: uppercase;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.addressName {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: #4F4E22;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.addressDetails {
+  font-size: 0.85rem;
+  color: #5D5D56; /* on-surface-variant */
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.addressActions {
+  display: flex;
+  gap: 20px;
+  border-top: 1px solid rgba(200, 163, 77, 0.1);
+  padding-top: 16px;
+}
+
+.addressLinkBtn {
+  background: transparent;
+  border: none;
+  font-size: 0.7rem;
+  color: #8C886B;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.addressLinkBtn::before, .addressLinkBtn::after {
+  display: none !important;
+}
+
+.addressLinkBtn:hover {
+  color: #4F4E22;
+}
+
+.deleteBtn {
+  color: #BA1A1A;
+}
+
+.deleteBtn:hover {
+  color: #93000A;
+}
+
+.addAddressBtn {
+  border: 1px dashed rgba(200, 163, 77, 0.5);
+  border-radius: 12px;
+  padding: 32px;
+  background-color: #FFFDFB;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  min-height: 220px;
+}
+
+.addAddressBtn::before, .addAddressBtn::after {
+  display: none !important;
+}
+
+.addAddressBtn:hover {
+  border-color: #4F4E22;
+  background-color: #FFFFFF;
+}
+
+.addAddressTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #4F4E22;
+}
+
+/* Luxury Loyalty Card Graphic in Forest Green & Gold */
+.loyaltyCardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+.loyaltyCard {
+  width: 100%;
+  max-width: 440px;
+  height: 260px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2C3522 0%, #4F4E22 50%, #7B8467 100%); /* Forest/Olive Green gradient */
+  border: 1px solid rgba(200, 163, 77, 0.45);
+  box-shadow: 0 20px 48px rgba(79, 78, 34, 0.2);
+  padding: 28px;
+  color: #FFFFFF;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  transition: transform 0.4s ease;
+}
+
+.loyaltyCard:hover {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.loyaltyCard::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.cardBrand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #FFFDF8;
+}
+
+.cardBrandSpan {
+  color: #C8A34D;
+  font-size: 0.85rem;
+  display: block;
+  letter-spacing: 0.2em;
+  margin-top: 2px;
+}
+
+.cardChip {
+  width: 42px;
+  height: 32px;
+  background: linear-gradient(135deg, #FFE8B6 0%, #C8A34D 100%);
+  border-radius: 6px;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.5);
+}
+
+.cardChip::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(0deg, transparent 50%, rgba(0,0,0,0.1) 50%),
+                    linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.1) 50%);
+  background-size: 8px 8px;
+}
+
+.cardMid {
+  z-index: 2;
+}
+
+.pointsLabel {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.pointsValue {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+  color: #FFE8B6;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pointsUnit {
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.1em;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  z-index: 2;
+}
+
+.cardHolder {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.holderLabel {
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.holderName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #FFFDF8;
+}
+
+.cardTierInfo {
+  text-align: right;
+}
+
+.tierLabel {
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.tierName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #FFE8B6;
+}
+
+/* Loyalty Privileges Panel */
+.privilegeTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: #4F4E22;
+  margin-bottom: 24px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.privilegeGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .privilegeGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.privilegeItem {
+  border: 1px solid rgba(200, 163, 77, 0.2);
+  border-radius: 12px;
+  padding: 16px 20px;
+  background-color: #FFFDFB;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: all 0.3s ease;
+}
+
+.privilegeItem:hover {
+  border-color: #4F4E22;
+  background-color: #FFFDF8;
+}
+
+.privilegeIcon {
+  color: #C8A34D;
+  margin-top: 2px;
+}
+
+.privilegeText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.privilegeHeader {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #4F4E22;
+  text-transform: uppercase;
+}
+
+.privilegeDesc {
+  font-size: 0.75rem;
+  color: #696738;
+  line-height: 1.5;
+}
+
+/* Help & Support Widget Layout */
+.supportWidgets {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .supportWidgets {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.supportWidget {
+  background-color: #FFFDFB;
+  border: 1px solid rgba(200, 163, 77, 0.2);
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.supportWidget:hover {
+  border-color: #C8A34D;
+  box-shadow: 0 8px 24px rgba(200, 163, 77, 0.04);
+}
+
+.widgetIcon {
+  color: #C8A34D;
+  background-color: #FAF6F0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(200, 163, 77, 0.2);
+}
+
+.widgetTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: #4F4E22;
+  font-weight: 500;
+}
+
+.widgetDesc {
+  font-size: 0.75rem;
+  color: #696738;
+  line-height: 1.5;
+}
+
+.widgetLink {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #4F4E22;
+  text-decoration: none;
+  border-bottom: 1px solid #4F4E22;
+  padding-bottom: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.widgetLink:hover {
+  color: #C8A34D;
+  border-bottom-color: #C8A34D;
+}
+
+.supportSplitGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+
+@media (min-width: 992px) {
+  .supportSplitGrid {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+/* FAQ Styling */
+.faqSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faqItem {
+  border-bottom: 1px solid rgba(200, 163, 77, 0.15);
+  overflow: hidden;
+}
+
+.faqQuestion {
+  width: 100%;
+  text-align: left;
+  padding: 20px 0;
+  background-color: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4F4E22;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 0.02em;
+}
+
+/* Remove cloud button overlays for FAQ headers */
+.faqQuestion::before, .faqQuestion::after {
+  display: none !important;
+}
+
+.faqQuestion:not([class*="cloud-btn"]) {
+  border-radius: 0px !important;
+}
+
+.faqAnswer {
+  padding: 0 0 20px 0;
+  background-color: transparent;
+  font-size: 0.8rem;
+  color: #5D5D56;
+  line-height: 1.6;
+  animation: elegantFade 0.4s ease forwards;
+}
+
+/* Success Messages */
+.successMessage {
+  padding: 16px 20px;
+  background-color: #FFFDF8;
+  border-left: 2px solid #C8A34D;
+  font-size: 0.8rem;
+  color: #C8A34D;
+  font-weight: 600;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Modern Address Modal Layout */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(79, 84, 67, 0.15); /* Light sage green blur backdrop */
+  backdrop-filter: blur(8px);
+  z-index: 10005;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modalContent {
+  background: #FFFFFF;
+  border: 1px solid rgba(200, 163, 77, 0.3);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 40px;
+  box-shadow: 0 24px 64px rgba(79, 84, 67, 0.08);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.modalCloseBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #8C886B;
+  transition: color 0.2s ease;
+}
+
+.modalCloseBtn::before, .modalCloseBtn::after {
+  display: none !important;
+}
+
+.modalCloseBtn:hover {
+  color: #4F4E22;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.75rem;
+  color: #5D5D56;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.cancelBtn {
+  background-color: transparent !important;
+  color: #8C886B !important;
+  border: 1px solid rgba(200, 163, 77, 0.3) !important;
+  padding: 12px 30px;
+  border-radius: 30px !important;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelBtn::before, .cancelBtn::after {
+  display: none !important;
+}
+
+.cancelBtn:hover {
+  background-color: #FAF6F0 !important;
+  color: #4F4E22 !important;
+  border-color: #4F4E22 !important;
+}

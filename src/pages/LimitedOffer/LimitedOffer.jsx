@@ -15,12 +15,105 @@ export const LimitedOffer = ({ setCurrentTab }) => {
   // Copy Coupons State
   const [copiedCode, setCopiedCode] = useState(null);
 
+  // View All Offers State
+  const [showAllOffers, setShowAllOffers] = useState(false);
+
+  const galleryItems = [
+    {
+      title: "Banarasi Silk Elegance",
+      price: "₹ 14,500",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAiws1LqlrLrZC3jcnsCtT5_Rku07pHF2AlAn7Zyj1gO2Sam7TcnCtkrPrhBfdF_BOMAWWOU0SUREtD1wIyNSDP3dqQV5uU58sfI1KUYmJx8KnyPQnAdhw-EbPeEOqsWH8JU3TVWcMOKKM_SIVyDKWaiWZJiHMR3edgYspjB9OHkEmy82KsiXdiS06-88TnLGP2c_xctj2Ybvh47BXpYvsvjX8nG0HX88Bol8iYSomxPmNzeKJg-zXY",
+      tag: "FESTIVAL CHOICE"
+    },
+    {
+      title: "Golden Temple Kanchipuram",
+      price: "₹ 22,800",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCDgVmqwuLg4cRCmfYi1gTvh-1pWOTm42ozSAB0G-QGoHRFNM2GM9Qw31SxFySO36kmEw3Egv5p25Ues8POMis97hEgmfCZKLBnfeNosKbtpvlJlzObawUlUHRVI5rVuBKu8ZTI10IrlFS7UciPSrmsGb5dYxkKDvNavM_fWz5Rn-emc-ti2v2U_BlTJLv35gntt22r4PaHCn8LF-1nUd6Pe7gWrEZgRHIG5dwB0sAUtvlw4XeUK3HR",
+      tag: null
+    },
+    {
+      title: "Hand-Painted Organza",
+      price: "₹ 11,200",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC5sgxRjroNTNCuoxkwsqyIDePKlQiHflxsCP7kxClGHeksK7eqj_r46kvqTvbuwD-n4FSyRIpjl15vqvbsptSdrRRjlcOvZ_Tg3G2g0XTx7hgYdnPfBvkyysP_hIjytE65LdgWCxmcDn7K4TgKyWB_4Fm5HDy8urdJvci79Z9xUldtkCO_J74BlU95VdXnxazJ9yknpEBkXGMCV_ejzdAS--iDT1UPnqFzbmJ86ZHPzMHqGocFzP31",
+      tag: "BESTSELLER"
+    },
+    {
+      title: "Emerald Heritage Pattu",
+      price: "₹ 18,900",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBa97nLerZJ32cFOROn_rj1WxFojT9ps_a64W4pdZXgcWLH-wCKzsGXaUOZwYjNiX2aBWVopyRyxJ-Jn_KZbJgMgKbsz9mmMBZ9f18wZs9IC6wBjr7PPJwLAjTVFf-rvAYjuEag1YaqaRBUyJDN_ulJIXQK2viX3czJjP9AYKwSowNhNx81blxVR4ybDVYfnd28RewkE8YCjkt8lRkF-vm4vp8kFC0Ps4hMVcy0cDpgzeIWtLsMzXB2",
+      tag: null
+    },
+    {
+      title: "Royal Crimson Silk",
+      price: "₹ 24,500",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAiws1LqlrLrZC3jcnsCtT5_Rku07pHF2AlAn7Zyj1gO2Sam7TcnCtkrPrhBfdF_BOMAWWOU0SUREtD1wIyNSDP3dqQV5uU58sfI1KUYmJx8KnyPQnAdhw-EbPeEOqsWH8JU3TVWcMOKKM_SIVyDKWaiWZJiHMR3edgYspjB9OHkEmy82KsiXdiS06-88TnLGP2c_xctj2Ybvh47BXpYvsvjX8nG0HX88Bol8iYSomxPmNzeKJg-zXY",
+      tag: "NEW ARRIVAL"
+    },
+    {
+      title: "Mysore Crepe Golden",
+      price: "₹ 16,300",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCDgVmqwuLg4cRCmfYi1gTvh-1pWOTm42ozSAB0G-QGoHRFNM2GM9Qw31SxFySO36kmEw3Egv5p25Ues8POMis97hEgmfCZKLBnfeNosKbtpvlJlzObawUlUHRVI5rVuBKu8ZTI10IrlFS7UciPSrmsGb5dYxkKDvNavM_fWz5Rn-emc-ti2v2U_BlTJLv35gntt22r4PaHCn8LF-1nUd6Pe7gWrEZgRHIG5dwB0sAUtvlw4XeUK3HR",
+      tag: null
+    }
+  ];
+
   // WebGL Canvas Ref
   const canvasRef = useRef(null);
 
+  // Gallery Carousel Ref
+  const galleryRef = useRef(null);
 
+  const scrollGallery = (direction) => {
+    if (galleryRef.current) {
+      const scrollAmount = 340; // match the width of the card
+      galleryRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
+  // Auto-scroll effect (Continuous Marquee)
+  useEffect(() => {
+    let animationId;
+    const scrollNode = galleryRef.current;
+    
+    if (!scrollNode) return;
 
+    let isHovered = false;
+
+    const scroll = () => {
+      if (!isHovered) {
+        scrollNode.scrollLeft += 1; // Speed of the continuous scroll
+        
+        // When we've scrolled exactly halfway (past the first set), seamlessly reset to start
+        if (scrollNode.scrollLeft >= scrollNode.scrollWidth / 2) {
+          scrollNode.scrollLeft -= scrollNode.scrollWidth / 2;
+        }
+      }
+      animationId = requestAnimationFrame(scroll);
+    };
+
+    animationId = requestAnimationFrame(scroll);
+
+    // Pause on hover
+    const pause = () => { isHovered = true; };
+    const resume = () => { isHovered = false; };
+
+    scrollNode.addEventListener('mouseenter', pause);
+    scrollNode.addEventListener('mouseleave', resume);
+    // Touch support for pausing
+    scrollNode.addEventListener('touchstart', pause, { passive: true });
+    scrollNode.addEventListener('touchend', resume, { passive: true });
+    
+    return () => {
+      cancelAnimationFrame(animationId);
+      scrollNode.removeEventListener('mouseenter', pause);
+      scrollNode.removeEventListener('mouseleave', resume);
+      scrollNode.removeEventListener('touchstart', pause);
+      scrollNode.removeEventListener('touchend', resume);
+    };
+  }, []);
 
   // WebGL Canvas animation setup
   useEffect(() => {
@@ -222,25 +315,24 @@ void main() {
               <span className="font-label-caps text-[10px] text-white tracking-[0.2em] uppercase">Limited Exclusive Offer</span>
             </div>
             
-            <h1 className="font-display-lg text-4xl md:text-[64px] text-white mb-4 leading-[1.1] drop-shadow-2xl">
-              Celebrate Every Festival <br/>
-              <span className={`italic serif font-light ${styles['text-shimmer']}`}>In Timeless Elegance</span>
+            <h1 className="font-display-lg text-4xl md:text-[42px] text-white mb-4 leading-[1.1] drop-shadow-2xl">
+              Exclusive Offers, <span className={`italic serif font-light ${styles['text-shimmer']}`}>Limited Time</span>
             </h1>
             
-            <p className="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
-              Discover our hand-woven silk collections designed to make every occasion unforgettable. Shop now to avail our exclusive festive perks.
+            <p className="text-white/90 text-lg mb-10 max-w-4xl mx-auto">
+              Enjoy special prices on selected sarees for a limited period. Elevate your wardrobe with premium collections while these exclusive offers last.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <button 
                 onClick={() => setCurrentTab('catalog')}
-                className="w-full sm:w-auto px-10 py-4 bg-secondary text-white rounded-full hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
+                className="w-full sm:w-auto px-10 py-4 bg-secondary text-white hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
               >
                 EXPLORE COLLECTION
               </button>
               <button 
                 onClick={() => setCurrentTab('about')}
-                className="w-full sm:w-auto px-10 py-4 border border-white text-white rounded-full hover:bg-white hover:text-primary transition-all duration-500 font-label-caps text-label-caps tracking-widest bg-black/20 backdrop-blur-sm transform hover:-translate-y-1"
+                className="pill rounded-full w-full sm:w-auto px-10 py-4 border border-white text-white bg-transparent hover:bg-white hover:text-primary transition-all duration-500 font-label-caps text-label-caps tracking-widest transform hover:-translate-y-1"
               >
                 OUR HERITAGE
               </button>
@@ -250,7 +342,7 @@ void main() {
 
         {/* Live Offer Countdown */}
         <section className="relative -mt-24 z-20 px-margin-mobile md:px-margin-desktop">
-          <div className="max-w-5xl mx-auto bg-[#FDFBF7] border border-[#D4AF37]/40 p-10 md:p-14 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_20px_50px_rgba(179,138,74,0.15)] relative overflow-hidden">
+          <div className="max-w-7xl mx-auto bg-[#FDFBF7] border border-[#D4AF37]/40 p-10 md:p-14 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_20px_50px_rgba(179,138,74,0.15)] relative overflow-hidden">
             {/* Subtle decorative background pattern */}
             <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "radial-gradient(#D4AF37 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
             
@@ -285,7 +377,7 @@ void main() {
         </section>
 
         {/* Featured Offer Banner */}
-        <section className="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-low overflow-hidden">
+        <section className="py-16 px-margin-mobile md:px-margin-desktop bg-surface-container-low overflow-hidden">
           <div className="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-20">
             <div className="relative group h-[600px] overflow-hidden rounded-xl">
               <img 
@@ -327,8 +419,59 @@ void main() {
           </div>
         </section>
 
+        {/* Offer Products Grid */}
+        <section className="py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+          <div className="flex flex-col items-center mb-14 text-center">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-px bg-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Festive Deals</span>
+              <div className="w-12 h-px bg-[#D4AF37]"></div>
+            </div>
+            <h3 className="font-display-lg text-4xl md:text-5xl text-primary leading-tight">Exclusive Offers</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {(showAllOffers ? [...galleryItems, ...galleryItems.slice(0, 2)] : galleryItems.slice(0, 4)).map((item, index) => {
+              // Calculate a dummy original price for the offer display (40% higher)
+              const originalPrice = Math.round(parseInt(item.price.replace(/[^\d]/g, '')) * 1.4);
+              return (
+                <div key={`offer-${index}`} className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
+                  <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
+                    <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
+                      <img 
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                        alt={item.title}
+                        src={item.image}
+                      />
+                      <div className="absolute top-3 left-3 bg-red-800 text-white px-2.5 py-1 shadow-sm border border-white/20">
+                        <span className="font-label-caps text-[8.5px] tracking-[0.2em] uppercase font-bold">FLAT 30% OFF</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center flex-1 flex flex-col justify-start px-2 w-full">
+                    <h4 className="font-display-lg text-[19px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
+                    <div className="flex items-center justify-center gap-3 mt-1">
+                      <p className="text-[#5F6652]/60 line-through text-[12px]">₹ {originalPrice.toLocaleString('en-IN')}</p>
+                      <p className="text-red-800 font-label-caps text-[13px] tracking-[0.2em] font-bold">{item.price}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <div className="flex justify-center mt-10">
+            <button 
+              onClick={() => setShowAllOffers(!showAllOffers)}
+              className="load-more-btn px-10 py-4 bg-primary border border-primary text-white font-bold font-label-caps text-[12px] tracking-[0.2em] uppercase hover:bg-transparent hover:text-primary transition-all duration-300 rounded-none shadow-sm"
+            >
+              {showAllOffers ? "View Less" : "View All Offers"}
+            </button>
+          </div>
+        </section>
+
         {/* Product Grid */}
-        <section className="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <section className="py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex justify-between items-end mb-14">
             <div>
               <div className="flex items-center gap-3 mb-4">
@@ -338,105 +481,42 @@ void main() {
               <h3 className="font-display-lg text-4xl md:text-5xl text-primary leading-tight">The Buy 2 Get 1 Gallery</h3>
             </div>
             <div className="hidden md:flex gap-4">
-              <div role="button" className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-[12px] text-[#D4AF37] hover:bg-[#F2A987] hover:border-[#F2A987] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
+              <div onClick={() => scrollGallery('left')} role="button" className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-[12px] text-[#D4AF37] hover:bg-[#F2A987] hover:border-[#F2A987] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
                 <span className="material-symbols-outlined text-[20px]">west</span>
               </div>
-              <div role="button" className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-[12px] text-[#D4AF37] hover:bg-[#F2A987] hover:border-[#F2A987] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
+              <div onClick={() => scrollGallery('right')} role="button" className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-[12px] text-[#D4AF37] hover:bg-[#F2A987] hover:border-[#F2A987] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
                 <span className="material-symbols-outlined text-[20px]">east</span>
               </div>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {/* Product Card 1 */}
-            <div className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
-              <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
-                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
-                  <img 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                    alt="Close-up of a deep maroon silk saree with intricate antique gold zari borders." 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiws1LqlrLrZC3jcnsCtT5_Rku07pHF2AlAn7Zyj1gO2Sam7TcnCtkrPrhBfdF_BOMAWWOU0SUREtD1wIyNSDP3dqQV5uU58sfI1KUYmJx8KnyPQnAdhw-EbPeEOqsWH8JU3TVWcMOKKM_SIVyDKWaiWZJiHMR3edgYspjB9OHkEmy82KsiXdiS06-88TnLGP2c_xctj2Ybvh47BXpYvsvjX8nG0HX88Bol8iYSomxPmNzeKJg-zXY"
-                  />
-                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 shadow-sm border border-white/40">
-                    <span className="text-[#B38A4A] font-label-caps text-[8.5px] tracking-[0.2em] uppercase font-bold">FESTIVAL CHOICE</span>
+          <div ref={galleryRef} className="flex overflow-x-auto gap-6 lg:gap-8 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {[...galleryItems, ...galleryItems].map((item, index) => (
+              <div key={index} className="w-[280px] md:w-[340px] shrink-0 group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
+                <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
+                    <img 
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                      alt={item.title}
+                      src={item.image}
+                    />
+                    {item.tag && (
+                      <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 shadow-sm border border-white/40">
+                        <span className="text-[#B38A4A] font-label-caps text-[8.5px] tracking-[0.2em] uppercase font-bold">{item.tag}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="text-center flex-1 flex flex-col justify-start px-2 w-full">
+                  <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
+                  <div className="flex items-center justify-center gap-3 mt-1">
+                    <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                    <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">{item.price}</p>
+                    <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
                   </div>
                 </div>
               </div>
-              <div className="text-center flex-1 flex flex-col justify-start px-2">
-                <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors">Banarasi Silk Elegance</h4>
-                <div className="flex items-center justify-center gap-3 mt-1">
-                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                  <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">₹ 14,500</p>
-                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Product Card 2 */}
-            <div className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
-              <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
-                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
-                  <img 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                    alt="A gold-toned Kanchipuram silk saree draped artistically over a vintage wooden frame." 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDgVmqwuLg4cRCmfYi1gTvh-1pWOTm42ozSAB0G-QGoHRFNM2GM9Qw31SxFySO36kmEw3Egv5p25Ues8POMis97hEgmfCZKLBnfeNosKbtpvlJlzObawUlUHRVI5rVuBKu8ZTI10IrlFS7UciPSrmsGb5dYxkKDvNavM_fWz5Rn-emc-ti2v2U_BlTJLv35gntt22r4PaHCn8LF-1nUd6Pe7gWrEZgRHIG5dwB0sAUtvlw4XeUK3HR"
-                  />
-                </div>
-              </div>
-              <div className="text-center flex-1 flex flex-col justify-start px-2">
-                <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors">Golden Temple Kanchipuram</h4>
-                <div className="flex items-center justify-center gap-3 mt-1">
-                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                  <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">₹ 22,800</p>
-                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Product Card 3 */}
-            <div className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
-              <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
-                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
-                  <img 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                    alt="A delicate blush pink organza saree with hand-painted floral motifs." 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5sgxRjroNTNCuoxkwsqyIDePKlQiHflxsCP7kxClGHeksK7eqj_r46kvqTvbuwD-n4FSyRIpjl15vqvbsptSdrRRjlcOvZ_Tg3G2g0XTx7hgYdnPfBvkyysP_hIjytE65LdgWCxmcDn7K4TgKyWB_4Fm5HDy8urdJvci79Z9xUldtkCO_J74BlU95VdXnxazJ9yknpEBkXGMCV_ejzdAS--iDT1UPnqFzbmJ86ZHPzMHqGocFzP31"
-                  />
-                  <div className="absolute top-3 left-3 bg-primary text-white px-2.5 py-1 shadow-sm border border-white/20">
-                    <span className="font-label-caps text-[8.5px] tracking-[0.2em] uppercase font-bold">BESTSELLER</span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-center flex-1 flex flex-col justify-start px-2">
-                <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors">Hand-Painted Organza</h4>
-                <div className="flex items-center justify-center gap-3 mt-1">
-                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                  <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">₹ 11,200</p>
-                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Product Card 4 */}
-            <div className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
-              <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
-                <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
-                  <img 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                    alt="A rich emerald green silk saree with a wide contrast border." 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa97nLerZJ32cFOROn_rj1WxFojT9ps_a64W4pdZXgcWLH-wCKzsGXaUOZwYjNiX2aBWVopyRyxJ-Jn_KZbJgMgKbsz9mmMBZ9f18wZs9IC6wBjr7PPJwLAjTVFf-rvAYjuEag1YaqaRBUyJDN_ulJIXQK2viX3czJjP9AYKwSowNhNx81blxVR4ybDVYfnd28RewkE8YCjkt8lRkF-vm4vp8kFC0Ps4hMVcy0cDpgzeIWtLsMzXB2"
-                  />
-                </div>
-              </div>
-              <div className="text-center flex-1 flex flex-col justify-start px-2">
-                <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors">Emerald Heritage Pattu</h4>
-                <div className="flex items-center justify-center gap-3 mt-1">
-                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                  <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">₹ 18,900</p>
-                  <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 
@@ -520,7 +600,7 @@ void main() {
         </section>
 
         {/* Combo Offers Horizontal */}
-        <section className="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <section className="py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex flex-col items-center text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-3">
               <div className="w-12 h-px bg-[#D4AF37]"></div>

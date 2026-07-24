@@ -73,8 +73,8 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
         <div className={styles['hero-overlay']} />
         <div className={styles['hero-content']}>
           <span className={styles['hero-slide-tag']}>Fresh From The Looms</span>
-          <h1>New Arrivals</h1>
-          <p>Discover our newest handwoven additions curated for seasonal celebrations and timeless beauty.</p>
+          <h1>Fresh Styles, <span className={`italic serif font-light ${styles['text-shimmer']}`}>Timeless Elegance</span></h1>
+          <p>Explore our latest arrivals featuring contemporary designs blended with traditional craftsmanship. Stay ahead with fresh collections that celebrate beauty, comfort, and elegance.</p>
           <div className={styles['hero-actions']}>
             <button 
               className={styles['btn-explore']}
@@ -86,7 +86,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
               EXPLORE NEW PIECES
             </button>
             <button 
-              className={styles['btn-custom']}
+              className={`${styles['btn-custom']} pill`}
               onClick={() => setCurrentTab && setCurrentTab('about')}
             >
               OUR ARTISAN STORIES
@@ -111,91 +111,100 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
 
       {/* 3. Filter & Search Controls */}
       <section className="container" id="new-arrivals-explore" style={{ padding: '40px 0 20px 0' }}>
-        <div className={styles['filter-search-container']}>
-          <div className={styles['filter-pills']}>
-            {['All', 'Silk', 'Cotton', 'Banarasi', 'Organza'].map(cat => (
-              <button
-                key={cat}
-                className={`${styles['filter-pill']} ${selectedCategory === cat ? styles['active-pill'] : ''}`}
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat.toUpperCase()}
-              </button>
-            ))}
-          </div>
-
-          {/* Search Bar */}
-          <div className={styles['search-bar-box']}>
-            <Search size={16} className={styles['search-icon']} />
-            <input
-              type="text"
-              placeholder="Search new arrivals..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles['search-input']}
-            />
-            {searchQuery && (
-              <div
-                className={styles['search-clear-icon']}
-                onClick={() => setSearchQuery('')}
-                role="button"
-              >
-                ✕
-              </div>
-            )}
-          </div>
-
-          {/* Sort Selector */}
-          <div className={styles['sort-selector']}>
-            <span>SORT BY:</span>
-            <div className={styles['custom-dropdown-container']}>
-              <button 
-                className={styles['dropdown-trigger-btn']} 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsSortOpen(!isSortOpen);
-                }}
-                type="button"
-              >
-                {selectedSort === 'featured' && 'RELEVANCE'}
-                {selectedSort === 'price-low' && 'PRICE: LOW TO HIGH'}
-                {selectedSort === 'price-high' && 'PRICE: HIGH TO LOW'}
-                {selectedSort === 'rating' && 'PATRON RATING'}
-                <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
-              </button>
-              {isSortOpen && (
-                <div className={styles['dropdown-options-menu']}>
-                  <button
-                    className={`${styles['dropdown-option-item']} ${selectedSort === 'featured' ? styles['active'] : ''}`}
-                    onClick={() => setSelectedSort('featured')}
-                    type="button"
-                  >
-                    RELEVANCE
-                  </button>
-                  <button
-                    className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}
-                    onClick={() => setSelectedSort('price-low')}
-                    type="button"
-                  >
-                    PRICE: LOW TO HIGH
-                  </button>
-                  <button
-                    className={`${styles['dropdown-option-item']} ${selectedSort === 'price-high' ? styles['active'] : ''}`}
-                    onClick={() => setSelectedSort('price-high')}
-                    type="button"
-                  >
-                    PRICE: HIGH TO LOW
-                  </button>
-                  <button
-                    className={`${styles['dropdown-option-item']} ${selectedSort === 'rating' ? styles['active'] : ''}`}
-                    onClick={() => setSelectedSort('rating')}
-                    type="button"
-                  >
-                    PATRON RATING
-                  </button>
+        <div className="flex flex-col gap-6 mb-10">
+          
+          {/* Top row: Search and Sort */}
+          <div className="flex flex-wrap justify-between items-center gap-4 border-b border-[#E9DDC7] pb-4">
+            {/* Search Bar */}
+            <div className="flex items-center gap-2 max-w-[300px] w-full bg-white px-4 py-2 rounded-full border border-[#E9DDC7] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+              <Search size={16} className="text-text-muted" />
+              <input
+                type="text"
+                placeholder="Search new arrivals..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-transparent border-none outline-none font-inter text-[12px] w-full text-text-main placeholder-[#A09A94]"
+              />
+              {searchQuery && (
+                <div
+                  className="cursor-pointer text-text-muted hover:text-primary transition-colors text-[12px]"
+                  onClick={() => setSearchQuery('')}
+                  role="button"
+                >
+                  ✕
                 </div>
               )}
             </div>
+
+            {/* Sort Selector */}
+            <div className={styles['sort-selector']} style={{ margin: 0 }}>
+              <span>SORT BY:</span>
+              <div className={styles['custom-dropdown-container']}>
+                <button 
+                  className={styles['dropdown-trigger-btn']} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsSortOpen(!isSortOpen);
+                  }}
+                  type="button"
+                >
+                  {selectedSort === 'featured' && 'RELEVANCE'}
+                  {selectedSort === 'price-low' && 'PRICE: LOW TO HIGH'}
+                  {selectedSort === 'price-high' && 'PRICE: HIGH TO LOW'}
+                  {selectedSort === 'rating' && 'PATRON RATING'}
+                  <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
+                </button>
+                {isSortOpen && (
+                  <div className={styles['dropdown-options-menu']}>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'featured' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('featured')}
+                      type="button"
+                    >
+                      RELEVANCE
+                    </button>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('price-low')}
+                      type="button"
+                    >
+                      PRICE: LOW TO HIGH
+                    </button>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'price-high' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('price-high')}
+                      type="button"
+                    >
+                      PRICE: HIGH TO LOW
+                    </button>
+                    <button
+                      className={`${styles['dropdown-option-item']} ${selectedSort === 'rating' ? styles['active'] : ''}`}
+                      onClick={() => setSelectedSort('rating')}
+                      type="button"
+                    >
+                      PATRON RATING
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom row: Categories (Horizontal Scroll) */}
+          <div className="flex gap-8 overflow-x-auto no-scrollbar pb-2">
+            {['All', 'Blended South Cotton', 'Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton Sarees', 'Khadi Cotton Saree', 'Mul Mul Cotton'].map(cat => (
+              <button
+                key={cat}
+                className={`filter-link whitespace-nowrap font-inter text-[11px] font-semibold tracking-[1.5px] uppercase pb-1 transition-all duration-300 border-b-2 ${
+                  selectedCategory === cat 
+                    ? 'text-primary border-primary' 
+                    : 'text-text-muted border-transparent hover:text-primary hover:border-primary/50'
+                }`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
       </section>

@@ -9,7 +9,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-1',
     name: "Ruby Petal",
-    category: "Silk",
+    category: "Blended South Cotton",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Wedding",
@@ -23,7 +23,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-2',
     name: "Sunset Glow",
-    category: "Cotton",
+    category: "Handloom Sarees",
     fabric: "Cotton",
     color: "#C8A34D",
     occasion: "Festival",
@@ -39,7 +39,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-3',
     name: "Snow Elegance",
-    category: "Banarasi",
+    category: "Linen Cotton",
     fabric: "Pure Silk",
     color: "#C8A34D",
     occasion: "Wedding",
@@ -53,7 +53,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-4',
     name: "Night Veil",
-    category: "Organza",
+    category: "Chanderi Cotton",
     fabric: "Tussar",
     color: "#1A237E",
     occasion: "Party Wear",
@@ -67,7 +67,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-5',
     name: "Azure Dream",
-    category: "Bridal",
+    category: "Kalyani Cotton Sarees",
     fabric: "Pure Silk",
     color: "#1A237E",
     occasion: "Wedding",
@@ -80,7 +80,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-6',
     name: "Royal Orchid",
-    category: "Silk",
+    category: "Khadi Cotton Saree",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Reception",
@@ -93,7 +93,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-7',
     name: "Golden Harvest",
-    category: "Cotton",
+    category: "Mul Mul Cotton",
     fabric: "Cotton",
     color: "#C8A34D",
     occasion: "Traditional",
@@ -107,7 +107,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-8',
     name: "Mystic Forest",
-    category: "Banarasi",
+    category: "Blended South Cotton",
     fabric: "Pure Silk",
     color: "#004D40",
     occasion: "Festival",
@@ -120,7 +120,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-9',
     name: "Ebony Scarlet",
-    category: "Organza",
+    category: "Handloom Sarees",
     fabric: "Tussar",
     color: "#6B102A",
     occasion: "Reception",
@@ -136,7 +136,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-10',
     name: "Sienna Bloom",
-    category: "Silk",
+    category: "Linen Cotton",
     fabric: "Tussar",
     color: "#C8A34D",
     occasion: "Festival",
@@ -150,7 +150,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-11',
     name: "Lavender Mist",
-    category: "Organza",
+    category: "Chanderi Cotton",
     fabric: "Organza",
     color: "#6B102A",
     occasion: "Party Wear",
@@ -164,7 +164,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-12',
     name: "Crimson Heritage",
-    category: "Banarasi",
+    category: "Kalyani Cotton Sarees",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Wedding",
@@ -180,7 +180,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-13',
     name: "Mint Charm",
-    category: "Cotton",
+    category: "Khadi Cotton Saree",
     fabric: "Cotton",
     color: "#004D40",
     occasion: "Festival",
@@ -194,7 +194,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-14',
     name: "Ivory Symphony",
-    category: "Silk",
+    category: "Mul Mul Cotton",
     fabric: "Pure Silk",
     color: "#C8A34D",
     occasion: "Wedding",
@@ -210,7 +210,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-15',
     name: "Marigold Breeze",
-    category: "Cotton",
+    category: "Blended South Cotton",
     fabric: "Cotton",
     color: "#C8A34D",
     occasion: "Traditional",
@@ -224,7 +224,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-16',
     name: "Coral Petals",
-    category: "Silk",
+    category: "Handloom Sarees",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Reception",
@@ -238,7 +238,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-17',
     name: "Indigo Weave",
-    category: "Banarasi",
+    category: "Linen Cotton",
     fabric: "Pure Silk",
     color: "#1A237E",
     occasion: "Festival",
@@ -252,7 +252,7 @@ export const ALL_PRODUCTS = [
   {
     id: 'prod-catalog-18',
     name: "Orchid Glow",
-    category: "Organza",
+    category: "Chanderi Cotton",
     fabric: "Organza",
     color: "#6B102A",
     occasion: "Party Wear",
@@ -408,8 +408,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
         <div className={styles['hero-overlay']} />
         <div className={styles['hero-content']}>
           <div className={styles['hero-text-box']}>
-            <h1>Discover Every Weave, <br />Crafted with Elegance</h1>
-            <p>Explore our complete collection of handcrafted sarees designed for weddings, festivals, and timeless everyday beauty.</p>
+            <h1>Discover Timeless Sarees</h1>
+            <p>Browse our carefully curated collection of premium sarees, crafted to suit every occasion. From elegant everyday wear to festive and wedding collections, find the perfect drape that reflects your style.</p>
             <div className={styles['hero-actions']}>
               <button 
                 className={styles['gold-shimmer-btn']}
@@ -421,7 +421,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 EXPLORE NOW
               </button>
               <button 
-                className={styles['gold-shimmer-btn-outline']}
+                className={`${styles['gold-shimmer-btn-outline']} pill`}
                 onClick={() => {
                   if (setCurrentTab) setCurrentTab('contact');
                 }}
@@ -509,7 +509,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   </div>
                 </div>
                 <div className={styles['fabric-tags']}>
-                  {['All', 'Pure Silk', 'Cotton', 'Tussar'].map(fab => (
+                  {['All', 'Blended South Cotton', 'Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton Sarees', 'Khadi Cotton Saree', 'Mul Mul Cotton'].map(fab => (
                     <button 
                       key={fab} 
                       onClick={() => setSelectedFabric(fab)}

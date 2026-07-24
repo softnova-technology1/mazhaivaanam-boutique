@@ -23,6 +23,32 @@
   text-transform: uppercase;
   position: relative;
   z-index: 1001;
+  overflow: hidden;
+}
+
+.sliderContainer {
+  height: 35px;
+  overflow: hidden;
+}
+
+.slider {
+  display: flex;
+  flex-direction: column;
+  animation: slideVertical 9s infinite;
+}
+
+.slide {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes slideVertical {
+  0%, 20% { transform: translateY(0); }
+  33%, 53% { transform: translateY(-35px); }
+  66%, 86% { transform: translateY(-70px); }
+  100% { transform: translateY(-105px); } /* 4th slide */
 }
 
 /* Sticky Navbar Styling */

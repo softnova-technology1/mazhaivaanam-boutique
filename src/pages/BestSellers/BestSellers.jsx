@@ -11,7 +11,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   const [gridView, setGridView] = useState(3);
   const [sortOption, setSortOption] = useState('best-selling');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isPremiumOpen, setIsPremiumOpen] = useState(false);
+  const [isPremiumOpen, setIsPremiumOpen] = useState(true);
 
   const SORT_OPTIONS = [
     { value: 'featured', label: 'Featured' },
@@ -56,7 +56,10 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
         <div className={styles['breadcrumbs']}>
           <span onClick={() => setCurrentTab('home')}>Home</span> &gt; <span>Best Sellers</span>
         </div>
-        <h1>Best Sellers</h1>
+        <h1>Customer Favorites</h1>
+        <p style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '16px', color: 'var(--text-muted)' }}>
+          Explore the sarees our customers love the most. These best-selling designs are celebrated for their exceptional quality, timeless appeal, and effortless elegance.
+        </p>
       </div>
 
       {/* CATALOG CONTAINER */}

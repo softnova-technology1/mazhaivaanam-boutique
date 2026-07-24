@@ -4,6 +4,7 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { useCart } from './hooks/useCart';
 import { Navbar } from './components/layout/Navbar/Navbar';
+import { WhatsAppButton } from './components/common/WhatsAppButton/WhatsAppButton';
 import { Home } from './pages/Home/Home';
 import { Cart } from './pages/Cart/Cart';
 import { Login } from './pages/Login/Login';
@@ -24,6 +25,7 @@ import { LimitedOffer } from './pages/LimitedOffer/LimitedOffer';
 import { NewArrivals } from './pages/NewArrivals/NewArrivals';
 import { BestSellers } from './pages/BestSellers/BestSellers';
 import { Collections } from './pages/Collections/Collections';
+import { ShippingPolicy } from './pages/ShippingPolicy/ShippingPolicy';
 import { MyProfile } from './pages/MyProfile/MyProfile';
 import { SavedAddress } from './pages/SavedAddress/SavedAddress';
 import { GiftCards } from './pages/GiftCards/GiftCards';
@@ -53,7 +55,7 @@ function getInitialState() {
       'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
       'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
       'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
-      'pre-booking', 'my-profile', 'saved-address', 'gift-cards'
+      'pre-booking', 'shipping-policy', 'my-profile', 'saved-address', 'gift-cards'
     ];
     if (validTabs.includes(tabName)) {
       tab = tabName;
@@ -109,7 +111,7 @@ function AppContent() {
         'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
         'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
         'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
-        'pre-booking', 'my-profile', 'saved-address', 'gift-cards'
+        'pre-booking', 'shipping-policy', 'my-profile', 'saved-address', 'gift-cards'
       ].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
@@ -139,6 +141,9 @@ function AppContent() {
     if (path !== expectedPath) {
       window.history.pushState(null, '', expectedPath);
     }
+    
+    // Scroll to top on page navigation
+    window.scrollTo(0, 0);
   }, [currentTab, selectedProduct]);
 
   const renderContent = () => {
@@ -198,6 +203,8 @@ function AppContent() {
 
       case 'pre-booking':
         return <PreBooking setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
+      case 'shipping-policy':
+        return <ShippingPolicy />;
       default:
         return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
     }
@@ -215,6 +222,9 @@ function AppContent() {
         {renderContent()}
       </main>
       <Footer setCurrentTab={setCurrentTab} />
+
+      {/* Global WhatsApp Button */}
+      <WhatsAppButton />
 
       {/* Global Toast Notification */}
       {toastMessage && (

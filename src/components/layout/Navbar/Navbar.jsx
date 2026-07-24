@@ -74,20 +74,16 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const popularSearches = ['Kanchipuram', 'Wedding Sarees', 'Organza', 'Cotton', 'Designer'];
+  const popularSearches = ['Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton', 'Mul Mul Cotton'];
 
   const collectionsList = [
-    { label: 'Silk Sarees', link: 'silk' },
-    { label: 'Kanchipuram Silk', link: 'kanchipuram' },
-    { label: 'Banarasi', link: 'banarasi' },
-    { label: 'Soft Silk', link: 'soft-silk' },
-    { label: 'Cotton Sarees', link: 'cotton' },
-    { label: 'Organza', link: 'organza' },
-    { label: 'Linen', link: 'linen' },
-    { label: 'Tissue Sarees', link: 'tissue' },
-    { label: 'Designer Sarees', link: 'designer' },
-    { label: 'Handloom Collection', link: 'handloom' },
-    { label: 'Bridal Collection', link: 'bridal' }
+    { label: 'Blended South Cotton', link: 'blended-south-cotton' },
+    { label: 'Handloom Sarees', link: 'handloom-sarees' },
+    { label: 'Linen Cotton', link: 'linen-cotton' },
+    { label: 'Chanderi Cotton', link: 'chanderi-cotton' },
+    { label: 'Kalyani Cotton Sarees', link: 'kalyani-cotton-sarees' },
+    { label: 'Khadi Cotton Saree', link: 'khadi-cotton-saree' },
+    { label: 'Mul Mul Cotton', link: 'mul-mul-cotton' }
   ];
 
 
@@ -145,7 +141,15 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     <>
       {/* 1. announcement banner */}
       <div className={styles.announcementBar}>
-        <p>✨ Free Shipping Above ₹2,999 | Store Locator | Book Video Shopping</p>
+        <div className={styles.sliderContainer}>
+          <div className={styles.slider}>
+            <div className={styles.slide}>✨ Handwoven Luxury, Delivered Worldwide.</div>
+            <div className={styles.slide}>🥻 Unveiling Authentic Kanjeevaram Heritage.</div>
+            <div className={styles.slide}>📞 Book a Personalized Video Shopping Experience.</div>
+            {/* Duplicate first slide for smooth infinite loop */}
+            <div className={styles.slide}>✨ Handwoven Luxury, Delivered Worldwide.</div>
+          </div>
+        </div>
       </div>
 
       <header className={`${styles.navbarWrapper} ${isSticky ? styles.sticky : ''}`}>

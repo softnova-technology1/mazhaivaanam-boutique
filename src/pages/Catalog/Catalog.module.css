@@ -57,7 +57,7 @@
 }
 
 .hero-text-box {
-  max-width: 650px;
+  max-width: 900px;
   margin: 0 auto;
   opacity: 0;
   transform: translateY(20px);
@@ -69,7 +69,7 @@
 
 .hero-text-box h1 {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 3.5rem;
+  font-size: 42px;
   line-height: 1.15;
   margin-bottom: 20px;
   font-weight: 400;
@@ -123,6 +123,7 @@
   background-color: transparent !important;
   border: 1px solid #FFFFFF !important;
   color: #FFFFFF !important;
+  border-radius: 9999px !important;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
@@ -134,9 +135,9 @@
 }
 
 .gold-shimmer-btn-outline:hover {
-  background-color: var(--primary-dark) !important;
-  color: #FFFFFF !important;
-  border-color: transparent !important;
+  background-color: #FFFFFF !important;
+  color: var(--primary) !important;
+  border-color: #FFFFFF !important;
 }
 
 /* 2. Signature Weaves Section */

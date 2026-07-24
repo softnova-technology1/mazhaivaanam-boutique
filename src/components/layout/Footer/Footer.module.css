@@ -17,9 +17,10 @@
   max-width: 320px;
 }
 
-.footer-logo {
-  font-size: 2rem;
-  color: var(--primary-light);
+.footer-logo-img {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
   display: inline-block;
   margin-bottom: 12px;
 }

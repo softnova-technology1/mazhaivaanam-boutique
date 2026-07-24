@@ -76,19 +76,19 @@ export const About = ({ setCurrentTab }) => {
         <div className={styles.heroGradientOverlay}></div>
 
         <div className={styles.heroContent}>
-          <h2 className={styles.heroTitle}>Every Saree Tells A Story</h2>
-          <p className={styles.heroSubtext}>Celebrating timeless traditions and the artistry of hand-woven heritage.</p>
+          <h2 className={styles.heroTitle}>Celebrating Elegance, Preserving Tradition</h2>
+          <p className={styles.heroSubtext}>At Mazhai Vaanam, we celebrate the timeless beauty of Indian ethnic fashion through carefully curated sarees that blend heritage, craftsmanship, and contemporary elegance. Every collection reflects our passion for quality, comfort, and helping every woman embrace her unique style with confidence.</p>
 
           <div className={styles.heroActionRow}>
             <button
               onClick={() => setCurrentTab('catalog')}
-              className={styles.primaryActionBtn}
+              className={`${styles.primaryActionBtn}`}
             >
               Explore Collection
             </button>
             <button
               onClick={handleScrollToStory}
-              className={styles.secondaryActionBtn}
+              className={`pill ${styles.secondaryActionBtn}`}
             >
               Discover Our Story
             </button>

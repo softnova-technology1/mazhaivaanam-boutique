@@ -137,20 +137,20 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
   const slides = useMemo(() => [
     {
       image: "/Images/saree4.png",
-      tag: "Festive Collection",
-      title: "Grace In Every Fold",
-      desc: "Celebrate the spirit of festivities with our handpicked heirloom sarees."
+      tag: "Wear Confidence",
+      title: "Fashion Rooted in Tradition.",
+      desc: "Your Style, Your Story."
     },
     {
       image: "/Images/saree3.png",
-      tag: "New Arrivals",
-      title: "Timeless Classic Saree",
-      desc: "Experience the timeless elegance with our newly arrived exclusive collection."
+      tag: "Where Beauty Meets Tradition.",
+      title: "Celebrate Every Moment with Elegance.",
+      desc: "From Our Collection to Your Celebration."
     },
     {
       image: "/Images/saree5.png",
-      tag: "Bridal Masterpieces",
-      title: "Elegance Woven Into Every Thread",
+      tag: "Mazhai Vaanam",
+      title: "Grace Begins with Mazhai Vaanam.",
       desc: "Discover handcrafted luxury sarees designed for life's most precious celebrations."
     }
   ], []);
@@ -203,7 +203,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
                 </button>
                 <button 
                   onClick={() => setCurrentTab && setCurrentTab('contact')} 
-                  className={styles['btn-custom']}
+                  className={`${styles['btn-custom']} pill`}
                 >
                   BOOK CONSULTATION
                 </button>
@@ -270,7 +270,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
 
 
       {/* 3. Curation of Craft - Premium Redesign */}
-      <section className="py-16 md:py-24 px-4 md:px-10 max-w-[1400px] mx-auto">
+      <section className="py-10 md:py-16 px-4 md:px-10 max-w-[1400px] mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 relative">
           <div className="relative pl-4 border-l-2 border-[#D4AF37]">
             <span className="font-label-caps text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase mb-3 block">Handpicked For You</span>
@@ -293,10 +293,10 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
             {/* Deep Neutral Shadow Gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="relative z-10 p-10 md:p-14 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">HERITAGE</span>
-              <h3 className="font-display-lg text-3xl md:text-[56px] leading-tight text-white mb-3 drop-shadow-lg transform group-hover:-translate-y-2 transition-transform duration-500">Banarasi Collection</h3>
+              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">ARTISANAL WEAVES</span>
+              <h3 className="font-display-lg text-3xl md:text-[56px] leading-tight text-white mb-3 drop-shadow-lg transform group-hover:-translate-y-2 transition-transform duration-500">Handloom Sarees</h3>
               <p className="text-white/80 text-sm font-body font-light mb-6 md:mb-8 pr-4 md:pr-12 leading-relaxed transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                Woven with golden threads of heritage, these pure Banarasi silks bring timeless royal grandeur and unparalleled craftsmanship to your everyday wardrobe.
+                Authentic weaves crafted with passion, bringing you the timeless beauty of traditional Indian craftsmanship in every drape.
               </p>
               <div className="flex items-center gap-2 text-white font-label-caps text-xs tracking-widest group-hover:text-[#D4AF37] transition-colors pointer-events-auto">
                 <span className="border-b border-[#D4AF37] pb-1">EXPLORE COLLECTION</span>
@@ -316,9 +316,9 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10 p-8 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Kanchipuram Silk</h3>
+                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Linen Cotton</h3>
                 <p className="text-white/80 text-xs font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                  Exquisite temple motifs and rich zari work handwoven by the master artisans of Kanchipuram.
+                  Experience the perfect blend of crisp linen and soft cotton for a sophisticated, contemporary look.
                 </p>
                 <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-auto">VIEW COLLECTION →</span>
               </div>
@@ -333,9 +333,9 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10 p-8 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Soft Cotton</h3>
+                <h3 className="font-display-lg text-2xl md:text-3xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Mul Mul Cotton</h3>
                 <p className="text-white/80 text-xs font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
-                  Breathable, lightweight, and effortlessly elegant cotton drapes designed for your everyday grace.
+                  Cloud-like softness and unparalleled breathability make these sheer drapes an absolute delight to wear.
                 </p>
                 <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-auto">VIEW COLLECTION →</span>
               </div>
@@ -346,9 +346,20 @@ export const Home = ({ setCurrentTab, setSelectedProduct }) => {
 
       {/* 4. The Best Sellers */}
       <section className={`${styles['bestsellers-section']} container`}>
-        <div className={styles['section-header-center']}>
-          <span className={styles['section-label-small']}>EXCLUSIVES</span>
-          <h2>The Best Sellers</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 items-end mb-16">
+          <div className="hidden md:block"></div>
+          <div className={styles['section-header-center']} style={{ marginBottom: 0 }}>
+            <span className={styles['section-label-small']}>EXCLUSIVES</span>
+            <h2>The Best Sellers</h2>
+          </div>
+          <div className="flex justify-center md:justify-end pb-2 mt-6 md:mt-0">
+            <button 
+              onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
+              className="pill px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[8px] hover:bg-[#D4AF37] hover:text-white transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
+            >
+              VIEW ALL COLLECTIONS <span className="text-[14px]">→</span>
+            </button>
+          </div>
         </div>
         <div className="product-grid">
           {bestSellers.map((product) => (

@@ -122,32 +122,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
         </div>
       )}
 
-      {/* Hero Header Banner */}
-      <header className={styles['hero-banner']}>
-        <div className={styles['hero-bg-overlay']} />
-        <div 
-          className={styles['hero-bg-img']} 
-          style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuB_tiWdbk7xnis38vo01t_6nSNOA4V-OjUqn4BBPTSOVqV46IjEI9X_4oH0mngdsHBiNVqsTDUKgMl08J3sW3F3JILjotnL8q3-d53KeLPY3j8Sr1Br3kcePtBcEwGtVHxQ4xPATlbcnJE-JTIn4QZnZx_6nzUZmYWv6_XxxooIzUuZJFQhzH9HWSScqm0s6FutWXJlE1qFkOWWWk3sICUYEgK0yxJUJ1PX3Al2rKAQY5PxOEsldIey')` }}
-        />
-        <div className={styles['hero-content-box']}>
-          <h1>Your Personal Saree Collection</h1>
-          <p>Save the sarees you love and revisit them anytime. Your curated dream trousseau begins here.</p>
-          <div className={styles['hero-btns']}>
-            <button 
-              className={styles['share-btn']} 
-              onClick={() => setToastMessage("Bespoke wishlist share link copied to clipboard!")}
-            >
-              SHARE WISHLIST
-            </button>
-            <button 
-              className={styles['shopping-btn']} 
-              onClick={() => setCurrentTab('catalog')}
-            >
-              CONTINUE SHOPPING
-            </button>
-          </div>
-        </div>
-      </header>
 
       {/* Main padded content container */}
       <div className={styles['wishlist-content-wrapper']}>

@@ -109,6 +109,7 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50px;
 }
 
 .primaryActionBtn {
@@ -143,13 +144,13 @@
 /* Our Story Details */
 .storySection {
   max-width: 1440px;
-  margin: 0 auto 30px auto;
+  margin: 100px auto 30px auto;
   padding: 0 80px;
 }
 
 @media (max-width: 768px) {
   .storySection {
-    margin: 30px auto;
+    margin: 100px auto 30px auto;
     padding: 0 20px;
   }
 }

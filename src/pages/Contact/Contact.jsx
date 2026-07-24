@@ -42,20 +42,20 @@ export const Contact = ({ setCurrentTab }) => {
 
   const faqs = [
     {
-      q: "How long does it take for a bespoke bridal ensemble?",
-      a: "Our bespoke bridal ensembles typically take 12 to 16 weeks from the initial consultation to final delivery. This includes hand-weaving, embroidery, and multiple fittings."
+      q: "How do I place an order?",
+      a: "To place an order, simply browse our product catalog, select the items you want, and add them to your cart. Once you're ready, proceed to the checkout, provide the necessary information, and complete your purchase."
     },
     {
-      q: "Do you offer international shipping for collections?",
-      a: "Yes, we provide premium international shipping to over 50 countries via our courier partners DHL and FedEx. Shipping times vary from 7-14 business days."
+      q: "Can I modify or cancel my order after placing it?",
+      a: "Unfortunately, we are unable to modify or cancel orders once they have been placed. Please double-check your order before confirming your purchase."
     },
     {
-      q: "Can I request a virtual styling consultation?",
-      a: "Absolutely. We offer high-definition video consultations via Zoom or WhatsApp for our global clients who cannot visit our physical boutiques."
+      q: "What payment methods do you accept?",
+      a: "We accept Razorpay, UPI, Google Pay, Netbanking, and major credit/debit cards."
     },
     {
-      q: "What is your policy on returns for heritage pieces?",
-      a: "Our heritage pieces are curated with extreme care. We offer returns or exchanges on non-bespoke items within 7 days of receipt, provided the tags and seals are intact."
+      q: "Is it safe to shop on your website?",
+      a: "Yes, shopping on our website is secure. We use industry-standard encryption and security protocols to protect your personal and financial information."
     }
   ];
 
@@ -75,8 +75,10 @@ export const Contact = ({ setCurrentTab }) => {
         <div className={styles.heroGradientOverlay}></div>
         
         <div className={styles.heroContent}>
-          <span className={styles.heroSubtitle}>Direct Access to the Atelier</span>
-          <h1 className={styles.heroTitle}>Let's Begin a Beautiful Conversation</h1>
+          <h1 className={styles.heroTitle}>We're Here to Help</h1>
+          <p style={{ color: 'rgba(255,255,255,0.9)', maxWidth: '900px', margin: '0 auto 24px auto', fontSize: '1.1rem', lineHeight: '1.6' }}>
+            Have a question about our collections or need assistance with your order? Our team is always happy to help. Reach out to us—we'd love to hear from you and make your shopping experience seamless.
+          </p>
           <div className={styles.heroActionRow}>
             <a href="#conciergeForm" className={styles.enquireBtn}>ENQUIRE NOW</a>
             <div className={styles.supportStatusBadge}>
@@ -241,31 +243,31 @@ export const Contact = ({ setCurrentTab }) => {
 
             <div className={styles.infoCardsList}>
               <div className={styles.infoCard}>
-                <Phone size={18} className={styles.infoCardIcon} />
+                <Info size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
-                  <h4>Phone Support</h4>
-                  <p>+91 44 4829 1102</p>
-                  <span>Mon - Sat: 11:00 AM - 8:00 PM IST</span>
+                  <h4>Trade Name</h4>
+                  <p>Mazhai Vaanam Women's Collections</p>
+                  <span>Handle By Naveenkumar Kannan</span>
                 </div>
               </div>
 
               <div className={styles.infoCard}>
-                <MessageCircle size={18} className={styles.infoCardIcon} />
+                <Phone size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
-                  <h4>WhatsApp Concierge</h4>
-                  <a href="https://wa.me/919840123456" target="_blank" rel="noopener noreferrer" className={styles.whatsappLink}>
-                    +91 98401 23456 &rarr;
+                  <h4>Contact Number</h4>
+                  <a href="https://wa.me/918807959179" target="_blank" rel="noopener noreferrer" className={styles.whatsappLink}>
+                    +91 8807959179
                   </a>
-                  <span>Instant stylist chat assistance</span>
+                  <span>Phone & WhatsApp Support</span>
                 </div>
               </div>
 
               <div className={styles.infoCard}>
                 <Mail size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
-                  <h4>Email Support</h4>
-                  <a href="mailto:concierge@mazhaivaanam.com" className={styles.emailLink}>
-                    concierge@mazhaivaanam.com
+                  <h4>Email</h4>
+                  <a href="mailto:mazhaivaanampvi@gmail.com" className={styles.emailLink}>
+                    mazhaivaanampvi@gmail.com
                   </a>
                   <span>Expected response within 24 hours</span>
                 </div>
@@ -274,8 +276,8 @@ export const Contact = ({ setCurrentTab }) => {
               <div className={styles.infoCard}>
                 <Store size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
-                  <h4>Our Flagship Boutique</h4>
-                  <p>No. 42, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006</p>
+                  <h4>Physical Address</h4>
+                  <p>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
                 </div>
               </div>
             </div>
@@ -283,95 +285,48 @@ export const Contact = ({ setCurrentTab }) => {
 
         </section>
 
-        {/* Boutique Locations Flagship Cards */}
+        {/* Boutique Location & Map */}
         <section className={styles.locationsSection}>
-          <h2 className={styles.locationsMainTitle}>Boutique Locations</h2>
+          <h2 className={styles.locationsMainTitle}>Locate Our Boutique</h2>
           
           <div className={styles.locationsGrid}>
             
-            {/* Chennai Flagship */}
+            {/* The Physical Store Details */}
             <div className={styles.locationDetailCard}>
               <div className={styles.locationImageBox}>
                 <img 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhu1MdbcdJZD0C26tx3KXEiLVNNLmJT9Fz9D1zLxqrCZvrNhETmzLwtU_dUPPBrh9mxVHmm8bJQbmkea2OZMEx5t53WmnMUhbVqEccuw0N-DA6R2_SjMyxXc0O34lqmJ86f2WrSqFXo9onuqZUt3NxmSBp9BnxPHasOR1dQ4qf_AI-oMPewjz7tJ-spjAyddO890Pm1fgaXrRShWs_hqY5U7AbxJ8msJNKahtuLeOa_LwvDhtOiond" 
-                  alt="Chennai Flagship Storefront" 
+                  src="/Images/contact1.png" 
+                  alt="Mazhai Vaanam Boutique Storefront" 
                 />
               </div>
               <div className={styles.locationTextDetails}>
                 <div>
-                  <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>The Chennai Flagship</h3>
-                  <p className={styles.locationAddressText}>No. 42, Khader Nawaz Khan Road, Nungambakkam, Chennai - 600006</p>
+                  <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>Mazhai Vaanam Women's Collections</h3>
+                  <p className={styles.locationAddressText}>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804</p>
                   <p className={styles.locationHoursLabel}>Hours</p>
-                  <p className={styles.locationHoursValue}>Mon - Sat: 11 AM - 8 PM<br />Sun: 12 PM - 6 PM</p>
+                  <p className={styles.locationHoursValue}>Mon - Sat: 11 AM - 8 PM<br />Sun: Closed</p>
                 </div>
-                <button onClick={() => window.open("https://maps.google.com", "_blank")} className={styles.locationActionBtn}>
+                <button onClick={() => window.open("https://maps.google.com/?q=Mazhai+Vaanam+Womens+Collections,+Peravurani,+Thanjavur,+Tamil+Nadu", "_blank")} className={styles.locationActionBtn}>
                   GET DIRECTIONS
                 </button>
               </div>
             </div>
 
-            {/* Bangalore Studio */}
-            <div className={styles.locationDetailCard}>
-              <div className={styles.locationImageBox}>
-                <img 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZUJgQ1RW2qp4ChGLA58o31DzmiUP_fIlkm-1jgs7S8FhULpEzO0mO07Fx7s0q5SuwlX262J7Ct1ZQhpzEkh1uUU5f6AFvPQrzobxogteUUvyZKglvUsWrg4Ak1ErFgACMa3tWR5m2NmKOg9UT8CScwla3_R8OOqoHwfgVt5EQKUo4qm3nAXsB1yiwduLyByJNqwVeEEwEZYeFum8q2PsTTXWlVghJOo43SuGffmvdugnPojHi8aDc" 
-                  alt="Bangalore Studio Storefront" 
-                />
-              </div>
-              <div className={styles.locationTextDetails}>
-                <div>
-                  <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>The Bangalore Studio</h3>
-                  <p className={styles.locationAddressText}>15th Cross, Lavelle Road, Bangalore - 560001</p>
-                  <p className={styles.locationHoursLabel}>Hours</p>
-                  <p className={styles.locationHoursValue}>Tue - Sun: 11 AM - 8 PM<br />Mon: Closed</p>
-                </div>
-                <button onClick={() => window.open("https://maps.google.com", "_blank")} className={styles.locationActionBtn}>
-                  GET DIRECTIONS
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* Boutique Interactive Maps */}
-        <section className={styles.mapsSection}>
-          <div className={styles.mapsHeader}>
-            <span className={styles.mapsTag}>FIND US ON THE MAP</span>
-            <h2>Locate Our Boutiques</h2>
-            <div className={styles.divider} />
-          </div>
-          <div className={styles.mapsGrid}>
+            {/* The Interactive Map */}
             <div className={styles.mapCard}>
-              <h4>The Chennai Flagship</h4>
-              <div className={styles.mapFrameWrapper}>
+              <div className={styles.mapFrameWrapper} style={{ height: '100%', display: 'flex' }}>
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.29177114674!2d80.25055047585093!3d13.061730013175853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a526615e45a2789%3A0xc36c7c40d7c71d6f!2sKhader%20Nawaz%20Khan%20Rd%2C%20Nungambakkam%2C%20Chennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1716382103445!5m2!1sen!2sin" 
+                  src="https://maps.google.com/maps?q=Mazhai%20Vaanam%20Womens%20Collections,%20ANA%20Complex,%20Sethu%20Road,%20Peravurani,%20Thanjavur,%20Tamil%20Nadu%20614804&t=&z=16&ie=UTF8&iwloc=&output=embed" 
                   width="100%" 
-                  height="350" 
-                  style={{ border: 0 }} 
+                  style={{ border: 0, minHeight: '400px', borderRadius: '4px', flexGrow: 1 }} 
                   allowFullScreen="" 
                   loading="lazy" 
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Chennai Flagship Store Map"
+                  title="Mazhai Vaanam Location Map"
                 ></iframe>
               </div>
             </div>
-            <div className={styles.mapCard}>
-              <h4>The Bangalore Studio</h4>
-              <div className={styles.mapFrameWrapper}>
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.9806497259164!2d77.59628047584898!3d12.973099714856424!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae167b5eb46115%3A0xe5cdcdadbe3ff98d!2sLavelle%20Road%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1716382142103!5m2!1sen!2sin" 
-                  width="100%" 
-                  height="350" 
-                  style={{ border: 0 }} 
-                  allowFullScreen="" 
-                  loading="lazy" 
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Bangalore Studio Map"
-                ></iframe>
-              </div>
-            </div>
+
           </div>
         </section>
 

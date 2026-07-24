@@ -7,7 +7,7 @@ export const PREORDER_PRODUCTS = [
   {
     id: 'pre-1',
     name: "Sona Roopa Kanjeevaram",
-    category: "Silk",
+    category: "Blended South Cotton",
     fabric: "Pure Silk",
     color: "#6B102A",
     occasion: "Wedding",
@@ -23,7 +23,7 @@ export const PREORDER_PRODUCTS = [
   {
     id: 'pre-2',
     name: "Shahi Shikargah Banarasi",
-    category: "Banarasi",
+    category: "Handloom Sarees",
     fabric: "Pure Silk",
     color: "#C8A34D",
     occasion: "Wedding",
@@ -39,7 +39,7 @@ export const PREORDER_PRODUCTS = [
   {
     id: 'pre-3',
     name: "Chanderi Indigo Bloom",
-    category: "Silk",
+    category: "Linen Cotton",
     fabric: "Pure Silk",
     color: "#1A237E",
     occasion: "Party Wear",
@@ -55,7 +55,7 @@ export const PREORDER_PRODUCTS = [
   {
     id: 'pre-4',
     name: "Organic Sage Cotton",
-    category: "Cotton",
+    category: "Chanderi Cotton",
     fabric: "Cotton",
     color: "#004D40",
     occasion: "Festival",
@@ -116,10 +116,9 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
         <div className={styles.heroGradientOverlay}></div>
         <div className={styles.heroContent}>
           <span className={styles.heroTag}>EXCLUSIVE RESERVATIONS</span>
-          <h1 className={styles.heroTitle}>Reserve Your Masterpiece</h1>
+          <h1 className={styles.heroTitle}>Reserve Your Favorite Before It Arrives</h1>
           <p className={styles.heroSubtitle}>
-            Secure highly anticipated, limited-edition designs while they are still in production.
-            Hand-woven on ancient looms, crafted only for you.
+            Be the first to own our upcoming exclusive collections. Pre-book your favorite sarees in advance and ensure you never miss a limited-edition design.
           </p>
         </div>
       </header>

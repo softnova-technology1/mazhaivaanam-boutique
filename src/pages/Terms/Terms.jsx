@@ -1,349 +1,70 @@
-import { useState, useEffect } from 'react';
-import { 
-  Download, 
-  CheckCircle, 
-  Award, 
-  ShieldCheck, 
-  Scale, 
-  Truck, 
-  Compass, 
-  Globe, 
-  Mail, 
-  AlertCircle,
-  FileText,
-  Clock
-} from 'lucide-react';
+import React from 'react';
 import styles from './Terms.module.css';
 
-export const Terms = ({ setCurrentTab }) => {
-  const [activeSection, setActiveSection] = useState('overview');
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
-
-  const scrollToSection = (id) => {
-    setActiveSection(id);
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = ['overview', 'agreement', 'responsibilities', 'logistics', 'intellectual', 'pricing', 'contact'];
-      let current = 'overview';
-      
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 200) {
-            current = section;
-          }
-        }
-      }
-      setActiveSection(current);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
+export const Terms = () => {
   return (
-    <div className={styles.termsPageContainer}>
-      
-      {/* Luxury Hero Section */}
-      <header className={styles.heroSection}>
+    <div className={styles.policyContainer}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Terms and Conditions of Use</h1>
+        <p className={styles.subtitle}>Welcome to Mazhai Vaanam Women's Collections</p>
+      </div>
+
+      <div className={styles.content}>
         
-        
-        
-        <div className={styles.heroContent}>
-          <span className={styles.heroCategory}>Legal Identity</span>
-          <h1 className={styles.heroTitle}>Terms &amp; Conditions</h1>
-          <p className={styles.heroDesc}>
-            Clear commitments for a secure and premium shopping experience. We value the trust you place in our craftsmanship.
-          </p>
-        </div>
-      </header>
+        <section className={styles.policySection}>
+          <h2>1. Terms</h2>
+          <p>By accessing this Website, accessible from www.mazhaivaanam.com, you are agreeing to be bound by these Website Terms and Conditions of Use and agree that you are responsible for the agreement with any applicable local laws. If you disagree with any of these terms, you are prohibited from accessing this site. The materials contained in this Website are protected by copyright and trade mark law.</p>
+        </section>
 
-      {/* Main Grid Content */}
-      <main className={styles.mainLayoutGrid}>
-        
-        {/* Sticky Sidebar Navigation */}
-        <aside className={styles.sidebarCol}>
-          <div className={styles.stickySidebarWrapper}>
-            <p className={styles.sidebarHeader}>SECTIONS</p>
-            <nav className={styles.sidebarNav}>
-              <button 
-                onClick={() => scrollToSection('overview')}
-                className={`${styles.navLink} ${activeSection === 'overview' ? styles.navLinkActive : ''}`}
-              >
-                01. Overview
-              </button>
-              <button 
-                onClick={() => scrollToSection('agreement')}
-                className={`${styles.navLink} ${activeSection === 'agreement' ? styles.navLinkActive : ''}`}
-              >
-                02. Welcome Agreement
-              </button>
-              <button 
-                onClick={() => scrollToSection('responsibilities')}
-                className={`${styles.navLink} ${activeSection === 'responsibilities' ? styles.navLinkActive : ''}`}
-              >
-                03. Responsibilities
-              </button>
-              <button 
-                onClick={() => scrollToSection('logistics')}
-                className={`${styles.navLink} ${activeSection === 'logistics' ? styles.navLinkActive : ''}`}
-              >
-                04. Order Logistics
-              </button>
-              <button 
-                onClick={() => scrollToSection('intellectual')}
-                className={`${styles.navLink} ${activeSection === 'intellectual' ? styles.navLinkActive : ''}`}
-              >
-                05. Intellectual Property
-              </button>
-              <button 
-                onClick={() => scrollToSection('pricing')}
-                className={`${styles.navLink} ${activeSection === 'pricing' ? styles.navLinkActive : ''}`}
-              >
-                06. Pricing &amp; Shipping
-              </button>
-              <button 
-                onClick={() => scrollToSection('contact')}
-                className={`${styles.navLink} ${activeSection === 'contact' ? styles.navLinkActive : ''}`}
-              >
-                07. Contact Legal
-              </button>
-            </nav>
-            
-            <button onClick={() => alert("Downloading Legal Terms PDF...")} className={styles.sidebarDownloadBtn}>
-              <Download size={16} />
-              <span>Terms PDF</span>
-            </button>
-          </div>
-        </aside>
+        <section className={styles.policySection}>
+          <h2>2. Use License</h2>
+          <p>Permission is granted to temporarily download one copy of the materials on Mazhai Vaanam Women's Collections's Website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+          <ul>
+            <li>modify or copy the materials;</li>
+            <li>use the materials for any commercial purpose or for any public display;</li>
+            <li>attempt to reverse engineer any software contained on Mazhai Vaanam Women's Collections's Website;</li>
+            <li>remove any copyright or other proprietary notations from the materials; or</li>
+            <li>transferring the materials to another person or "mirror" the materials on any other server.</li>
+          </ul>
+          <p>This will let Mazhai Vaanam Women's Collections to terminate upon violations of any of these restrictions. Upon termination, your viewing right will also be terminated and you should destroy any downloaded materials in your possession whether it is printed or electronic format.</p>
+        </section>
 
-        {/* Content Area */}
-        <div className={styles.contentCol}>
-          
-          {/* Section 1: Overview */}
-          <section id="overview" className={styles.contentBlock}>
-            <div className={styles.textLimitWidth}>
-              <h2 className={styles.blockHeadline}>01. Digital Atelier Usage</h2>
-              <p className={styles.bodyParagraph}>
-                Welcome to Mazhai Vaanam. By accessing this platform, you acknowledge that you are entering a space dedicated to the preservation of Indian heritage. Your interaction with our digital atelier is governed by these protocols.
-              </p>
-              
-              <div className={styles.quoteBox}>
-                <p className={styles.quoteText}>
-                  "Luxury is not just the product; it is the integrity of the journey from loom to your wardrobe."
-                </p>
-              </div>
-            </div>
-          </section>
+        <section className={styles.policySection}>
+          <h2>3. Disclaimer</h2>
+          <p>All the materials on Mazhai Vaanam Women's Collections's Website are provided "as is". Mazhai Vaanam Women's Collections makes no warranties, may it be expressed or implied, therefore negates all other warranties. Furthermore, Mazhai Vaanam Women's Collections does not make any representations concerning the accuracy or reliability of the use of the materials on its Website or otherwise relating to such materials or any sites linked to this Website.</p>
+        </section>
 
-          {/* Section 2: Welcome Agreement */}
-          <section id="agreement" className={styles.contentBlock}>
-            <div className={`${styles.glassPanelCard} ${styles.glassCard}`}>
-              <div className={styles.stampOverlayIcon}>
-                <CheckCircle size={180} />
-              </div>
-              
-              <div className={styles.agreementFlexBox}>
-                <div className={styles.premiumBadgeCircle}>
-                  <div className={styles.innerBadgeFrame}>
-                    <Award size={36} />
-                  </div>
-                </div>
-                
-                <div className={styles.agreementText}>
-                  <h3>The Heritage Seal</h3>
-                  <p>
-                    Every interaction on our site constitutes an agreement to our terms. We ensure that every saree listed is 100% authentic hand-woven silk, certified by our master weavers. This agreement protects both your purchase and the artisans' livelihood.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
+        <section className={styles.policySection}>
+          <h2>4. Limitations</h2>
+          <p>Mazhai Vaanam Women's Collections or its suppliers will not be hold accountable for any damages that will arise with the use or inability to use the materials on Mazhai Vaanam Women's Collections's Website, even if Mazhai Vaanam Women's Collections or an authorize representative of this Website has been notified, orally or written, of the possibility of such damage. Some jurisdiction does not allow limitations on implied warranties or limitations of liability for incidental damages, these limitations may not apply to you.</p>
+        </section>
 
-          {/* Section 3: User Responsibilities */}
-          <section id="responsibilities" className={styles.contentBlock}>
-            <h2 className={styles.blockHeadline}>03. Respectful Conduct</h2>
-            
-            <div className={styles.guidelinesGrid}>
-              
-              <div className={styles.conductCard}>
-                <ShieldCheck size={36} className={styles.conductIcon} />
-                <h4>Account Security</h4>
-                <p>Users are solely responsible for maintaining the confidentiality of their digital suite credentials and for restricting access to their devices.</p>
-              </div>
+        <section className={styles.policySection}>
+          <h2>5. Revisions and Errata</h2>
+          <p>The materials appearing on Mazhai Vaanam Women's Collections's Website may include technical, typographical, or photographic errors. Mazhai Vaanam Women's Collections will not promise that any of the materials in this Website are accurate, complete, or current. Mazhai Vaanam Women's Collections may change the materials contained on its Website at any time without notice. Mazhai Vaanam Women's Collections does not make any commitment to update the materials.</p>
+        </section>
 
-              <div className={styles.conductCard}>
-                <Scale size={36} className={styles.conductIcon} />
-                <h4>Respectful Usage</h4>
-                <p>The platform must be used only for lawful purposes. Any attempt to disrupt our digital architecture or scrape data is strictly prohibited.</p>
-              </div>
+        <section className={styles.policySection}>
+          <h2>6. Links</h2>
+          <p>Mazhai Vaanam Women's Collections has not reviewed all of the sites linked to its Website and is not responsible for the contents of any such linked site. The presence of any link does not imply endorsement by Mazhai Vaanam Women's Collections of the site. The use of any linked website is at the user's own risk.</p>
+        </section>
 
-            </div>
-          </section>
+        <section className={styles.policySection}>
+          <h2>7. Site Terms of Use Modifications</h2>
+          <p>Mazhai Vaanam Women's Collections may revise these Terms of Use for its Website at any time without prior notice. By using this Website, you are agreeing to be bound by the current version of these Terms and Conditions of Use.</p>
+        </section>
 
-          {/* Section 4: Order Logistics */}
-          <section id="logistics" className={`${styles.contentBlock} ${styles.warmIvoryBanner}`}>
-            <h2 className={styles.blockHeadline}>04. The Journey of Your Saree</h2>
-            
-            <div className={styles.progressRowGrid}>
-              <div className={styles.progressLineTrack}></div>
-              
-              <div className={styles.progressNode}>
-                <div className={styles.nodeStepNum}>1</div>
-                <h5>Curation</h5>
-                <p>Selection of your bespoke piece and payment verification.</p>
-              </div>
+        <section className={styles.policySection}>
+          <h2>8. Your Privacy</h2>
+          <p>Please read our Privacy Policy.</p>
+        </section>
 
-              <div className={styles.progressNode}>
-                <div className={`${styles.nodeStepNum} ${styles.outlineStepNum}`}>2</div>
-                <h5>Preparation</h5>
-                <p>Artisan quality check and protective climate-controlled packaging.</p>
-              </div>
+        <section className={styles.policySection}>
+          <h2>9. Governing Law</h2>
+          <p>Any claim related to Mazhai Vaanam Women's Collections's Website shall be governed by the laws of Tamil Nadu, India without regards to its conflict of law provisions.</p>
+        </section>
 
-              <div className={styles.progressNode}>
-                <div className={`${styles.nodeStepNum} ${styles.outlineStepNum}`}>3</div>
-                <h5>Transit</h5>
-                <p>Express worldwide delivery via our premium logistics partners.</p>
-              </div>
-
-              <div className={styles.progressNode}>
-                <div className={`${styles.nodeStepNum} ${styles.outlineStepNum}`}>4</div>
-                <h5>Arrival</h5>
-                <p>Unboxing experience with our signature heritage certificate.</p>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 5: Intellectual Property */}
-          <section id="intellectual" className={styles.contentBlock}>
-            <div className={styles.intellectualFlexGrid}>
-              
-              <div className={styles.designSketchImgBox}>
-                <div className={styles.designImgBacking}></div>
-                <div className={styles.designSketchCover}></div>
-              </div>
-
-              <div className={styles.intellectualText}>
-                <h2>05. Design Integrity</h2>
-                <p>
-                  All content on this platform, including but not limited to the weave patterns, textile designs, photography, and the Mazhai Vaanam brand mark, is our exclusive intellectual property.
-                </p>
-                <p>
-                  Reproduction or imitation of our handcrafted motifs is a violation of copyright laws. We take the protection of our artisans' creative labor with the utmost seriousness.
-                </p>
-              </div>
-
-            </div>
-          </section>
-
-          {/* Section 6: Pricing & Shipping */}
-          <section id="pricing" className={styles.contentBlock}>
-            <h2 className={styles.blockHeadline}>06. Investment &amp; Delivery</h2>
-            
-            <div className={styles.pricingBoxesGrid}>
-              
-              {/* Domestic */}
-              <div className={styles.priceCard}>
-                <h4 className={styles.priceCardHeader}>Domestic (India)</h4>
-                <div className={styles.priceRowItem}>
-                  <span>Shipping Cost</span>
-                  <span className={styles.boldTextGold}>Complimentary</span>
-                </div>
-                <div className={styles.priceRowItem}>
-                  <span>Timeline</span>
-                  <span>3 - 5 Business Days</span>
-                </div>
-                <div className={styles.priceRowItem}>
-                  <span>Taxes</span>
-                  <span>Inclusive of GST</span>
-                </div>
-              </div>
-
-              {/* International */}
-              <div className={styles.priceCard}>
-                <h4 className={styles.priceCardHeader}>International</h4>
-                <div className={styles.priceRowItem}>
-                  <span>Shipping Cost</span>
-                  <span className={styles.boldTextGold}>$45 USD</span>
-                </div>
-                <div className={styles.priceRowItem}>
-                  <span>Timeline</span>
-                  <span>7 - 12 Business Days</span>
-                </div>
-                <div className={styles.priceRowItem}>
-                  <span>Taxes</span>
-                  <span>Excl. Custom Duties</span>
-                </div>
-              </div>
-
-            </div>
-          </section>
-
-          {/* Section 7: Contact Legal */}
-          <section id="contact" className={styles.contentBlock}>
-            <div className={styles.legalAdvisoryBox}>
-              <div className={styles.legalInfoLeft}>
-                <h2>Legal Advisory</h2>
-                <p>For any inquiries regarding your rights or our service protocols.</p>
-              </div>
-              <div className={styles.legalActionRight}>
-                <a href="mailto:legal@mazhaivaanam.com" className={styles.legalMailBtn}>
-                  legal@mazhaivaanam.com
-                </a>
-                <button onClick={() => alert("Connecting to Legal compliance manager...")} className={styles.legalInquireBtn}>
-                  Inquire Now
-                </button>
-              </div>
-            </div>
-          </section>
-
-        </div>
-
-      </main>
-
-      {/* Interactive Newsletter Section */}
-      <section className={styles.newsletterJoinSection}>
-        <div className={styles.newsletterBackdropImage}></div>
-        <div className={styles.newsletterDimOverlay}></div>
-        
-        <div className={styles.newsletterWrapperContent}>
-          <h2>Join the Heritage</h2>
-          <p>Be the first to explore our seasonal lookbooks and private collection launches.</p>
-          
-          {newsletterSubscribed ? (
-            <div className={styles.newsletterDoneBox}>
-              <CheckCircle size={20} />
-              <span>Subscription Successful. Welcome to the atelier circles list.</span>
-            </div>
-          ) : (
-            <form onSubmit={(e) => { e.preventDefault(); setNewsletterSubscribed(true); }} className={styles.newsletterFormInputRow}>
-              <div className={styles.inputFieldBlock}>
-                <label>YOUR EMAIL</label>
-                <input 
-                  type="email" 
-                  required 
-                  placeholder="atelier@vogue.com" 
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className={styles.plainUnderlineInput}
-                />
-              </div>
-              <button type="submit" className={styles.newsletterSubmitBtn}>
-                Subscribe
-              </button>
-            </form>
-          )}
-        </div>
-      </section>
-
+      </div>
     </div>
   );
 };

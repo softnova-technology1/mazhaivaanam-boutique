@@ -1,408 +1,168 @@
 import { useState } from 'react';
-import { 
-  Search, 
-  ShoppingBag, 
-  Truck, 
-  CreditCard, 
-  RotateCcw, 
-  Info, 
-  User, 
-  Gift, 
-  Sparkles,
-  PlayCircle,
-  MessageSquare,
-  Phone,
-  Mail,
-  Video,
-  CheckCircle,
-  HelpCircle,
-  ChevronDown
-} from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import styles from './Support.module.css';
 
-export const Support = ({ setCurrentTab }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [faqSearchFiltered, setFaqSearchFiltered] = useState(null);
-  const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-
+export const Support = () => {
   const [activeFaqId, setActiveFaqId] = useState(null);
-
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) {
-      setFaqSearchFiltered(null);
-      return;
-    }
-    
-    // Simple filter simulation
-    if (query.includes('track') || query.includes('order') || query.includes('shipp')) {
-      setFaqSearchFiltered('orders');
-      scrollToSection('orders');
-    } else if (query.includes('silk') || query.includes('care') || query.includes('clean')) {
-      setFaqSearchFiltered('care');
-      scrollToSection('care');
-    } else if (query.includes('return') || query.includes('refund') || query.includes('exchang')) {
-      setFaqSearchFiltered('returns');
-      scrollToSection('returns');
-    } else {
-      setFaqSearchFiltered('shopping');
-      scrollToSection('shopping');
-    }
-  };
 
   const faqs = [
     {
       id: 1,
-      q: "How do I track my bespoke ensemble?",
-      a: "Once your masterpiece is finalized and shipped from our atelier, you will receive a tracking link via email and WhatsApp. You can also view status updates in your profile under 'My Collections'."
+      q: "How do I place an order?",
+      a: "To place an order, simply browse our product catalog, select the items you want, and add them to your cart. Once you're ready, proceed to the checkout, provide the necessary information, and complete your purchase."
     },
     {
       id: 2,
-      q: "Do you offer international shipping for silk sarees?",
-      a: "Yes, we deliver our heritage pieces to over 150 countries. Every international shipment is insured and packed in our signature climate-controlled luxury boxes to preserve the silk's integrity."
+      q: "Can I modify or cancel my order after placing it?",
+      a: "Unfortunately, we are unable to modify or cancel orders once they have been placed. Please double-check your order before confirming your purchase."
     },
     {
       id: 3,
-      q: "What is your policy on bespoke alterations?",
-      a: "We provide one complimentary alteration for all couture orders. Please contact your dedicated styling consultant within 7 days of receiving your order to schedule a session."
+      q: "What payment methods do you accept?",
+      a: "We accept Razorpay, UPI, Google Pay, Netbanking, and major credit/debit cards."
+    },
+    {
+      id: 4,
+      q: "Is it safe to shop on your website?",
+      a: "Yes, shopping on our website is secure. We use industry-standard encryption and security protocols to protect your personal and financial information."
+    },
+    {
+      id: 5,
+      q: "How can I track my order?",
+      a: "Once your order has been shipped, you will receive a confirmation email with a tracking number and a link to track your package."
+    },
+    {
+      id: 6,
+      q: "What is your return policy?",
+      a: "Our return policy allows you to return eligible items within 24 hours of delivery. Please review our Returns & Refunds Policy for detailed information on the process."
+    },
+    {
+      id: 7,
+      q: "Do you offer international shipping?",
+      a: "Yes, we offer international shipping. Shipping costs and delivery times may vary depending on your location. Please refer to our Shipping Information for more details."
+    },
+    {
+      id: 8,
+      q: "How do I contact customer support?",
+      a: "You can reach our customer support team via the WhatsApp icon on the screen, or visit our Contact Us page for additional contact options."
+    },
+    {
+      id: 9,
+      q: "Do you have a size guide?",
+      a: "Yes, we provide a size guide to help you choose the right fit for our products."
+    },
+    {
+      id: 10,
+      q: "What should I do if I encounter issues with the website or my account?",
+      a: "If you experience any technical issues or have concerns about your account, please contact our support team, and we'll be happy to assist you."
+    },
+    {
+      id: 11,
+      q: "Can I modify my shipping address after placing an order?",
+      a: "Unfortunately, we are unable to modify shipping addresses once an order has been placed. Please ensure your shipping information is accurate before confirming your purchase."
+    },
+    {
+      id: 12,
+      q: "How do I apply a discount code to my order?",
+      a: "During the checkout process, you'll find a field to enter your discount code. Once entered, the discount will be applied to your order total."
+    },
+    {
+      id: 13,
+      q: "Are my personal details and payment information secure?",
+      a: "Yes, we take the security of your personal and payment information seriously. Our website uses AES-256 encryption and secure payment gateways to ensure a secure shopping experience."
+    },
+    {
+      id: 14,
+      q: "What is the per transaction fee for Razorpay?",
+      a: "For domestic cards, netbanking and wallets the payment gateway fee charged is always 2% along with 18% GST on the fee. For international, Diners and Amex cards the payment gateway fee charged is 3% along with 18% GST on the fee. Note: In both the cases, the GST of 18% is charged only on the payment gateway fees."
     }
   ];
 
   return (
-    <div className={styles.supportPageContainer}>
-      
-      {/* Cinematic Hero */}
-      <section className={styles.heroSection}>
-        <div className={styles.heroBackgroundImage}></div>
-        <div className={styles.heroGradientOverlay}></div>
-        
-        <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>How Can We Help You?</h1>
-          <p className={styles.heroSubtitle}>Explore our curated guide to artisanal care, orders, and our heritage services.</p>
-          
-          <form onSubmit={handleSearchSubmit} className={styles.searchBarForm}>
-            <input 
-              type="text" 
-              placeholder="Search for help..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInputField}
-            />
-            <button type="submit" className={styles.searchSubmitBtn}>
-              <Search size={18} />
-            </button>
-          </form>
-        </div>
-      </section>
+    <div className={styles.policyContainer}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Customer Support</h1>
+        <p className={styles.subtitle}>Frequently Asked Questions (FAQs)</p>
+      </div>
 
-      {/* Quick Help Categories Links */}
-      <section className={styles.quickHelpSection}>
-        <div className={styles.quickGrid}>
-          
-          <div className={styles.quickCard} onClick={() => scrollToSection('shopping')}>
-            <ShoppingBag size={36} className={styles.quickIcon} />
-            <span className={styles.quickLabel}>Shopping Guide</span>
-          </div>
-
-          <div className={styles.quickCard} onClick={() => scrollToSection('orders')}>
-            <Truck size={36} className={styles.quickIcon} />
-            <span className={styles.quickLabel}>Orders &amp; Tracking</span>
-          </div>
-
-          <div className={styles.quickCard} onClick={() => scrollToSection('payments')}>
-            <CreditCard size={36} className={styles.quickIcon} />
-            <span className={styles.quickLabel}>Payments</span>
-          </div>
-
-          <div className={styles.quickCard} onClick={() => scrollToSection('returns')}>
-            <RotateCcw size={36} className={styles.quickIcon} />
-            <span className={styles.quickLabel}>Returns &amp; Refunds</span>
-          </div>
-
-          <div className={styles.quickCard} onClick={() => scrollToSection('care')}>
-            <Info size={36} className={styles.quickIcon} />
-            <span className={styles.quickLabel}>Product Care</span>
-          </div>
-
-          <div className={styles.quickCard} onClick={() => alert("Navigate to Account settings or login tab")}>
-            <User size={36} className={styles.quickIcon} />
-            <span className={styles.quickLabel}>Your Account</span>
-          </div>
-
-          <div className={styles.quickCard} onClick={() => alert("Gift Wrapping addons are configured in Cart Page")}>
-            <Gift size={36} className={styles.quickIcon} />
-            <span className={styles.quickLabel}>Gift Services</span>
-          </div>
-
-          <div className={styles.quickCard} onClick={() => scrollToSection('consult')}>
-            <Sparkles size={36} className={styles.quickIcon} />
-            <span className={styles.quickLabel}>Styling Help</span>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Popular Frequently Asked Accordions */}
-      <section className={styles.popularFaqsSection}>
-        <div className={styles.faqsWrapper}>
-          <h2 className={styles.faqsSectionTitle}>Most Frequently Asked</h2>
-          
-          <div className={styles.accordionStack}>
-            {faqs.map((faq) => {
-              const isOpen = activeFaqId === faq.id;
-              return (
+      <div className={styles.content}>
+        <div className={styles.accordionStack}>
+          {faqs.map((faq) => {
+            const isOpen = activeFaqId === faq.id;
+            return (
+              <div 
+                key={faq.id} 
+                className={`${styles.accordionItem} ${isOpen ? styles.accordionOpen : ''}`}
+              >
                 <div 
-                  key={faq.id} 
-                  className={`${styles.accordionItem} ${isOpen ? styles.accordionOpen : ''}`}
+                  onClick={() => setActiveFaqId(isOpen ? null : faq.id)}
+                  className={styles.accordionHeader}
                 >
-                  <div 
-                    onClick={() => setActiveFaqId(isOpen ? null : faq.id)}
-                    className={styles.accordionHeader}
-                  >
-                    <span>{faq.q}</span>
-                    <ChevronDown size={18} className={`${styles.chevronIcon} ${isOpen ? styles.chevronRotated : ''}`} />
-                  </div>
-                  {isOpen && (
-                    <div className={styles.accordionBody}>
-                      <p>{faq.a}</p>
-                    </div>
-                  )}
+                  <span>{faq.q}</span>
+                  <ChevronDown size={18} className={`${styles.chevronIcon} ${isOpen ? styles.chevronRotated : ''}`} />
                 </div>
-              );
-            })}
-          </div>
+                {isOpen && (
+                  <div className={styles.accordionBody}>
+                    <p>{faq.a}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
-      </section>
 
-      {/* Editorial FAQ Grid */}
-      <section className={styles.editorialFaqSection}>
-        <div className={styles.editorialGrid}>
-          
-          {/* Shopping Guide */}
-          <div id="shopping" className={styles.editorialCol}>
-            <h3 className={styles.editorialHeaderNum}>01 / Shopping Guide</h3>
-            <h4 className={styles.editorialColHeadline}>Discovering Heritage</h4>
-            <ul className={styles.editorialLinksStack}>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Silk fabrics guides loaded."); }}>How to choose the right silk for your occasion</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Weaving techniques details."); }}>Understanding our weaving techniques</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("GI Tags certificates."); }}>Authenticity certificates &amp; GI Tags</a></li>
-            </ul>
-          </div>
-
-          {/* Orders */}
-          <div id="orders" className={styles.editorialCol}>
-            <h3 className={styles.editorialHeaderNum}>02 / Orders &amp; Delivery</h3>
-            <h4 className={styles.editorialColHeadline}>Timely Elegance</h4>
-            <ul className={styles.editorialLinksStack}>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Custom orders settings."); }}>Modifying your custom order</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Bridal wear expedited shipping."); }}>Expedited shipping for bridal wear</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Secure courier insurance."); }}>Insurance and safe handling during transit</a></li>
-            </ul>
-          </div>
-
-          {/* Payments */}
-          <div id="payments" className={styles.editorialCol}>
-            <h3 className={styles.editorialHeaderNum}>03 / Payments</h3>
-            <h4 className={styles.editorialColHeadline}>Secure Transactions</h4>
-            <ul className={styles.editorialLinksStack}>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Global payment details."); }}>Accepted payment methods globally</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Instalments setups."); }}>Interest-free bespoke installment plans</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Duties and tax info."); }}>Tax and customs duties for global orders</a></li>
-            </ul>
-          </div>
-
-          {/* Returns */}
-          <div id="returns" className={styles.editorialCol}>
-            <h3 className={styles.editorialHeaderNum}>04 / Returns</h3>
-            <h4 className={styles.editorialColHeadline}>Graceful Exchanges</h4>
-            <ul className={styles.editorialLinksStack}>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Ready to wear returns policy."); }}>Eligibility for returns on ready-to-wear</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Pickups scheduled."); }}>Return shipping process and pick-ups</a></li>
-              <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Exchanges guidelines."); }}>Exchange policy for non-bespoke items</a></li>
-            </ul>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Saree Care Infographic */}
-      <section className={styles.careSection} id="care">
-        <div className={styles.careLayoutWrapper}>
-          
-          <div className={styles.careHeaderRow}>
-            <div className={styles.careHeaderText}>
-              <h2 className={styles.careMainHeadline}>The Art of Preservation</h2>
-              <p className={styles.careSubtitle}>
-                To own a Mazhai Vaanam piece is to steward a legacy. Our care guide ensures your textiles breathe and bloom for generations.
-              </p>
-            </div>
-            <div className={styles.careHeaderImage}>
-              <div className={styles.careImageFrame}></div>
-            </div>
-          </div>
-
-          <div className={styles.carePillarsGrid}>
+        {/* Editorial FAQ Grid */}
+        <section className={styles.editorialFaqSection}>
+          <div className={styles.editorialGrid}>
             
-            <div className={styles.carePillarCard}>
-              <span className={styles.pillarStepNum}>01</span>
-              <h5>Pure Silk</h5>
-              <p>Wrap in unbleached cotton or muslin. Air dry in shade. Professional dry clean only.</p>
+            {/* Shopping Guide */}
+            <div id="shopping" className={styles.editorialCol}>
+              <h3 className={styles.editorialHeaderNum}>01 / Shopping Guide</h3>
+              <h4 className={styles.editorialColHeadline}>Discovering Heritage</h4>
+              <ul className={styles.editorialLinksStack}>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Silk fabrics guides loaded."); }}>How to choose the right silk for your occasion</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Weaving techniques details."); }}>Understanding our weaving techniques</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("GI Tags certificates."); }}>Authenticity certificates &amp; GI Tags</a></li>
+              </ul>
             </div>
 
-            <div className={styles.carePillarCard}>
-              <span className={styles.pillarStepNum}>02</span>
-              <h5>Banarasi</h5>
-              <p>Store with silica gel. Refold every 3 months to prevent zari breakage at creases.</p>
+            {/* Orders */}
+            <div id="orders" className={styles.editorialCol}>
+              <h3 className={styles.editorialHeaderNum}>02 / Orders &amp; Delivery</h3>
+              <h4 className={styles.editorialColHeadline}>Timely Elegance</h4>
+              <ul className={styles.editorialLinksStack}>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Custom orders settings."); }}>Modifying your custom order</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Bridal wear expedited shipping."); }}>Expedited shipping for bridal wear</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Secure courier insurance."); }}>Insurance and safe handling during transit</a></li>
+              </ul>
             </div>
 
-            <div className={styles.carePillarCard}>
-              <span className={styles.pillarStepNum}>03</span>
-              <h5>Cotton</h5>
-              <p>Cold hand wash with mild detergents. Starch lightly for that crisp, editorial fall.</p>
+            {/* Payments */}
+            <div id="payments" className={styles.editorialCol}>
+              <h3 className={styles.editorialHeaderNum}>03 / Payments</h3>
+              <h4 className={styles.editorialColHeadline}>Secure Transactions</h4>
+              <ul className={styles.editorialLinksStack}>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Global payment details."); }}>Accepted payment methods globally</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Instalments setups."); }}>Interest-free bespoke installment plans</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Duties and tax info."); }}>Tax and customs duties for global orders</a></li>
+              </ul>
             </div>
 
-            <div className={styles.carePillarCard}>
-              <span className={styles.pillarStepNum}>04</span>
-              <h5>Organza</h5>
-              <p>Never hang; always store flat. Avoid heavy perfumes directly on the delicate mesh.</p>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* Video Help Center (Visual Studio) */}
-      <section className={styles.visualStudioSection}>
-        <h2 className={styles.visualStudioHeadline}>Visual Studio</h2>
-        
-        <div className={styles.visualStudioGrid}>
-          
-          {/* Video 1 */}
-          <div className={styles.videoCardBox} onClick={() => alert("Playing Draping video tutorial...")}>
-            <div className={styles.videoThumbnailBackground}>
-              <PlayCircle size={48} className={styles.playIconGlow} />
-              <span className={styles.videoTagText}>01. Perfect Draping</span>
-            </div>
-          </div>
-
-          {/* Video 2 */}
-          <div className={styles.videoCardBox} onClick={() => alert("Playing Fabric Care video tutorial...")}>
-            <div className={styles.videoThumbnailBackground}>
-              <PlayCircle size={48} className={styles.playIconGlow} />
-              <span className={styles.videoTagText}>02. Fabric Care</span>
-            </div>
-          </div>
-
-          {/* Video 3 */}
-          <div className={styles.videoCardBox} onClick={() => alert("Playing Unboxing Reveal video...")}>
-            <div className={styles.videoThumbnailBackground}>
-              <PlayCircle size={48} className={styles.playIconGlow} />
-              <span className={styles.videoTagText}>03. The Box Reveal</span>
-            </div>
-          </div>
-
-          {/* Video 4 */}
-          <div className={styles.videoCardBox} onClick={() => { window.history.pushState(null, '', '/track-order'); setCurrentTab('track-order'); }}>
-            <div className={styles.videoThumbnailBackground}>
-              <PlayCircle size={48} className={styles.playIconGlow} />
-              <span className={styles.videoTagText}>04. Trace My Piece</span>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Still Need Help Banner (Personalized Assistance) */}
-      <section className={styles.assistanceBannerSection} id="consult">
-        <div className={styles.assistanceGlowOverlay}></div>
-        
-        <div className={styles.assistanceContentWrapper}>
-          <div className={styles.assistanceHeader}>
-            <h2>Personalized Assistance</h2>
-            <p>Our curators are standing by to assist your journey.</p>
-          </div>
-
-          <div className={styles.channelsGrid}>
-            
-            {/* Channel 1 */}
-            <div className={styles.channelCard} onClick={() => { setCurrentTab('contact'); scrollToSection('conciergeForm'); }}>
-              <MessageSquare size={32} className={styles.channelIcon} />
-              <h6>Live Concierge</h6>
-              <p>Available 10 AM - 8 PM IST</p>
-              <span className={styles.channelActionBtn}>Start Chat</span>
-            </div>
-
-            {/* Channel 2 */}
-            <div className={styles.channelCard} onClick={() => alert("Direct styling chat via WhatsApp launched.")}>
-              <Phone size={32} className={styles.channelIcon} />
-              <h6>WhatsApp</h6>
-              <p>Direct styling queries</p>
-              <span className={styles.channelActionBtn}>Message Us</span>
-            </div>
-
-            {/* Channel 3 */}
-            <div className={styles.channelCard} onClick={() => { setCurrentTab('contact'); scrollToSection('conciergeForm'); }}>
-              <Mail size={32} className={styles.channelIcon} />
-              <h6>Email Support</h6>
-              <p>Response within 24 hours</p>
-              <span className={styles.channelActionBtn}>Write to Us</span>
-            </div>
-
-            {/* Channel 4 */}
-            <div className={styles.channelCard} onClick={() => { setCurrentTab('contact'); scrollToSection('conciergeForm'); }}>
-              <Video size={32} className={styles.channelIcon} />
-              <h6>Virtual Fitting</h6>
-              <p>Schedule a private call</p>
-              <span className={styles.channelActionBtn}>Book Slot</span>
+            {/* Returns */}
+            <div id="returns" className={styles.editorialCol}>
+              <h3 className={styles.editorialHeaderNum}>04 / Returns</h3>
+              <h4 className={styles.editorialColHeadline}>Graceful Exchanges</h4>
+              <ul className={styles.editorialLinksStack}>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Ready to wear returns policy."); }}>Eligibility for returns on ready-to-wear</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Pickups scheduled."); }}>Return shipping process and pick-ups</a></li>
+                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Exchanges guidelines."); }}>Exchange policy for non-bespoke items</a></li>
+              </ul>
             </div>
 
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* invitations newsletter section */}
-      <section className={styles.invitationNewsletterSection}>
-        <div className={styles.newsletterBackgroundImage}></div>
-        <div className={styles.newsletterBlurOverlay}></div>
-        
-        <div className={styles.newsletterWrapper}>
-          <span className={styles.newsletterCategory}>The Heritage Journal</span>
-          <h3>Invitations to Private Showcases</h3>
-          <p>Be the first to view our limited edition collections and weaver stories.</p>
-          
-          {newsletterSubscribed ? (
-            <div className={styles.newsletterSubscribedAlert}>
-              <CheckCircle size={20} />
-              <span>Invitation List Confirmed. Welcome to the showcases list.</span>
-            </div>
-          ) : (
-            <form onSubmit={(e) => { e.preventDefault(); setNewsletterSubscribed(true); }} className={styles.newsletterInputRow}>
-              <input 
-                type="email" 
-                placeholder="Your email address" 
-                required
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                className={styles.newsletterEmailInput}
-              />
-              <button type="submit" className={styles.newsletterJoinBtn}>
-                Subscribe
-              </button>
-            </form>
-          )}
-        </div>
-      </section>
-
+      </div>
     </div>
   );
 };

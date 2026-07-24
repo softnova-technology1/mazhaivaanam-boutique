@@ -114,14 +114,21 @@
 }
 
 .secondaryActionBtn {
-  background-color: transparent;
-  border: 1px solid white;
-  color: white;
+  background-color: transparent !important;
+  border: 1px solid #FFFFFF !important;
+  color: #FFFFFF !important;
+  box-shadow: none;
 }
 
-.secondaryActionBtn:hover {
-  background-color: white;
-  color: var(--primary);
+:global(#root) button.secondaryActionBtn:hover {
+  background-color: var(--accent) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+}
+
+:global(#root) button.secondaryActionBtn::before,
+:global(#root) button.secondaryActionBtn::after {
+  display: none !important;
 }
 
 
@@ -129,12 +136,13 @@
 /* Our Story Details */
 .storySection {
   max-width: 1440px;
-  margin: 0 auto 30px auto;
+  margin: 50px auto 50px auto;
   padding: 0 80px;
 }
 
 @media (max-width: 768px) {
   .storySection {
+    margin: 30px auto;
     padding: 0 20px;
   }
 }
@@ -375,7 +383,7 @@
 /* Founder's Message */
 .founderSection {
   max-width: 1440px;
-  margin: 0 auto 30px auto;
+  margin: 50px auto 50px auto;
   padding: 0 80px;
 }
 

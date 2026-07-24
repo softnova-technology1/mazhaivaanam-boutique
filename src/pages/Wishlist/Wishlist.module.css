@@ -125,11 +125,9 @@
 }
 
 .shopping-btn {
-  background-color: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: #FFF9EC;
-  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  background-color: transparent !important;
+  border: 1px solid #FFFFFF !important;
+  color: #FFFFFF !important;
   border-radius: 40px;
   padding: 14px 32px;
   font-size: 11px;
@@ -137,15 +135,20 @@
   letter-spacing: 2px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
-.shopping-btn:hover {
-  background-color: #ffffff;
-  color: #121A11;
-  border-color: #ffffff;
+:global(#root) button.shopping-btn:hover {
+  background-color: var(--accent) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+:global(#root) button.shopping-btn::before,
+:global(#root) button.shopping-btn::after {
+  display: none !important;
 }
 
 /* Statistics cards */
@@ -349,6 +352,7 @@
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
+  height: 100%;
 }
 
 .card-image-box {
@@ -374,8 +378,8 @@
 
 .card-badge-container {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  bottom: 12px;
+  left: 12px;
   z-index: 4;
 }
 
@@ -523,14 +527,20 @@
   color: var(--primary);
 }
 
-.card-savings-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: #D9381E;
-  background: transparent;
-  padding: 0;
-  margin-bottom: 12px;
-  letter-spacing: 0.5px;
+.card-savings-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #d32f2f 0%, #9a0007 100%); /* Premium Ruby Red */
+  color: #ffffff; /* Crisp White */
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 10px 0 10px 0;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
+  z-index: 4;
 }
 
 .card-hues-strip {

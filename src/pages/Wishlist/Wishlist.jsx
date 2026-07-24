@@ -234,6 +234,13 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                         <span className={styles['limited-badge']}>Limited Edition</span>
                       )}
                     </div>
+
+                    {/* Savings Badge - Opposite side (Bottom Right) */}
+                    {hasDrop && (
+                      <div className={styles['card-savings-badge']}>
+                        YOU SAVE {formatCurrency(savings)}
+                      </div>
+                    )}
                   </div>
 
                   <div className={styles['card-description-box']}>
@@ -243,9 +250,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                       {hasDrop && <span className={styles['card-price-old']}>{formatCurrency(item.oldPrice)}</span>}
                       <span className={styles['card-price-current']}>{formatCurrency(item.price)}</span>
                     </div>
-                    {hasDrop && (
-                      <span className={styles['card-savings-label']}>YOU SAVE {formatCurrency(savings)}</span>
-                    )}
                     
                     <div className={styles['card-hues-strip']}>
                       <div className={styles['hue-circle']} style={{ backgroundColor: item.color || '#6B102A' }} />

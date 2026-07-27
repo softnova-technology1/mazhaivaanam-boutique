@@ -95,19 +95,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
         </div>
       </header>
 
-      {/* 2. Artisan Spotlight Section */}
-      <section className={styles['spotlight-section']}>
-        <div className="container">
-          <div className={styles['spotlight-box']}>
-            <span className={styles['spotlight-tag']}>CRAFT SPOTLIGHT</span>
-            <h3>The Heritage of Kanchipuram</h3>
-            <p className={styles['spotlight-quote']}>
-              “Every thread we weave holds the breath of our ancestors, and every motif tells a story of devotion and timeless beauty.”
-            </p>
-            <span className={styles['spotlight-author']}>— Master Weaver, Kanchipuram Weavers Association</span>
-          </div>
-        </div>
-      </section>
+
 
       {/* 3. Filter & Search Controls */}
       <section className="container" id="new-arrivals-explore" style={{ padding: '40px 0 20px 0' }}>
@@ -192,7 +180,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
 
           {/* Bottom row: Categories (Horizontal Scroll) */}
           <div className="flex gap-8 overflow-x-auto no-scrollbar pb-2">
-            {['All', 'Blended South Cotton', 'Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton Sarees', 'Khadi Cotton Saree', 'Mul Mul Cotton'].map(cat => (
+            {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
               <button
                 key={cat}
                 className={`filter-link whitespace-nowrap font-inter text-[11px] font-semibold tracking-[1.5px] uppercase pb-1 transition-all duration-300 border-b-2 ${

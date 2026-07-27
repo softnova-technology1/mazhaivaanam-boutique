@@ -185,6 +185,24 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                 >
                   <div className={styles['product-image-container']}>
                     <img src={product.image} alt={product.name} loading="lazy" className={styles['product-image']} />
+                    
+                    <span className={styles['bestseller-badge']}>BESTSELLER</span>
+                    
+                    <div 
+                      className={styles['wishlist-btn']}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleWishlistToggle(product);
+                      }}
+                      role="button"
+                      title={isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                    >
+                      <Heart 
+                        size={16} 
+                        fill={isWishlisted(product.id) ? "var(--primary-dark, #4F4E22)" : "none"} 
+                        stroke="var(--primary-dark, #4F4E22)" 
+                      />
+                    </div>
                   </div>
 
                   <div className={styles['product-details']}>

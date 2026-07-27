@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './LimitedOffer.module.css';
 
-export const LimitedOffer = ({ setCurrentTab }) => {
+export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   // Countdown Timer State
   const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, minutes: 45 });
   
@@ -435,7 +435,25 @@ void main() {
               // Calculate a dummy original price for the offer display (40% higher)
               const originalPrice = Math.round(parseInt(item.price.replace(/[^\d]/g, '')) * 1.4);
               return (
-                <div key={`offer-${index}`} className="group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
+                <div key={`offer-${index}`} className="group cursor-pointer flex flex-col items-center" onClick={() => {
+                  if (setSelectedProduct) {
+                    setSelectedProduct({
+                      id: `offer-${index}`,
+                      name: item.title,
+                      category: "Limited Offer",
+                      fabric: "Festive Collection",
+                      color: "#6B102A",
+                      price: parseInt(item.price.replace(/[^\d]/g, '')),
+                      oldPrice: originalPrice,
+                      rating: 4.8,
+                      tag: item.tag || "LIMITED OFFER",
+                      image: item.image,
+                      description: "Exclusive festive collection piece available for a limited time.",
+                      inStock: true
+                    });
+                  }
+                  setCurrentTab('product-detail');
+                }}>
                   <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
                     <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
                       <img 

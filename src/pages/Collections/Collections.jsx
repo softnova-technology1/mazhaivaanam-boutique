@@ -68,7 +68,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
             <div className={styles['guide-row']}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/cotton3.png" 
+                  src="/Images/everyday.png" 
                   alt="Everyday Elegance" 
                 />
               </div>
@@ -152,7 +152,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
             <div className={`${styles['guide-row']} ${styles['row-reverse']}`}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/black1.png" 
+                  src="/Images/black-shop.png" 
                   alt="Black Magic" 
                 />
               </div>

@@ -246,7 +246,7 @@ button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):n
   font-family: 'Kaushan Script', cursive !important;
   font-weight: 400 !important;
   letter-spacing: 0px !important; /* Cursive fonts should not have wide letter spacing */
-  text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8) !important; /* Black text shadow for readability */
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15) !important; /* Soft, elegant shadow for readability */
 }
 
 /* We removed the global .hero override here because CSS modules rename classes.

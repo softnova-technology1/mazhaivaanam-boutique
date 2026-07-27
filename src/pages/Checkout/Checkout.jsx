@@ -365,9 +365,14 @@ Thank you for choosing handloom heritage.
                   <p>
                     Congratulations! You've earned <span className={styles.rewardsPointsText}>{Math.round(orderCache.finalAmount * 0.1)} Silk Points</span> from this purchase. Use them on your next heirloom piece.
                   </p>
-                  <button onClick={() => alert("Rewards portal: points active!")} className={styles.rewardsPortalLink}>
+                  <span 
+                    onClick={() => alert("Rewards portal: points active!")} 
+                    className={styles.rewardsPortalLink}
+                    role="button"
+                    tabIndex={0}
+                  >
                     View Rewards Portal
-                  </button>
+                  </span>
                 </div>
 
                 {/* Weaver quote */}
@@ -664,39 +669,6 @@ Thank you for choosing handloom heritage.
                     </div>
                     <span className={styles.deliveryCost}>FREE</span>
                   </label>
-                </div>
-              </section>
-
-              {/* Gift Experience */}
-              <section className={styles.giftPackagingSection}>
-                <div className={styles.giftIntroBlock}>
-                  <Gift className={styles.giftLogo} size={32} />
-                  <div className={styles.giftInfoText}>
-                    <div className={styles.giftTitleRow}>
-                      <h3 className={styles.giftHeadline}>Luxury Gift Packaging</h3>
-                      <div className={styles.giftCheckboxWrapper}>
-                        <input 
-                          type="checkbox" 
-                          id="giftCheckbox" 
-                          checked={giftPackaging}
-                          onChange={(e) => setGiftPackaging(e.target.checked)}
-                          className={styles.giftCheckInput}
-                        />
-                        <label htmlFor="giftCheckbox" className={styles.giftCheckLabel}>
-                          ADD FOR {formatCurrency(GIFT_WRAP_PRICE)}
-                        </label>
-                      </div>
-                    </div>
-                    <p className={styles.giftDescriptionText}>
-                      Encased in a signature Mazhai Vaanam wooden keepsake box with dried jasmine flowers and a personalized wax-sealed note.
-                    </p>
-                    <textarea 
-                      placeholder="Write your personalized gift message here..."
-                      value={giftMessage}
-                      onChange={(e) => setGiftMessage(e.target.value)}
-                      className={styles.giftTextarea}
-                    />
-                  </div>
                 </div>
               </section>
 

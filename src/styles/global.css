@@ -84,11 +84,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -191,7 +191,7 @@ a {
 }
 
 /* Fluffy Cloud Shape for all buttons globally, excluding navbar/header, dropdowns, icons, close buttons, quantity controls, delete buttons, pagination, tags, and breadcrumbs */
-button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"]) {
+button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"]):not([class*="story"]) {
   position: relative;
   border-radius: 40px !important;
   background-color: var(--primary); /* Fallback */
@@ -200,8 +200,8 @@ button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):n
   transition: background-color 0.4s ease;
 }
 
-button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"])::before,
-button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"])::after {
+button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"]):not([class*="story"])::before,
+button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"]):not([class*="story"])::after {
   content: '';
   position: absolute;
   background-color: inherit;
@@ -209,21 +209,21 @@ button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):n
   z-index: -1;
 }
 
-button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"])::before {
+button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"]):not([class*="story"])::before {
   width: 40%;
   height: 80%;
   top: -20%;
   left: 15%;
 }
 
-button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"])::after {
+button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"]):not([class*="story"])::after {
   width: 50%;
   height: 90%;
   top: -25%;
   right: 15%;
 }
 
-button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"]):hover {
+button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):not([class*="Navbar"]):not([class*="navbar"]):not([class*="menuLink"]):not([class*="dropdown"]):not([class*="icon"]):not([class*="close"]):not([class*="quantity"]):not([class*="delete"]):not([class*="arrow"]):not([class*="pagination"]):not([class*="tagBtn"]):not([class*="tag-btn"]):not([class*="dot"]):not([class*="pill"]):not([class*="filter"]):not([class*="load-more"]):not([class*="breadcrumb"]):not([class*="story"]):hover {
   background-color: var(--primary-dark) !important;
   color: #ffffff !important;
   cursor: pointer;

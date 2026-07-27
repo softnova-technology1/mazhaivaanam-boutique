@@ -252,7 +252,10 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
             <span className="font-label-caps text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase mb-3 block">Handpicked For You</span>
             <h2 className="font-display-lg text-4xl md:text-5xl text-[#2D3326] m-0">Curation of Craft</h2>
           </div>
-          <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#D4AF37] text-[#2D3326] font-label-caps text-[10px] tracking-widest hover:bg-[#D4AF37] hover:text-white transition-colors cursor-pointer mt-6 md:mt-0">
+          <span 
+            onClick={() => setCurrentTab && setCurrentTab('collections')}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#D4AF37] text-[#2D3326] font-label-caps text-[10px] tracking-widest hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-colors cursor-pointer mt-6 md:mt-0"
+          >
             VIEW ALL COLLECTIONS
             <span className="material-symbols-outlined text-sm">arrow_forward</span>
           </span>
@@ -356,7 +359,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           <div className="flex justify-center md:justify-end pb-2 mt-6 md:mt-0">
             <button 
               onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
-              className="pill px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[8px] hover:bg-[#D4AF37] hover:text-white transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
+              className="pill px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[8px] hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
             >
               VIEW ALL COLLECTIONS <span className="text-[14px]">→</span>
             </button>

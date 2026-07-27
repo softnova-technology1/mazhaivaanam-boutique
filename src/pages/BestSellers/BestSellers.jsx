@@ -1,17 +1,47 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { ALL_PRODUCTS } from '../Catalog/Catalog';
-import { LayoutGrid, Grid3X3, List, Plus, Minus, ChevronDown, ChevronUp } from 'lucide-react';
+import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star } from 'lucide-react';
+import { useCart } from '../../hooks/useCart';
 import styles from './BestSellers.module.css';
 
 export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
+  const { addToCart } = useCart();
+  const [wishlist, setWishlist] = useState([]);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Load wishlist
+    const saved = localStorage.getItem('boutique_wishlist');
+    if (saved) {
+      setWishlist(JSON.parse(saved));
+    }
   }, []);
 
   const [gridView, setGridView] = useState(3);
   const [sortOption, setSortOption] = useState('best-selling');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isPremiumOpen, setIsPremiumOpen] = useState(true);
+
+  const isWishlisted = (id) => wishlist.some(item => item.id === id);
+
+  const handleWishlistToggle = (product) => {
+    let updated;
+    if (isWishlisted(product.id)) {
+      updated = wishlist.filter(item => item.id !== product.id);
+      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Removed "${product.name}" from Wishlist.` } }));
+    } else {
+      updated = [...wishlist, product];
+      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Wishlist!` } }));
+    }
+    setWishlist(updated);
+    localStorage.setItem('boutique_wishlist', JSON.stringify(updated));
+    window.dispatchEvent(new Event('storage')); // sync navbar
+  };
+
+  const handleAddToCart = (product) => {
+    addToCart(product, 1);
+    window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Trousseau!` } }));
+  };
 
   const SORT_OPTIONS = [
     { value: 'featured', label: 'Featured' },
@@ -26,8 +56,8 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   ];
 
   const bestSellers = useMemo(() => {
-    // For this mockup, we'll use top 20
-    let products = [...ALL_PRODUCTS.slice(0, 20)];
+    // Filter only products with BESTSELLER tag
+    let products = ALL_PRODUCTS.filter(product => product.tag === "BESTSELLER");
     
     if (sortOption === 'price-asc') {
       products.sort((a, b) => a.price - b.price);
@@ -68,28 +98,22 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
         {/* LEFT SIDEBAR */}
         <aside className={styles['sidebar']}>
           <div className={styles['sidebar-section']}>
-            <div 
-              className={styles['sidebar-heading']}
-              onClick={() => setIsPremiumOpen(!isPremiumOpen)}
-            >
+            <div className={styles['sidebar-heading']}>
               <h3>Premium Collections</h3>
-              {isPremiumOpen ? <Minus size={16} /> : <Plus size={16} />}
             </div>
             
-            {isPremiumOpen && (
-              <div className={styles['sidebar-product-list']}>
-                {ALL_PRODUCTS.slice(0, 3).map(prod => (
-                  <div key={prod.id} className={styles['sidebar-product-card']} onClick={() => handleProductClick(prod)}>
-                    <img src={prod.image} alt={prod.name} loading="lazy" />
-                    <div className={styles['sidebar-product-info']}>
-                      <h5>{prod.name} | {prod.id}</h5>
-                      <span className={styles['sidebar-price']}>Rs. {prod.price.toLocaleString('en-IN')}.00</span>
-                    </div>
+            <div className={styles['sidebar-product-list']}>
+              {ALL_PRODUCTS.slice(0, 3).map(prod => (
+                <div key={prod.id} className={styles['sidebar-product-card']} onClick={() => handleProductClick(prod)}>
+                  <img src={prod.image} alt={prod.name} loading="lazy" />
+                  <div className={styles['sidebar-product-info']}>
+                    <h5>{prod.name} | {prod.id}</h5>
+                    <span className={styles['sidebar-price']}>Rs. {prod.price.toLocaleString('en-IN')}.00</span>
                   </div>
-                ))}
-                <div className={styles['sidebar-divider']}></div>
-              </div>
-            )}
+                </div>
+              ))}
+              <div className={styles['sidebar-divider']}></div>
+            </div>
 
             {/* The promo image shown in the screenshot */}
             <div className={styles['promo-banner']}>
@@ -149,30 +173,93 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
           {/* PRODUCT GRID */}
           <div className={`${styles['product-grid']} ${styles[`grid-${gridView}`]}`}>
-            {bestSellers.map((product) => (
-              <div 
-                key={product.id} 
-                className={styles['product-card']}
-                onClick={() => handleProductClick(product)}
-              >
-                <div className={styles['product-image']}>
-                  <img src={product.image} alt={product.name} loading="lazy" />
+            {bestSellers.map((product) => {
+              const hasDiscount = product.oldPrice && product.oldPrice > product.price;
+              const discountPercentage = hasDiscount ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
+              
+              return (
+                <div 
+                  key={product.id} 
+                  className={styles['product-card']}
+                  onClick={() => handleProductClick(product)}
+                >
+                  <div className={styles['product-image-container']}>
+                    <img src={product.image} alt={product.name} loading="lazy" className={styles['product-image']} />
+                    
+                    {/* Top Right Starburst Discount Badge */}
+                    {hasDiscount && (
+                      <div className={styles['discount-starburst']}>
+                        <span>{discountPercentage}%</span>
+                        <span>OFF</span>
+                      </div>
+                    )}
+
+                    {/* Bottom Left Bestseller Tag */}
+                    {product.tag && (
+                      <span className={styles['bestseller-badge']}>
+                        {product.tag}
+                      </span>
+                    )}
+
+                    {/* Bottom Right Wishlist Button */}
+                    <button 
+                      className={styles['wishlist-btn']}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleWishlistToggle(product);
+                      }}
+                      aria-label="Add to Wishlist"
+                    >
+                      <Heart 
+                        size={16} 
+                        fill={isWishlisted(product.id) ? "var(--primary-dark)" : "none"} 
+                        stroke="var(--primary-dark)" 
+                      />
+                    </button>
+                  </div>
+
+                  <div className={styles['product-details']}>
+                    <div className={styles['title-row']}>
+                      <h3 className={styles['product-title']}>{product.name}</h3>
+                      {product.rating && (
+                        <div className={styles['rating-badge']}>
+                          <Star size={10} fill="var(--secondary)" stroke="var(--secondary)" />
+                          <span>{product.rating.toFixed(1)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <p className={styles['product-desc']}>{product.description}</p>
+
+                    <div className={styles['price-row']}>
+                      <span className={styles['current-price']}>
+                        ₹{product.price.toLocaleString('en-IN')}
+                      </span>
+                      {hasDiscount && (
+                        <>
+                          <span className={styles['old-price']}>
+                            ₹{product.oldPrice.toLocaleString('en-IN')}
+                          </span>
+                          <span className={styles['discount-pill']}>
+                            {discountPercentage}% OFF
+                          </span>
+                        </>
+                      )}
+                    </div>
+
+                    <button 
+                      className={styles['cart-btn']}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                      }}
+                    >
+                      ADD TO CART
+                    </button>
+                  </div>
                 </div>
-                <div className={styles['product-info']}>
-                  <h4>{product.name} | {product.id}</h4>
-                  <p className={styles['product-price']}>Rs. {product.price.toLocaleString('en-IN')}.00</p>
-                  <button 
-                    className={styles['add-to-cart-btn']}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to cart!` } }));
-                    }}
-                  >
-                    Add To Cart
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         </main>

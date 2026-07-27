@@ -131,7 +131,7 @@
 
 .enquireBtn {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   background-color: var(--primary);
   color: white;
   padding: 20px 48px;
@@ -142,34 +142,39 @@
   text-transform: uppercase;
   text-decoration: none;
   display: inline-block;
-  transition: background-color 0.5s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-radius: 9999px !important;
+  z-index: 1;
 }
 
 .enquireBtn:hover {
-  background-color: var(--accent);
+  background-color: var(--primary-dark) !important;
+  color: #FFFFFF !important;
+}
+
+.enquireBtn::before,
+.enquireBtn::after {
+  content: '';
+  position: absolute;
+  background-color: inherit;
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.enquireBtn::before {
+  width: 40%;
+  height: 80%;
+  top: -20%;
+  left: 15%;
 }
 
 .enquireBtn::after {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  transform: rotate(45deg);
-  animation: shimmerBtn 3s infinite linear;
-}
-
-@keyframes shimmerBtn {
-  0% { transform: translateX(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) rotate(45deg); }
+  width: 50%;
+  height: 90%;
+  top: -25%;
+  right: 15%;
 }
 
 .supportStatusBadge {
@@ -491,9 +496,7 @@
 }
 
 .submitMessageBtn::before,
-.submitMessageBtn::after,
-.enquireBtn::before,
-.enquireBtn::after {
+.submitMessageBtn::after {
   content: none !important;
   display: none !important;
 }

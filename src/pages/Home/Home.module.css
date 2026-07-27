@@ -182,9 +182,9 @@
 }
 
 .btn-custom:hover {
-  background-color: #FFFFFF !important;
-  color: var(--primary) !important;
-  border-color: #FFFFFF !important;
+  background-color: var(--accent) !important;
+  color: var(--primary-dark) !important;
+  border-color: var(--accent) !important;
 }
 
 /* Slider Controls */

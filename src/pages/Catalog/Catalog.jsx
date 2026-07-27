@@ -74,6 +74,7 @@ export const ALL_PRODUCTS = [
     price: 11769,
     oldPrice: 14000,
     rating: 4.7,
+    tag: "BESTSELLER",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD4EfBPaPdPDqLR-Rynn0CdBpWEu5GnScNJ0P7TcAJMUlneT5ULxMjW7no9g7oggZiGPQ_3RDBuC6F4hB30FN4kRf8Ixqc9AcAwCWKHDSAiow5UiSsA23QSTL1nh_7CTPoHcZfJS1Fs-mg4CnhazB4V0JNBiMxr9oWd4za5pzvZpMWiQfGSJcLGgPTOGhCh0zcpjE_-fuCyNYUOU9a8sTqqdjJVFqG_TVvJInGjJ0cNzraqo3w3JOGR",
     description: "Vibrant royal blue silk masterwork with gold border details, curated for bridal elegance."
   },
@@ -114,6 +115,7 @@ export const ALL_PRODUCTS = [
     price: 13769,
     oldPrice: 16500,
     rating: 4.9,
+    tag: "BESTSELLER",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_",
     description: "Deep emerald green silk brocade woven with intricate floral creepers and gold zari."
   },
@@ -143,7 +145,7 @@ export const ALL_PRODUCTS = [
     price: 14500,
     oldPrice: 17000,
     rating: 4.8,
-    tag: "NEW ARRIVAL",
+    tag: "BESTSELLER",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDkRuajLDcBWPazr6lv5c906qF0pGWB4-Ke1cY7Qc8LFWNUDGlM9MNsyuVAK0B81OaDi7a3eX5PWLvar4UFlcXzFx4T6i9mYoZh8zFPHjbz_jJt7XkBwKgO4LVbEI45hkE3Fu4G8IBh2ls5xV7ThxPW06QCHp43P2GvOXaFJW2FNHZJr5sQFJbSWWX1qSMsS7YGQGCMc-VawrfXqWOQwiXMpM7C4tbBmlD5coSua7GF66oDsIY1_ASD",
     description: "Sienna golden-orange silk drape featuring fine floral zari border details and traditional design."
   },
@@ -171,7 +173,7 @@ export const ALL_PRODUCTS = [
     price: 29500,
     oldPrice: 34000,
     rating: 4.9,
-    tag: "ON THE LOOM",
+    tag: "BESTSELLER",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_",
     description: "Deep crimson Banarasi silk saree handwoven with dense gold zari and floral scroll patterns.",
     isPreorder: true,
@@ -201,7 +203,7 @@ export const ALL_PRODUCTS = [
     price: 48000,
     oldPrice: 55000,
     rating: 5.0,
-    tag: "ON THE LOOM",
+    tag: "BESTSELLER",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDkRuajLDcBWPazr6lv5c906qF0pGWB4-Ke1cY7Qc8LFWNUDGlM9MNsyuVAK0B81OaDi7a3eX5PWLvar4UFlcXzFx4T6i9mYoZh8zFPHjbz_jJt7XkBwKgO4LVbEI45hkE3Fu4G8IBh2ls5xV7ThxPW06QCHp43P2GvOXaFJW2FNHZJr5sQFJbSWWX1qSMsS7YGQGCMc-VawrfXqWOQwiXMpM7C4tbBmlD5coSua7GF66oDsIY1_ASD",
     description: "Premium ivory Kanchipuram silk saree featuring exquisite double-warp gold zari and floral patterns.",
     isPreorder: true,
@@ -231,7 +233,7 @@ export const ALL_PRODUCTS = [
     price: 15200,
     oldPrice: 18000,
     rating: 4.8,
-    tag: "NEW ARRIVAL",
+    tag: "BESTSELLER",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-hN0onELnDgdOswyfAzJdw98YnefT7Zi-Dt0g7IxzqYuKK0TaBE4ZTit86sthNhhHWaETP5U6EPkJdQ2TF8NiA7csqXaXCMDhY3VfyoT7yodibzxkenJWfVDdPFIj9YQwTe_B2qlA3e4Sg8KUXPv4QX9GkevPmAgmVVpnY1xGSJkIONEBGz60tPRpNkxygpulKi7xC5gVJ_NCnFJG5nHKVTU98HQAfzC7nM8QYjmgbIyBBYSsnJFz",
     description: "Stunning coral pink handloom pure silk saree with silver-gold borders and modern elements."
   },
@@ -245,7 +247,7 @@ export const ALL_PRODUCTS = [
     price: 18900,
     oldPrice: 22000,
     rating: 4.9,
-    tag: "NEW ARRIVAL",
+    tag: "BESTSELLER",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_",
     description: "Deep indigo blue Banarasi silk saree with silver butis and elegant brocade border."
   },

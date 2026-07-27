@@ -494,6 +494,11 @@
   box-shadow: 0 8px 20px rgba(79, 78, 34, 0.2);
 }
 
+.cart-btn:hover::before,
+.cart-btn:hover::after {
+  background-color: var(--primary-dark, #4F4E22) !important;
+}
+
 /* =========================================
    LIST VIEW STYLES
    ========================================= */

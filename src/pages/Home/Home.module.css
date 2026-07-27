@@ -6,7 +6,7 @@
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Shimmer animation keyframes */
@@ -487,7 +487,7 @@
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 0 40px rgba(200, 163, 77, 0.1);
   overflow: hidden;
-  min-height: 700px;
+  min-height: 450px; /* Reduced from 700px */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -510,7 +510,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px;
+  padding: 40px 80px; /* Reduced vertical padding */
   text-align: center;
   width: 100%;
 }

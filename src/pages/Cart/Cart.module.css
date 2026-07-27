@@ -286,40 +286,67 @@
 
 .wishlistBtn {
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: none;
-  border: none;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  background: transparent !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
   color: var(--text-main);
   cursor: pointer;
-  transition: color 0.3s ease;
-  padding: 0;
+  transition: all 0.3s ease;
+  padding: 8px 16px !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wishlistBtn::before,
+.wishlistBtn::after {
+  content: none !important;
+  display: none !important;
 }
 
 .wishlistBtn:hover {
-  color: var(--primary);
+  background-color: var(--primary-light) !important;
+  border-color: var(--primary-light) !important;
+  color: #ffffff !important;
 }
 
 .removeBtn {
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: none;
-  border: none;
+  background: transparent !important;
+  border: 1px solid rgba(220, 38, 38, 0.2) !important;
+  border-radius: 4px !important;
   color: var(--error);
   cursor: pointer;
-  transition: opacity 0.3s ease;
-  padding: 0;
+  transition: all 0.3s ease;
+  padding: 8px 16px !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeBtn::before,
+.removeBtn::after {
+  content: none !important;
+  display: none !important;
 }
 
 .removeBtn:hover {
-  opacity: 0.7;
+  background-color: rgba(220, 38, 38, 0.05) !important;
+  border-color: var(--error) !important;
 }
 
 .giftCard {

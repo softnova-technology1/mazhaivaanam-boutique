@@ -788,7 +788,7 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
-  z-index: 2500;
+  z-index: 12000;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -1010,9 +1010,9 @@
 .viewCartBtn {
   flex: 1;
   padding: 12px;
-  background: none;
-  border: 1.5px solid var(--primary-dark);
-  color: var(--primary-dark);
+  background: none !important;
+  border: 1.5px solid var(--primary-dark) !important;
+  color: var(--primary-dark) !important;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -1020,20 +1020,28 @@
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  border-radius: 2px;
+  border-radius: 2px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.viewCartBtn::before,
+.viewCartBtn::after {
+  content: none !important;
+  display: none !important;
 }
 
 .viewCartBtn:hover {
-  background-color: var(--primary-dark);
-  color: #FFFFFF;
+  background-color: var(--primary-dark) !important;
+  color: #FFFFFF !important;
 }
 
 .checkoutBtn {
   flex: 1;
   padding: 12px;
-  background-color: var(--primary-dark);
-  border: 1.5px solid var(--primary-dark);
-  color: #FFFFFF;
+  background-color: var(--primary-dark) !important;
+  border: 1.5px solid var(--primary-dark) !important;
+  color: #FFFFFF !important;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -1041,12 +1049,20 @@
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  border-radius: 2px;
+  border-radius: 2px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.checkoutBtn::before,
+.checkoutBtn::after {
+  content: none !important;
+  display: none !important;
 }
 
 .checkoutBtn:hover {
-  background-color: var(--primary);
-  border-color: var(--primary);
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
 }
 
 .emptyCartMessage {

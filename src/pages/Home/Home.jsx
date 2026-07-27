@@ -361,7 +361,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
               onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
               className="pill px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[8px] hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
             >
-              VIEW ALL COLLECTIONS <span className="text-[14px]">→</span>
+              VIEW ALL <span className="text-[14px]">→</span>
             </button>
           </div>
         </div>

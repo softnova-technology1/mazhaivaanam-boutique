@@ -153,6 +153,21 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
     setTimeout(() => setIsAddedToCart(false), 3000);
   };
 
+  const handleBuyNowClick = () => {
+    if (activeProduct.isPreorder) {
+      const preorderItem = {
+        ...activeProduct,
+        name: `[Pre-Order] ${activeProduct.name}`,
+        price: activeProduct.price,
+        isPreorder: true
+      };
+      addToCart(preorderItem, 1);
+    } else {
+      addToCart(activeProduct, 1);
+    }
+    setCurrentTab('checkout');
+  };
+
   const handleWishlistClick = () => {
     setWishlistMessage(`Added ${activeProduct.name} Saree to Wishlist!`);
     setTimeout(() => setWishlistMessage(''), 3000);
@@ -372,15 +387,15 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
               {activeProduct.isPreorder ? (
                 isAddedToCart ? 'PRE-ORDER ADDED' : 'PRE-BOOK NOW'
               ) : (
-                isAddedToCart ? 'ADDED TO TROUSSEAU' : 'ADD TO TROUSSEAU'
+                isAddedToCart ? 'ADDED TO CART' : 'ADD TO CART'
               )}
               <ArrowRight size={14} />
             </button>
             <button
               className={styles['concierge-btn']}
-              onClick={() => setWishlistMessage("Contacting our private concierge desk...")}
+              onClick={handleBuyNowClick}
             >
-              PRIVATE CONCIERGE
+              BUY NOW
             </button>
           </div>
 

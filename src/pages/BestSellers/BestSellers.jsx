@@ -185,37 +185,6 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                 >
                   <div className={styles['product-image-container']}>
                     <img src={product.image} alt={product.name} loading="lazy" className={styles['product-image']} />
-                    
-                    {/* Top Right Starburst Discount Badge */}
-                    {hasDiscount && (
-                      <div className={styles['discount-starburst']}>
-                        <span>{discountPercentage}%</span>
-                        <span>OFF</span>
-                      </div>
-                    )}
-
-                    {/* Bottom Left Bestseller Tag */}
-                    {product.tag && (
-                      <span className={styles['bestseller-badge']}>
-                        {product.tag}
-                      </span>
-                    )}
-
-                    {/* Bottom Right Wishlist Button */}
-                    <button 
-                      className={styles['wishlist-btn']}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleWishlistToggle(product);
-                      }}
-                      aria-label="Add to Wishlist"
-                    >
-                      <Heart 
-                        size={16} 
-                        fill={isWishlisted(product.id) ? "var(--primary-dark)" : "none"} 
-                        stroke="var(--primary-dark)" 
-                      />
-                    </button>
                   </div>
 
                   <div className={styles['product-details']}>

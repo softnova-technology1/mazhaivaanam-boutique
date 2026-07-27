@@ -660,7 +660,7 @@
   content: '' !important;
   position: absolute !important;
   inset: 0 !important;
-  background-color: var(--primary-dark) !important;
+  background-color: var(--accent) !important;
   transform: scaleX(0) !important;
   transform-origin: left !important;
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -670,13 +670,15 @@
   width: 100% !important; height: 100% !important;
 }
 
-.concierge-btn:hover::before {
+:global(#root) .concierge-btn:hover::before {
   transform: scaleX(1) !important;
+  background-color: var(--accent) !important;
 }
 
-.concierge-btn:hover {
-  color: #ffffff !important;
-  border-color: var(--primary-dark) !important;
+:global(#root) .concierge-btn:hover {
+  background-color: transparent !important;
+  color: var(--primary-dark) !important;
+  border-color: var(--accent) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 24px rgba(79, 78, 34, 0.18) !important;
 }

@@ -332,7 +332,7 @@ void main() {
               </button>
               <button 
                 onClick={() => setCurrentTab('about')}
-                className="pill rounded-full w-full sm:w-auto px-10 py-4 border border-white text-white bg-transparent hover:bg-white hover:text-primary transition-all duration-500 font-label-caps text-label-caps tracking-widest transform hover:-translate-y-1"
+                className="pill rounded-full w-full sm:w-auto px-10 py-4 border border-white text-white bg-transparent hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-500 font-label-caps text-label-caps tracking-widest transform hover:-translate-y-1"
               >
                 OUR HERITAGE
               </button>

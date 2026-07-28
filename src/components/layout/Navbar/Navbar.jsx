@@ -127,6 +127,16 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
       setCatalogFilter({ category, occasion, label: category || occasion || 'All Collections' });
     }
     handleTabChange('catalog');
+    
+    if (category || occasion) {
+      setTimeout(() => {
+        document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    }
   };
 
   const handleSearchSubmit = (query) => {

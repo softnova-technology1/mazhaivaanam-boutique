@@ -184,6 +184,11 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
     }
     if (setCurrentTab) {
       setCurrentTab('catalog');
+      
+      // Wait for Catalog to render, then scroll specifically to the product grid section 
+      setTimeout(() => {
+        document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   };
 

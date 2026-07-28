@@ -40,7 +40,6 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
   const handleAddToCart = (product) => {
     addToCart(product, 1);
-    window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Trousseau!` } }));
   };
 
   const SORT_OPTIONS = [

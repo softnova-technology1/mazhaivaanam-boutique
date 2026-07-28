@@ -120,7 +120,6 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
           onClick={(e) => {
             e.stopPropagation();
             addToCart(product, 1);
-            window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Cart!` } }));
           }}
         >
           ADD TO CART

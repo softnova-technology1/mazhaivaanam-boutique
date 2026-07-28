@@ -75,6 +75,18 @@ export const PREORDER_PRODUCTS = [
   }
 ];
 
+export const SORT_OPTIONS = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'relevance', label: 'Most relevant' },
+  { value: 'best-selling', label: 'Best selling' },
+  { value: 'alpha-asc', label: 'Alphabetically, A-Z' },
+  { value: 'alpha-desc', label: 'Alphabetically, Z-A' },
+  { value: 'price-asc', label: 'Price, low to high' },
+  { value: 'price-desc', label: 'Price, high to low' },
+  { value: 'date-asc', label: 'Date, old to new' },
+  { value: 'date-desc', label: 'Date, new to old' },
+];
+
 export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
   const [selectedSort, setSelectedSort] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -91,6 +103,33 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
       setCurrentTab('product-detail');
     }
   };
+
+  const sortedProducts = React.useMemo(() => {
+    let sorted = [...PREORDER_PRODUCTS];
+    switch (selectedSort) {
+      case 'alpha-asc':
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'alpha-desc':
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'price-asc':
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case 'date-asc':
+      case 'date-desc':
+      case 'best-selling':
+      case 'relevance':
+      case 'featured':
+      default:
+        // Use default order for these as we don't have real data fields for them yet
+        break;
+    }
+    return sorted;
+  }, [selectedSort]);
 
   return (
     <div className={styles['prebooking-page-container']}>
@@ -172,7 +211,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
           {/* Toolbar */}
           <div className={styles['toolbar']}>
             <div className={styles['toolbar-left']}>
-              <span>Showing 1 - {PREORDER_PRODUCTS.length} of {PREORDER_PRODUCTS.length} products</span>
+              <span>Showing 1 - {sortedProducts.length} of {sortedProducts.length} products</span>
             </div>
             <div className={styles['toolbar-right']}>
               <div className={styles['sort-dropdown']}>
@@ -181,13 +220,22 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                   className={styles['sort-btn']}
                   onClick={() => setIsSortOpen(!isSortOpen)}
                 >
-                  Featured <ChevronDown size={14} />
+                  {SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured'} <ChevronDown size={14} />
                 </div>
                 {isSortOpen && (
                   <div className={styles['sort-menu']}>
-                    <div role="button">Featured</div>
-                    <div role="button">Price: Low to High</div>
-                    <div role="button">Price: High to Low</div>
+                    {SORT_OPTIONS.map((option) => (
+                      <div 
+                        key={option.value}
+                        role="button"
+                        onClick={() => {
+                          setSelectedSort(option.value);
+                          setIsSortOpen(false);
+                        }}
+                      >
+                        {option.label}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
@@ -213,7 +261,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
 
           {/* Product Grid */}
           <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
-            {PREORDER_PRODUCTS.map((product) => (
+            {sortedProducts.map((product) => (
               <div key={product.id} className={styles['product-card']}>
                 <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
                   <div className={styles['discount-badge']}>Save {product.discount}</div>
@@ -233,7 +281,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                     onClick={(e) => {
                       e.stopPropagation();
                       addToCart(product, 1);
-                      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: 'Item added to cart' } }));
                     }}
                   >
                     PRE BOOK NOW
@@ -293,7 +340,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                     className={styles['qv-prebook-btn']}
                     onClick={() => {
                       addToCart(quickViewProduct, quantity);
-                      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: 'Item added to cart' } }));
                       setQuickViewProduct(null);
                     }}
                   >

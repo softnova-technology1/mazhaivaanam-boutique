@@ -242,9 +242,6 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                         <button onClick={() => { handleTabChange('saved-address'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
                           <MapPin size={14} className={styles.dropdownIcon} /> Saved Address
                         </button>
-                        <button onClick={() => { handleTabChange('gift-cards'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
-                          <Gift size={14} className={styles.dropdownIcon} /> Gift Cards
-                        </button>
                         <div className={styles.dropdownDivider}></div>
                         <button onClick={() => { logout(); handleTabChange('shop'); setIsAccountOpen(false); }} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>
                           <LogOut size={14} className={styles.dropdownIcon} /> Logout

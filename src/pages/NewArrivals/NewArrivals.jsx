@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ALL_PRODUCTS } from '../Catalog/Catalog';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';
 import { Search, ChevronDown } from 'lucide-react';
+import { SORT_OPTIONS } from '../PreBooking/PreBooking';
 import styles from './NewArrivals.module.css';
 
 export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
@@ -42,19 +43,39 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       items = items.filter(p => 
-        p.name.toLowerCase().includes(query) || 
-        p.fabric.toLowerCase().includes(query) || 
-        p.description.toLowerCase().includes(query)
+        p.name?.toLowerCase().includes(query) || 
+        p.fabric?.toLowerCase().includes(query) || 
+        p.description?.toLowerCase().includes(query)
       );
     }
 
     // Sort Logic
-    if (selectedSort === 'price-low') {
-      items.sort((a, b) => a.price - b.price);
-    } else if (selectedSort === 'price-high') {
-      items.sort((a, b) => b.price - a.price);
-    } else if (selectedSort === 'rating') {
-      items.sort((a, b) => b.rating - a.rating);
+    switch (selectedSort) {
+      case 'alpha-asc':
+        items.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'alpha-desc':
+        items.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'price-asc':
+      case 'price-low':
+        items.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+      case 'price-high':
+        items.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        items.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'date-asc':
+      case 'date-desc':
+      case 'best-selling':
+      case 'relevance':
+      case 'featured':
+      default:
+        // Default order
+        break;
     }
 
     return items;
@@ -104,18 +125,18 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
           {/* Top row: Search and Sort */}
           <div className="flex flex-wrap justify-between items-center gap-4 border-b border-[#E9DDC7] pb-4">
             {/* Search Bar */}
-            <div className="flex items-center gap-2 max-w-[300px] w-full bg-white px-4 py-2 rounded-full border border-[#E9DDC7] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
-              <Search size={16} className="text-text-muted" />
+            <div className={styles['search-bar-box']}>
+              <Search size={16} className={styles['search-icon']} />
               <input
                 type="text"
                 placeholder="Search new arrivals..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent border-none outline-none font-inter text-[12px] w-full text-text-main placeholder-[#A09A94]"
+                className={styles['search-input']}
               />
               {searchQuery && (
                 <div
-                  className="cursor-pointer text-text-muted hover:text-primary transition-colors text-[12px]"
+                  className={styles['search-clear-icon']}
                   onClick={() => setSearchQuery('')}
                   role="button"
                 >
@@ -136,42 +157,21 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
                   }}
                   type="button"
                 >
-                  {selectedSort === 'featured' && 'RELEVANCE'}
-                  {selectedSort === 'price-low' && 'PRICE: LOW TO HIGH'}
-                  {selectedSort === 'price-high' && 'PRICE: HIGH TO LOW'}
-                  {selectedSort === 'rating' && 'PATRON RATING'}
+                  {(SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured').toUpperCase()}
                   <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
                 </button>
                 {isSortOpen && (
                   <div className={styles['dropdown-options-menu']}>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'featured' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('featured')}
-                      type="button"
-                    >
-                      RELEVANCE
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('price-low')}
-                      type="button"
-                    >
-                      PRICE: LOW TO HIGH
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'price-high' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('price-high')}
-                      type="button"
-                    >
-                      PRICE: HIGH TO LOW
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'rating' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('rating')}
-                      type="button"
-                    >
-                      PATRON RATING
-                    </button>
+                    {SORT_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        className={`${styles['dropdown-option-item']} ${selectedSort === option.value ? styles['active'] : ''}`}
+                        onClick={() => setSelectedSort(option.value)}
+                        type="button"
+                      >
+                        {option.label.toUpperCase()}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>

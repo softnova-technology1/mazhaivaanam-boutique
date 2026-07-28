@@ -433,9 +433,11 @@
 
 @media (max-width: 768px) {
   .founderSignatureOverlay {
-    position: static;
-    width: 100%;
-    margin-top: 24px;
+    position: relative;
+    top: -20px;
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 4px;
   }
 }
 
@@ -462,12 +464,17 @@
 }
 
 @media (max-width: 1024px) {
+  .founderLayoutGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
   .founderImageBox {
-    grid-column: span 12;
+    grid-column: span 1;
   }
 
   .founderTextDetails {
-    grid-column: span 12;
+    grid-column: span 1;
     padding-left: 0;
   }
 }
@@ -489,7 +496,9 @@
 
 @media (max-width: 768px) {
   .founderBlockquote {
-    font-size: 24px;
+    font-size: 20px;
+    margin-top: 15px;
+    padding-right: 10px;
   }
 }
 
@@ -595,12 +604,13 @@
 }
 
 .horizontalScrollWrapper::-webkit-scrollbar {
-  height: 4px;
+  height: 6px;
 }
 
 .horizontalScrollWrapper::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
+  margin: 0 20px;
 }
 
 .horizontalScrollWrapper::-webkit-scrollbar-thumb {
@@ -652,6 +662,33 @@
   background: rgba(255, 255, 255, 0.09);
   border-color: rgba(230, 198, 135, 0.6);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(230, 198, 135, 0.25);
+}
+
+@media (max-width: 768px) {
+  .horizontalScrollWrapper {
+    overflow-x: hidden;
+  }
+  .timelineHorizontalTrack {
+    flex-direction: column;
+    min-width: 100%;
+    align-items: center;
+    gap: 30px;
+    padding: 20px 0;
+  }
+  .timelineProgressLine {
+    top: 20px;
+    bottom: 20px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, rgba(230, 198, 135, 0.15) 0%, rgba(230, 198, 135, 0.7) 50%, rgba(230, 198, 135, 0.15) 100%);
+  }
+  .timelineNodeBlock {
+    width: 90%;
+    max-width: 300px;
+  }
 }
 
 .timelineNodeCircle {

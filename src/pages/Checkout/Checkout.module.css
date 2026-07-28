@@ -947,11 +947,15 @@
 }
 
 @media (max-width: 1024px) {
+  .successDetailsGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
   .successLeftColumn {
-    grid-column: span 12;
+    grid-column: span 1;
   }
   .successRightColumn {
-    grid-column: span 12;
+    grid-column: span 1;
     position: static;
   }
 }

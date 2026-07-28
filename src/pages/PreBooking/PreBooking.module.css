@@ -702,3 +702,18 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 576px) {
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+  .prebook-grid {
+    grid-template-columns: 1fr;
+  }
+  .qv-details h3 {
+    font-size: 1.5rem;
+  }
+  .qv-actions button {
+    width: 100%;
+  }
+}

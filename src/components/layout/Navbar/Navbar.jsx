@@ -85,16 +85,13 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     return () => window.removeEventListener('click', handleOutsideClick);
   }, []);
 
-  const popularSearches = ['Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton', 'Mul Mul Cotton'];
+  const popularSearches = ['Pure Silk Sarees', 'Bridal Kanjeevaram', 'Organza Silk', 'Banarasi Brocade', 'Black Magic'];
 
   const collectionsList = [
-    { label: 'Blended South Cotton', link: 'blended-south-cotton' },
-    { label: 'Handloom Sarees', link: 'handloom-sarees' },
-    { label: 'Linen Cotton', link: 'linen-cotton' },
-    { label: 'Chanderi Cotton', link: 'chanderi-cotton' },
-    { label: 'Kalyani Cotton Sarees', link: 'kalyani-cotton-sarees' },
-    { label: 'Khadi Cotton Saree', link: 'khadi-cotton-saree' },
-    { label: 'Mul Mul Cotton', link: 'mul-mul-cotton' }
+    { label: 'Everyday Elegance', link: 'everyday-elegance' },
+    { label: 'Festive Glow', link: 'festive-glow' },
+    { label: 'Style Studio', link: 'style-studio' },
+    { label: 'Black Magic', link: 'black-magic' }
   ];
 
 

@@ -259,6 +259,14 @@
   outline: none !important;
 }
 
+.formInput:-webkit-autofill,
+.formInput:-webkit-autofill:hover, 
+.formInput:-webkit-autofill:focus, 
+.formInput:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-text-fill-color: var(--text-main) !important;
+}
+
 .formLabel {
   position: absolute;
   left: 0;
@@ -1087,13 +1095,12 @@
 }
 
 .downloadInvoiceBtn {
-  border: 1px solid var(--primary);
-  background-color: transparent;
-  color: var(--primary);
+  background-color: var(--primary);
+  color: white;
 }
 
 .downloadInvoiceBtn:hover {
-  background-color: rgba(73, 0, 23, 0.05);
+  background-color: var(--accent);
 }
 
 .trackOrderBtn {

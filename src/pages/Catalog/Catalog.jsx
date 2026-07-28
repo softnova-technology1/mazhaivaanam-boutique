@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
-import { Heart, Star, ChevronDown, Search } from 'lucide-react';
+import { Heart, Star, ChevronDown, Search, ArrowRight } from 'lucide-react';
 import styles from './Catalog.module.css';
 
 // Premium Master Saree Collection (as defined in user's design)
@@ -17,7 +17,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 15000,
     rating: 4.9,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-hN0onELnDgdOswyfAzJdw98YnefT7Zi-Dt0g7IxzqYuKK0TaBE4ZTit86sthNhhHWaETP5U6EPkJdQ2TF8NiA7csqXaXCMDhY3VfyoT7yodibzxkenJWfVDdPFIj9YQwTe_B2qlA3e4Sg8KUXPv4QX9GkevPmAgmVVpnY1xGSJkIONEBGz60tPRpNkxygpulKi7xC5gVJ_NCnFJG5nHKVTU98HQAfzC7nM8QYjmgbIyBBYSsnJFz",
+    image: "/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg",
     description: "Elegant ruby red handwoven pure silk saree adorned with heritage gold zari borders and temple motifs."
   },
   {
@@ -31,7 +31,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 32000,
     rating: 4.8,
     tag: "ON THE LOOM",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1gzWEB9tKWsjoudWNb3uApBhCDiPTe9M1N6lnbt5UlryqNZaDDCJ8tb4LpOZS3_Q_f3ai28aCck4TTiRvoW6rCLqG9z1MjEjojxWwCDsU5oehBjjZEL6UZBCOtrTrsrJT3cZGJ3rrgRrbu1lbSKpbMJ5GHQ2uffEq5JqZ_7clzRy6vknPvSSzVkFqaC08HUPLxpQbswti0TkQQCUl6LopJnDFIkxphZNhU5XYWEa2AjlwakWy0rtm",
+    image: "/Images/silk sarees/00812878-32a4-41c6-81ee-a66b8ca8275b_1.jpg",
     description: "Warm yellow and gold handloom cotton saree woven with traditional patterns, ideal for festive elegance.",
     isPreorder: true,
     deposit: 5000
@@ -47,7 +47,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 27500,
     rating: 5.0,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_",
+    image: "/Images/Fancy Sarees/17f37732-5f2a-4c83-8505-8f115aa31f16_2.jpg",
     description: "Glistening white-gold Banarasi brocade saree featuring intricate gold jaal patterns."
   },
   {
@@ -61,7 +61,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 7500,
     rating: 4.5,
     tag: "NEW ARRIVAL",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB99n9r4dbP7WA7__f11wrB_Ipn6Q7GJSe8zMy54tocsgng5Z1Lpt40VzWbYoU1eR2drwe6bdmrWtZUkRPdbQGsUCWo1IBvdJJwiiQ4Sv9ncSwDIKofKTG8qx4YEiYlvuIv_XgQ6B2Z4xVVVvquVHEiV4BznQPCbp8fgL9DgvHqKdq45bT_Yy_gbfOWsdfybCeY0bzHqWfgyJH519MupLNrDTaOzaeGV9f5ckgTYE_FLmrqEByj3pLr",
+    image: "/Images/black magic collection/00960db2-0dce-4f77-adb1-53eaeaabf610_black lichi.webp",
     description: "Deep, mysterious indigo designer drape featuring delicate silver borders."
   },
   {
@@ -75,7 +75,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 14000,
     rating: 4.7,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD4EfBPaPdPDqLR-Rynn0CdBpWEu5GnScNJ0P7TcAJMUlneT5ULxMjW7no9g7oggZiGPQ_3RDBuC6F4hB30FN4kRf8Ixqc9AcAwCWKHDSAiow5UiSsA23QSTL1nh_7CTPoHcZfJS1Fs-mg4CnhazB4V0JNBiMxr9oWd4za5pzvZpMWiQfGSJcLGgPTOGhCh0zcpjE_-fuCyNYUOU9a8sTqqdjJVFqG_TVvJInGjJ0cNzraqo3w3JOGR",
+    image: "/Images/cotton saree/070b3e79-f495-49e2-845a-97bf42bf31c0_6A.jpg",
     description: "Vibrant royal blue silk masterwork with gold border details, curated for bridal elegance."
   },
   {
@@ -88,7 +88,7 @@ export const ALL_PRODUCTS = [
     price: 9000,
     oldPrice: 11000,
     rating: 4.6,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-hN0onELnDgdOswyfAzJdw98YnefT7Zi-Dt0g7IxzqYuKK0TaBE4ZTit86sthNhhHWaETP5U6EPkJdQ2TF8NiA7csqXaXCMDhY3VfyoT7yodibzxkenJWfVDdPFIj9YQwTe_B2qlA3e4Sg8KUXPv4QX9GkevPmAgmVVpnY1xGSJkIONEBGz60tPRpNkxygpulKi7xC5gVJ_NCnFJG5nHKVTU98HQAfzC7nM8QYjmgbIyBBYSsnJFz",
+    image: "/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg",
     description: "Deep orchid purple silk saree with intricate floral vines woven in heavy gold thread work."
   },
   {
@@ -102,7 +102,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 35000,
     rating: 4.8,
     tag: "NEW ARRIVAL",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1gzWEB9tKWsjoudWNb3uApBhCDiPTe9M1N6lnbt5UlryqNZaDDCJ8tb4LpOZS3_Q_f3ai28aCck4TTiRvoW6rCLqG9z1MjEjojxWwCDsU5oehBjjZEL6UZBCOtrTrsrJT3cZGJ3rrgRrbu1lbSKpbMJ5GHQ2uffEq5JqZ_7clzRy6vknPvSSzVkFqaC08HUPLxpQbswti0TkQQCUl6LopJnDFIkxphZNhU5XYWEa2AjlwakWy0rtm",
+    image: "/Images/Fancy Sarees/1cc478b0-d027-42a5-9a05-660a74cb2cee_4.jpg",
     description: "Rich handloom cotton-silk blend in warm golden sand with delicate temple-motif borders."
   },
   {
@@ -116,7 +116,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 16500,
     rating: 4.9,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_",
+    image: "/Images/black magic collection/dc8f7413-52de-45df-ae2b-f583cd625a37_Black.webp",
     description: "Deep emerald green silk brocade woven with intricate floral creepers and gold zari."
   },
   {
@@ -130,7 +130,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 49999,
     rating: 5.0,
     tag: "ON THE LOOM",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB99n9r4dbP7WA7__f11wrB_Ipn6Q7GJSe8zMy54tocsgng5Z1Lpt40VzWbYoU1eR2drwe6bdmrWtZUkRPdbQGsUCWo1IBvdJJwiiQ4Sv9ncSwDIKofKTG8qx4YEiYlvuIv_XgQ6B2Z4xVVVvquVHEiV4BznQPCbp8fgL9DgvHqKdq45bT_Yy_gbfOWsdfybCeY0bzHqWfgyJH519MupLNrDTaOzaeGV9f5ckgTYE_FLmrqEByj3pLr",
+    image: "/Images/black magic collection/449a74ba-b1da-4dd6-8944-8c2abd5fabe0_1.webp",
     description: "Modern designer drape featuring rich scarlet highlights on an ebony dark background.",
     isPreorder: true,
     deposit: 5000
@@ -146,7 +146,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 17000,
     rating: 4.8,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDkRuajLDcBWPazr6lv5c906qF0pGWB4-Ke1cY7Qc8LFWNUDGlM9MNsyuVAK0B81OaDi7a3eX5PWLvar4UFlcXzFx4T6i9mYoZh8zFPHjbz_jJt7XkBwKgO4LVbEI45hkE3Fu4G8IBh2ls5xV7ThxPW06QCHp43P2GvOXaFJW2FNHZJr5sQFJbSWWX1qSMsS7YGQGCMc-VawrfXqWOQwiXMpM7C4tbBmlD5coSua7GF66oDsIY1_ASD",
+    image: "/Images/silk sarees/1546f1f8-5935-4aaf-b254-aa03321c05d8_love2.jpg",
     description: "Sienna golden-orange silk drape featuring fine floral zari border details and traditional design."
   },
   {
@@ -160,7 +160,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 11000,
     rating: 4.7,
     tag: "NEW ARRIVAL",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB99n9r4dbP7WA7__f11wrB_Ipn6Q7GJSe8zMy54tocsgng5Z1Lpt40VzWbYoU1eR2drwe6bdmrWtZUkRPdbQGsUCWo1IBvdJJwiiQ4Sv9ncSwDIKofKTG8qx4YEiYlvuIv_XgQ6B2Z4xVVVvquVHEiV4BznQPCbp8fgL9DgvHqKdq45bT_Yy_gbfOWsdfybCeY0bzHqWfgyJH519MupLNrDTaOzaeGV9f5ckgTYE_FLmrqEByj3pLr",
+    image: "/Images/Fancy Sarees/362972a8-7932-4b84-b81a-070deec393c8_5.jpg",
     description: "Lightweight lavender organza saree detailed with silver thread borders and embroidery."
   },
   {
@@ -174,7 +174,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 34000,
     rating: 4.9,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_",
+    image: "/Images/silk sarees/42243c06-83ff-4105-9e2b-8326c2cb82fd_1aa.jpg",
     description: "Deep crimson Banarasi silk saree handwoven with dense gold zari and floral scroll patterns.",
     isPreorder: true,
     deposit: 5000
@@ -190,7 +190,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 5500,
     rating: 4.6,
     tag: "NEW ARRIVAL",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1gzWEB9tKWsjoudWNb3uApBhCDiPTe9M1N6lnbt5UlryqNZaDDCJ8tb4LpOZS3_Q_f3ai28aCck4TTiRvoW6rCLqG9z1MjEjojxWwCDsU5oehBjjZEL6UZBCOtrTrsrJT3cZGJ3rrgRrbu1lbSKpbMJ5GHQ2uffEq5JqZ_7clzRy6vknPvSSzVkFqaC08HUPLxpQbswti0TkQQCUl6LopJnDFIkxphZNhU5XYWEa2AjlwakWy0rtm",
+    image: "/Images/cotton saree/13f0796b-f293-4f56-b952-a68ff4103e74_5aaa.jpg",
     description: "Cool mint green handloom cotton saree with fine striped pallu and borders."
   },
   {
@@ -204,7 +204,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 55000,
     rating: 5.0,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDkRuajLDcBWPazr6lv5c906qF0pGWB4-Ke1cY7Qc8LFWNUDGlM9MNsyuVAK0B81OaDi7a3eX5PWLvar4UFlcXzFx4T6i9mYoZh8zFPHjbz_jJt7XkBwKgO4LVbEI45hkE3Fu4G8IBh2ls5xV7ThxPW06QCHp43P2GvOXaFJW2FNHZJr5sQFJbSWWX1qSMsS7YGQGCMc-VawrfXqWOQwiXMpM7C4tbBmlD5coSua7GF66oDsIY1_ASD",
+    image: "/Images/silk sarees/843110c7-a279-42ef-aa3d-7e3d2db55af9_3.jpg",
     description: "Premium ivory Kanchipuram silk saree featuring exquisite double-warp gold zari and floral patterns.",
     isPreorder: true,
     deposit: 5000
@@ -220,7 +220,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 7800,
     rating: 4.5,
     tag: "NEW ARRIVAL",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1gzWEB9tKWsjoudWNb3uApBhCDiPTe9M1N6lnbt5UlryqNZaDDCJ8tb4LpOZS3_Q_f3ai28aCck4TTiRvoW6rCLqG9z1MjEjojxWwCDsU5oehBjjZEL6UZBCOtrTrsrJT3cZGJ3rrgRrbu1lbSKpbMJ5GHQ2uffEq5JqZ_7clzRy6vknPvSSzVkFqaC08HUPLxpQbswti0TkQQCUl6LopJnDFIkxphZNhU5XYWEa2AjlwakWy0rtm",
+    image: "/Images/cotton saree/27370253-a11c-48e4-a346-4490675619f9_lg1.jpg",
     description: "Vibrant yellow handloom cotton drape, breathable and light with traditional motif details."
   },
   {
@@ -234,7 +234,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 18000,
     rating: 4.8,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-hN0onELnDgdOswyfAzJdw98YnefT7Zi-Dt0g7IxzqYuKK0TaBE4ZTit86sthNhhHWaETP5U6EPkJdQ2TF8NiA7csqXaXCMDhY3VfyoT7yodibzxkenJWfVDdPFIj9YQwTe_B2qlA3e4Sg8KUXPv4QX9GkevPmAgmVVpnY1xGSJkIONEBGz60tPRpNkxygpulKi7xC5gVJ_NCnFJG5nHKVTU98HQAfzC7nM8QYjmgbIyBBYSsnJFz",
+    image: "/Images/Fancy Sarees/3a4308ae-3fba-4f36-9e14-a674ded902d0_4.jpg",
     description: "Stunning coral pink handloom pure silk saree with silver-gold borders and modern elements."
   },
   {
@@ -248,7 +248,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 22000,
     rating: 4.9,
     tag: "BESTSELLER",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF4Gjm9ZQy_Uo8x8iFNdXcHWVbQYj7RFZy8iHoTa9vqETSoS0ARIitWgDX2BAgU5h9s6Fim9rxkLSx0iOmVfYMDI3x_TllHFpCL_M2VHJn9-nWBsoGA4QyzxeXqQGHq6nTPl0ixsA7yhWUAxcbIYEfUwsz0KYDdPC07CdWJcQVB2-pRVeVC-YZWYz0m7-wRD-IdZdnILIfySa0mOQTk9RmzUgbCvZfHUbUrrdPXzADP522ac3h7lO_",
+    image: "/Images/black magic collection/8020f4c5-a121-45dc-b191-92d8291154e5_2.webp",
     description: "Deep indigo blue Banarasi silk saree with silver butis and elegant brocade border."
   },
   {
@@ -262,7 +262,7 @@ export const ALL_PRODUCTS = [
     oldPrice: 12000,
     rating: 4.7,
     tag: "NEW ARRIVAL",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB99n9r4dbP7WA7__f11wrB_Ipn6Q7GJSe8zMy54tocsgng5Z1Lpt40VzWbYoU1eR2drwe6bdmrWtZUkRPdbQGsUCWo1IBvdJJwiiQ4Sv9ncSwDIKofKTG8qx4YEiYlvuIv_XgQ6B2Z4xVVVvquVHEiV4BznQPCbp8fgL9DgvHqKdq45bT_Yy_gbfOWsdfybCeY0bzHqWfgyJH519MupLNrDTaOzaeGV9f5ckgTYE_FLmrqEByj3pLr",
+    image: "/Images/cotton saree/3235bee8-b44b-420a-959a-85f821aca634_1.jpg",
     description: "Premium orchid organza drape detailed with gold border lines and thread work."
   }
 ];
@@ -305,7 +305,10 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     return saved ? JSON.parse(saved) : [];
   });
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
 
   useEffect(() => {
     const checkWishlist = () => {
@@ -317,11 +320,14 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   }, []);
 
   useEffect(() => {
-    if (!isSortOpen) return;
-    const closeDropdown = () => setIsSortOpen(false);
+    if (!isSortOpen && !isAvailabilityOpen) return;
+    const closeDropdown = () => {
+      setIsSortOpen(false);
+      setIsAvailabilityOpen(false);
+    };
     document.addEventListener('click', closeDropdown);
     return () => document.removeEventListener('click', closeDropdown);
-  }, [isSortOpen]);
+  }, [isSortOpen, isAvailabilityOpen]);
 
   const handleProductClick = (product) => {
     if (setSelectedProduct && setCurrentTab) {
@@ -398,7 +404,12 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     }
 
     setProducts(filtered);
+    setCurrentPage(1);
   }, [selectedCategory, selectedFabric, selectedAvailability, maxPrice, selectedSort, searchQuery]);
+
+  // Calculate paginated products for rendering
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const currentProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const handleAddToWishlist = (product) => {
     const saved = localStorage.getItem('boutique_wishlist');
@@ -443,6 +454,10 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     } else {
       setSelectedCategory(cat);
     }
+    
+    setTimeout(() => {
+      document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
   };
 
   return (
@@ -498,13 +513,33 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       </section>
 
       {/* 3. Sidebar Filters + Product Grid Layout */}
-      <main className={styles['main-layout']}>
+      <main id="catalog-products-section" className={styles['main-layout']}>
         <aside className={styles['filters-sidebar']}>
           <div className={styles['sticky-sidebar-content']}>
             <h2 className={styles['sidebar-title']}>Refine Selection</h2>
             <p className={styles['sidebar-subtitle']}>Curated for elegance</p>
 
             <div className={styles['space-y-6']}>
+              {/* Quick Discover Links */}
+              <div className={styles['quick-links-menu']}>
+                <div role="button" className={styles['quick-link-item']} onClick={() => setCurrentTab && setCurrentTab('best-sellers')}>
+                  <span>Best Sellers</span>
+                  <ArrowRight size={16} className={styles['quick-link-icon']} />
+                </div>
+                <div role="button" className={styles['quick-link-item']} onClick={() => setCurrentTab && setCurrentTab('new-arrivals')}>
+                  <span>New Arrivals</span>
+                  <ArrowRight size={16} className={styles['quick-link-icon']} />
+                </div>
+                <div role="button" className={styles['quick-link-item']} onClick={() => setCurrentTab && setCurrentTab('limited-offer')}>
+                  <span>Limited Offer</span>
+                  <ArrowRight size={16} className={styles['quick-link-icon']} />
+                </div>
+                <div role="button" className={styles['quick-link-item']} onClick={() => setCurrentTab && setCurrentTab('pre-booking')}>
+                  <span>Pre-Booking</span>
+                  <ArrowRight size={16} className={styles['quick-link-icon']} />
+                </div>
+              </div>
+
               {/* Collection Filter Widget */}
               <div className={styles['filter-widget']}>
                 <div className={styles['filter-widget-header']}>
@@ -534,27 +569,48 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     <h4>Availability</h4>
                   </div>
                 </div>
-                <div style={{ padding: '8px 0' }}>
-                  <select 
-                    value={selectedAvailability} 
-                    onChange={(e) => setSelectedAvailability(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '4px',
-                      border: '1px solid var(--border-color)',
-                      backgroundColor: 'transparent',
-                      fontFamily: "'Plus Jakarta Sans', sans-serif",
-                      fontSize: '14px',
-                      color: 'var(--text-main)',
-                      outline: 'none',
-                      cursor: 'pointer'
+                <div style={{ padding: '8px 0', position: 'relative' }}>
+                  <button
+                    className={styles['dropdown-trigger-btn']}
+                    style={{ width: '100%', justifyContent: 'space-between', padding: '10px 14px', border: '1px solid var(--border-color)', backgroundColor: 'transparent' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsAvailabilityOpen(!isAvailabilityOpen);
                     }}
+                    type="button"
                   >
-                    <option value="All">All Status</option>
-                    <option value="In Stock">In Stock</option>
-                    <option value="Out of Stock">Out of Stock</option>
-                  </select>
+                    <span>
+                      {selectedAvailability === 'All' && 'All Status'}
+                      {selectedAvailability === 'In Stock' && 'In Stock'}
+                      {selectedAvailability === 'Out of Stock' && 'Out of Stock'}
+                    </span>
+                    <ChevronDown size={14} className={`${styles['chevron-icon']} ${isAvailabilityOpen ? styles['open'] : ''}`} />
+                  </button>
+                  {isAvailabilityOpen && (
+                    <div className={styles['dropdown-options-menu']} style={{ width: '100%', top: '100%', marginTop: '4px', left: 0 }}>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedAvailability === 'All' ? styles['active'] : ''}`}
+                        onClick={() => setSelectedAvailability('All')}
+                        type="button"
+                      >
+                        All Status
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedAvailability === 'In Stock' ? styles['active'] : ''}`}
+                        onClick={() => setSelectedAvailability('In Stock')}
+                        type="button"
+                      >
+                        In Stock
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedAvailability === 'Out of Stock' ? styles['active'] : ''}`}
+                        onClick={() => setSelectedAvailability('Out of Stock')}
+                        type="button"
+                      >
+                        Out of Stock
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -740,7 +796,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
           ) : (
             <>
               <div className={styles['products-grid']}>
-                {products.map((product) => {
+                {currentProducts.map((product) => {
                   const isWishlisted = wishlist.some(w => w.id === product.id);
                   return (
                     <div key={product.id} className={styles['product-card']}>
@@ -834,21 +890,36 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
               </div>
 
               {/* Pagination */}
-              <div className={styles['pagination']}>
-                <button className={styles['pagination-arrow']} disabled>
-                  <span className="material-symbols-outlined">chevron_left</span>
-                </button>
-                <div className={styles['pagination-pages']}>
-                  <span className={`${styles['page-num']} ${styles['active-page']}`}>01</span>
-                  <span className={styles['page-num']}>02</span>
-                  <span className={styles['page-num']}>03</span>
-                  <span className={styles['page-num']}>...</span>
-                  <span className={styles['page-num']}>12</span>
+              {totalPages > 1 && (
+                <div className={styles['pagination']}>
+                  <button 
+                    className={styles['pagination-arrow']} 
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  >
+                    <span className="material-symbols-outlined">chevron_left</span>
+                  </button>
+                  <div className={styles['pagination-pages']}>
+                    {Array.from({ length: totalPages }).map((_, idx) => (
+                      <span 
+                        key={idx} 
+                        className={`${styles['page-num']} ${currentPage === idx + 1 ? styles['active-page'] : ''}`}
+                        onClick={() => setCurrentPage(idx + 1)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                    ))}
+                  </div>
+                  <button 
+                    className={styles['pagination-arrow']} 
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  >
+                    <span className="material-symbols-outlined">chevron_right</span>
+                  </button>
                 </div>
-                <button className={styles['pagination-arrow']}>
-                  <span className="material-symbols-outlined">chevron_right</span>
-                </button>
-              </div>
+              )}
             </>
           )}
         </section>

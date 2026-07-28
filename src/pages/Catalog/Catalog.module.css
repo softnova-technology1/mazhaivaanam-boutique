@@ -377,6 +377,40 @@
 .color-dot:hover {
   transform: scale(1.15);
 }
+/* Quick Navigation Links */
+.quick-links-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 24px;
+}
+
+.quick-link-item {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  background-color: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.quick-link-item:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.quick-link-icon {
+  display: none;
+}
 
 .color-dot.active-color::after {
   content: '✓';

@@ -225,11 +225,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                       <span className={styles['card-price-current']}>{formatCurrency(item.price)}</span>
                     </div>
                     
-                    <div className={styles['card-hues-strip']}>
-                      <div className={styles['hue-circle']} style={{ backgroundColor: item.color || '#6B102A' }} />
-                      <div className={styles['hue-circle']} style={{ backgroundColor: '#004D40' }} />
-                      <div className={styles['hue-circle']} style={{ backgroundColor: '#C8A34D' }} />
-                    </div>
+
 
                     <button 
                       className={styles['card-bottom-cart-btn']}

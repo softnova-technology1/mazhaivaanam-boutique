@@ -193,7 +193,7 @@ function AppContent() {
       case 'terms':
         return <Terms setCurrentTab={setCurrentTab} />;
       case 'limited-offer':
-        return <LimitedOffer setCurrentTab={setCurrentTab} />;
+        return <LimitedOffer setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
       case 'new-arrivals':
         return <NewArrivals setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
       case 'best-sellers':

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './PreBooking.module.css';
-import { ShieldAlert, Award, Calendar, User, Clock, ArrowRight } from 'lucide-react';
+import { ChevronDown, ArrowRight, Grid, List } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
+import { useCart } from '../../hooks/useCart';
 
 export const PREORDER_PRODUCTS = [
   {
@@ -18,7 +19,8 @@ export const PREORDER_PRODUCTS = [
     image: "/Images/saree11.png",
     description: "Exquisite gold and silver zari Kanjeevaram, meticulously hand-woven with traditional wedding temple motifs.",
     isPreorder: true,
-    estimatedDays: 12
+    estimatedDays: 12,
+    discount: "10%"
   },
   {
     id: 'pre-2',
@@ -34,7 +36,8 @@ export const PREORDER_PRODUCTS = [
     image: "/Images/saree13.png",
     description: "Featuring complex hunting scenes woven in 24k gold zari, this Katan silk Banarasi is an imperial masterwork.",
     isPreorder: true,
-    estimatedDays: 22
+    estimatedDays: 22,
+    discount: "10%"
   },
   {
     id: 'pre-3',
@@ -50,7 +53,8 @@ export const PREORDER_PRODUCTS = [
     image: "/Images/saree14.png",
     description: "Delicate Chanderi silk with hand-woven indigo floral butis, golden borders, and tissue pallu.",
     isPreorder: true,
-    estimatedDays: 5
+    estimatedDays: 5,
+    discount: "10%"
   },
   {
     id: 'pre-4',
@@ -66,12 +70,21 @@ export const PREORDER_PRODUCTS = [
     image: "/Images/saree2.png",
     description: "Loom-woven pure organic cotton tinted with natural plant dyes, showcasing structural elegance and breathable weight.",
     isPreorder: true,
-    estimatedDays: 28
+    estimatedDays: 28,
+    discount: "10%"
   }
 ];
 
 export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
-  
+  const [selectedSort, setSelectedSort] = useState('featured');
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
+  const [isPriceOpen, setIsPriceOpen] = useState(false);
+  const [viewMode, setViewMode] = useState('grid');
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+
   const handlePreorderClick = (product) => {
     if (setSelectedProduct && setCurrentTab) {
       setSelectedProduct(product);
@@ -79,168 +92,232 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
     }
   };
 
-  const timelineSteps = [
-    {
-      days: "Days 1 - 5",
-      title: "Thread Prep & Dyeing",
-      desc: "Pure mulberry silk yarn is selected and dyed in organic herbal vats to achieve deep colors."
-    },
-    {
-      days: "Days 6 - 12",
-      title: "Loom Warp Setup",
-      desc: "The warp threads are aligned, stretched, and tensioned on the wooden throw-shuttle loom."
-    },
-    {
-      days: "Days 13 - 35",
-      title: "Meticulous Weaving",
-      desc: "Two weavers coordinate on a single loom, weaving intricate gold zari motifs row by row."
-    },
-    {
-      days: "Days 36 - 40",
-      title: "Vetting & Certification",
-      desc: "Saree undergoes Silk Mark testing, gold zari purity checks, and editorial dry-pressing."
-    },
-    {
-      days: "Days 41 - 45",
-      title: "Tailoring & Dispatched",
-      desc: "Complementary blouse is custom-stitched, and the saree is packed in climate-control boxes."
-    }
-  ];
-
   return (
-    <div className={styles.preorderPageContainer}>
+    <div className={styles['prebooking-page-container']}>
       
-      {/* 1. Hero Header */}
-      <header className={styles.heroSection}>
-        <div className={styles.heroBackgroundImage}></div>
-        <div className={styles.heroGradientOverlay}></div>
-        <div className={styles.heroContent}>
-          <span className={styles.heroTag}>EXCLUSIVE RESERVATIONS</span>
-          <h1 className={styles.heroTitle}>Reserve Your Favorite Before It Arrives</h1>
-          <p className={styles.heroSubtitle}>
-            Be the first to own our upcoming exclusive collections. Pre-book your favorite sarees in advance and ensure you never miss a limited-edition design.
-          </p>
-        </div>
-      </header>
+      {/* Breadcrumb Section */}
+      <div className={styles['breadcrumb-container']}>
+        <span className={styles['breadcrumb-link']} onClick={() => setCurrentTab && setCurrentTab('home')}>Home</span>
+        <span className={styles['breadcrumb-separator']}>&gt;</span>
+        <span className={styles['breadcrumb-current']}>Pre Booking Collections</span>
+      </div>
 
-      {/* 2. Disclaimer Bar */}
-      <section className={styles.disclaimerSection}>
-        <div className={`container ${styles.disclaimerContainer}`}>
-          <div className={styles.disclaimerCard}>
-            <ShieldAlert size={24} className={styles.disclaimerIcon} />
-            <div className={styles.disclaimerText}>
-              <h4>Atelier Disclaimer &amp; Timeline</h4>
-              <p>
-                Every pre-booked saree is custom-woven on demand. 
-                Please note that weaving, quality vetting, and custom tailoring require <strong>30 to 45 days</strong> before dispatch. 
-                Order now to secure this exclusive design at a special pre-book discount. Payment is processed in full.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Pre-Order Saree Grid */}
-      <section className={`container ${styles.gridSection}`}>
-        <div className={styles.sectionHeader}>
-          <h3>Active Looms in Production</h3>
-          <p>Choose an ensemble currently in the weaving phase to customize and reserve.</p>
-        </div>
-
-        <div className={styles.preorderGrid}>
-          {PREORDER_PRODUCTS.map((product) => (
-            <div key={product.id} className={styles.preorderCard}>
-              {/* Image Frame */}
-              <div 
-                className={styles.imageFrame}
-                onClick={() => handlePreorderClick(product)}
+      <main className={styles['main-layout']}>
+        {/* Left Sidebar */}
+        <aside className={styles['filters-sidebar']}>
+          <div className={styles['sticky-sidebar-content']}>
+            <h2 className={styles['sidebar-title']}>Filters</h2>
+            
+            <div className={styles['filter-widget']}>
+              <div role="button" 
+                className={styles['widget-header-btn']} 
+                onClick={() => setIsAvailabilityOpen(!isAvailabilityOpen)}
               >
-                <img src={product.image} alt={product.name} />
-                <span className={styles.progressBadge}>{product.progress}% WOVEN</span>
+                <span>Availability</span>
+                <ChevronDown size={14} className={`${styles['chevron-icon']} ${isAvailabilityOpen ? styles['open'] : ''}`} />
               </div>
-
-              {/* Card Details */}
-              <div className={styles.cardDetails}>
-                <div className={styles.titleRow}>
-                  <h4 onClick={() => handlePreorderClick(product)}>{product.name}</h4>
-                  <span className={styles.fabricLabel}>{product.fabric}</span>
+              {isAvailabilityOpen && (
+                <div className={styles['widget-content']}>
+                  <label className={styles['checkbox-label']}>
+                    <input type="checkbox" /> In Stock
+                  </label>
+                  <label className={styles['checkbox-label']}>
+                    <input type="checkbox" /> Out of Stock
+                  </label>
                 </div>
-                
-                <p className={styles.descriptionText}>{product.description}</p>
+              )}
+            </div>
 
-                {/* Progress Bar */}
-                <div className={styles.progressBarWrapper}>
-                  <div className={styles.progressBarLabel}>
-                    <span>Loom Progress</span>
-                    <span>{product.progress}%</span>
-                  </div>
-                  <div className={styles.progressBarBg}>
-                    <div 
-                      className={styles.progressBarFill} 
-                      style={{ width: `${product.progress}%` }}
-                    ></div>
-                  </div>
+            <div className={styles['filter-widget']}>
+              <div role="button" 
+                className={styles['widget-header-btn']} 
+                onClick={() => setIsPriceOpen(!isPriceOpen)}
+              >
+                <span>Price</span>
+                <ChevronDown size={14} className={`${styles['chevron-icon']} ${isPriceOpen ? styles['open'] : ''}`} />
+              </div>
+              {isPriceOpen && (
+                <div className={styles['widget-content']}>
+                  <label className={styles['checkbox-label']}>
+                    <input type="checkbox" /> Under ₹15,000
+                  </label>
+                  <label className={styles['checkbox-label']}>
+                    <input type="checkbox" /> ₹15,000 - ₹25,000
+                  </label>
+                  <label className={styles['checkbox-label']}>
+                    <input type="checkbox" /> Over ₹25,000
+                  </label>
                 </div>
+              )}
+            </div>
+          </div>
+        </aside>
 
-                {/* Specs Box */}
-                <div className={styles.specsBox}>
-                  <div className={styles.specItem}>
-                    <User size={13} />
-                    <span>{product.weaver}</span>
-                  </div>
-                  <div className={styles.specItem}>
-                    <Clock size={13} />
-                    <span>Est: {product.estimatedDays} days left</span>
-                  </div>
+        {/* Right Main Content */}
+        <section className={styles['products-panel']}>
+          {/* Header Description */}
+          <div className={styles['collection-header']}>
+            <h1 className={styles['collection-title']}>Pre Booking Collections</h1>
+            <div className={styles['collection-description']}>
+              <p><strong>Reserve Your Favourite Saree Before It's Gone!</strong></p>
+              <p>Our exclusive handloom sarees are crafted in limited quantities. Pre-book now to secure your preferred design before it sells out.</p>
+              <p>✨ <strong>Exclusive Collection</strong> – Handpicked premium sarees woven with timeless elegance and traditional craftsmanship.</p>
+              <p>🛍️ <strong>Priority Reservation</strong> – Confirm your booking today and we'll reserve your selected saree exclusively for you.</p>
+              <p>🚚 <strong>Delivery Timeline</strong> – Your saree will be carefully prepared and delivered within 35–40 days.</p>
+              <p>💝 <strong>Flexible Booking</strong> – Need to make a change? You can modify or exchange your booking before dispatch. (Refunds are not available.)</p>
+              <p>🌸 <strong>Own a Piece of Heritage</strong> – Experience authentic craftsmanship with every weave, designed to make every occasion memorable.</p>
+            </div>
+          </div>
+
+          {/* Toolbar */}
+          <div className={styles['toolbar']}>
+            <div className={styles['toolbar-left']}>
+              <span>Showing 1 - {PREORDER_PRODUCTS.length} of {PREORDER_PRODUCTS.length} products</span>
+            </div>
+            <div className={styles['toolbar-right']}>
+              <div className={styles['sort-dropdown']}>
+                <span className={styles['sort-label']}>Sort by:</span>
+                <div role="button" 
+                  className={styles['sort-btn']}
+                  onClick={() => setIsSortOpen(!isSortOpen)}
+                >
+                  Featured <ChevronDown size={14} />
                 </div>
-
-                {/* Price and CTA */}
-                <div className={styles.priceCtaRow}>
-                  <div className={styles.priceColumn}>
-                    <span className={styles.fullPriceLabel}>Retail: {formatCurrency(product.oldPrice)}</span>
-                    <span className={styles.depositLabel}>Pay Total: <strong>{formatCurrency(product.price)}</strong></span>
+                {isSortOpen && (
+                  <div className={styles['sort-menu']}>
+                    <div role="button">Featured</div>
+                    <div role="button">Price: Low to High</div>
+                    <div role="button">Price: High to Low</div>
                   </div>
-                  <button 
-                    className={styles.prebookBtn}
-                    onClick={() => handlePreorderClick(product)}
-                  >
-                    PRE-BOOK NOW
-                  </button>
+                )}
+              </div>
+              <div className={styles['view-toggles']}>
+                <span className={styles['sort-label']}>View</span>
+                <div 
+                  role="button" 
+                  className={`${styles['view-icon-btn']} ${viewMode === 'grid' ? styles['active-view'] : ''}`}
+                  onClick={() => setViewMode('grid')}
+                >
+                  <Grid size={16} />
+                </div>
+                <div 
+                  role="button" 
+                  className={`${styles['view-icon-btn']} ${viewMode === 'list' ? styles['active-view'] : ''}`}
+                  onClick={() => setViewMode('list')}
+                >
+                  <List size={16} />
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 4. Unique Section: The Loom Journey */}
-      <section className={styles.timelineSection}>
-        <div className="container">
-          <div className={styles.sectionHeaderCentered}>
-            <span className={styles.timelineTag}>THE CRAFT SCHEDULE</span>
-            <h3>The Weaving Journey: 45 Days of Art</h3>
-            <div className={styles.divider} />
-            <p>Trace the meticulous, day-by-day journey of your saree as it moves from organic fiber to a luxury masterpiece.</p>
           </div>
 
-          <div className={styles.timelineGrid}>
-            {timelineSteps.map((step, idx) => (
-              <div key={idx} className={styles.timelineCard}>
-                <div className={styles.stepNumBox}>
-                  <Award size={18} />
-                  <span>{step.days}</span>
+          {/* Product Grid */}
+          <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
+            {PREORDER_PRODUCTS.map((product) => (
+              <div key={product.id} className={styles['product-card']}>
+                <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
+                  <div className={styles['discount-badge']}>Save {product.discount}</div>
+                  <img src={product.image} alt={product.name} className={styles['product-image']} />
                 </div>
-                <h4>{step.title}</h4>
-                <p>{step.desc}</p>
-                {idx < timelineSteps.length - 1 && (
-                  <ArrowRight size={20} className={styles.timelineArrow} />
-                )}
+                <div className={styles['product-info']}>
+                  <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
+                    {product.name} | {product.id.toUpperCase()} | PRE BOOKING
+                  </h3>
+                  <div className={styles['product-price-row']}>
+                    <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
+                    <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                  </div>
+                  <div 
+                    role="button" 
+                    className={styles['prebook-btn']} 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(product, 1);
+                      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: 'Item added to cart' } }));
+                    }}
+                  >
+                    PRE BOOK NOW
+                  </div>
+                  <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); }}>
+                    Quick view
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
+      {/* Quick View Modal */}
+      {quickViewProduct && (
+        <div className={styles['quick-view-overlay']} onClick={() => setQuickViewProduct(null)}>
+          <div className={styles['quick-view-modal']} onClick={(e) => e.stopPropagation()}>
+            <div role="button" className={styles['close-modal-btn']} onClick={() => setQuickViewProduct(null)}>✕</div>
+            
+            <div className={styles['quick-view-content']}>
+              <div className={styles['quick-view-images']}>
+                <div className={styles['thumbnails']}>
+                  <img src={quickViewProduct.image} className={styles['thumbnail-active']} alt="thumb 1" />
+                  <img src={quickViewProduct.image} className={styles['thumbnail']} alt="thumb 2" />
+                  <img src={quickViewProduct.image} className={styles['thumbnail']} alt="thumb 3" />
+                </div>
+                <div className={styles['main-image-container']}>
+                  <img src={quickViewProduct.image} alt={quickViewProduct.name} className={styles['main-image']} />
+                </div>
+              </div>
+              
+              <div className={styles['quick-view-details']}>
+                <h2 className={styles['qv-title']}>{quickViewProduct.name} | {quickViewProduct.id.toUpperCase()} | PRE BOOKING</h2>
+                <div className={styles['qv-badge']}>Save {quickViewProduct.discount}</div>
+                
+                <div className={styles['qv-vendor']}>MAZHAI VAANAM</div>
+                
+                <div className={styles['qv-price-row']}>
+                  <span className={styles['qv-label']}>Price:</span>
+                  <span className={styles['qv-current-price']}>{formatCurrency(quickViewProduct.price)}</span>
+                  <span className={styles['qv-old-price']}>{formatCurrency(quickViewProduct.oldPrice)}</span>
+                </div>
+                
+                <div className={styles['qv-quantity-row']}>
+                  <span className={styles['qv-label']}>Quantity:</span>
+                  <div className={styles['quantity-selector']}>
+                    <div role="button" className={styles['qty-btn']} onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</div>
+                    <span>{quantity}</span>
+                    <div role="button" className={styles['qty-btn']} onClick={() => setQuantity(quantity + 1)}>+</div>
+                  </div>
+                </div>
+                
+                <div className={styles['qv-actions']}>
+                  <div 
+                    role="button"
+                    className={styles['qv-prebook-btn']}
+                    onClick={() => {
+                      addToCart(quickViewProduct, quantity);
+                      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: 'Item added to cart' } }));
+                      setQuickViewProduct(null);
+                    }}
+                  >
+                    ADD TO CART
+                  </div>
+                  <div 
+                    role="button"
+                    className={styles['qv-view-details-btn']}
+                    onClick={() => {
+                      addToCart(quickViewProduct, quantity);
+                      setQuickViewProduct(null);
+                      if (setCurrentTab) {
+                        setCurrentTab('checkout');
+                      }
+                    }}
+                  >
+                    Buy it now
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

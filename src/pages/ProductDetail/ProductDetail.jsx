@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
-import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight } from 'lucide-react';
+import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ALL_PRODUCTS } from '../Catalog/Catalog';
 import styles from './ProductDetail.module.css';
 
 export const ProductDetail = ({ product, setCurrentTab }) => {
@@ -302,15 +303,15 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                     <span style={{ color: '#C55A44', fontWeight: 'bold' }}>{formatCurrency(activeProduct.price)}</span>
                   </div>
                   <div className={styles['price-card-footer']}>
+                    <div className={styles['savings-banner']} style={{ backgroundColor: 'rgba(181, 137, 61, 0.1)' }}>
+                      <p className={styles['savings-lbl']} style={{ color: '#B5893D' }}>LOCKED DISCOUNT</p>
+                      <p className={styles['savings-pct']} style={{ color: '#B5893D' }}>DISPATCH IN 30-45 DAYS</p>
+                    </div>
                     <div className={styles['final-price-box']}>
                       <p className={styles['final-price-lbl']}>FINAL TOTAL PRICE</p>
                       <p className={styles['final-price-amt']}>
                         {formatCurrency(activeProduct.price)}
                       </p>
-                    </div>
-                    <div className={styles['savings-banner']} style={{ backgroundColor: 'rgba(181, 137, 61, 0.1)' }}>
-                      <p className={styles['savings-lbl']} style={{ color: '#B5893D' }}>LOCKED DISCOUNT</p>
-                      <p className={styles['savings-pct']} style={{ color: '#B5893D' }}>DISPATCH IN 30-45 DAYS</p>
                     </div>
                   </div>
                 </>
@@ -327,55 +328,21 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
 
                   <div className={styles['price-card-footer']}>
+                    <div className={styles['savings-banner']}>
+                      <p className={styles['savings-lbl']}>SAVINGS {formatCurrency(totalSavings)}</p>
+                      <p className={styles['savings-pct']}>{totalDiscountPct}% OFF ATELIER VALUE</p>
+                    </div>
                     <div className={styles['final-price-box']}>
                       <p className={styles['final-price-lbl']}>FINAL BESPOKE PRICE</p>
                       <p className={styles['final-price-amt']}>
                         {formatCurrency(finalPrice)}
                       </p>
                     </div>
-                    <div className={styles['savings-banner']}>
-                      <p className={styles['savings-lbl']}>SAVINGS {formatCurrency(totalSavings)}</p>
-                      <p className={styles['savings-pct']}>{totalDiscountPct}% OFF ATELIER VALUE</p>
-                    </div>
                   </div>
                 </>
               )}
             </div>
           </div>
-
-          {/* Variant Color Dots */}
-          <div className={styles['color-variant-section']}>
-            <p className={styles['section-label']}>SELECT HUE: <span className={styles['selected-hue-text']}>{activeProduct.fabric} Edition</span></p>
-            <div className={styles['hue-dots-strip']}>
-              <button
-                className={`${styles['hue-dot']} ${selectedHue === activeProduct.color ? styles['hue-active'] : ''}`}
-                style={{ backgroundColor: activeProduct.color || '#6B102A' }}
-                onClick={() => setSelectedHue(activeProduct.color)}
-              />
-              <button
-                className={`${styles['hue-dot']} ${selectedHue === '#004D40' ? styles['hue-active'] : ''}`}
-                style={{ backgroundColor: '#004D40' }}
-                onClick={() => setSelectedHue('#004D40')}
-              />
-              <button
-                className={`${styles['hue-dot']} ${selectedHue === '#1A237E' ? styles['hue-active'] : ''}`}
-                style={{ backgroundColor: '#1A237E' }}
-                onClick={() => setSelectedHue('#1A237E')}
-              />
-              <button
-                className={`${styles['hue-dot']} ${selectedHue === '#C8A34D' ? styles['hue-active'] : ''}`}
-                style={{ backgroundColor: '#C8A34D' }}
-                onClick={() => setSelectedHue('#C8A34D')}
-              />
-            </div>
-          </div>
-
-          {activeProduct.isPreorder && (
-            <div className={styles['preorder-disclaimer-banner']}>
-              <ShieldCheck size={18} style={{ color: '#B5893D' }} />
-              <span>Weaving time is 30-45 days. Custom sizing &amp; fully insured dispatch included.</span>
-            </div>
-          )}
 
           {/* Call to Actions */}
           <div className={styles['actions-wrapper']}>
@@ -399,20 +366,30 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             </button>
           </div>
 
-          {/* Specification Features Icons */}
-          <div className={styles['specs-features-grid']}>
-            <div className={styles['spec-item']}>
-              <span className="material-symbols-outlined">texture</span>
-              <p>{activeProduct.fabric}</p>
-            </div>
-            <div className={styles['spec-item']}>
-              <span className="material-symbols-outlined">precision_manufacturing</span>
-              <p>Hand-woven Loom</p>
-            </div>
-            <div className={styles['spec-item']}>
-              <span className="material-symbols-outlined">auto_awesome</span>
-              <p>Certified Gold Zari</p>
-            </div>
+          {/* Classic Detailed Description */}
+          <div className={styles['classic-description']}>
+            <p className={styles['desc-intro']}>
+              <strong>Exquisite {activeProduct.fabric || 'Pure Silk'} Saree with Contemporary Prints</strong>
+            </p>
+            <p>
+              Elevate your ethnic wardrobe with the timeless elegance of <strong>{activeProduct.fabric || 'Pure Silk'}</strong>. Known for its rich texture and natural sheen, this collection combines heritage with modern artistic prints to create a look that is both grounded and sophisticated.
+            </p>
+            <p>
+              Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic handloom. Finished with a refined <strong>Zari border</strong>, these sarees are designed for the woman who appreciates understated luxury.
+            </p>
+            
+            <p className={styles['highlights-title']}><strong>Product Highlights:</strong></p>
+            <ul className={styles['highlights-list']}>
+              <li><strong>Fabric:</strong> 100% {activeProduct.fabric || 'Pure Silk'} – breathable, lightweight, and durable.</li>
+              <li><strong>Design:</strong> {activeProduct.description || 'Featuring unique motifs ranging from classic floral vines to modern geometric patterns and abstract twig prints.'}</li>
+              <li><strong>Border:</strong> Elegant metallic Zari border that adds a touch of festive shimmer.</li>
+              <li><strong>Texture:</strong> Naturally rich, uneven silk texture that lends an organic, high-end feel.</li>
+              <li><strong>Occasion:</strong> Perfect for office wear, semi-formal gatherings, weddings, and festive celebrations.</li>
+            </ul>
+
+            <p className={styles['desc-note']}>
+              <strong>Note:</strong> Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.
+            </p>
           </div>
 
           {/* Trust Value Box */}
@@ -443,57 +420,51 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
       </div>
 
-      {/* Fabric Specs Two-Column Table */}
-      <section className={styles['fabric-specs-section']}>
-        <div className={styles['fabric-specs-table']}>
-          {/* Left: Fabric & Artistry */}
-          <div className={styles['fabric-specs-col']}>
-            <h3 className={styles['fabric-specs-col-title']}>Fabric &amp; Artistry</h3>
-            <div className={styles['fabric-specs-rows']}>
-              <div className={styles['fabric-spec-row']}>
-                <span className={styles['fabric-spec-key']}>Fabric Type</span>
-                <strong className={styles['fabric-spec-val']}>{productSpecs.fabricType}</strong>
+      {/* Related Products Section */}
+      <section className={styles['related-products-section']}>
+        <div className={styles['related-header']}>
+          <div className={styles['related-title-block']}>
+            <h2>You May Also Like</h2>
+            <p>Curated selections based on your exquisite taste</p>
+          </div>
+          <div className={styles['carousel-arrows']}>
+            <button 
+              className={styles['arrow-btn']} 
+              onClick={() => {
+                const container = document.getElementById('related-carousel');
+                if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
+              }} 
+              aria-label="Scroll left"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button 
+              className={styles['arrow-btn']} 
+              onClick={() => {
+                const container = document.getElementById('related-carousel');
+                if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
+              }} 
+              aria-label="Scroll right"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+        <div id="related-carousel" className={styles['related-grid']}>
+          {(ALL_PRODUCTS || []).filter(p => p.id !== activeProduct.id).slice(0, 12).map(prod => (
+            <div key={prod.id} className={styles['related-card']} onClick={() => window.location.href = `/product/${prod.id}`}>
+              <div className={styles['related-image-wrapper']}>
+                <img src={prod.image} alt={prod.name} />
+                {prod.tag && <span className={styles['related-tag']}>{prod.tag}</span>}
               </div>
-              <div className={styles['fabric-spec-row']}>
-                <span className={styles['fabric-spec-key']}>Weave Classification</span>
-                <strong className={styles['fabric-spec-val']}>{productSpecs.weave}</strong>
-              </div>
-              <div className={styles['fabric-spec-row']}>
-                <span className={styles['fabric-spec-key']}>Zari Quality Certification</span>
-                <strong className={styles['fabric-spec-val']}>{productSpecs.zari}</strong>
-              </div>
-              <div className={styles['fabric-spec-row']}>
-                <span className={styles['fabric-spec-key']}>Origin Region</span>
-                <strong className={styles['fabric-spec-val']}>{productSpecs.origin}</strong>
+              <div className={styles['related-info']}>
+                <h4>{prod.name}</h4>
+                <p className={styles['related-price']}>
+                  {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(prod.price)}
+                </p>
               </div>
             </div>
-          </div>
-
-          {/* Divider */}
-          <div className={styles['fabric-specs-divider']} />
-
-          {/* Right: Bespoke Dimensions */}
-          <div className={styles['fabric-specs-col']}>
-            <h3 className={styles['fabric-specs-col-title']}>Bespoke Dimensions</h3>
-            <div className={styles['fabric-specs-rows']}>
-              <div className={styles['fabric-spec-row']}>
-                <span className={styles['fabric-spec-key']}>Saree Length</span>
-                <strong className={styles['fabric-spec-val']}>5.5 Meters</strong>
-              </div>
-              <div className={styles['fabric-spec-row']}>
-                <span className={styles['fabric-spec-key']}>Blouse Piece Length</span>
-                <strong className={styles['fabric-spec-val']}>{productSpecs.blouse}</strong>
-              </div>
-              <div className={styles['fabric-spec-row']}>
-                <span className={styles['fabric-spec-key']}>Total Width Span</span>
-                <strong className={styles['fabric-spec-val']}>45 Inches</strong>
-              </div>
-              <div className={styles['fabric-spec-row']}>
-                <span className={styles['fabric-spec-key']}>Physical Weight</span>
-                <strong className={styles['fabric-spec-val']}>{productSpecs.weight}</strong>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -734,43 +705,6 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
           </div>
         </div>
       </section>
-      {/* Packaging Section */}
-      <section className={styles['packaging-section']}>
-        <div className={styles['packaging-bg-glow']} />
-        <div className={styles['packaging-content-grid']}>
-          <div className={styles['packaging-text-block']}>
-            <p className={styles['pack-sub']}>THE PRESENTATION</p>
-            <h2>The Mazhai Vaanam Gift Box</h2>
-            <p>Luxury lives in details. Every legacy saree is wrapped in acid-free tissue sheets, cushioned in a teak-finish handcrafted wooden box, and accompanied by a handwritten certificate of handloom authenticity.</p>
-
-            <div className={styles['pack-features']}>
-              <div className={styles['pack-feature-item']}>
-                <span className="material-symbols-outlined">verified_user</span>
-                <p>AUTHENTICITY CARD</p>
-              </div>
-              <div className={styles['pack-feature-item']}>
-                <span className="material-symbols-outlined">spa</span>
-                <p>SILK WRAP</p>
-              </div>
-              <div className={styles['pack-feature-item']}>
-                <span className="material-symbols-outlined">edit_note</span>
-                <p>CUSTOM LETTER</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles['packaging-image-block']}>
-            <div className={styles['pack-img-frame']}>
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-tYoJ4hwDADGeQYgv1ljAW3AbsYtjQ2GrnGeBSi6j-8eWySQJ7mzxBY4uDhYsApjfO-3TNj4krO-ijx0U-PD5Qfg1Rv79xGhZNbZwjOWH5nQVd1VMgDNE2ZRXUVt9Ly0ntDKLnz2AmWCQmWJiHlKuc1x4ND9ejjnHfxTIgwDBK538i-7j8i0qEU7tlt0DmDgmI7W2atJ4AV09GiHzsk9atJ_CZYjRdTmzGBuREJ1nOvDnmWqf4JWG"
-                alt="Luxury packaging gift box details"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-
     </div>
   );
 };

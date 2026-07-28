@@ -281,38 +281,6 @@ export const Cart = ({ setCurrentTab }) => {
                   </div>
                 ))}
               </div>
-
-              {/* Luxury Gift Packaging */}
-              <div className={styles.giftCard}>
-                <div className={styles.giftHeader}>
-                  <div className={styles.giftInfo}>
-                    <Gift className={styles.giftIcon} size={30} />
-                    <div>
-                      <h4 className={styles.giftTitle}>Luxury Gift Packaging</h4>
-                      <p className={styles.giftDescription}>Add a touch of Mazhai Vaanam heritage to your gift.</p>
-                    </div>
-                  </div>
-                  <label className={styles.toggleContainer}>
-                    <input 
-                      type="checkbox" 
-                      checked={giftPackaging}
-                      onChange={(e) => setGiftPackaging(e.target.checked)}
-                      className={styles.toggleInput}
-                    />
-                    <span className={styles.toggleSlider}></span>
-                  </label>
-                </div>
-                <div className={styles.giftOptions}>
-                  <div className={styles.giftOptionItem}>
-                    <Gift className={styles.giftOptionIcon} size={18} />
-                    <span className={styles.giftOptionText}>Complimentary Signature Box</span>
-                  </div>
-                  <div className={styles.giftOptionItem}>
-                    <FileText className={styles.giftOptionIcon} size={18} />
-                    <span className={styles.giftOptionText}>Personalized Message Card</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Right Column: Sticky Summary */}
@@ -416,57 +384,6 @@ export const Cart = ({ setCurrentTab }) => {
         )}
       </div>
 
-      {/* Recommended styling pairings ("Complete the Look") */}
-      <section className={styles.recommendationsSection}>
-        <div className={styles.sectionHeader}>
-          <div className={styles.sectionTitleBlock}>
-            <h2>Complete the Look</h2>
-            <p>Curated pairings recommended by our master stylists.</p>
-          </div>
-          <div className={styles.carouselArrows}>
-            <button className={styles.arrowBtn} onClick={() => scrollCarousel('left')} aria-label="Scroll left">
-              <ChevronLeft size={16} />
-            </button>
-            <button className={styles.arrowBtn} onClick={() => scrollCarousel('right')} aria-label="Scroll right">
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.productsCarouselWrapper} ref={carouselRef}>
-          {suggestedLookItems.map((rec) => (
-            <div key={rec.id} className={styles.recommendationCard}>
-              <div className={styles.recImageContainer}>
-                <img src={rec.image} alt={rec.name} className={styles.recImage} />
-                <div className={styles.quickAddOverlay}>
-                  <button 
-                    className={styles.quickAddBtn}
-                    onClick={() => {
-                      addToCart({
-                        id: rec.id,
-                        name: rec.name,
-                        price: rec.price,
-                        image: rec.image,
-                        category: rec.category,
-                        fabric: rec.fabric,
-                        color: rec.color,
-                        rating: 4.8
-                      }, 1);
-                      triggerToast(`"${rec.name}" added to trousseau!`);
-                    }}
-                  >
-                    Quick Add
-                  </button>
-                </div>
-              </div>
-              <div className={styles.recDetails}>
-                <h4 className={styles.recName}>{rec.name}</h4>
-                <p className={styles.recPrice}>{formatCurrency(rec.price)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </div>
   );
 };

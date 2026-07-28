@@ -74,6 +74,17 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close account dropdown when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!event.target.closest(`.${styles.accountDropdownWrapper}`)) {
+        setIsAccountOpen(false);
+      }
+    };
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
+  }, []);
+
   const popularSearches = ['Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton', 'Mul Mul Cotton'];
 
   const collectionsList = [
@@ -205,7 +216,10 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               >
                 <button 
                   className={styles.iconCircle} 
-                  onClick={() => handleTabChange(isAuthenticated ? 'my-orders' : 'login')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsAccountOpen(prev => !prev);
+                  }}
                   aria-label="Account"
                 >
                   <User size={18} strokeWidth={1.5} />

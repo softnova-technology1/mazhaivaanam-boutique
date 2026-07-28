@@ -250,6 +250,16 @@
   transform: rotate(45deg);
 }
 
+.accountDropdown::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background-color: transparent;
+}
+
 .dropdownLink {
   background: none;
   border: none;

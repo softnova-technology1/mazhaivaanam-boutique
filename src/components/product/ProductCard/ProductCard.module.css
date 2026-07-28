@@ -76,15 +76,17 @@
   position: absolute;
   bottom: 12px;
   left: 12px;
-  background: var(--primary-dark); /* Dark green */
-  color: #fff;
+  background: var(--secondary, #FFBEA2);
+  color: var(--on-secondary, #4F4E22);
+  border: none;
   padding: 6px 12px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(255, 190, 162, 0.4);
+  z-index: 5;
 }
 
 .wishlist-btn {

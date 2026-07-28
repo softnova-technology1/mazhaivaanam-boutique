@@ -569,6 +569,61 @@
   margin-bottom: 24px;
 }
 
+/* Quantity Selector */
+.quantity-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.quantity-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(79, 78, 34, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.qty-btn {
+  background: #fdfaf5;
+  border: none;
+  color: var(--primary-dark);
+  font-size: 16px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qty-btn:hover {
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+.qty-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  width: 48px;
+  text-align: center;
+  border-left: 1px solid rgba(79, 78, 34, 0.2);
+  border-right: 1px solid rgba(79, 78, 34, 0.2);
+  line-height: 36px;
+}
+
 /* Actions wrapper CTA */
 .actions-wrapper {
   display: flex;

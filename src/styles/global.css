@@ -239,42 +239,42 @@ a {
 /* Cloud Button Shape Utility */
 .btn-cloud {
   position: relative !important;
-  border-radius: 9999px !important; /* Pill shape at the bottom */
-  overflow: visible !important; /* Allow the bumps to show outside boundaries */
-  z-index: 10 !important; /* Create stacking context */
+  overflow: visible !important;
+  border-radius: 9999px !important;
+  z-index: 10 !important;
   border: none !important;
-  box-shadow: none !important;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15)) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+  filter: none !important;
 }
 
 /* Left bump of the cloud */
 .btn-cloud::before {
   content: '' !important;
   position: absolute !important;
-  top: -28px !important;
-  left: 35px !important;
-  width: 75px !important;
-  height: 75px !important;
   background-color: inherit !important;
   border-radius: 50% !important;
   z-index: -1 !important;
-  transition: all 0.3s ease !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   border: none !important;
   box-shadow: none !important;
+  width: 40% !important;
+  height: 80% !important;
+  top: -20% !important;
+  left: 15% !important;
 }
 
 /* Right bump of the cloud */
 .btn-cloud::after {
   content: '' !important;
   position: absolute !important;
-  top: -40px !important;
-  right: 40px !important;
-  width: 90px !important;
-  height: 90px !important;
   background-color: inherit !important;
   border-radius: 50% !important;
   z-index: -1 !important;
-  transition: all 0.3s ease !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   border: none !important;
   box-shadow: none !important;
+  width: 50% !important;
+  height: 90% !important;
+  top: -25% !important;
+  right: 15% !important;
 }

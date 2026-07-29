@@ -153,77 +153,233 @@
 .stats-section {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-  margin-bottom: 60px;
+  gap: 40px;
+  margin-bottom: 80px;
+  padding: 40px 0;
+  position: relative;
+  /* Soft background matching the luxury beige tone */
+  background: radial-gradient(ellipse at top, rgba(251, 247, 240, 1) 0%, rgba(251, 247, 240, 0) 100%);
+}
+
+.stats-section::before {
+  /* Continuous swooping wave connecting all cards across the section */
+  content: '';
+  position: absolute;
+  top: 90px;
+  left: 0;
+  width: 100%;
+  height: 140px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3000 200' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23cca245'%3E%3Cpath d='M 0 0 C 250 0, 250 200, 500 200 C 750 200, 750 0, 1000 0 C 1250 0, 1250 200, 1500 200 C 1750 200, 1750 0, 2000 0 C 2250 0, 2250 200, 2500 200 C 2750 200, 2750 0, 3000 0' stroke-width='1.2' opacity='0.6' /%3E%3Cpath d='M 0 30 C 250 30, 280 180, 500 200 C 720 180, 750 30, 1000 30 C 1250 30, 1280 180, 1500 200 C 1720 180, 1750 30, 2000 30 C 2250 30, 2280 180, 2500 200 C 2720 180, 2750 30, 3000 30' stroke-width='1.0' opacity='0.4' /%3E%3Cpath d='M 0 60 C 200 60, 200 200, 500 200 C 800 200, 800 60, 1000 60 C 1200 60, 1200 200, 1500 200 C 1800 200, 1800 60, 2000 60 C 2200 60, 2200 200, 2500 200 C 2800 200, 2800 60, 3000 60' stroke-width='0.8' opacity='0.3' /%3E%3C/g%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  filter: drop-shadow(0px 2px 4px rgba(212, 175, 55, 0.4)); /* Light golden shadow */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Interactive Stars */
+.sparkle-stars-layer {
+  position: absolute;
+  top: 90px;
+  left: 0;
+  width: 100%;
+  height: 140px;
+  z-index: 2; /* Above the lines, below the cards */
+  pointer-events: none; /* Let clicks pass to background if needed */
+}
+
+.interactive-star {
+  position: absolute;
+  transform: translate(-50%, -50%) scale(0.5);
+  transform-origin: center;
+  pointer-events: none; /* Removed auto because they should only appear on hover */
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  opacity: 0;
+}
+
+.interactive-star svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0px 1px 2px rgba(212, 175, 55, 0.6));
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.interactive-star.is-dot {
+  background-color: #b5893d;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(212, 175, 55, 0.6);
+  opacity: 0;
+}
+
+/* Trigger all stars to sparkle when any stats card is hovered */
+.stats-card:hover ~ .sparkle-stars-layer .interactive-star {
+  transform: translate(-50%, -50%) scale(1.3) rotate(90deg);
+  opacity: 1;
+  z-index: 10;
+}
+
+.stats-card:hover ~ .sparkle-stars-layer .interactive-star svg {
+  filter: drop-shadow(0px 0px 8px rgba(212, 175, 55, 1)) brightness(1.5);
+}
+
+.stats-card:hover ~ .sparkle-stars-layer .interactive-star.is-dot {
+  transform: translate(-50%, -50%) scale(1.5);
+  background-color: #ffe898;
+  box-shadow: 0 0 10px #ffe898, 0 0 20px rgba(212, 175, 55, 1);
+  opacity: 1;
 }
 
 @media (max-width: 900px) {
   .stats-section {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 40px;
   }
 }
 
 .stats-card {
-  background-color: transparent;
-  border: 1px solid rgba(181, 137, 61, 0.22);
-  border-radius: 4px;
-  padding: 35px 24px;
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(251, 245, 235, 0.4) 100%);
+  border: 1px solid rgba(181, 137, 61, 0.7); /* Gold border */
+  border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
-  box-shadow: none;
-  transition: all 0.3s ease;
+  margin: 0 auto;
+  box-shadow: 0 20px 40px rgba(181, 137, 61, 0.12), inset 0 0 20px rgba(255, 255, 255, 0.9);
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  backdrop-filter: blur(5px);
+  z-index: 1;
+}
+
+.stats-card::before {
+  /* Golden dot positioned on the left side to match the image */
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 30% 30%, #fceabb, #b5893d);
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(181, 137, 61, 0.4);
+  z-index: 2;
+}
+
+.stats-card::after {
+  /* Bottom glow to anchor the wave */
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140%;
+  height: 60px;
+  background: radial-gradient(ellipse at center, rgba(240, 215, 155, 0.45) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .stats-card:hover {
-  background-color: #f6f3eb; /* slight tint on hover */
-  transform: translateY(-2px);
+  transform: translateY(-5px);
+  border-color: rgba(255, 190, 162, 0.8);
+  box-shadow: 0 25px 50px rgba(255, 190, 162, 0.25), inset 0 0 25px rgba(255, 255, 255, 1);
+}
+
+/* Wavy snake liquid fill animation */
+.stats-fill-wave {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.stats-fill-wave::before {
+  content: '';
+  position: absolute;
+  top: 100%; /* Start at the bottom */
+  left: 50%; /* Start in the middle horizontally */
+  width: 0%; /* Start small */
+  height: 0%; /* Start small */
+  background: radial-gradient(circle at center, rgba(255, 190, 162, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border-radius: 40%; /* Creates the wavy snake edge */
+  transition: all 4.5s cubic-bezier(0.19, 1, 0.22, 1); /* Slower transition */
+}
+
+.stats-card:hover .stats-fill-wave::before {
+  top: -50%; /* Moves up to fill */
+  left: -50%; /* Expands left and right */
+  width: 200%; /* Expands fully */
+  height: 200%; /* Expands fully */
+  animation: snakeWave 4s linear infinite;
+}
+
+@keyframes snakeWave {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .stats-icon-badge {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid rgba(181, 137, 61, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
+  margin-bottom: 12px;
+  background: transparent;
+  border: none;
+  position: relative;
+  z-index: 1;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .stats-card:hover .stats-icon-badge {
-  background: rgba(181, 137, 61, 0.05);
-  border-color: rgba(181, 137, 61, 0.6);
+  background: rgba(100, 61, 151, 0.05);
+  height: 45px;
+  width: 45px;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .stats-icon {
-  color: var(--primary);
-  transition: color 0.3s ease;
+  color: #b5893d; /* Kept original color as requested */
+  width: 24px !important;
+  height: 24px !important;
+  stroke-width: 1.5;
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.stats-card:hover .stats-icon {
+  transform: scale(1.1);
 }
 
 .stats-lbl {
   font-family: 'Inter', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   letter-spacing: 2px;
-  color: var(--text-muted);
-  margin-bottom: 8px;
+  color: #8c734b;
+  margin-bottom: 6px;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
 }
 
 .stats-val {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 2.8rem;
-  color: var(--primary-dark);
+  font-size: 1.8rem;
+  color: #5c4d32;
   font-weight: 500;
-  line-height: 1.1;
+  line-height: 1;
   letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
 }
 
 

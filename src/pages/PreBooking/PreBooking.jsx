@@ -75,15 +75,41 @@ export const PREORDER_PRODUCTS = [
   }
 ];
 
+export const SORT_OPTIONS = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'relevance', label: 'Most relevant' },
+  { value: 'best-selling', label: 'Best selling' },
+  { value: 'alpha-asc', label: 'Alphabetically, A-Z' },
+  { value: 'alpha-desc', label: 'Alphabetically, Z-A' },
+  { value: 'price-asc', label: 'Price, low to high' },
+  { value: 'price-desc', label: 'Price, high to low' },
+  { value: 'date-asc', label: 'Date, old to new' },
+  { value: 'date-desc', label: 'Date, new to old' },
+];
+
+
 export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
   const [selectedSort, setSelectedSort] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
-  const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
+  
   const [isPriceOpen, setIsPriceOpen] = useState(false);
+  const [selectedPriceFilters, setSelectedPriceFilters] = useState([]);
+  
+  const [isTimeOpen, setIsTimeOpen] = useState(false);
+  const [selectedTimes, setSelectedTimes] = useState([]);
+
   const [viewMode, setViewMode] = useState('grid');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+
+  const handleFilterToggle = (setState, filterId) => {
+    setState(prev => 
+      prev.includes(filterId) 
+        ? prev.filter(id => id !== filterId) 
+        : [...prev, filterId]
+    );
+  };
 
   const handlePreorderClick = (product) => {
     if (setSelectedProduct && setCurrentTab) {
@@ -91,6 +117,58 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
       setCurrentTab('product-detail');
     }
   };
+
+  const sortedProducts = React.useMemo(() => {
+    let filtered = [...PREORDER_PRODUCTS];
+    
+    // Apply Price Filters
+    if (selectedPriceFilters.length > 0) {
+      filtered = filtered.filter(product => {
+        return selectedPriceFilters.some(filter => {
+          if (filter === 'under-15k') return product.price < 15000;
+          if (filter === '15k-25k') return product.price >= 15000 && product.price <= 25000;
+          if (filter === 'over-25k') return product.price > 25000;
+          return false;
+        });
+      });
+    }
+
+    // Apply Time Filters
+    if (selectedTimes.length > 0) {
+      filtered = filtered.filter(product => {
+        return selectedTimes.some(filter => {
+          if (filter === 'under-15') return product.estimatedDays < 15;
+          if (filter === '15-30') return product.estimatedDays >= 15 && product.estimatedDays <= 30;
+          if (filter === 'over-30') return product.estimatedDays > 30;
+          return false;
+        });
+      });
+    }
+
+    switch (selectedSort) {
+      case 'alpha-asc':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'alpha-desc':
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'price-asc':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'date-asc':
+      case 'date-desc':
+      case 'best-selling':
+      case 'relevance':
+      case 'featured':
+      default:
+        // Use default order for these as we don't have real data fields for them yet
+        break;
+    }
+    return filtered;
+  }, [selectedSort, selectedPriceFilters, selectedTimes]);
 
   return (
     <div className={styles['prebooking-page-container']}>
@@ -103,25 +181,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
           <div className={styles['sticky-sidebar-content']}>
             <h2 className={styles['sidebar-title']}>Filters</h2>
             
-            <div className={styles['filter-widget']}>
-              <div role="button" 
-                className={styles['widget-header-btn']} 
-                onClick={() => setIsAvailabilityOpen(!isAvailabilityOpen)}
-              >
-                <span>Availability</span>
-                <ChevronDown size={14} className={`${styles['chevron-icon']} ${isAvailabilityOpen ? styles['open'] : ''}`} />
-              </div>
-              {isAvailabilityOpen && (
-                <div className={styles['widget-content']}>
-                  <label className={styles['checkbox-label']}>
-                    <input type="checkbox" /> In Stock
-                  </label>
-                  <label className={styles['checkbox-label']}>
-                    <input type="checkbox" /> Out of Stock
-                  </label>
-                </div>
-              )}
-            </div>
 
             <div className={styles['filter-widget']}>
               <div role="button" 
@@ -134,13 +193,62 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
               {isPriceOpen && (
                 <div className={styles['widget-content']}>
                   <label className={styles['checkbox-label']}>
-                    <input type="checkbox" /> Under ₹15,000
+                    <input 
+                      type="checkbox" 
+                      checked={selectedPriceFilters.includes('under-15k')}
+                      onChange={() => handleFilterToggle(setSelectedPriceFilters, 'under-15k')}
+                    /> Under ₹15,000
                   </label>
                   <label className={styles['checkbox-label']}>
-                    <input type="checkbox" /> ₹15,000 - ₹25,000
+                    <input 
+                      type="checkbox" 
+                      checked={selectedPriceFilters.includes('15k-25k')}
+                      onChange={() => handleFilterToggle(setSelectedPriceFilters, '15k-25k')}
+                    /> ₹15,000 - ₹25,000
                   </label>
                   <label className={styles['checkbox-label']}>
-                    <input type="checkbox" /> Over ₹25,000
+                    <input 
+                      type="checkbox" 
+                      checked={selectedPriceFilters.includes('over-25k')}
+                      onChange={() => handleFilterToggle(setSelectedPriceFilters, 'over-25k')}
+                    /> Over ₹25,000
+                  </label>
+                </div>
+              )}
+            </div>
+
+
+            {/* Estimated Delivery Widget */}
+            <div className={styles['filter-widget']}>
+              <div role="button" 
+                className={styles['widget-header-btn']} 
+                onClick={() => setIsTimeOpen(!isTimeOpen)}
+              >
+                <span>Delivery Time</span>
+                <ChevronDown size={14} className={`${styles['chevron-icon']} ${isTimeOpen ? styles['open'] : ''}`} />
+              </div>
+              {isTimeOpen && (
+                <div className={styles['widget-content']}>
+                  <label className={styles['checkbox-label']}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedTimes.includes('under-15')}
+                      onChange={() => handleFilterToggle(setSelectedTimes, 'under-15')}
+                    /> Under 15 Days
+                  </label>
+                  <label className={styles['checkbox-label']}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedTimes.includes('15-30')}
+                      onChange={() => handleFilterToggle(setSelectedTimes, '15-30')}
+                    /> 15 - 30 Days
+                  </label>
+                  <label className={styles['checkbox-label']}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedTimes.includes('over-30')}
+                      onChange={() => handleFilterToggle(setSelectedTimes, 'over-30')}
+                    /> Over 30 Days
                   </label>
                 </div>
               )}
@@ -167,7 +275,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
           {/* Toolbar */}
           <div className={styles['toolbar']}>
             <div className={styles['toolbar-left']}>
-              <span>Showing 1 - {PREORDER_PRODUCTS.length} of {PREORDER_PRODUCTS.length} products</span>
+              <span>Showing 1 - {sortedProducts.length} of {sortedProducts.length} products</span>
             </div>
             <div className={styles['toolbar-right']}>
               <div className={styles['sort-dropdown']}>
@@ -176,13 +284,22 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                   className={styles['sort-btn']}
                   onClick={() => setIsSortOpen(!isSortOpen)}
                 >
-                  Featured <ChevronDown size={14} />
+                  {SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured'} <ChevronDown size={14} />
                 </div>
                 {isSortOpen && (
                   <div className={styles['sort-menu']}>
-                    <div role="button">Featured</div>
-                    <div role="button">Price: Low to High</div>
-                    <div role="button">Price: High to Low</div>
+                    {SORT_OPTIONS.map((option) => (
+                      <div 
+                        key={option.value}
+                        role="button"
+                        onClick={() => {
+                          setSelectedSort(option.value);
+                          setIsSortOpen(false);
+                        }}
+                      >
+                        {option.label}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
@@ -208,7 +325,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
 
           {/* Product Grid */}
           <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
-            {PREORDER_PRODUCTS.map((product) => (
+            {sortedProducts.map((product) => (
               <div key={product.id} className={styles['product-card']}>
                 <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
                   <div className={styles['discount-badge']}>Save {product.discount}</div>
@@ -228,7 +345,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                     onClick={(e) => {
                       e.stopPropagation();
                       addToCart(product, 1);
-                      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: 'Item added to cart' } }));
                     }}
                   >
                     PRE BOOK NOW
@@ -288,7 +404,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                     className={styles['qv-prebook-btn']}
                     onClick={() => {
                       addToCart(quickViewProduct, quantity);
-                      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: 'Item added to cart' } }));
                       setQuickViewProduct(null);
                     }}
                   >

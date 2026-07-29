@@ -184,6 +184,11 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
     }
     if (setCurrentTab) {
       setCurrentTab('catalog');
+      
+      // Wait for Catalog to render, then scroll specifically to the product grid section 
+      setTimeout(() => {
+        document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   };
 
@@ -247,14 +252,14 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
 
       {/* 3. Curation of Craft - Premium Redesign */}
       <section className="py-10 md:py-16 px-4 md:px-10 max-w-[1400px] mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 relative">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 relative gap-6 md:gap-0">
           <div className="relative pl-4 border-l-2 border-[#D4AF37]">
             <span className="font-label-caps text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase mb-3 block">Handpicked For You</span>
-            <h2 className="font-display-lg text-4xl md:text-5xl text-[#2D3326] m-0">Curation of Craft</h2>
+            <h2 className="font-display-lg text-3xl md:text-5xl text-[#2D3326] m-0">Curation of Craft</h2>
           </div>
           <span 
             onClick={() => setCurrentTab && setCurrentTab('collections')}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#D4AF37] text-[#2D3326] font-label-caps text-[10px] tracking-widest hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-colors cursor-pointer mt-6 md:mt-0"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#D4AF37] text-[#2D3326] font-label-caps text-[10px] tracking-widest hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-colors cursor-pointer"
           >
             VIEW ALL COLLECTIONS
             <span className="material-symbols-outlined text-sm">arrow_forward</span>

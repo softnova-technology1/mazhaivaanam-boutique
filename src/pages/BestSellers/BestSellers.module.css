@@ -281,7 +281,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 3/4;
-  border-radius: 160px 160px 0px 0px;
+  border-radius: 8px 8px 0px 0px;
   overflow: hidden;
   background-color: var(--bg-main, #FAF9F6);
 }
@@ -324,15 +324,17 @@
   position: absolute;
   bottom: 12px;
   left: 12px;
-  background-color: #8C9970;
-  color: #FFFFFF;
-  padding: 6px 14px;
+  background: var(--secondary, #FFBEA2);
+  color: var(--on-secondary, #4F4E22);
+  border: none;
+  padding: 6px 12px;
   font-family: 'Inter', sans-serif;
   font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  border-radius: 40px;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(255, 190, 162, 0.4);
   z-index: 5;
 }
 
@@ -438,65 +440,52 @@
   font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 700;
-  color: var(--primary-dark, #4F4E22);
-  background-color: #E2ECE9;
+  color: #FFFFFF;
+  background-color: #D34B4B;
   padding: 4px 8px;
   border-radius: 4px;
 }
 
 /* Cloud Shaped Add To Cart Button */
 .cart-btn {
-  margin-top: 10px;
-  width: fit-content;
-  padding: 12px 32px;
-  background-color: #8C9970;
+  width: 100%;
+  padding: 12px 0;
+  background-color: var(--primary);
+  color: #ffffff !important;
   border: none;
-  color: #FFFFFF !important;
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-size: 13px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 9999px !important;
+  transition: all 0.4s ease;
+  margin-top: auto;
+  border-radius: 8px !important;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   z-index: 1;
 }
 
-.cart-btn::before,
-.cart-btn::after {
+.cart-btn::before {
   content: '';
   position: absolute;
-  background-color: inherit;
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: -1;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.cart-btn::before {
-  width: 40%;
-  height: 80%;
-  top: -20%;
-  left: 15%;
-}
-
-.cart-btn::after {
-  width: 50%;
-  height: 90%;
-  top: -25%;
-  right: 15%;
+  border-radius: 0;
 }
 
 .cart-btn:hover {
-  background-color: var(--primary-dark, #4F4E22);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(79, 78, 34, 0.2);
+  background-color: var(--primary-dark);
+  transform: none;
+  box-shadow: none;
 }
 
-.cart-btn:hover::before,
-.cart-btn:hover::after {
-  background-color: var(--primary-dark, #4F4E22) !important;
+.cart-btn:hover::before {
+  transform: translateX(0);
 }
 
 /* =========================================
@@ -554,4 +543,15 @@
   .toolbar-right { width: 100%; justify-content: space-between; }
   .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .page-header h1 { font-size: 2rem; }
+  
+  /* Fix list view squishing on mobile */
+  .grid-list .product-card {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .grid-list .product-image-container {
+    flex: auto;
+    width: 100%;
+  }
 }

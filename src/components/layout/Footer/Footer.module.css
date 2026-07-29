@@ -198,3 +198,37 @@
     max-width: 100%;
   }
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    gap: 40px;
+  }
+  
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 576px) {
+  .main-footer {
+    padding: 40px 0 20px 0;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .footer-brand {
+    text-align: center;
+    margin: 0 auto;
+  }
+  
+  .social-icons {
+    justify-content: center;
+  }
+}

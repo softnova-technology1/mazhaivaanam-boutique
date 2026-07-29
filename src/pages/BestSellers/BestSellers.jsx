@@ -40,7 +40,6 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
   const handleAddToCart = (product) => {
     addToCart(product, 1);
-    window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Trousseau!` } }));
   };
 
   const SORT_OPTIONS = [
@@ -107,7 +106,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                 <div key={prod.id} className={styles['sidebar-product-card']} onClick={() => handleProductClick(prod)}>
                   <img src={prod.image} alt={prod.name} loading="lazy" />
                   <div className={styles['sidebar-product-info']}>
-                    <h5>{prod.name} | {prod.id}</h5>
+                    <h5>{prod.name}</h5>
                     <span className={styles['sidebar-price']}>Rs. {prod.price.toLocaleString('en-IN')}.00</span>
                   </div>
                 </div>

@@ -197,7 +197,7 @@
   z-index: 10;
 }
 
-.sort-menu button {
+.sort-menu [role="button"] {
   width: 100%;
   padding: 8px 16px;
   text-align: left;
@@ -206,10 +206,12 @@
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.2s ease;
 }
 
-.sort-menu button:hover {
-  background-color: var(--surface-bg);
+.sort-menu [role="button"]:hover {
+  background-color: var(--bg-surface-hover);
   color: var(--primary);
 }
 
@@ -367,12 +369,31 @@
   transition: background-color 0.3s ease;
   margin-bottom: 10px;
   margin-top: auto;
-  border-radius: 4px;
+  border-radius: 24px 0 24px 0; /* Petal Shape */
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.prebook-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .prebook-btn:hover {
   background-color: var(--primary-dark);
+  border-radius: 0 24px 0 24px;
+}
+
+.prebook-btn:hover::before {
+  transform: translateX(0);
 }
 
 .quick-view-btn {
@@ -385,12 +406,15 @@
   font-size: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 4px;
+  border-radius: 24px 0 24px 0;
   text-align: center;
 }
 
 .quick-view-btn:hover {
   border-color: var(--primary);
+  background-color: var(--primary);
+  color: #ffffff;
+  border-radius: 0 24px 0 24px;
 }
 
 @media (max-width: 992px) {
@@ -619,8 +643,22 @@
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.3s ease, background-color 0.3s ease;
-  border-radius: 4px;
+  border-radius: 24px 0 24px 0;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.qv-prebook-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .qv-prebook-btn {
@@ -629,17 +667,24 @@
 }
 
 .qv-view-details-btn {
-  background-color: #ffffff;
+  background-color: transparent;
   color: var(--primary);
   border: 1px solid var(--primary);
 }
 
 .qv-prebook-btn:hover {
   background-color: var(--primary-dark);
+  border-radius: 0 24px 0 24px;
+}
+
+.qv-prebook-btn:hover::before {
+  transform: translateX(0);
 }
 
 .qv-view-details-btn:hover {
-  background-color: var(--surface-bg);
+  background-color: var(--primary);
+  color: #ffffff;
+  border-radius: 0 24px 0 24px;
 }
 
 @media (max-width: 768px) {
@@ -655,5 +700,20 @@
   }
   .qv-actions {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+  .prebook-grid {
+    grid-template-columns: 1fr;
+  }
+  .qv-details h3 {
+    font-size: 1.5rem;
+  }
+  .qv-actions button {
+    width: 100%;
   }
 }

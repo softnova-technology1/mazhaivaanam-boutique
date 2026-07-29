@@ -85,16 +85,13 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     return () => window.removeEventListener('click', handleOutsideClick);
   }, []);
 
-  const popularSearches = ['Handloom Sarees', 'Linen Cotton', 'Chanderi Cotton', 'Kalyani Cotton', 'Mul Mul Cotton'];
+  const popularSearches = ['Pure Silk Sarees', 'Bridal Kanjeevaram', 'Organza Silk', 'Banarasi Brocade', 'Black Magic'];
 
   const collectionsList = [
-    { label: 'Blended South Cotton', link: 'blended-south-cotton' },
-    { label: 'Handloom Sarees', link: 'handloom-sarees' },
-    { label: 'Linen Cotton', link: 'linen-cotton' },
-    { label: 'Chanderi Cotton', link: 'chanderi-cotton' },
-    { label: 'Kalyani Cotton Sarees', link: 'kalyani-cotton-sarees' },
-    { label: 'Khadi Cotton Saree', link: 'khadi-cotton-saree' },
-    { label: 'Mul Mul Cotton', link: 'mul-mul-cotton' }
+    { label: 'Everyday Elegance', link: 'everyday-elegance' },
+    { label: 'Festive Glow', link: 'festive-glow' },
+    { label: 'Style Studio', link: 'style-studio' },
+    { label: 'Black Magic', link: 'black-magic' }
   ];
 
 
@@ -128,6 +125,16 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
       setCatalogFilter({ category, occasion, label: category || occasion || 'All Collections' });
     }
     handleTabChange('catalog');
+    
+    if (category || occasion) {
+      setTimeout(() => {
+        document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    }
   };
 
   const handleSearchSubmit = (query) => {
@@ -242,9 +249,6 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                         </button>
                         <button onClick={() => { handleTabChange('saved-address'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
                           <MapPin size={14} className={styles.dropdownIcon} /> Saved Address
-                        </button>
-                        <button onClick={() => { handleTabChange('gift-cards'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
-                          <Gift size={14} className={styles.dropdownIcon} /> Gift Cards
                         </button>
                         <div className={styles.dropdownDivider}></div>
                         <button onClick={() => { logout(); handleTabChange('shop'); setIsAccountOpen(false); }} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>

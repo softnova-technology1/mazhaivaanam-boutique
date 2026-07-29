@@ -18,13 +18,16 @@ export const CartProvider = ({ children }) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
+        window.dispatchEvent(new CustomEvent('show-cart-toast', { detail: { product, quantity } }));
         return prevCart.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prevCart, { ...product, quantity }];
+      const updatedCart = [...prevCart, { ...product, quantity }];
+      window.dispatchEvent(new CustomEvent('show-cart-toast', { detail: { product, quantity } }));
+      return updatedCart;
     });
   };
 

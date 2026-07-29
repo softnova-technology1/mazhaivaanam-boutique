@@ -866,7 +866,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                               handleProductClick(product);
                             } else {
                               addToCart(product, 1);
-                              window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Cart!` } }));
                             }
                           }}
                         >

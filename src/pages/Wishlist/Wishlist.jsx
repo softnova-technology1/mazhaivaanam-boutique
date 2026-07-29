@@ -65,6 +65,17 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
   const wishlistValue = wishlistItems.reduce((sum, item) => sum + item.price, 0);
   const priceDropsCount = wishlistItems.filter(item => item.oldPrice && item.oldPrice > item.price).length;
 
+  // Star positions for background decoration
+  const starPositions = [
+    { left: '11.66%', top: '89.5%', size: 16 }, { left: '41.66%', top: '44.5%', size: 16 },
+    { left: '75.0%', top: '54.5%', size: 16 }, { left: '21.66%', top: '86%', size: 12 },
+    { left: '53.33%', top: '91%', size: 12 }, { left: '86.66%', top: '81%', size: 12 },
+    { left: '15.0%', top: '66%', size: 12 }, { left: '61.66%', top: '66%', size: 12 },
+    { left: '30.0%', top: '7.5%', size: 8 }, { left: '80.0%', top: '92.5%', size: 8 },
+    { left: '5.0%', top: '40%', size: 3, isDot: true }, { left: '31.66%', top: '30%', size: 3, isDot: true },
+    { left: '55.0%', top: '90%', size: 3, isDot: true }, { left: '88.33%', top: '90%', size: 3, isDot: true }
+  ];
+
   // Recommended Products Data (from mockup)
   const recommendedProducts = [
     {
@@ -128,7 +139,9 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
 
       {/* Statistics section */}
       <section className={styles['stats-section']}>
+
         <div className={styles['stats-card']}>
+          <div className={styles['stats-fill-wave']}></div>
           <div className={styles['stats-icon-badge']}>
             <Heart size={18} className={styles['stats-icon']} />
           </div>
@@ -136,6 +149,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
           <span className={styles['stats-val']}>{totalItems.toString().padStart(2, '0')}</span>
         </div>
         <div className={styles['stats-card']}>
+          <div className={styles['stats-fill-wave']}></div>
           <div className={styles['stats-icon-badge']}>
             <Sparkles size={18} className={styles['stats-icon']} />
           </div>
@@ -143,11 +157,29 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
           <span className={styles['stats-val']}>{formatCurrency(wishlistValue)}</span>
         </div>
         <div className={styles['stats-card']}>
+          <div className={styles['stats-fill-wave']}></div>
           <div className={styles['stats-icon-badge']}>
             <TrendingDown size={18} className={styles['stats-icon']} />
           </div>
           <span className={styles['stats-lbl']}>PRICE DROPS</span>
           <span className={styles['stats-val']}>{priceDropsCount.toString().padStart(2, '0')}</span>
+        </div>
+
+        {/* Interactive Stars Layer */}
+        <div className={styles['sparkle-stars-layer']}>
+          {starPositions.map((pos, i) => (
+            <div 
+              key={i} 
+              className={`${styles['interactive-star']} ${pos.isDot ? styles['is-dot'] : ''}`}
+              style={{ left: pos.left, top: pos.top, width: pos.size, height: pos.size }}
+            >
+              {!pos.isDot && (
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 0L13.5 8.5L22 10L13.5 11.5L12 20L10.5 11.5L2 10L10.5 8.5L12 0Z" fill="#b5893d"/>
+                </svg>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 

@@ -14,6 +14,11 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
       setCatalogFilter({ category: label, occasion: '', label: label });
     }
     setCurrentTab('catalog');
+    
+    // Wait for Catalog to render, then scroll specifically to the product grid section
+    setTimeout(() => {
+      document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   return (
@@ -96,7 +101,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
             <div className={`${styles['guide-row']} ${styles['row-reverse']}`}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/silk1.png" 
+                  src="/Images/festival1.png" 
                   alt="Festive Glow" 
                 />
               </div>
@@ -124,7 +129,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
             <div className={styles['guide-row']}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/fancy1.png" 
+                  src="/Images/style1.png" 
                   alt="Style Studio" 
                 />
               </div>

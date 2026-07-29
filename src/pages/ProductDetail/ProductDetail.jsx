@@ -10,6 +10,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   const [selectedHue, setSelectedHue] = useState('');
   const [wishlistMessage, setWishlistMessage] = useState('');
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   // Review form state
   const [reviewForm, setReviewForm] = useState({ name: '', location: '', text: '', rating: 5 });
@@ -146,9 +147,9 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
         price: activeProduct.price,
         isPreorder: true
       };
-      addToCart(preorderItem, 1);
+      addToCart(preorderItem, quantity);
     } else {
-      addToCart(activeProduct, 1);
+      addToCart(activeProduct, quantity);
     }
     setIsAddedToCart(true);
     setTimeout(() => setIsAddedToCart(false), 3000);
@@ -162,9 +163,9 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
         price: activeProduct.price,
         isPreorder: true
       };
-      addToCart(preorderItem, 1);
+      addToCart(preorderItem, quantity);
     } else {
-      addToCart(activeProduct, 1);
+      addToCart(activeProduct, quantity);
     }
     setCurrentTab('checkout');
   };
@@ -344,8 +345,26 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             </div>
           </div>
 
-          {/* Call to Actions */}
+          {/* Call to Actions with Quantity */}
           <div className={styles['actions-wrapper']}>
+            <div className={styles['quantity-wrapper']}>
+              <span className={styles['quantity-label']}>Qty</span>
+              <div className={styles['quantity-controls']}>
+                <button 
+                  className={styles['qty-btn']} 
+                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                >
+                  -
+                </button>
+                <span className={styles['qty-value']}>{quantity}</span>
+                <button 
+                  className={styles['qty-btn']} 
+                  onClick={() => setQuantity(q => q + 1)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
             <button
               className={styles['add-trousseau-btn']}
               onClick={handleAddToCartClick}

@@ -7,6 +7,7 @@ import { Navbar } from './components/layout/Navbar/Navbar';
 import { WhatsAppButton } from './components/common/WhatsAppButton/WhatsAppButton';
 import { ScrollToTopButton } from './components/common/ScrollToTopButton/ScrollToTopButton';
 import { Breadcrumbs } from './components/common/Breadcrumbs/Breadcrumbs';
+import { CartToast } from './components/common/CartToast/CartToast';
 import { Home } from './pages/Home/Home';
 import { Cart } from './pages/Cart/Cart';
 import { Login } from './pages/Login/Login';
@@ -30,7 +31,6 @@ import { Collections } from './pages/Collections/Collections';
 import { ShippingPolicy } from './pages/ShippingPolicy/ShippingPolicy';
 import { MyProfile } from './pages/MyProfile/MyProfile';
 import { SavedAddress } from './pages/SavedAddress/SavedAddress';
-import { GiftCards } from './pages/GiftCards/GiftCards';
 
 import { PreBooking, PREORDER_PRODUCTS } from './pages/PreBooking/PreBooking';
 import './App.css';
@@ -57,7 +57,7 @@ function getInitialState() {
       'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
       'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
       'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
-      'pre-booking', 'shipping-policy', 'my-profile', 'saved-address', 'gift-cards'
+      'pre-booking', 'shipping-policy', 'my-profile', 'saved-address'
     ];
     if (validTabs.includes(tabName)) {
       tab = tabName;
@@ -113,7 +113,7 @@ function AppContent() {
         'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
         'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
         'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
-        'pre-booking', 'shipping-policy', 'my-profile', 'saved-address', 'gift-cards'
+        'pre-booking', 'shipping-policy', 'my-profile', 'saved-address'
       ].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
@@ -182,8 +182,6 @@ function AppContent() {
         return <MyProfile setCurrentTab={setCurrentTab} />;
       case 'saved-address':
         return <SavedAddress setCurrentTab={setCurrentTab} />;
-      case 'gift-cards':
-        return <GiftCards setCurrentTab={setCurrentTab} />;
       case 'login':
         return <Login setCurrentTab={setCurrentTab} />;
       case 'support':
@@ -263,6 +261,9 @@ function AppContent() {
           <span>{toastMessage}</span>
         </div>
       )}
+
+      {/* Cart Popup Notification */}
+      <CartToast />
     </div>
   );
 }

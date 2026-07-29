@@ -211,7 +211,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
               <div className={styles['hero-actions']}>
                 <button 
                   onClick={() => setCurrentTab && setCurrentTab('catalog')} 
-                  className={styles['btn-explore']}
+                  className={`${styles['btn-explore']} btn-cloud`}
                 >
                   EXPLORE COLLECTION
                 </button>

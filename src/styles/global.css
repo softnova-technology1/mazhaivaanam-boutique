@@ -235,3 +235,41 @@ a {
   min-height: 100vh;
   width: 100%;
 }
+
+/* Cloud Button Shape Utility */
+.btn-cloud {
+  position: relative !important;
+  border-radius: 9999px !important; /* Pill shape at the bottom */
+  overflow: visible !important; /* Allow the bumps to show outside boundaries */
+  z-index: 10 !important; /* Create stacking context */
+}
+
+/* Left bump of the cloud */
+.btn-cloud::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -14px !important;
+  left: 20px !important;
+  width: 44px !important;
+  height: 44px !important;
+  background-color: inherit !important;
+  border-radius: 50% !important;
+  z-index: -1 !important;
+  transition: all 0.3s ease !important;
+  border: inherit !important; /* Inherit border color / style if any */
+}
+
+/* Right bump of the cloud */
+.btn-cloud::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -22px !important;
+  right: 28px !important;
+  width: 56px !important;
+  height: 56px !important;
+  background-color: inherit !important;
+  border-radius: 50% !important;
+  z-index: -1 !important;
+  transition: all 0.3s ease !important;
+  border: inherit !important; /* Inherit border color / style if any */
+}

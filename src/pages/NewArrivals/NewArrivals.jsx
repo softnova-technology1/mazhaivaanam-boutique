@@ -98,7 +98,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
           <p>Explore our latest arrivals featuring contemporary designs blended with traditional craftsmanship. Stay ahead with fresh collections that celebrate beauty, comfort, and elegance.</p>
           <div className={styles['hero-actions']}>
             <button 
-              className={styles['btn-explore']}
+              className={`${styles['btn-explore']} btn-cloud`}
               onClick={() => {
                 const element = document.getElementById('new-arrivals-explore');
                 if (element) element.scrollIntoView({ behavior: 'smooth' });

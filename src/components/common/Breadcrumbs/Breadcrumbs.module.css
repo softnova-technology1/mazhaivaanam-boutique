@@ -59,7 +59,7 @@
 }
 
 .breadcrumb-outer.overlay .breadcrumb-link {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color:white !important;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -68,12 +68,12 @@
 }
 
 .breadcrumb-outer.overlay .breadcrumb-separator {
-  color: rgba(255, 255, 255, 0.55) !important;
+  color:white !important;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .breadcrumb-outer.overlay .breadcrumb-current {
-  color: var(--accent) !important; /* Gold / Blush Peach */
+  color:white !important; 
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -97,4 +97,25 @@
   .breadcrumb-outer.overlay .breadcrumb-container {
     padding: 16px 20px 0;
   }
+}
+
+/* Shop Page Specific Breadcrumbs (Green Theme) */
+.breadcrumb-outer.shop-breadcrumb .breadcrumb-link {
+  color: var(--primary-dark) !important; /* Deep Olive Green */
+  text-shadow: none !important;
+}
+
+.breadcrumb-outer.shop-breadcrumb .breadcrumb-link:hover {
+  color: var(--primary) !important; /* Sage Green */
+}
+
+.breadcrumb-outer.shop-breadcrumb .breadcrumb-separator {
+  color: var(--primary) !important; /* Sage Green */
+  text-shadow: none !important;
+  opacity: 0.8;
+}
+
+.breadcrumb-outer.shop-breadcrumb .breadcrumb-current {
+  color: var(--primary-dark) !important; /* Deep Olive Green */
+  text-shadow: none !important;
 }

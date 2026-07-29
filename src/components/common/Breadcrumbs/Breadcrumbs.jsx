@@ -137,9 +137,10 @@ export const Breadcrumbs = ({
   };
 
   const isOverlay = OVERLAY_TABS.includes(currentTab);
+  const isCatalog = currentTab === 'catalog';
 
   return (
-    <div className={`${styles['breadcrumb-outer']} ${isOverlay ? styles.overlay : ''}`}>
+    <div className={`${styles['breadcrumb-outer']} ${isOverlay ? styles.overlay : ''} ${isCatalog ? styles['shop-breadcrumb'] : ''}`}>
       <div className={`container ${styles['breadcrumb-container']}`}>
         {renderBreadcrumbs()}
       </div>

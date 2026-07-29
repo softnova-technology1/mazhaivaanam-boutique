@@ -1,0 +1,100 @@
+.breadcrumb-outer {
+  width: 100%;
+  background-color: var(--bg-main); /* Soft luxury cream background */
+  margin-top: 0; /* Align directly under fixed/sticky navbar wrapper (no gap) */
+  border-bottom: 1px solid rgba(136, 113, 116, 0.08); /* Very subtle divider */
+  box-sizing: border-box;
+}
+
+.breadcrumb-container {
+  padding: 16px 80px; /* Reduced vertical padding to keep it tightly aligned */
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.breadcrumb-link {
+  color: #8C7249; /* Bronze Gold from user's screenshot */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.breadcrumb-link:hover {
+  color: var(--primary-dark); /* Olive Green */
+}
+
+.breadcrumb-separator {
+  color: #C4BC9E; /* Muted sand separator color */
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.breadcrumb-current {
+  color: #638A82; /* Mineral Sage Teal from user's screenshot */
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Overlay Breadcrumbs for Hero/Image Banner Pages (Overlaying the Hero Image directly) */
+.breadcrumb-outer.overlay {
+  position: absolute;
+  top: 0; /* Aligns to top of hero wrapper (right below navbar wrapper) */
+  left: 0;
+  width: 100%;
+  background-color: transparent;
+  z-index: 10;
+  pointer-events: none;
+  border-bottom: none;
+  margin-top: 0; /* No offset margin since it overlays */
+}
+
+.breadcrumb-outer.overlay .breadcrumb-container {
+  pointer-events: auto;
+  padding: 24px 80px 0; /* Aligned nicely on top edge of hero image */
+}
+
+.breadcrumb-outer.overlay .breadcrumb-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.breadcrumb-outer.overlay .breadcrumb-link:hover {
+  color: #ffffff !important;
+}
+
+.breadcrumb-outer.overlay .breadcrumb-separator {
+  color: rgba(255, 255, 255, 0.55) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.breadcrumb-outer.overlay .breadcrumb-current {
+  color: var(--accent) !important; /* Gold / Blush Peach */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 1024px) {
+  .breadcrumb-container {
+    padding: 14px 40px;
+  }
+  
+  .breadcrumb-outer.overlay .breadcrumb-container {
+    padding: 20px 40px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .breadcrumb-container {
+    padding: 12px 20px;
+    font-size: 12px;
+    gap: 6px;
+  }
+  
+  .breadcrumb-outer.overlay .breadcrumb-container {
+    padding: 16px 20px 0;
+  }
+}

@@ -463,18 +463,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   return (
     <div className={styles['catalog-page-container']}>
       
-      {/* Breadcrumb Section */}
-      <div className={styles['breadcrumb-container']}>
-        <span className={styles['breadcrumb-link']} onClick={() => window.location.href='/'}>Home</span>
-        <span className={styles['breadcrumb-separator']}>/</span>
-        <span className={selectedCategory === 'All' ? styles['breadcrumb-current'] : styles['breadcrumb-link']} onClick={handleResetFilters}>Shop</span>
-        {selectedCategory !== 'All' && (
-          <>
-            <span className={styles['breadcrumb-separator']}>/</span>
-            <span className={styles['breadcrumb-current']}>{selectedCategory}</span>
-          </>
-        )}
-      </div>
+
 
       {/* 2. Signature Weaves Section */}
       <section className={styles['signature-weaves-section']} id="catalog-explore-anchor">

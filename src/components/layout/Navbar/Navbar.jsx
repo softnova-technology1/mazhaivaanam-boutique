@@ -120,6 +120,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
   const handleTabChange = (tabValue) => {
     setCurrentTab(tabValue);
     setIsMobileMenuOpen(false);
+    window.scrollTo(0, 0);
   };
 
   const handleCatalogClick = (category = '', occasion = '') => {
@@ -327,10 +328,10 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               </li>
 
               <li className={styles.menuItem}>
-                <button onClick={() => handleTabChange('about')} className={styles.menuLink}>About</button>
+                <button onClick={() => handleTabChange('about')} className={`${styles.menuLink} ${currentTab === 'about' ? styles.active : ''}`}>About</button>
               </li>
               <li className={styles.menuItem}>
-                <button onClick={() => handleTabChange('contact')} className={styles.menuLink}>Contact</button>
+                <button onClick={() => handleTabChange('contact')} className={`${styles.menuLink} ${currentTab === 'contact' ? styles.active : ''}`}>Contact</button>
               </li>
             </ul>
           </div>

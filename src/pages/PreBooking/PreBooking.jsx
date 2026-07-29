@@ -95,12 +95,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
   return (
     <div className={styles['prebooking-page-container']}>
       
-      {/* Breadcrumb Section */}
-      <div className={styles['breadcrumb-container']}>
-        <span className={styles['breadcrumb-link']} onClick={() => setCurrentTab && setCurrentTab('home')}>Home</span>
-        <span className={styles['breadcrumb-separator']}>&gt;</span>
-        <span className={styles['breadcrumb-current']}>Pre Booking Collections</span>
-      </div>
+
 
       <main className={styles['main-layout']}>
         {/* Left Sidebar */}

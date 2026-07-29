@@ -1,0 +1,49 @@
+.scrollToTop {
+  position: fixed;
+  bottom: 105px; /* Stacked above the WhatsApp button (bottom: 30px + height: 60px + 15px gap) */
+  right: 35px; /* Center-aligned with WhatsApp button (center at 60px from right) */
+  width: 50px;
+  height: 50px;
+  background-color: var(--primary-dark);
+  color: var(--on-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--primary-light);
+  box-shadow: 0 4px 12px rgba(79, 78, 34, 0.2);
+  cursor: pointer;
+  z-index: 10000; /* Stays above general elements */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.8);
+  transition: opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+              visibility 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+              transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              background-color 0.3s ease,
+              color 0.3s ease,
+              border-color 0.3s ease;
+}
+
+.scrollToTop:hover {
+  background-color: var(--secondary);
+  color: var(--on-secondary);
+  border-color: var(--primary-dark);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(79, 78, 34, 0.3);
+}
+
+.scrollToTop.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+@media (max-width: 768px) {
+  .scrollToTop {
+    bottom: 85px; /* Stacked above mobile WhatsApp button (bottom: 20px + height: 50px + 15px gap) */
+    right: 25px; /* Center-aligned with mobile WhatsApp button (center at 45px from right) */
+    width: 40px;
+    height: 40px;
+  }
+}

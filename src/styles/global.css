@@ -84,11 +84,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
-  overflow-x: clip;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 html {
-  overflow-x: clip;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -269,4 +271,11 @@ button:not(header[class*="navbar"] button):not(header[class*="Navbar"] button):n
 .heroSubtitle,
 .hero-content p {
   animation: globalHeroFadeIn 1s ease-out forwards !important;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
 }

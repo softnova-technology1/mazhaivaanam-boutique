@@ -1,8 +1,6 @@
-/* Wishlist Curation Stylesheet */
-
 .wishlist-page-container {
   width: 100%;
-  padding-top: 100px;
+  padding-top: 20px;
   background-color: var(--bg-main);
   font-family: 'Inter', sans-serif;
   color: var(--text-main);

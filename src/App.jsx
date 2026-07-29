@@ -5,6 +5,8 @@ import { AuthProvider } from './context/AuthContext';
 import { useCart } from './hooks/useCart';
 import { Navbar } from './components/layout/Navbar/Navbar';
 import { WhatsAppButton } from './components/common/WhatsAppButton/WhatsAppButton';
+import { ScrollToTopButton } from './components/common/ScrollToTopButton/ScrollToTopButton';
+import { Breadcrumbs } from './components/common/Breadcrumbs/Breadcrumbs';
 import { Home } from './pages/Home/Home';
 import { Cart } from './pages/Cart/Cart';
 import { Login } from './pages/Login/Login';
@@ -219,9 +221,19 @@ function AppContent() {
         cartItemCount={cartItemCount} 
       />
       <main className="main-content">
+        <Breadcrumbs 
+          currentTab={currentTab} 
+          setCurrentTab={setCurrentTab}
+          catalogFilter={catalogFilter}
+          setCatalogFilter={setCatalogFilter}
+          selectedProduct={selectedProduct}
+        />
         {renderContent()}
       </main>
-      <Footer setCurrentTab={setCurrentTab} />
+      <Footer setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />
+
+      {/* Global Scroll To Top Button */}
+      <ScrollToTopButton />
 
       {/* Global WhatsApp Button */}
       <WhatsAppButton />

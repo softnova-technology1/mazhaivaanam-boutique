@@ -112,9 +112,10 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
   };
 
   const handlePreorderClick = (product) => {
+    addToCart(product, 1);
     if (setSelectedProduct && setCurrentTab) {
       setSelectedProduct(product);
-      setCurrentTab('product-detail');
+      setCurrentTab('checkout');
     }
   };
 
@@ -345,6 +346,9 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                     onClick={(e) => {
                       e.stopPropagation();
                       addToCart(product, 1);
+                      if (setCurrentTab) {
+                        setCurrentTab('checkout');
+                      }
                     }}
                   >
                     PRE BOOK NOW

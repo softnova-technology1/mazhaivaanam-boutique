@@ -17,7 +17,7 @@
 }
 
 .breadcrumb-link {
-  color: #8C7249; /* Bronze Gold from user's screenshot */
+  color:white; /* Bronze Gold from user's screenshot */
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
@@ -35,7 +35,7 @@
 }
 
 .breadcrumb-current {
-  color: #8C7249; /* Bronze Gold */
+  color: white; /* Bronze Gold */
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -58,24 +58,15 @@
   padding: 24px 80px 0; /* Aligned nicely on top edge of hero image */
 }
 
-.breadcrumb-outer.overlay .breadcrumb-link {
-  color:white !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
+
 
 .breadcrumb-outer.overlay .breadcrumb-link:hover {
   color: #ffffff !important;
 }
 
-.breadcrumb-outer.overlay .breadcrumb-separator {
-  color:white !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
 
-.breadcrumb-outer.overlay .breadcrumb-current {
-  color:white !important; 
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
+
+
 
 @media (max-width: 1024px) {
   .breadcrumb-container {

@@ -47,7 +47,7 @@ export const Breadcrumbs = ({
   setCatalogFilter, 
   selectedProduct 
 }) => {
-  if (currentTab === 'shop') return null;
+  if (currentTab === 'shop' || currentTab === 'product-detail') return null;
 
   const handleHomeClick = () => {
     if (setCurrentTab) {
@@ -137,10 +137,23 @@ export const Breadcrumbs = ({
   };
 
   const isOverlay = OVERLAY_TABS.includes(currentTab);
-  const isCatalog = currentTab === 'catalog';
+  const isGreenTheme = [
+    'catalog', 
+    'pre-booking', 
+    'best-sellers', 
+    'collections', 
+    'product-detail',
+    'cart',
+    'wishlist',
+    'checkout',
+    'login',
+    'my-orders',
+    'my-profile',
+    'saved-address'
+  ].includes(currentTab);
 
   return (
-    <div className={`${styles['breadcrumb-outer']} ${isOverlay ? styles.overlay : ''} ${isCatalog ? styles['shop-breadcrumb'] : ''}`}>
+    <div className={`${styles['breadcrumb-outer']} ${isOverlay ? styles.overlay : ''} ${isGreenTheme ? styles['shop-breadcrumb'] : ''}`}>
       <div className={`container ${styles['breadcrumb-container']}`}>
         {renderBreadcrumbs()}
       </div>

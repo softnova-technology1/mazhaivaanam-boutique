@@ -396,7 +396,12 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
             <p className={styles['bridal-quote']}>
               "For the most sacred moments, we weave dreams into silk. Discover our exclusive bridal collection, where every thread is a testament to tradition and every weave is a blessing."
             </p>
-            <button className={styles['btn-bridal-explore']}>DISCOVER THE COLLECTION</button>
+            <button 
+              className={styles['btn-bridal-explore']}
+              onClick={() => setCurrentTab && setCurrentTab('collections')}
+            >
+              DISCOVER THE COLLECTION
+            </button>
           </div>
         </div>
       </section>

@@ -458,7 +458,7 @@
   cursor: pointer;
   transition: all 0.4s ease;
   margin-top: auto;
-  border-radius: 8px !important;
+  border-radius: 24px 0 24px 0 !important;
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -480,6 +480,7 @@
 
 .cart-btn:hover {
   background-color: var(--primary-dark);
+  border-radius: 0 24px 0 24px !important;
   transform: none;
   box-shadow: none;
 }

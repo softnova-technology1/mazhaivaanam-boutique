@@ -15,6 +15,10 @@
   margin-bottom: -1px; /* Prevents tiny render gaps */
 }
 
+.wave-about-blend {
+  background-color: #191412 !important;
+}
+
 .wave-wrapper svg {
   width: 100%;
   height: 100%;

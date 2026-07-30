@@ -1,6 +1,6 @@
 import styles from './Footer.module.css';
 
-export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
+export const Footer = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
   const handleTabChange = (tab) => {
     window.history.pushState(null, '', `/${tab}`);
     setCurrentTab(tab);
@@ -17,7 +17,7 @@ export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
   return (
     <footer className={styles['main-footer']}>
       {/* Organic Wave Divider */}
-      <div className={styles['wave-wrapper']}>
+      <div className={`${styles['wave-wrapper']} ${currentTab === 'about' ? styles['wave-about-blend'] : ''}`}>
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0,40 C300,110 600,10 900,40 C1200,70 1350,110 1440,80 L1440,120 L0,120 Z" fill="var(--text-main)" />
         </svg>

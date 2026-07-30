@@ -268,6 +268,16 @@
 .sticky-sidebar-content {
   position: sticky;
   top: 150px;
+  max-height: calc(100vh - 170px);
+  overflow-y: auto;
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  
   background-color: #ffffff;
   border: 1px solid var(--border-color);
   padding: 45px 30px 30px 30px;

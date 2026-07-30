@@ -264,6 +264,172 @@ export const ALL_PRODUCTS = [
     tag: "NEW ARRIVAL",
     image: "/Images/cotton saree/3235bee8-b44b-420a-959a-85f821aca634_1.jpg",
     description: "Premium orchid organza drape detailed with gold border lines and thread work."
+  },
+  {
+    id: 'prod-catalog-19',
+    name: "Golden Azure",
+    category: "Festive Glow",
+    fabric: "Pure Silk",
+    color: "#C8A34D",
+    occasion: "Wedding",
+    price: 34500,
+    oldPrice: 38000,
+    rating: 4.8,
+    tag: "BESTSELLER",
+    image: "/Images/silk sarees/42243c06-83ff-4105-9e2b-8326c2cb82fd_1aa.jpg",
+    description: "Exquisite blue and gold pure silk saree, perfect for grand wedding celebrations."
+  },
+  {
+    id: 'prod-catalog-20',
+    name: "Emerald Night",
+    category: "Black Magic",
+    fabric: "Tussar",
+    color: "#004D40",
+    occasion: "Reception",
+    price: 18500,
+    oldPrice: 21000,
+    rating: 4.9,
+    image: "/Images/black magic collection/dc8f7413-52de-45df-ae2b-f583cd625a37_Black.webp",
+    description: "Deep dark emerald green silk with striking silver motifs for a bold look."
+  },
+  {
+    id: 'prod-catalog-21',
+    name: "Ruby Charm",
+    category: "Everyday Elegance",
+    fabric: "Cotton",
+    color: "#6B102A",
+    occasion: "Traditional",
+    price: 5200,
+    oldPrice: 6500,
+    rating: 4.6,
+    tag: "NEW ARRIVAL",
+    image: "/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg",
+    description: "Lightweight ruby red cotton handloom saree with delicate temple borders."
+  },
+  {
+    id: 'prod-catalog-22',
+    name: "Silver Mist",
+    category: "Style Studio",
+    fabric: "Organza",
+    color: "#1A237E",
+    occasion: "Party Wear",
+    price: 11200,
+    oldPrice: 14000,
+    rating: 4.7,
+    image: "/Images/Fancy Sarees/362972a8-7932-4b84-b81a-070deec393c8_5.jpg",
+    description: "Ethereal silver and grey organza saree with minimal modern designs."
+  },
+  {
+    id: 'prod-catalog-23',
+    name: "Autumn Leaves",
+    category: "Festive Glow",
+    fabric: "Tussar",
+    color: "#C8A34D",
+    occasion: "Festival",
+    price: 13500,
+    oldPrice: 16000,
+    rating: 4.5,
+    tag: "BESTSELLER",
+    image: "/Images/silk sarees/1546f1f8-5935-4aaf-b254-aa03321c05d8_love2.jpg",
+    description: "Warm rustic orange tussar silk saree with earthy leaf motifs."
+  },
+  {
+    id: 'prod-catalog-24',
+    name: "Midnight Sparkle",
+    category: "Black Magic",
+    fabric: "Pure Silk",
+    color: "#1A237E",
+    occasion: "Party Wear",
+    price: 21500,
+    oldPrice: 24000,
+    rating: 4.9,
+    tag: "ON THE LOOM",
+    image: "/Images/black magic collection/8020f4c5-a121-45dc-b191-92d8291154e5_2.webp",
+    description: "Midnight black silk adorned with sparkling gold zari for a mesmerizing effect.",
+    isPreorder: true,
+    deposit: 5000
+  },
+  {
+    id: 'prod-catalog-25',
+    name: "Rose Blush",
+    category: "Style Studio",
+    fabric: "Organza",
+    color: "#6B102A",
+    occasion: "Reception",
+    price: 9500,
+    oldPrice: 12000,
+    rating: 4.8,
+    image: "/Images/Fancy Sarees/3a4308ae-3fba-4f36-9e14-a674ded902d0_4.jpg",
+    description: "Delicate blush pink organza saree perfect for modern celebrations."
+  },
+  {
+    id: 'prod-catalog-26',
+    name: "Ocean Breeze",
+    category: "Everyday Elegance",
+    fabric: "Cotton",
+    color: "#1A237E",
+    occasion: "Traditional",
+    price: 4800,
+    oldPrice: 5500,
+    rating: 4.6,
+    tag: "NEW ARRIVAL",
+    image: "/Images/cotton saree/27370253-a11c-48e4-a346-4490675619f9_lg1.jpg",
+    description: "Cool blue handloom cotton saree that offers comfort and style all day long."
+  },
+  {
+    id: 'prod-catalog-27',
+    name: "Royal Heritage",
+    category: "Festive Glow",
+    fabric: "Pure Silk",
+    color: "#6B102A",
+    occasion: "Wedding",
+    price: 45000,
+    oldPrice: 50000,
+    rating: 5.0,
+    tag: "BESTSELLER",
+    image: "/Images/silk sarees/843110c7-a279-42ef-aa3d-7e3d2db55af9_3.jpg",
+    description: "Heavily woven Kanchipuram silk saree with rich red and gold royal patterns."
+  },
+  {
+    id: 'prod-catalog-28',
+    name: "Mint Magic",
+    category: "Everyday Elegance",
+    fabric: "Cotton",
+    color: "#004D40",
+    occasion: "Festival",
+    price: 4200,
+    oldPrice: 5000,
+    rating: 4.5,
+    image: "/Images/cotton saree/13f0796b-f293-4f56-b952-a68ff4103e74_5aaa.jpg",
+    description: "Soothing mint green cotton drape ideal for festive daytime events."
+  },
+  {
+    id: 'prod-catalog-29',
+    name: "Obsidian Charm",
+    category: "Black Magic",
+    fabric: "Tussar",
+    color: "#1A237E",
+    occasion: "Reception",
+    price: 15600,
+    oldPrice: 18000,
+    rating: 4.8,
+    tag: "BESTSELLER",
+    image: "/Images/black magic collection/449a74ba-b1da-4dd6-8944-8c2abd5fabe0_1.webp",
+    description: "Sleek black tussar saree with subtle sheen and elegant drape."
+  },
+  {
+    id: 'prod-catalog-30',
+    name: "Pearl White",
+    category: "Style Studio",
+    fabric: "Pure Silk",
+    color: "#C8A34D",
+    occasion: "Wedding",
+    price: 25000,
+    oldPrice: 28000,
+    rating: 4.9,
+    tag: "NEW ARRIVAL",
+    image: "/Images/Fancy Sarees/17f37732-5f2a-4c83-8505-8f115aa31f16_2.jpg",
+    description: "Pristine white silk combined with subtle golden highlights for a classic finish."
   }
 ];
 
@@ -308,7 +474,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 20;
 
   useEffect(() => {
     const checkWishlist = () => {

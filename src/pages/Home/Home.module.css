@@ -292,8 +292,7 @@
 /* 2. Stats Section */
 .stats-section {
   background-color: var(--bg-main);
-  padding: 40px 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 20px 0;
 }
 
 .stats-grid {
@@ -1115,14 +1114,12 @@
 
 /* 9. Newsletter Block */
 .newsletter-section {
-  padding-bottom: 120px;
+  padding-bottom: 40px;
 }
 
 .newsletter-box {
   background-color: var(--surface-container);
   /* surface-container */
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
   padding: 80px 40px;
   text-align: center;
   border-radius: 24px;
@@ -1199,8 +1196,6 @@
 .reviews-slider-section {
   padding: 100px 0;
   background-color: var(--surface-container-low);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
 }
 
 .review-section-tag {

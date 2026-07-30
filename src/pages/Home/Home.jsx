@@ -392,7 +392,6 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           <div className={styles['bridal-text-content']}>
             <span className={styles['bridal-label']}>THE CEREMONY</span>
             <h2>The Bridal Edit</h2>
-            <div className={styles['gold-divider']}></div>
             <p className={styles['bridal-quote']}>
               "For the most sacred moments, we weave dreams into silk. Discover our exclusive bridal collection, where every thread is a testament to tradition and every weave is a blessing."
             </p>
@@ -537,7 +536,6 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
         <div className={styles['section-header-center']}>
           <span className={styles['review-section-tag']}>PATRON VOICES</span>
           <h2>Words From Our Family</h2>
-          <div className={styles['header-line']}></div>
         </div>
 
         <div className={styles['reviews-marquee-viewport']}>

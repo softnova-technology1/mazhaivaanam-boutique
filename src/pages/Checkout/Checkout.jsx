@@ -646,8 +646,8 @@ Thank you for choosing handloom heritage.
                       className={styles.hiddenRadio}
                     />
                     <div className={styles.deliveryInfo}>
-                      <span className={styles.deliveryOptionTitle}>Express Courier</span>
-                      <p className={styles.deliveryOptionSubtitle}>Delivery by Thursday, Oct 24</p>
+                      <span className={styles.deliveryOptionTitle}>Self Pickup</span>
+                      <p className={styles.deliveryOptionSubtitle}>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
                     </div>
                     <span className={styles.deliveryCost}>FREE</span>
                   </label>

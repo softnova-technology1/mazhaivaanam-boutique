@@ -181,43 +181,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
         <aside className={styles['filters-sidebar']}>
           <div className={styles['sticky-sidebar-content']}>
             <h2 className={styles['sidebar-title']}>Filters</h2>
-            
-
-            <div className={styles['filter-widget']}>
-              <div role="button" 
-                className={styles['widget-header-btn']} 
-                onClick={() => setIsPriceOpen(!isPriceOpen)}
-              >
-                <span>Price</span>
-                <ChevronDown size={14} className={`${styles['chevron-icon']} ${isPriceOpen ? styles['open'] : ''}`} />
-              </div>
-              {isPriceOpen && (
-                <div className={styles['widget-content']}>
-                  <label className={styles['checkbox-label']}>
-                    <input 
-                      type="checkbox" 
-                      checked={selectedPriceFilters.includes('under-15k')}
-                      onChange={() => handleFilterToggle(setSelectedPriceFilters, 'under-15k')}
-                    /> Under ₹15,000
-                  </label>
-                  <label className={styles['checkbox-label']}>
-                    <input 
-                      type="checkbox" 
-                      checked={selectedPriceFilters.includes('15k-25k')}
-                      onChange={() => handleFilterToggle(setSelectedPriceFilters, '15k-25k')}
-                    /> ₹15,000 - ₹25,000
-                  </label>
-                  <label className={styles['checkbox-label']}>
-                    <input 
-                      type="checkbox" 
-                      checked={selectedPriceFilters.includes('over-25k')}
-                      onChange={() => handleFilterToggle(setSelectedPriceFilters, 'over-25k')}
-                    /> Over ₹25,000
-                  </label>
-                </div>
-              )}
-            </div>
-
 
             {/* Estimated Delivery Widget */}
             <div className={styles['filter-widget']}>
@@ -235,22 +198,16 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                       type="checkbox" 
                       checked={selectedTimes.includes('under-15')}
                       onChange={() => handleFilterToggle(setSelectedTimes, 'under-15')}
-                    /> Under 15 Days
+                    /> Under 20 Days
                   </label>
                   <label className={styles['checkbox-label']}>
                     <input 
                       type="checkbox" 
-                      checked={selectedTimes.includes('15-30')}
-                      onChange={() => handleFilterToggle(setSelectedTimes, '15-30')}
-                    /> 15 - 30 Days
+                      checked={selectedTimes.includes('25-30')}
+                      onChange={() => handleFilterToggle(setSelectedTimes, '25-30')}
+                    /> 25 - 30 Days
                   </label>
-                  <label className={styles['checkbox-label']}>
-                    <input 
-                      type="checkbox" 
-                      checked={selectedTimes.includes('over-30')}
-                      onChange={() => handleFilterToggle(setSelectedTimes, 'over-30')}
-                    /> Over 30 Days
-                  </label>
+                  
                 </div>
               )}
             </div>

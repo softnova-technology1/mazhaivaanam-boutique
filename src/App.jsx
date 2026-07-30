@@ -73,6 +73,26 @@ function AppContent() {
   const [selectedProduct, setSelectedProduct] = useState(initialState.prod);
   const { cartItemCount } = useCart();
   const [toastMessage, setToastMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Initial loading effect
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Handler for navbar navigation to trigger loader
+  const handleNavbarNavigation = (tab) => {
+    if (tab === currentTab) return;
+    setIsLoading(true);
+    setCurrentTab(tab);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  };
 
   // Listen for global toast alerts
   useEffect(() => {
@@ -212,9 +232,23 @@ function AppContent() {
 
   return (
     <div className="app-container">
+      {isLoading && (
+        <div className="global-loader">
+          <div className="rain-container">
+            {Array.from({ length: 150 }).map((_, i) => (
+              <i key={i} className="drop" style={{ 
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${1.5 + Math.random() * 3}s`
+              }}></i>
+            ))}
+          </div>
+          <img src="/logo.png" alt="Loading..." className="loader-logo" />
+        </div>
+      )}
       <Navbar 
         currentTab={currentTab} 
-        setCurrentTab={setCurrentTab} 
+        setCurrentTab={handleNavbarNavigation} 
         setCatalogFilter={setCatalogFilter}
         cartItemCount={cartItemCount} 
       />

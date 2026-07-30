@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Heart, Star } from 'lucide-react';
+import { Heart, Star, Share2 } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
 import { formatCurrency } from '../../../utils/formatters';
 import styles from './ProductCard.module.css';
@@ -52,6 +52,30 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
     }
   };
 
+  const handleShareClick = (e) => {
+    e.stopPropagation();
+    const productUrl = `${window.location.origin}/product/${product.id}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: product.description || `Check out ${product.name} at Mazhai Vaanam!`,
+        url: productUrl,
+      })
+      .catch((error) => console.log('Error sharing:', error));
+    } else {
+      navigator.clipboard.writeText(productUrl)
+        .then(() => {
+          window.dispatchEvent(new CustomEvent('show-toast', { 
+            detail: { message: `Link to "${product.name}" copied to clipboard!` } 
+          }));
+        })
+        .catch((err) => {
+          console.error('Could not copy text: ', err);
+        });
+    }
+  };
+
   const handleCardClick = () => {
     if (onClick) {
       onClick();
@@ -71,6 +95,19 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
         {isNew && <span className={styles['badge-tag']}>NEW ARRIVAL</span>}
         {isLimited && <span className={styles['badge-tag']}>LIMITED EDITION</span>}
         {tag && <span className={styles['badge-tag']}>{tag}</span>}
+
+        {/* Share Button */}
+        <div 
+          className={styles['share-btn']} 
+          onClick={handleShareClick}
+          role="button"
+          title="Share Product"
+        >
+          <Share2 
+            size={16} 
+            stroke="var(--primary-dark)" 
+          />
+        </div>
 
         {/* Top-right/Bottom-right Wishlist Button */}
         <div 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
-import { Heart, Star, ChevronDown, Search, ArrowRight } from 'lucide-react';
+import { Heart, Star, ChevronDown, Search, ArrowRight, Share2 } from 'lucide-react';
 import styles from './Catalog.module.css';
 
 // Premium Master Saree Collection (as defined in user's design)
@@ -577,6 +577,30 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const currentProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
+  const handleShareClick = (e, product) => {
+    e.stopPropagation();
+    const productUrl = `${window.location.origin}/product/${product.id}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: product.description || `Check out ${product.name} at Mazhai Vaanam!`,
+        url: productUrl,
+      })
+      .catch((error) => console.log('Error sharing:', error));
+    } else {
+      navigator.clipboard.writeText(productUrl)
+        .then(() => {
+          window.dispatchEvent(new CustomEvent('show-toast', { 
+            detail: { message: `Link to "${product.name}" copied to clipboard!` } 
+          }));
+        })
+        .catch((err) => {
+          console.error('Could not copy text: ', err);
+        });
+    }
+  };
+
   const handleAddToWishlist = (product) => {
     const saved = localStorage.getItem('boutique_wishlist');
     let wishlistItems = saved ? JSON.parse(saved) : [];
@@ -970,6 +994,18 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         {product.tag && (
                           <span className={styles['badge-tag']}>{product.tag}</span>
                         )}
+                        <div 
+                          className={styles['share-btn']}
+                          onClick={(e) => handleShareClick(e, product)}
+                          role="button"
+                          title="Share Product"
+                        >
+                          <Share2 
+                            size={16} 
+                            stroke="var(--primary-dark)" 
+                          />
+                        </div>
+
                         <div 
                           className={styles['wishlist-btn']} 
                           onClick={(e) => {

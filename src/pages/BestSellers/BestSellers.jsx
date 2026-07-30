@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { ALL_PRODUCTS } from '../Catalog/Catalog';
-import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star } from 'lucide-react';
+import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star, Share2 } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import styles from './BestSellers.module.css';
 
@@ -40,6 +40,30 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
   const handleAddToCart = (product) => {
     addToCart(product, 1);
+  };
+
+  const handleShareClick = (e, product) => {
+    e.stopPropagation();
+    const productUrl = `${window.location.origin}/product/${product.id}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: product.description || `Check out ${product.name} at Mazhai Vaanam!`,
+        url: productUrl,
+      })
+      .catch((error) => console.log('Error sharing:', error));
+    } else {
+      navigator.clipboard.writeText(productUrl)
+        .then(() => {
+          window.dispatchEvent(new CustomEvent('show-toast', { 
+            detail: { message: `Link to "${product.name}" copied to clipboard!` } 
+          }));
+        })
+        .catch((err) => {
+          console.error('Could not copy text: ', err);
+        });
+    }
   };
 
   const SORT_OPTIONS = [
@@ -187,6 +211,18 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                     
                     <span className={styles['bestseller-badge']}>BESTSELLER</span>
                     
+                    <div 
+                      className={styles['share-btn']}
+                      onClick={(e) => handleShareClick(e, product)}
+                      role="button"
+                      title="Share Product"
+                    >
+                      <Share2 
+                        size={16} 
+                        stroke="var(--primary-dark, #4F4E22)" 
+                      />
+                    </div>
+
                     <div 
                       className={styles['wishlist-btn']}
                       onClick={(e) => {

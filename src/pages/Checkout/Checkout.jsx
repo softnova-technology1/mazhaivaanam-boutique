@@ -68,8 +68,9 @@ export const Checkout = ({ setCurrentTab }) => {
   const exclusivePricingSavings = mrpTotal - subtotal;
   const festivalDiscount = Math.round(subtotal * 0.05); // 5% discount
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
+  const convenienceFee = cart.length > 0 ? 2 : 0;
   
-  const finalAmount = Math.max(0, subtotal - festivalDiscount + giftPackAddon);
+  const finalAmount = Math.max(0, subtotal - festivalDiscount + giftPackAddon + convenienceFee);
   const totalSavings = exclusivePricingSavings + festivalDiscount;
 
   const handleCompleteOrder = (e) => {
@@ -432,6 +433,10 @@ Thank you for choosing handloom heritage.
                   <div className={styles.successDiscountRow}>
                     <span>Festival Privilege Discount</span>
                     <span>-{formatCurrency(orderCache.festivalDiscount)}</span>
+                  </div>
+                  <div className={styles.successPriceRow}>
+                    <span>Convenient Fees</span>
+                    <span>₹2</span>
                   </div>
                   {orderCache.giftPackaging && (
                     <div className={styles.successPriceRow}>
@@ -803,8 +808,12 @@ Thank you for choosing handloom heritage.
                     <span className={styles.priceValue}>{formatCurrency(subtotal)}</span>
                   </div>
                   <div className={styles.discountRow}>
-                    <span>Festival Discount</span>
+                    <span>Discount</span>
                     <span className={styles.discountValue}>-{formatCurrency(festivalDiscount)}</span>
+                  </div>
+                  <div className={styles.priceRow}>
+                    <span>Convenient Fees</span>
+                    <span className={styles.priceValue}>₹2</span>
                   </div>
                   {giftPackaging && (
                     <div className={styles.priceRow} style={{ color: 'var(--text-main)' }}>

@@ -264,7 +264,7 @@ export const Contact = ({ setCurrentTab }) => {
                   <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>Mazhai Vaanam Women's Collections</h3>
                   <p className={styles.locationAddressText}>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804</p>
                   <p className={styles.locationHoursLabel}>Hours</p>
-                  <p className={styles.locationHoursValue}>Mon - Sat: 11 AM - 8 PM<br />Sun: Closed</p>
+                  <p className={styles.locationHoursValue}>Mon - Sat: 10 AM - 8 PM<br />Sun: Closed</p>
                 </div>
                 <button onClick={() => window.open("https://maps.google.com/?q=Mazhai+Vaanam+Womens+Collections,+Peravurani,+Thanjavur,+Tamil+Nadu", "_blank")} className={styles.locationActionBtn}>
                   GET DIRECTIONS

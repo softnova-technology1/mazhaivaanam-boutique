@@ -326,8 +326,12 @@ export const Cart = ({ setCurrentTab }) => {
                     <span className={styles.priceValue}>{formatCurrency(subtotal)}</span>
                   </div>
                   <div className={styles.discountRow}>
-                    <span>Festival Discount</span>
+                    <span> Discount</span>
                     <span className={styles.discountValue}>-{formatCurrency(festivalDiscount)}</span>
+                  </div>
+                  <div className={styles.priceRow}>
+                    <span>Convenient Fees</span>
+                    <span className={styles.priceValue}>₹2</span>
                   </div>
                   {couponApplied && (
                     <div className={styles.discountRow}>

@@ -103,7 +103,7 @@ export const About = ({ setCurrentTab }) => {
           <div className={styles.storyImageContainer}>
             <div className={styles.storyImgBorderFrame}></div>
             <img
-              src="/Images/rich silk.png"
+              src="/Images/contact1.png"
               alt="Rich silk handloom weaving with silk cocoons, gold zari thread, and folded sarees"
               className={styles.storyMainImg}
             />
@@ -195,7 +195,7 @@ export const About = ({ setCurrentTab }) => {
         <div className={styles.founderLayoutGrid}>
           <div className={styles.founderImageBox}>
             <img
-              src="/Images/essence_of_saree.png"
+              src="/Images/about_mural.jpg"
               alt="Royal silk saree drape showcasing rich handloom zari art"
               className={styles.founderPortraitImg}
             />

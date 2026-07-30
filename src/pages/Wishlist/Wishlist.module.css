@@ -585,31 +585,51 @@
   box-shadow: 0 6px 16px rgba(146, 156, 122, 0.4);
 }
 
-/* Card Hover overlay quick actions */
 .card-bottom-cart-btn {
-  width: 60%;
-  margin: 10px auto 0 auto;
+  width: 100%;
+  margin: auto 0 0 0;
   background-color: var(--primary);
   color: #ffffff;
-  border: 1.5px solid var(--primary);
-  border-radius: 30px;
-  padding: 7px 12px;
-  font-family: 'Inter', sans-serif;
-  font-size: 9px;
+  border: none;
+  border-radius: 24px 0 24px 0 !important;
+  padding: 12px 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   box-shadow: 0 4px 10px rgba(146, 156, 122, 0.2);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.card-bottom-cart-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+  border-radius: 0;
 }
 
 .card-bottom-cart-btn:hover {
   background-color: var(--primary-dark);
-  border-color: var(--primary-dark);
   color: #ffffff;
+  border-radius: 0 24px 0 24px !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(79, 78, 34, 0.35);
+}
+
+.card-bottom-cart-btn:hover::before {
+  transform: translateX(0);
 }
 
 /* Card description block */
@@ -618,6 +638,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  width: 100%;
+  flex-grow: 1;
 }
 
 .card-category {

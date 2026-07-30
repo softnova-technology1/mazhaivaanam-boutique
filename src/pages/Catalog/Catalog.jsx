@@ -1025,17 +1025,13 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                           )}
                         </div>
                         <button 
-                          className={product.isPreorder ? styles['preorder-btn'] : styles['add-cart-btn']}
+                          className={styles['add-cart-btn']}
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (product.isPreorder) {
-                              handleProductClick(product);
-                            } else {
-                              addToCart(product, 1);
-                            }
+                            addToCart(product, 1);
                           }}
                         >
-                          {product.isPreorder ? 'PRE-BOOK NOW' : 'ADD TO CART'}
+                          ADD TO CART
                         </button>
                       </div>
                     </div>

@@ -228,7 +228,7 @@ function AppContent() {
         />
         {renderContent()}
       </main>
-      <Footer currentTab={currentTab} setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />
+      <Footer setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />
 
       {/* Global Scroll To Top Button */}
       <ScrollToTopButton />

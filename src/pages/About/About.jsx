@@ -195,7 +195,7 @@ export const About = ({ setCurrentTab }) => {
         <div className={styles.founderLayoutGrid}>
           <div className={styles.founderImageBox}>
             <img
-              src="/Images/about_mural.jpg"
+              src="/Images/sareemodel.png"
               alt="Royal silk saree drape showcasing rich handloom zari art"
               className={styles.founderPortraitImg}
             />

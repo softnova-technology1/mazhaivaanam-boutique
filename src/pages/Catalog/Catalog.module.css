@@ -804,11 +804,14 @@
 
 .title-row h4 {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: var(--text-main);
   margin: 0;
-  font-weight: 400;
+  font-weight: 900;
   flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rating-badge-inline {
@@ -866,11 +869,13 @@
 .add-cart-btn {
   width: 100%;
   padding: 12px 0;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border: none;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.4s ease;
   margin-top: auto;
@@ -892,7 +897,7 @@
 }
 
 .add-cart-btn:hover {
-  background-color: var(--primary-dark);
+  background-color: var(--primary);
   border-radius: 0 24px 0 24px;
 }
 
@@ -1168,7 +1173,8 @@
 /* 5. Newsletter Section */
 .newsletter-section {
   padding: 100px 20px;
-  background-color: #ffffff;
+ 
+  
   text-align: center;
 }
 

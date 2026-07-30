@@ -436,7 +436,8 @@
 /* 5. Behind the Loom Section */
 .behind-loom-section {
   padding: 100px 0;
-  background-color: #FFFFFF;
+  
+  
   border-top: 1px solid var(--border-color);
 }
 

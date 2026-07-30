@@ -14,7 +14,7 @@ export const Returns = () => {
           <h2>Returns</h2>
           <ul>
             <li>Returns are accepted only if the product received is damaged, defective, or incorrect.</li>
-            <li>Any issue must be reported within <strong>24 hours</strong> of delivery with clear photos or an unboxing video (Uncut).</li>
+            <li>Any issue must be reported within <strong>24 hours</strong> of delivery with clear photos and unboxing video (Uncut).</li>
             <li>Products must be unused, unwashed, and returned with original packaging and tags.</li>
           </ul>
         </section>

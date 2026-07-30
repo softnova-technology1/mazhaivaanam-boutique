@@ -138,9 +138,9 @@
 .glass-text h2 {
   color: var(--primary-dark);
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 18px;
+  font-size: 1.3rem;
   margin: 0;
-  font-weight: 500;
+  font-weight: 900;
   letter-spacing: 0.5px;
 }
 

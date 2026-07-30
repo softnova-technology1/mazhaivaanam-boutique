@@ -295,7 +295,7 @@ void main() {
   }, []);
 
   return (
-    <div className="bg-background text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <div className="text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
       <main className="pt-0">
         {/* Hero Section */}
         <section 

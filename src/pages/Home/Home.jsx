@@ -436,7 +436,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
                 <Gift size={32} strokeWidth={1.5} />
               </div>
               <h4>LUXURY PACKAGING</h4>
-              <p>Every piece arrives in a handcrafted, eco-friendly heritage box.</p>
+              <p>Every piece arrives beautifully presented with exceptional care.</p>
             </div>
           </div>
         </div>

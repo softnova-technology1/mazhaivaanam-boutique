@@ -405,11 +405,14 @@
 
 .product-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.15rem;
-  font-weight: 500;
-  color: var(--primary-dark, #4F4E22);
+  font-size: 1.3rem;
+  color: var(--text-main);
   margin: 0;
-  flex: 1;
+  font-weight: 900;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rating-badge {
@@ -474,11 +477,13 @@
 .cart-btn {
   width: 100%;
   padding: 12px 0;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff !important;
   border: none;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.4s ease;
   margin-top: auto;
@@ -503,7 +508,7 @@
 }
 
 .cart-btn:hover {
-  background-color: var(--primary-dark);
+  background-color: var(--primary);
   border-radius: 0 24px 0 24px !important;
   transform: none;
   box-shadow: none;
@@ -536,8 +541,11 @@
 }
 
 .grid-list .product-info h4 {
-  font-size: 1.2rem;
-  margin-bottom: 16px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.3rem;
+  color: var(--text-main);
+  margin: 0 0 16px 0;
+  font-weight: 900;
 }
 
 .grid-list .product-price {

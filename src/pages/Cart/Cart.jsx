@@ -155,7 +155,7 @@ export const Cart = ({ setCurrentTab }) => {
   const festivalDiscount = Math.round(subtotal * 0.05); // 5% discount
   const couponDiscount = couponApplied ? 1000 : 0;
   const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
-  const finalAmount = Math.max(0, mrpTotal - totalSavings);
+  const finalAmount = Math.max(0, mrpTotal - totalSavings) + (cart.length > 0 ? 2 : 0);
 
   const handleCheckout = () => {
     setCurrentTab('checkout');

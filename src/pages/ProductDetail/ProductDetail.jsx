@@ -678,52 +678,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
         </div>
       </section>
 
-      {/* Craftsmanship Section */}
-      <section className={styles['craft-section']}>
-        <div className={styles['craft-header']}>
-          <p className={styles['craft-sub']}>THE ATELIER PROCESS</p>
-          <h2>Every Saree Begins With a Story</h2>
-        </div>
 
-        <div className={styles['craft-content-grid']}>
-          <div className={styles['craft-image-frame']}>
-            <img
-              src="/Images/artisan_weaving.png"
-              alt="Atelier loom weaver"
-            />
-            <div className={styles['craft-image-badge']}>
-              <span className="material-symbols-outlined">workspace_premium</span>
-              <h6>Certified Artisan Masterpiece</h6>
-              <p>420 hours of delicate hand weaving</p>
-            </div>
-          </div>
-
-          <div className={styles['timeline-process']}>
-            <div className={styles['timeline-line']} />
-
-            <div className={styles['timeline-step']}>
-              <div className={styles['step-dot-active']} />
-              <h4>Poetic Concept Draft</h4>
-              <p>Atelier master designers draft motifs inspired by ancient temple carvings and monsoon skies.</p>
-            </div>
-            <div className={styles['timeline-step']}>
-              <div className={styles['step-dot']} />
-              <h4>Yarn Alchemy</h4>
-              <p>Mulberry silk thread strands are organic dyed to achieve high saturation luxury hues.</p>
-            </div>
-            <div className={styles['timeline-step']}>
-              <div className={styles['step-dot']} />
-              <h4>Loom Weaving Prayers</h4>
-              <p>Artisans interlace silk warp strands with pure gold-plated silver zari over 40 working days.</p>
-            </div>
-            <div className={styles['timeline-step']}>
-              <div className={styles['step-dot']} />
-              <h4>Atelier Sanctum Check</h4>
-              <p>Passes a rigorous 12-point quality check before being blessed, scented, and boxed.</p>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };

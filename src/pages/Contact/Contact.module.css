@@ -214,86 +214,117 @@
   }
 }
 
-/* Service Pillars Grid */
-.pillarsSection {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
-  padding: 80px 0;
-}
-
-@media (max-width: 1024px) {
-  .pillarsSection {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-  }
-}
-
-@media (max-width: 576px) {
-  .pillarsSection {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-}
-
-.pillarCardGroup {
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-}
-
-.pillarImageBox {
-  height: 256px;
+/* Order Support Banner Styling */
+.trackingBannerSection {
+  padding: 80px 0 40px 0;
   width: 100%;
+}
+
+.trackingCard {
+  background: radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.9) 0%, rgba(244, 239, 234, 0.6) 100%);
   border: 1px solid rgba(136, 113, 116, 0.15);
-  overflow: hidden;
-  margin-bottom: 24px;
-  background-color: var(--surface-container-low);
+  border-radius: 20px;
+  padding: 40px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
-.pillarImageBox img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s ease;
+.trackingInfo {
+  max-width: 700px;
+  text-align: left;
 }
 
-.pillarCardGroup:hover .pillarImageBox img {
-  transform: scale(1.08);
+.trackingTag {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent, #b5893d);
+  margin-bottom: 8px;
+  display: block;
 }
 
-.pillarTitle {
+.trackingInfo h2 {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 20px;
+  font-size: 32px;
   color: var(--primary);
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
   font-weight: 500;
 }
 
-.pillarDesc {
+.trackingInfo p {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
-  margin: 0 0 16px 0;
-  flex: 1;
+  margin: 0;
 }
 
-.pillarActionLink {
+.trackOrderActionBtn {
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 24px 0 24px 0 !important;
+  padding: 18px 40px;
   font-family: 'Inter', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--primary);
-  border-bottom: 1px solid rgba(73, 0, 23, 0.15);
-  padding-bottom: 4px;
-  align-self: flex-start;
-  transition: border-color 0.3s;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(146, 156, 122, 0.2);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
-.pillarCardGroup:hover .pillarActionLink {
-  border-bottom-color: var(--primary);
+.trackOrderActionBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(-100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+  border-radius: 0;
+}
+
+.trackOrderActionBtn:hover {
+  background-color: var(--primary-dark);
+  border-radius: 0 24px 0 24px !important;
+  box-shadow: 0 6px 18px rgba(79, 78, 34, 0.35);
+}
+
+.trackOrderActionBtn:hover::before {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .trackingCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+    padding: 30px 24px;
+  }
+  
+  .trackingInfo {
+    text-align: center;
+  }
+  
+  .trackOrderActionBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Concierge Form & Private Calendar */

@@ -2,7 +2,6 @@
   width: 100%;
   background-color: var(--bg-main); /* Soft luxury cream background */
   margin-top: 0; /* Align directly under fixed/sticky navbar wrapper (no gap) */
-  border-bottom: 1px solid rgba(136, 113, 116, 0.08); /* Very subtle divider */
   box-sizing: border-box;
 }
 

@@ -91,68 +91,28 @@ export const Contact = ({ setCurrentTab }) => {
 
       {/* Main Content Layout */}
       <main className={styles.mainLayout}>
-
-        {/* Service Pillars Section */}
-        <section className={styles.pillarsSection}>
-          
-          {/* Pillar 1 */}
-          <div className={styles.pillarCardGroup} onClick={() => alert("Redirecting to Styling Portfolio...")}>
-            <div className={styles.pillarImageBox}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA26t0G-JutRDn17wxfgDb1SMTP5-ejobxgKNFAzrhf7I6hgYEFFCSlMB3krdROmRk3OQkJdEx8eVfeFbo0rsGeNjd2VhCWxkLCWCoO3Vqr5QrnLcx1L_YrwgiRXK0PAitTMRg7eM5ySQvkRA__YMuy6E3RKGmebnelsBqdNon76HyHDAbigK9ZIq6PtvUJWRhlo4uDWF3eGD1ITlG5u_5O5bZcrgLxQiJ9l_3kTDRuH6fp1iuuCyJZ" 
-                alt="Styling Consultation" 
-              />
+        {/* Order Support & Live Tracking Section */}
+        <section className={styles.trackingBannerSection}>
+          <div className={styles.trackingCard}>
+            <div className={styles.trackingInfo}>
+              <span className={styles.trackingTag}>ORDER ASSISTANCE</span>
+              <h2>Order Support & Live Tracking</h2>
+              <p>
+                Looking for real-time tracking, delivery status updates, or help with a recent boutique acquisition? 
+                Use our live tracking portal to check your order state.
+              </p>
             </div>
-            <h3 className={styles.pillarTitle}>Styling Consultation</h3>
-            <p className={styles.pillarDesc}>Curated looks for your special occasions, tailored to your personal aesthetic.</p>
-            <span className={styles.pillarActionLink}>LEARN MORE</span>
+            <button 
+              className={styles.trackOrderActionBtn}
+              onClick={() => {
+                window.history.pushState(null, '', '/track-order');
+                setCurrentTab('track-order');
+              }}
+            >
+              <span>TRACK YOUR ORDER</span>
+              <ArrowRight size={16} />
+            </button>
           </div>
-
-          {/* Pillar 2 */}
-          <div className={styles.pillarCardGroup} onClick={() => alert("Opening Trousseau Planner calendar slots...")}>
-            <div className={styles.pillarImageBox}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-1tiEWAH6tlNs9vEPgi5NH-itr4Yi11cSP2md12QGCBU1sNT25-ZH_pl4xmhJKyv4FAj8mbmZcykpsbsNpiCGUxTTkv3pDoGgdi-ZjRsspbrY7rDvxZ6ajkYm5nH7xy87KnPTqlj91CO5aCTGhRxmMlHcmy6JIAmKK1Gzj1MdyQm1KEjUF2PbY05MId9dXg0ZADijqSIuKIu3K-w35QmzKCc1sDQ3Z33l-Emy7ya68OAcy6ceQOlt" 
-                alt="Bridal Enquiry" 
-              />
-            </div>
-            <h3 className={styles.pillarTitle}>Bridal Enquiry</h3>
-            <p className={styles.pillarDesc}>Bespoke trousseau planning and customized heritage bridal ensembles.</p>
-            <span className={styles.pillarActionLink}>RESERVE DATE</span>
-          </div>
-
-          {/* Pillar 3 */}
-          <div 
-            className={styles.pillarCardGroup} 
-            onClick={() => {
-              window.history.pushState(null, '', '/track-order');
-              setCurrentTab('track-order');
-            }}
-          >
-            <div className={styles.pillarImageBox}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdIysYWGrcof0QaKcS9oG169g4hVtel2tklX9ncTjPy457EN93fVtfXvj_ShHDDS92toiscCVbz1iqrMV9scBlyTLOalCu3Wd4yDnqUi7A39Bn7t7c_88OxC8rDfzY30IzvW5OErD0fSKCY1qJBiz9i1SCd6PC3pd25Ru5WBMr76TKVb9GmlIyTsYq6q8eGJSM7TzmuBGohpWyJ1MjGFsljpJsWc1DWP7mOZsmQdbT_7sGypYmizSN" 
-                alt="Order Support" 
-              />
-            </div>
-            <h3 className={styles.pillarTitle}>Order Support</h3>
-            <p className={styles.pillarDesc}>Real-time tracking and assistance for your recent boutique acquisitions.</p>
-            <span className={styles.pillarActionLink}>TRACK ORDER</span>
-          </div>
-
-          {/* Pillar 4 */}
-          <div className={styles.pillarCardGroup} onClick={() => alert("Corporate enquiry form matches custom logo box layouts.")}>
-            <div className={styles.pillarImageBox}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8N2G_SH6WX1zFa9s3HoCX6OY4TbM5xcy1_NlB0HHCirv0eIYMOpzPaPINppO88eEK1Eb7mOYoFTg7vO4cq1qFjYWGQp9njduxPrXwfljix2Mrt8u7oocWzAhg5RJhI6a7PgdbC-8nDVN7UDyNkcxXXoDPDGoqoFLwcXYcE73bE0HJOPwTkwl0caPthcu7ZGvvK1acOb4wUeiQQGM0OER2LbK22NRxPQk4p4A8OXdoCTVEnq5CieZ8" 
-                alt="Corporate Gifting" 
-              />
-            </div>
-            <h3 className={styles.pillarTitle}>Corporate Gifting</h3>
-            <p className={styles.pillarDesc}>Premium gifting solutions for your esteemed partners and stakeholders.</p>
-            <span className={styles.pillarActionLink}>ENQUIRE</span>
-          </div>
-
         </section>
 
         {/* Form Concierge & Private Calendar Grid */}
@@ -304,7 +264,7 @@ export const Contact = ({ setCurrentTab }) => {
                   <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>Mazhai Vaanam Women's Collections</h3>
                   <p className={styles.locationAddressText}>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804</p>
                   <p className={styles.locationHoursLabel}>Hours</p>
-                  <p className={styles.locationHoursValue}>Mon - Sat: 11 AM - 8 PM<br />Sun: Closed</p>
+                  <p className={styles.locationHoursValue}>Mon - Sat: 10 AM - 8 PM<br />Sun: Closed</p>
                 </div>
                 <button onClick={() => window.open("https://maps.google.com/?q=Mazhai+Vaanam+Womens+Collections,+Peravurani,+Thanjavur,+Tamil+Nadu", "_blank")} className={styles.locationActionBtn}>
                   GET DIRECTIONS

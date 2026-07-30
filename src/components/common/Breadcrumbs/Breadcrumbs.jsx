@@ -149,7 +149,12 @@ export const Breadcrumbs = ({
     'login',
     'my-orders',
     'my-profile',
-    'saved-address'
+    'saved-address',
+    'support',
+    'privacy',
+    'returns',
+    'terms',
+    'shipping-policy'
   ].includes(currentTab);
 
   return (

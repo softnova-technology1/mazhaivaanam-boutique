@@ -839,16 +839,30 @@
   background-color: #eae7e7;
 }
 
+.marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
 .recommended-grid {
   display: flex;
-  overflow-x: auto;
   gap: 32px;
-  padding-bottom: 20px; /* Space for scrollbar */
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
+  width: max-content;
+  animation: marquee 35s linear infinite;
 }
-.recommended-grid::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+
+.recommended-grid:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 16px));
+  }
 }
 
 .rec-card {

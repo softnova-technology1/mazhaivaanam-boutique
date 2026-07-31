@@ -144,38 +144,6 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
                 </div>
               )}
             </div>
-
-            {/* Sort Selector */}
-            <div className={styles['sort-selector']} style={{ margin: 0 }}>
-              <span>SORT BY:</span>
-              <div className={styles['custom-dropdown-container']}>
-                <button 
-                  className={styles['dropdown-trigger-btn']} 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsSortOpen(!isSortOpen);
-                  }}
-                  type="button"
-                >
-                  {(SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured').toUpperCase()}
-                  <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
-                </button>
-                {isSortOpen && (
-                  <div className={styles['dropdown-options-menu']}>
-                    {SORT_OPTIONS.map((option) => (
-                      <button
-                        key={option.value}
-                        className={`${styles['dropdown-option-item']} ${selectedSort === option.value ? styles['active'] : ''}`}
-                        onClick={() => setSelectedSort(option.value)}
-                        type="button"
-                      >
-                        {option.label.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           {/* Bottom row: Categories (Horizontal Scroll) */}

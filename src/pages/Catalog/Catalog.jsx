@@ -30,7 +30,7 @@ export const ALL_PRODUCTS = [
     price: 28599,
     oldPrice: 32000,
     rating: 4.8,
-    tag: "LIMITED EDITION",
+    tag: "NEW ARRIVAL",
     image: "/Images/silk sarees/00812878-32a4-41c6-81ee-a66b8ca8275b_1.jpg",
     description: "Warm yellow and gold handloom cotton saree woven with traditional patterns, ideal for festive elegance.",
     isPreorder: true,
@@ -146,7 +146,7 @@ export const ALL_PRODUCTS = [
     price: 14500,
     oldPrice: 17000,
     rating: 4.8,
-    tag: "BESTSELLER",
+    tag: "NEW ARRIVAL",
     image: "/Images/silk sarees/1546f1f8-5935-4aaf-b254-aa03321c05d8_love2.jpg",
     description: "Sienna golden-orange silk drape featuring fine floral zari border details and traditional design."
   },
@@ -900,63 +900,90 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   <div className={styles['dropdown-options-menu']}>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'featured' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('featured')}
+                      onClick={() => {
+                        setSelectedSort('featured');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Featured
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'relevant' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('relevant')}
+                      onClick={() => {
+                        setSelectedSort('relevant');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Most relevant
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'best-selling' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('best-selling')}
+                      onClick={() => {
+                        setSelectedSort('best-selling');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Best selling
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-asc' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('alpha-asc')}
+                      onClick={() => {
+                        setSelectedSort('alpha-asc');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Alphabetically, A-Z
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-desc' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('alpha-desc')}
+                      onClick={() => {
+                        setSelectedSort('alpha-desc');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Alphabetically, Z-A
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('price-low')}
+                      onClick={() => {
+                        setSelectedSort('price-low');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Price, low to high
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'price-high' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('price-high')}
+                      onClick={() => {
+                        setSelectedSort('price-high');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Price, high to low
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'date-old' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('date-old')}
+                      onClick={() => {
+                        setSelectedSort('date-old');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Date, old to new
                     </button>
                     <button
                       className={`${styles['dropdown-option-item']} ${selectedSort === 'date-new' ? styles['active'] : ''}`}
-                      onClick={() => setSelectedSort('date-new')}
+                      onClick={() => {
+                        setSelectedSort('date-new');
+                        setIsSortOpen(false);
+                      }}
                       type="button"
                     >
                       Date, new to old

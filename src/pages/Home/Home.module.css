@@ -79,6 +79,7 @@
   z-index: 3;
   width: 100%;
   max-width: 1440px;
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 40px 80px 60px 80px;
   opacity: 0;
@@ -149,16 +150,35 @@
   .hero-slider-section {
     height: 550px;
   }
+  .hero-slide-tag {
+    font-size: 1.4rem;
+  }
   .hero-content h1 {
     font-size: 1.8rem;
-    line-height: 1.3;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    white-space: normal;
+    word-break: break-word;
+  }
+  .hero-content p {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 24px;
   }
   .hero-content {
     padding: 20px 20px 50px 20px;
   }
   .hero-actions {
     flex-direction: column;
+    align-items: center;
     gap: 12px;
+  }
+  .btn-explore,
+  .btn-custom {
+    padding: 12px 32px;
+    font-size: 10px;
+    width: auto;
+    text-align: center;
   }
 }
 
@@ -1439,12 +1459,17 @@
     gap: 20px;
   }
 
+  .section-label-small {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+
   .section-header-center h2 {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
   }
 
   .bestsellers-section {
-    padding: 40px 20px;
+    padding: 24px 20px;
   }
 
   .section-header-center {
@@ -1453,5 +1478,55 @@
 
   .newsletter-form button {
     padding: 16px;
+  }
+
+  .bridal-text-pane {
+    padding: 40px 20px;
+  }
+  
+  .bridal-text-content h2 {
+    font-size: 40px;
+  }
+  
+  .bridal-quote {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .bridal-label {
+    font-size: 10px;
+  }
+  
+  .btn-bridal-explore {
+    padding: 14px 28px;
+    font-size: 10px;
+  }
+
+  .worn-with-love-section {
+    padding: 24px 20px;
+  }
+
+  .instagram-hashtag {
+    font-size: 10px;
+  }
+
+  .review-marquee-card {
+    width: 300px;
+    padding: 24px 20px;
+  }
+
+  .newsletter-box {
+    padding: 40px 20px;
+  }
+
+  .newsletter-box h2 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .newsletter-box p {
+    font-size: 14px;
+    margin-bottom: 24px;
   }
 }

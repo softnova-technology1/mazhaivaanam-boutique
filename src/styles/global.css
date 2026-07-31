@@ -278,3 +278,11 @@ a {
   top: -25% !important;
   right: 15% !important;
 }
+
+@media (max-width: 576px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px 0;
+  }
+}

@@ -723,6 +723,7 @@
 
 .image-container {
   position: relative;
+  width: 100%;
   aspect-ratio: 3/4;
   overflow: hidden;
   border-radius: 120px 120px 0 0; /* Dome Arch Top */
@@ -833,6 +834,7 @@
   margin: 0;
   font-weight: 900;
   flex-grow: 1;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1278,6 +1280,7 @@
   .curated-container {
     flex-direction: column;
     gap: 50px;
+    max-height: none;
   }
   .curated-image-box, .curated-info-box { width: 100%; }
   .weave-cards-container { gap: 20px; }
@@ -1287,10 +1290,18 @@
   .hero-text-box h1 { font-size: 2.2rem; }
   .hero-content { padding: 0 20px; }
   .signature-weaves-section { padding: 60px 20px; }
-  .main-layout { padding: 60px 20px; }
+  .main-layout { padding: 40px 20px 0px; }
   .products-grid { grid-template-columns: 1fr; }
   .curated-edit-section { padding: 60px 20px; }
   .curated-heading { font-size: 2rem; }
+  .curated-container { max-height: none; }
+  .curated-image-box { display: none; }
+  .newsletter-section { padding: 0px 20px 40px; }
+  .newsletter-box h3 { margin-top: 0; }
+  .pagination {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
   .newsletter-form { flex-direction: column; }
   .newsletter-submit-btn { padding: 16px 0; }
   .weave-image-frame {
@@ -1457,6 +1468,16 @@
   font-weight: 600;
 }
 
+/* Mobile Filter Specifics (Hidden on Desktop) */
+.mobile-filter-toggle,
+.close-filter-btn,
+.mobile-filter-overlay {
+  display: none;
+}
+.sidebar-header-mobile {
+  display: block;
+}
+
 /* =========================================
    MOBILE RESPONSIVENESS
    ========================================= */
@@ -1475,14 +1496,80 @@
   }
 
   .filters-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
     width: 100%;
+    z-index: 100;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .mobile-filter-open {
+    transform: translateY(0);
   }
 
   .sticky-sidebar-content {
     position: static;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 30px;
+    border-radius: 32px 32px 0 0;
+    padding: 32px 24px;
+    margin-bottom: 0;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+  }
+
+  .mobile-filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--primary-dark);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(79, 78, 34, 0.2);
+  }
+
+  .sidebar-header-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .sidebar-header-mobile h2 {
+    margin-bottom: 0;
+  }
+
+  .close-filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(123, 132, 103, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    color: var(--text-main);
+  }
+
+  .mobile-filter-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 90;
+    backdrop-filter: blur(4px);
   }
   
   .signature-weaves-section {
@@ -1520,6 +1607,10 @@
   }
   
   .products-header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
     text-align: center;
   }
   
@@ -1542,6 +1633,11 @@
     gap: 10px;
   }
   
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
   .page-num {
     width: 32px;
     height: 32px;
@@ -1551,5 +1647,47 @@
   .pagination-arrow {
     width: 36px;
     height: 36px;
+  }
+  
+  .product-card {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .badge-tag {
+    font-size: 8px;
+    padding: 3px 6px;
+    bottom: 8px;
+    left: 8px;
+  }
+
+  .add-cart-btn {
+    display: none !important;
+  }
+  
+  .product-description {
+    display: none !important;
+  }
+  
+  .image-container {
+    aspect-ratio: 4 / 5;
+    border-radius: 60px 60px 0 0;
+  }
+  
+  .card-details {
+    padding: 8px 8px;
+  }
+  
+  .title-row h4 {
+    font-size: 0.95rem;
+  }
+  
+  .current-price {
+    font-size: 13px;
+  }
+  
+  .old-price {
+    font-size: 11px;
   }
 }

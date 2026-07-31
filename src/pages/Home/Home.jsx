@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ShieldCheck, Leaf, LockKeyhole, Gift, Star } from 'lucide-react';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';
+import { ALL_PRODUCTS } from '../Catalog/Catalog';
 import styles from './Home.module.css';
 
 const AnimatedCounter = ({ end, duration = 2000, suffix = '', decimals = 0 }) => {
@@ -91,48 +92,9 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
     }
   ], []);
 
-  const bestSellers = useMemo(() => [
-    {
-      id: 'prod-1',
-      name: "Celestial Blue Zari",
-      category: "Kanchipuram Pure Silk",
-      price: 42500,
-      oldPrice: 48000,
-      rating: 4.9,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDkRuajLDcBWPazr6lv5c906qF0pGWB4-Ke1cY7Qc8LFWNUDGlM9MNsyuVAK0B81OaDi7a3eX5PWLvar4UFlcXzFx4T6i9mYoZh8zFPHjbz_jJt7XkBwKgO4LVbEI45hkE3Fu4G8IBh2ls5xV7ThxPW06QCHp43P2GvOXaFJW2FNHZJr5sQFJbSWWX1qSMsS7YGQGCMc-VawrfXqWOQwiXMpM7C4tbBmlD5coSua7GF66oDsIY1_ASD",
-      description: "Celestial blue Kanchipuram silk featuring high-density gold zari work, traditional paisley motifs, and a rich contrast pallu.",
-      isNew: true
-    },
-    {
-      id: 'prod-2',
-      name: "Emerald Peacock",
-      category: "Banarasi Handloom",
-      price: 38900,
-      rating: 4.8,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD6_fYJUJ8lopUs6Mmjbe7mPWcNpXrk6cWPPHywkC8jyla6EifMxzI9ATXrz0HPR6s-EKgTsvnIKFbwinpKsyK35stBdPHihyLefFO30ofcNdphFWgiHa8PMauggjVJlqakhn5R8_iUNF2bFlgXmqUVOmVj4aXY7RSn3ymJfS3-gHRgkyxNEOqRdRrSlISYc4mWtV7-17Mm4VTCKiKDcm0xRMs0SQmDWYqVKyfXgqHUnhM03JhbdInR",
-      description: "Authentic Varanasi handloom silk brocade woven with intricate peacock motifs in gold zari thread work."
-    },
-    {
-      id: 'prod-3',
-      name: "Ethereal Flora",
-      category: "Sheer Organza Silk",
-      price: 24500,
-      oldPrice: 29000,
-      rating: 4.7,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBkR9FP0wylSHCLbJuc1rcd1b3ZZZ8hPEL79wJ3qy6sPZb23EDPHdq6ZfzdFbfFhCQ_J-Zs33rEECZzszDKe_B9tuFcLRSaCTSCDoVsPydnpVzJj49KDmzM83hLlJjIpV_d54bRNpOj3rdfWAQcSd6yYa1HM-4TyjSedtglyEiKssTfPHkS63BI4vSp7ImYuM3uzJ0GQjIm6Fdla04KWqvcBwn6-i0YaoIrB-2Vwitv2TGfRZTRTeGt",
-      description: "Translucent premium organza with hand-painted pastel floral bouquets and delicate silver scalloped borders."
-    },
-    {
-      id: 'prod-4',
-      name: "Royal Marwari",
-      category: "Bridal Collection",
-      price: 62000,
-      rating: 5.0,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBEH4SvqsRb6gvN8FIu3w__9u6JGQcuLJwJeUAdIapFYRlwKAVg0_hwrxckkrk6TrJbEWoasQRjiNu_oSYcuhnfDRQu3n5ddWbpCV1Rbzw_KxR07Ajc6lb9vFOUyZ81jlcaIa-JjCzIE7t01zulpMacgbYsXqAjTxh83xzYUiXcPnd_LAdY8DSLWfZA7fzJ0cBSZn_c6VMZK8Lwm7si8WNDVtJ1N5_BWnX45CS9xhSgFnUgpgefVDmy",
-      description: "An heirloom bridal masterwork featuring checks and heavy gold border zari panels.",
-      isLimited: true
-    }
-  ], []);
+  const bestSellers = useMemo(() => {
+    return ALL_PRODUCTS.filter(product => product.tag === "BESTSELLER").slice(0, 4);
+  }, []);
 
   const slides = useMemo(() => [
     {

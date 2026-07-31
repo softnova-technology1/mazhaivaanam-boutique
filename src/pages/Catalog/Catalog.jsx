@@ -30,7 +30,7 @@ export const ALL_PRODUCTS = [
     price: 28599,
     oldPrice: 32000,
     rating: 4.8,
-    tag: "ON THE LOOM",
+    tag: "LIMITED EDITION",
     image: "/Images/silk sarees/00812878-32a4-41c6-81ee-a66b8ca8275b_1.jpg",
     description: "Warm yellow and gold handloom cotton saree woven with traditional patterns, ideal for festive elegance.",
     isPreorder: true,
@@ -88,6 +88,7 @@ export const ALL_PRODUCTS = [
     price: 9000,
     oldPrice: 11000,
     rating: 4.6,
+    tag: "BESTSELLER",
     image: "/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg",
     description: "Deep orchid purple silk saree with intricate floral vines woven in heavy gold thread work."
   },
@@ -129,7 +130,7 @@ export const ALL_PRODUCTS = [
     price: 43769,
     oldPrice: 49999,
     rating: 5.0,
-    tag: "ON THE LOOM",
+    tag: "BESTSELLER",
     image: "/Images/black magic collection/449a74ba-b1da-4dd6-8944-8c2abd5fabe0_1.webp",
     description: "Modern designer drape featuring rich scarlet highlights on an ebony dark background.",
     isPreorder: true,
@@ -289,6 +290,7 @@ export const ALL_PRODUCTS = [
     price: 18500,
     oldPrice: 21000,
     rating: 4.9,
+    tag: "BESTSELLER",
     image: "/Images/black magic collection/dc8f7413-52de-45df-ae2b-f583cd625a37_Black.webp",
     description: "Deep dark emerald green silk with striking silver motifs for a bold look."
   },
@@ -316,6 +318,7 @@ export const ALL_PRODUCTS = [
     price: 11200,
     oldPrice: 14000,
     rating: 4.7,
+    tag: "NEW ARRIVAL",
     image: "/Images/Fancy Sarees/362972a8-7932-4b84-b81a-070deec393c8_5.jpg",
     description: "Ethereal silver and grey organza saree with minimal modern designs."
   },
@@ -343,7 +346,7 @@ export const ALL_PRODUCTS = [
     price: 21500,
     oldPrice: 24000,
     rating: 4.9,
-    tag: "ON THE LOOM",
+    tag: "BESTSELLER",
     image: "/Images/black magic collection/8020f4c5-a121-45dc-b191-92d8291154e5_2.webp",
     description: "Midnight black silk adorned with sparkling gold zari for a mesmerizing effect.",
     isPreorder: true,
@@ -1047,17 +1050,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
                         <div className={styles['price-row']}>
                           <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                          {product.isPreorder ? (
-                            <span className={styles['preorder-badge-pill']}>Deposit: {formatCurrency(product.deposit)}</span>
-                          ) : (
-                            product.oldPrice && (
-                              <>
-                                <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
-                                <span className={styles['discount-pill']}>
-                                  {Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}% OFF
-                                </span>
-                              </>
-                            )
+                          {product.oldPrice && (
+                            <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
                           )}
                         </div>
                         <button 

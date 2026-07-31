@@ -7,17 +7,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
   const [wishlistItems, setWishlistItems] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
-  const recommendedCarouselRef = useRef(null);
-
-  const scrollCarousel = (direction) => {
-    if (recommendedCarouselRef.current) {
-      const scrollAmount = 312; // 280px width + 32px gap
-      recommendedCarouselRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
 
   // Load wishlist from local storage on mount
   useEffect(() => {
@@ -315,25 +304,12 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
       <section className={styles['recommended-section']}>
         <div className={styles['recommended-header']}>
           <h3>Recommended For You</h3>
-          <div className={styles['carousel-arrows']}>
-            <button 
-              className={styles['arrow-btn']}
-              onClick={() => scrollCarousel('left')}
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button 
-              className={styles['arrow-btn']}
-              onClick={() => scrollCarousel('right')}
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
         </div>
 
-        <div className={styles['recommended-grid']} ref={recommendedCarouselRef}>
-          {recommendedProducts.map((rec) => (
-            <div key={rec.id} className={styles['rec-card']}>
+        <div className={styles['marquee-wrapper']}>
+          <div className={styles['recommended-grid']}>
+            {[...recommendedProducts, ...recommendedProducts].map((rec, index) => (
+              <div key={`${rec.id}-${index}`} className={styles['rec-card']}>
               <div className={styles['rec-image-box']}>
                 <img 
                   src={rec.image} 
@@ -345,7 +321,8 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
               <h5 onClick={() => handleProductClick(rec)}>{rec.name}</h5>
               <p className={styles['rec-price']}>{formatCurrency(rec.price)}</p>
             </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 

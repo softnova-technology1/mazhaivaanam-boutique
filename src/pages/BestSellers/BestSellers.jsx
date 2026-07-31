@@ -234,8 +234,8 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                     >
                       <Heart 
                         size={16} 
-                        fill={isWishlisted(product.id) ? "var(--primary-dark, #4F4E22)" : "none"} 
-                        stroke="var(--primary-dark, #4F4E22)" 
+                        fill={isWishlisted(product.id) ? "#e63946" : "none"} 
+                        stroke={isWishlisted(product.id) ? "#e63946" : "var(--primary-dark, #4F4E22)"} 
                       />
                     </div>
                   </div>

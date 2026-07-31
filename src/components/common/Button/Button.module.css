@@ -41,7 +41,7 @@
 
 /* Button Variants */
 .btn-primary {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border-color: var(--primary);
 }
@@ -59,7 +59,7 @@
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border-radius: 0 24px 0 24px;
 }

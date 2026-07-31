@@ -425,7 +425,7 @@
   position: absolute;
   bottom: -24px;
   right: -24px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
   padding: 32px;
   width: 256px;
@@ -1024,7 +1024,7 @@
 }
 
 .newsletterSubmitBtn {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
   padding: 16px 36px;
   font-family: 'Inter', sans-serif;

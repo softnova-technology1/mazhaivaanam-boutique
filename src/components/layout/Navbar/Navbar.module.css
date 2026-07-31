@@ -184,7 +184,7 @@
   position: absolute;
   top: -4px;
   right: -4px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 10px;
@@ -204,7 +204,7 @@
   right: 4px;
   width: 7px;
   height: 7px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   border-radius: 50%;
   border: 1px solid var(--bg-main);
 }
@@ -749,6 +749,14 @@
   padding-right: 40px;
   outline: none;
   box-sizing: border-box;
+}
+
+.searchBigInput:focus,
+.searchBigInput:active,
+.searchBigInput:focus-visible {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .searchBigInput::placeholder {

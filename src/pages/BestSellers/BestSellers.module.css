@@ -508,7 +508,7 @@
 }
 
 .cart-btn:hover {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   border-radius: 0 24px 0 24px !important;
   transform: none;
   box-shadow: none;
@@ -556,12 +556,13 @@
 }
 
 /* Adjust button in list view */
-.grid-list .add-to-cart-btn {
+.grid-list .cart-btn {
   display: inline-block;
-  width: auto;
-  padding: 12px 40px;
+  width: fit-content;
+  align-self: flex-start;
+  padding: 8px 32px;
   margin-top: 0;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 /* Responsive adjustments */

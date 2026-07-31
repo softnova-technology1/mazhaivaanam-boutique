@@ -9,6 +9,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedHue, setSelectedHue] = useState('');
   const [wishlistMessage, setWishlistMessage] = useState('');
+  const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
@@ -62,6 +63,16 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
     if (activeProduct.color) {
       setSelectedHue(activeProduct.color);
     }
+    
+    // Check if wishlisted
+    if (activeProduct.id) {
+      const saved = localStorage.getItem('boutique_wishlist');
+      if (saved) {
+        const wishlistItems = JSON.parse(saved);
+        setIsWishlisted(wishlistItems.some(w => w.id === activeProduct.id));
+      }
+    }
+    
     // Scroll to top on mount
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeProduct]);
@@ -171,7 +182,25 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   };
 
   const handleWishlistClick = () => {
-    setWishlistMessage(`Added ${activeProduct.name} Saree to Wishlist!`);
+    const saved = localStorage.getItem('boutique_wishlist');
+    let wishlistItems = saved ? JSON.parse(saved) : [];
+
+    if (isWishlisted) {
+      wishlistItems = wishlistItems.filter(w => w.id !== activeProduct.id);
+      setIsWishlisted(false);
+      setWishlistMessage(`Removed ${activeProduct.name} from Wishlist!`);
+    } else {
+      wishlistItems.push({
+        ...activeProduct,
+        wishlistDate: new Date().toISOString()
+      });
+      setIsWishlisted(true);
+      setWishlistMessage(`Added ${activeProduct.name} Saree to Wishlist!`);
+    }
+    
+    localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
+    window.dispatchEvent(new Event('wishlistUpdated'));
+    
     setTimeout(() => setWishlistMessage(''), 3000);
   };
 
@@ -240,7 +269,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                   }
                 }}
               >
-                <Heart size={18} />
+                <Heart 
+                  size={18} 
+                  fill={isWishlisted ? "#e63946" : "none"} 
+                  stroke={isWishlisted ? "#e63946" : "currentColor"} 
+                />
               </span>
             </div>
           </div>

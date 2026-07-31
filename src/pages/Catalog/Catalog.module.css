@@ -94,7 +94,7 @@
 /* Gold Shimmer Button */
 .gold-shimmer-btn {
   position: relative;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border: none;
   font-family: 'Inter', sans-serif;
@@ -184,7 +184,7 @@
 .section-header h2 {
   font-family: 'Kaushan Script', cursive;
   font-size: 2.8rem;
-  color: var(--primary);
+  color: var(--primary-dark);
   margin-bottom: 15px;
   font-weight: 700;
 }
@@ -192,7 +192,7 @@
 .section-header .divider {
   width: 80px;
   height: 1px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   margin: 0 auto;
   opacity: 0.3;
 }
@@ -471,7 +471,7 @@
 }
 
 .reset-all-btn:hover {
-  background-color: var(--primary) !important;
+  background-color: var(--primary-dark) !important;
   color: #ffffff !important;
   border-color: transparent !important;
 }
@@ -490,7 +490,7 @@
 .category-content-title {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.4rem;
-  color: var(--primary);
+  color: var(--primary-dark);
   margin: 0 0 10px 0;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -499,7 +499,7 @@
 .category-divider {
   width: 80px;
   height: 1px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   opacity: 0.4;
   margin: 0 0 15px 0;
 }
@@ -921,7 +921,7 @@
 }
 
 .add-cart-btn:hover {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   border-radius: 0 24px 0 24px;
 }
 
@@ -1002,7 +1002,7 @@
 }
 
 .pagination-arrow:hover:not(:disabled) {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
 }
 
@@ -1240,7 +1240,7 @@
 }
 
 .newsletter-submit-btn {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border: none;
   padding: 0 36px;
@@ -1414,7 +1414,7 @@
 }
 
 .pagination-arrow:hover:not(:disabled) {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border-color: var(--primary);
 }
@@ -1451,7 +1451,7 @@
 }
 
 .page-num.active-page {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   font-weight: 600;
 }

@@ -431,7 +431,7 @@
 }
 
 .toggleInput:checked + .toggleSlider {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
 }
 
 .toggleInput:checked + .toggleSlider::before {
@@ -800,7 +800,7 @@
 }
 
 .arrowBtn:hover {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
 }
 
@@ -904,7 +904,7 @@
 }
 
 .quickAddBtn:hover {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
 }
 
@@ -933,7 +933,7 @@
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
   padding: 16px 24px;
   font-family: 'Inter', sans-serif;

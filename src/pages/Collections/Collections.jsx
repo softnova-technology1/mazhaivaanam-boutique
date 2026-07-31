@@ -26,7 +26,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
       <div className="container" style={{ padding: '20px 0 0 0' }}>
         <div className={styles['guide-header']} style={{ marginBottom: '60px' }}>
           <span className={styles['guide-tag']}>OUR COLLECTIONS</span>
-          <h1 style={{ fontSize: '42px', color: 'var(--primary)', marginBottom: '16px', fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <h1 style={{ fontSize: '42px', color: 'var(--primary-dark)', marginBottom: '16px', fontFamily: "'Playfair Display', Georgia, serif" }}>
             A Collection for Every Occasion
           </h1>
           <p style={{ maxWidth: '800px', textAlign: 'center', margin: '0 auto 24px auto', color: 'var(--text-muted)' }}>

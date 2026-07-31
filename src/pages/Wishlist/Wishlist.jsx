@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { Heart, Star, TrendingDown, ChevronLeft, ChevronRight, Trash2, ArrowRight, Sparkles, X } from 'lucide-react';
 import styles from './Wishlist.module.css';
@@ -7,6 +7,17 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
   const [wishlistItems, setWishlistItems] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
+  const recommendedCarouselRef = useRef(null);
+
+  const scrollCarousel = (direction) => {
+    if (recommendedCarouselRef.current) {
+      const scrollAmount = 312; // 280px width + 32px gap
+      recommendedCarouselRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   // Load wishlist from local storage on mount
   useEffect(() => {
@@ -121,6 +132,28 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
       color: "#FFF9E3",
       rating: 4.7,
       description: "Regal ivory cream silk saree showing traditional motifs in metallic gold zari threads."
+    },
+    {
+      id: 'rec-5',
+      name: "Ruby Petal Silk",
+      price: 13000,
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-hN0onELnDgdOswyfAzJdw98YnefT7Zi-Dt0g7IxzqYuKK0TaBE4ZTit86sthNhhHWaETP5U6EPkJdQ2TF8NiA7csqXaXCMDhY3VfyoT7yodibzxkenJWfVDdPFIj9YQwTe_B2qlA3e4Sg8KUXPv4QX9GkevPmAgmVVpnY1xGSJkIONEBGz60tPRpNkxygpulKi7xC5gVJ_NCnFJG5nHKVTU98HQAfzC7nM8QYjmgbIyBBYSsnJFz",
+      category: "Silk",
+      fabric: "Pure Silk",
+      color: "#6B102A",
+      rating: 4.9,
+      description: "Elegant ruby red handwoven pure silk saree adorned with heritage gold zari borders and temple motifs."
+    },
+    {
+      id: 'rec-6',
+      name: "Sapphire Dream",
+      price: 28500,
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCiJugKfXFDlCKbEegEB33rTbyvDuGUg8Z-JSxJg8KXVRBHamyuMkcZBc9yWqq44xNiFQu0HFnmEOLqMOUZiy2jNz90pNZghSvAgsaISsgrmyEfXlrJIdLboKMOmNRCvckQdougWJwNqXNAp9IsEIIGXceQwz-n-UUp_xRmAGt_vWAuGmKW2Xkf-QhiTc2aXX-7JVQoH9q1BlLYm-5PgtK7hqmmAFuYzCSbasK2JknNwbkKMum49dB6",
+      category: "Pure Kanjivaram",
+      fabric: "Pure Silk",
+      color: "#0F52BA",
+      rating: 4.8,
+      description: "Breathtaking sapphire blue silk draped with authentic silver and gold threads."
     }
   ];
 
@@ -285,20 +318,20 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
           <div className={styles['carousel-arrows']}>
             <button 
               className={styles['arrow-btn']}
-              onClick={() => setToastMessage("Showing previous recommendations...")}
+              onClick={() => scrollCarousel('left')}
             >
               <ChevronLeft size={16} />
             </button>
             <button 
               className={styles['arrow-btn']}
-              onClick={() => setToastMessage("Showing next recommendations...")}
+              onClick={() => scrollCarousel('right')}
             >
               <ChevronRight size={16} />
             </button>
           </div>
         </div>
 
-        <div className={styles['recommended-grid']}>
+        <div className={styles['recommended-grid']} ref={recommendedCarouselRef}>
           {recommendedProducts.map((rec) => (
             <div key={rec.id} className={styles['rec-card']}>
               <div className={styles['rec-image-box']}>
@@ -313,71 +346,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
               <p className={styles['rec-price']}>{formatCurrency(rec.price)}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Recently Viewed Luxury Showcase */}
-      <section className={styles['recently-viewed-section']}>
-        <div className={styles['recent-section-header']}>
-          <span className={styles['recent-subtitle']}>CURATED MEMORIES</span>
-          <h3 className={styles['recent-title']}>Recently Viewed Weaves</h3>
-          <div className={styles['recent-gold-line']} />
-        </div>
-
-        <div className={styles['recent-items-grid']}>
-          <div className={styles['recent-item-card']} onClick={() => setCurrentTab('catalog')}>
-            <div className={styles['recent-thumb-wrapper']}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcJblDJrLmd27oPFCauspoVqreUEA3wjnHTlpb4C-heRtyYySKX_1vzs6LTJFvRbRPl7XQgmKv-bPFKBwXNexk_43AqS2ky_9ksz6Jo0FtyBbBdW3J7jDbD0t8yJ8qpYfw-oPFHaFjVH30x1oPGLO35jTzQtIbhEad6k3K5Y_hkoQdygnK3PvJKR_gypyTxd6_eXl-lnBMhEeIl3oDtIyqsq5QLI4GMfyYBeYZfF5uYBu2NNay1CT9" 
-                alt="Classic Maroon" 
-                className={styles['recent-img']}
-              />
-            </div>
-            <div className={styles['recent-info']}>
-              <span className={styles['recent-category']}>PURE KANJIVARAM</span>
-              <h4 className={styles['recent-name']}>Classic Maroon</h4>
-              <span className={styles['recent-price']}>₹24,500</span>
-            </div>
-            <div className={styles['recent-arrow']}>
-              <ArrowRight size={16} />
-            </div>
-          </div>
-
-          <div className={styles['recent-item-card']} onClick={() => setCurrentTab('catalog')}>
-            <div className={styles['recent-thumb-wrapper']}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_vcIyf5sMWsujKf0WxuZHmhTeyArEjn0Ir9r7c93HhVV7SPi5w8K0b8bf5ePlbFVQJIeC8KkzQgoUhj79NHGsW70eb6C1dMAaHUnNeMUANcvnArycmTHMk6UyyTGgVWmdHOMjvTnGmMCzHWMqxd3cWIeSclAyjVEdbE2etWGQY6OIv5j1qOaZPvYuoMBtQgj5ajrj5B-t_k6JMuyLNn-jVYW2pV76NsmvRKmyjYTep2wcdmhube5J" 
-                alt="Teal Handloom" 
-                className={styles['recent-img']}
-              />
-            </div>
-            <div className={styles['recent-info']}>
-              <span className={styles['recent-category']}>HANDLOOM SILK</span>
-              <h4 className={styles['recent-name']}>Teal Handloom</h4>
-              <span className={styles['recent-price']}>₹18,900</span>
-            </div>
-            <div className={styles['recent-arrow']}>
-              <ArrowRight size={16} />
-            </div>
-          </div>
-
-          <div className={styles['recent-item-card']} onClick={() => setCurrentTab('catalog')}>
-            <div className={styles['recent-thumb-wrapper']}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBttIDSSOlda3E_xxLDP9YtTr2yl-4WMoR-Lx16sqAQ9pZ2fkrcD7sPRW9-K2Oe3WBrlgjcBFiwFEj43S9XZa3r9H9ZGQAnxCSwAm6n3Dmh_ioo9mR2pCOvn0almpibaMGhuXODDME80veh4c8EBMmKUSqIiBZfpI4f9lxYs1KQUqVk6M6pkkOX9gfoCOS0CWrmMroUkTOr77RleooJxYUDAp0T_CuWddBTCUR8J6Mjmt-j4QJm5A9H" 
-                alt="Zari White" 
-                className={styles['recent-img']}
-              />
-            </div>
-            <div className={styles['recent-info']}>
-              <span className={styles['recent-category']}>HERITAGE ZARI</span>
-              <h4 className={styles['recent-name']}>Zari White</h4>
-              <span className={styles['recent-price']}>₹31,000</span>
-            </div>
-            <div className={styles['recent-arrow']}>
-              <ArrowRight size={16} />
-            </div>
-          </div>
         </div>
       </section>
 

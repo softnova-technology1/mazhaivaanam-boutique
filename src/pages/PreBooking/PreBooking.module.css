@@ -356,7 +356,7 @@
 
 .prebook-btn {
   width: 100%;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border: none;
   padding: 12px 0;
@@ -412,7 +412,7 @@
 
 .quick-view-btn:hover {
   border-color: var(--primary);
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border-radius: 0 24px 0 24px;
 }
@@ -536,7 +536,7 @@
 }
 
 .qv-badge {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #fff;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
@@ -662,7 +662,7 @@
 }
 
 .qv-prebook-btn {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #fff;
 }
 
@@ -682,7 +682,7 @@
 }
 
 .qv-view-details-btn:hover {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border-radius: 0 24px 0 24px;
 }

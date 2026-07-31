@@ -1017,8 +1017,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         >
                           <Heart 
                             size={16} 
-                            fill={isWishlisted ? "var(--primary-dark)" : "none"} 
-                            stroke="var(--primary-dark)" 
+                            fill={isWishlisted ? "#e63946" : "none"} 
+                            stroke={isWishlisted ? "#e63946" : "var(--primary-dark)"} 
                           />
                         </div>
                       </div>

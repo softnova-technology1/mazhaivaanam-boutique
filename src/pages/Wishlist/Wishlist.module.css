@@ -17,7 +17,7 @@
   position: fixed;
   top: 130px;
   right: 30px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   padding: 12px 24px;
   z-index: 10000;
@@ -101,7 +101,7 @@
 }
 
 .share-btn {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border: 1.5px solid var(--primary);
   border-radius: 40px;
@@ -455,7 +455,7 @@
 }
 
 .explore-weaves-btn {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border: none;
   padding: 12px 28px;
@@ -525,7 +525,7 @@
 }
 
 .tag-badge {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   font-size: 8px;
   font-weight: 700;
@@ -578,7 +578,7 @@
 }
 
 .remove-card-btn:hover {
-  background-color: var(--primary) !important;
+  background-color: var(--primary-dark) !important;
   border-color: var(--primary) !important;
   color: #ffffff !important;
   transform: scale(1.12) rotate(90deg);
@@ -621,7 +621,7 @@
 }
 
 .card-bottom-cart-btn:hover {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border-radius: 0 24px 0 24px !important;
   transform: translateY(-2px);
@@ -840,14 +840,22 @@
 }
 
 .recommended-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  overflow-x: auto;
   gap: 32px;
+  padding-bottom: 20px; /* Space for scrollbar */
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+}
+.recommended-grid::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 .rec-card {
   display: flex;
   flex-direction: column;
+  flex: 0 0 280px; /* Fixed width for carousel items */
+  scroll-snap-align: start;
 }
 
 .rec-image-box {

@@ -8,7 +8,7 @@
   position: fixed;
   bottom: 40px;
   right: 40px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
   padding: 16px 32px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
@@ -132,7 +132,7 @@
 .enquireBtn {
   position: relative;
   overflow: visible;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
   padding: 20px 48px;
   font-family: 'Inter', sans-serif;
@@ -264,7 +264,7 @@
 }
 
 .trackOrderActionBtn {
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: #ffffff;
   border: none;
   border-radius: 24px 0 24px 0 !important;
@@ -509,7 +509,7 @@
 .submitMessageBtn {
   width: 100%;
   padding: 20px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
   border: none;
   font-family: 'Inter', sans-serif;
@@ -734,7 +734,7 @@
 .locationActionBtn {
   width: 100%;
   padding: 16px;
-  background-color: var(--primary);
+  background-color: var(--primary-dark);
   color: white;
   border: none;
   font-family: 'Inter', sans-serif;

@@ -177,8 +177,8 @@
 }
 
 .btn-explore {
-  background-color: var(--primary-dark);
-  border: 1px solid var(--primary-dark);
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
   color: #FFFFFF;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
@@ -1190,6 +1190,7 @@
 
 .newsletter-form button:hover {
   background-color: var(--accent);
+  color: var(--primary-dark);
 }
 
 /* 8.5. Patron Voices (Reviews Marquee) Section Styling */

@@ -1255,6 +1255,7 @@
 
 .newsletter-submit-btn:hover {
   background-color: var(--accent);
+  color: var(--primary-dark);
 }
 
 /* Responsive Overrides */

@@ -176,6 +176,7 @@
 
 .locateBtn:hover {
   background-color: var(--accent);
+  color: var(--primary-dark);
   transform: scale(1.02);
 }
 

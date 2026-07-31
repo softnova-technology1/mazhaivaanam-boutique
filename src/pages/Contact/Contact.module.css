@@ -132,7 +132,7 @@
 .enquireBtn {
   position: relative;
   overflow: visible;
-  background-color: var(--primary-dark);
+  background-color: var(--primary);
   color: white;
   padding: 20px 48px;
   font-family: 'Inter', sans-serif;
@@ -524,6 +524,7 @@
 
 .submitMessageBtn:hover {
   background-color: var(--accent);
+  color: var(--primary-dark);
 }
 
 .submitMessageBtn::before,
@@ -749,6 +750,7 @@
 
 .locationActionBtn:hover {
   background-color: var(--accent);
+  color: var(--primary-dark);
 }
 
 .locationActionBtn::before,

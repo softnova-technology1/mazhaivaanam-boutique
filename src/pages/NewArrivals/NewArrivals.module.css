@@ -90,7 +90,7 @@
 }
 
 .btn-explore {
-  background-color: var(--primary-dark);
+  background-color: var(--primary);
   border: 1px solid var(--primary);
   color: #FFFFFF;
 }

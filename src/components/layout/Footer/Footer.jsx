@@ -79,7 +79,7 @@ export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
 
       <div className={styles['footer-bottom']}>
         <div className={`container ${styles['footer-bottom-container']}`}>
-          <p>&copy; {new Date().getFullYear()} Mazhai Vaanam. All rights reserved.</p>
+          <p> <b> Powered by Softnova Technology Pvt ltd &copy; {new Date().getFullYear()} Mazhai Vaanam. All rights reserved.</b></p>
         </div>
       </div>
     </div>

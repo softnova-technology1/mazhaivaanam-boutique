@@ -155,12 +155,12 @@
   justify-content: center;
   align-items: center;
   padding: 0 80px;
+  
 }
-
 .footer-bottom p {
   font-family: var(--font-body);
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
   margin: 0;
   text-align: center;
 }

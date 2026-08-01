@@ -209,7 +209,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
       <section className={styles['main-grid-section']}>
         <div className={styles['section-heading-bar']}>
           <h3>Handpicked Favorites</h3>
-          <span className={styles['sort-tag']}>SORT BY: RECENTLY ADDED</span>
         </div>
 
         {wishlistItems.length === 0 ? (
@@ -278,18 +277,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                       {hasDrop && <span className={styles['card-price-old']}>{formatCurrency(item.oldPrice)}</span>}
                       <span className={styles['card-price-current']}>{formatCurrency(item.price)}</span>
                     </div>
-                    
-
-
-                    <button 
-                      className={styles['card-bottom-cart-btn']}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(item);
-                      }}
-                    >
-                      ADD TO CART
-                    </button>
                   </div>
                 </div>
               );

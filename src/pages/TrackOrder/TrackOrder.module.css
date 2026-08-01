@@ -93,7 +93,7 @@
   text-align: left;
 }
 
-@media (max-width: 576px) {
+@media (min-width: 320px) and (max-width: 425px) {
   .searchCardBox {
     padding: 24px;
   }
@@ -224,7 +224,7 @@
   overflow: hidden;
 }
 
-@media (max-width: 576px) {
+@media (min-width: 320px) and (max-width: 425px) {
   .statusLiveCard {
     padding: 24px;
   }
@@ -860,7 +860,7 @@
   overflow: hidden;
 }
 
-@media (max-width: 576px) {
+@media (min-width: 320px) and (max-width: 425px) {
   .priceExperienceBurgundyCard {
     padding: 24px;
   }

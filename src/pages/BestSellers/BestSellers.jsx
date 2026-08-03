@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { ALL_PRODUCTS } from '../Catalog/Catalog';
+import { getBadgeClass } from '../../utils/badgeHelper';
 import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star, Share2 } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import styles from './BestSellers.module.css';
@@ -209,7 +210,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                   <div className={styles['product-image-container']}>
                     <img src={product.image} alt={product.name} loading="lazy" className={styles['product-image']} />
                     
-                    <span className={styles['bestseller-badge']}>BESTSELLER</span>
+                    <span className={`${styles['bestseller-badge']} ${getBadgeClass('BESTSELLER')}`}>BESTSELLER</span>
                     
                     <div 
                       className={styles['share-btn']}

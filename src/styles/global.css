@@ -278,3 +278,35 @@ a {
   top: -25% !important;
   right: 15% !important;
 }
+
+/* Premium Dynamic Badge Styling */
+.badge-bestseller {
+  background-color: #d32f2f !important; /* Premium Ruby Red */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4) !important;
+}
+
+.badge-new-arrival {
+  background-color: #fed579 !important; /* Premium Light Honey Yellow */
+  color: #251a00 !important; /* Dark Charcoal for readability */
+  box-shadow: 0 4px 12px rgba(254, 213, 121, 0.4) !important;
+}
+
+.badge-limited-edition {
+  background-color: #722f37 !important; /* Wine red / Burgundy */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(114, 47, 55, 0.4) !important;
+}
+
+.badge-festival-choice {
+  background-color: #5a3c6a !important; /* Royal Plum / Violet */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(90, 60, 106, 0.4) !important;
+}
+
+.badge-default {
+  background-color: #7d756d !important; /* Elegant slate grey */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(125, 117, 109, 0.4) !important;
+}
+

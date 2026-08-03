@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../hooks/useCart';
+import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, TrendingDown, ChevronLeft, ChevronRight, Trash2, ArrowRight, Sparkles, X } from 'lucide-react';
 import styles from './Wishlist.module.css';
 
@@ -257,9 +258,9 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                       {hasDrop ? (
                         <span className={styles['price-drop-badge']}>Price Drop</span>
                       ) : item.tag ? (
-                        <span className={styles['tag-badge']}>{item.tag}</span>
+                        <span className={`${styles['tag-badge']} ${getBadgeClass(item.tag)}`}>{item.tag}</span>
                       ) : (
-                        <span className={styles['limited-badge']}>Limited Edition</span>
+                        <span className={`${styles['limited-badge']} ${getBadgeClass('Limited Edition')}`}>Limited Edition</span>
                       )}
                     </div>
 

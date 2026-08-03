@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
+import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2 } from 'lucide-react';
 import styles from './Catalog.module.css';
 
@@ -580,6 +581,13 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const currentProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    setTimeout(() => {
+      document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+  };
+
   const handleShareClick = (e, product) => {
     e.stopPropagation();
     const productUrl = `${window.location.origin}/product/${product.id}`;
@@ -1022,7 +1030,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                       >
                         <img src={product.image} alt={product.name} loading="lazy" />
                         {product.tag && (
-                          <span className={styles['badge-tag']}>{product.tag}</span>
+                          <span className={`${styles['badge-tag']} ${getBadgeClass(product.tag)}`}>{product.tag}</span>
                         )}
                         <div 
                           className={styles['share-btn']}
@@ -1102,7 +1110,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   <button 
                     className={styles['pagination-arrow']} 
                     disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   >
                     <span className="material-symbols-outlined">chevron_left</span>
                   </button>
@@ -1111,7 +1119,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                       <span 
                         key={idx} 
                         className={`${styles['page-num']} ${currentPage === idx + 1 ? styles['active-page'] : ''}`}
-                        onClick={() => setCurrentPage(idx + 1)}
+                        onClick={() => handlePageChange(idx + 1)}
                         style={{ cursor: 'pointer' }}
                       >
                         {String(idx + 1).padStart(2, '0')}
@@ -1121,7 +1129,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   <button 
                     className={styles['pagination-arrow']} 
                     disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   >
                     <span className="material-symbols-outlined">chevron_right</span>
                   </button>

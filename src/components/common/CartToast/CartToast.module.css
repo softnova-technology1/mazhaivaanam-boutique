@@ -188,6 +188,27 @@
   font-style: italic;
 }
 
+.viewCartBtn {
+  width: 100%;
+  margin-top: 12px;
+  background-color: var(--primary-dark);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.viewCartBtn:hover {
+  background-color: var(--accent);
+}
+
 @media (max-width: 480px) {
   .cartToastContainer {
     width: calc(100% - 32px);

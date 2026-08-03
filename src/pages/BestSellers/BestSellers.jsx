@@ -107,7 +107,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
       
       {/* HEADER SECTION */}
       <div className={styles['page-header']}>
-        <div className={styles['breadcrumbs']}>
+        <div className={`${styles['breadcrumbs']} hidden sm:block`}>
           <span onClick={() => setCurrentTab('home')}>Home</span> &gt; <span>Best Sellers</span>
         </div>
         <h1>Customer Favorites</h1>
@@ -120,7 +120,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
       <div className={`${styles['catalog-container']} container`}>
         
         {/* LEFT SIDEBAR */}
-        <aside className={styles['sidebar']}>
+        <aside className={`${styles['sidebar']} hidden lg:block`}>
           <div className={styles['sidebar-section']}>
             <div className={styles['sidebar-heading']}>
               <h3>Premium Collections</h3>
@@ -160,7 +160,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
             
             <div className={styles['toolbar-right']}>
               <div className={styles['view-toggles']}>
-                <button className={`${styles['icon-btn']} ${gridView === 3 ? styles.active : ''}`} onClick={() => setGridView(3)}><Grid3X3 size={16} /></button>
+                <button className={`${styles['icon-btn']} ${styles['hide-on-mobile']} ${gridView === 3 ? styles.active : ''}`} onClick={() => setGridView(3)}><Grid3X3 size={16} /></button>
                 <button className={`${styles['icon-btn']} ${gridView === 4 ? styles.active : ''}`} onClick={() => setGridView(4)}><LayoutGrid size={16} /></button>
                 <button className={`${styles['icon-btn']} ${gridView === 'list' ? styles.active : ''}`} onClick={() => setGridView('list')}><List size={16} /></button>
               </div>

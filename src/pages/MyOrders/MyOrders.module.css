@@ -217,7 +217,7 @@
   margin-bottom: 40px;
 }
 
-@media (max-width: 576px) {
+@media (min-width: 320px) and (max-width: 425px) {
   .orderCardLayout {
     flex-direction: column;
     gap: 24px;
@@ -232,7 +232,7 @@
   overflow: hidden;
 }
 
-@media (max-width: 576px) {
+@media (min-width: 320px) and (max-width: 425px) {
   .productThumbBox {
     width: 100%;
     aspect-ratio: 16/9;

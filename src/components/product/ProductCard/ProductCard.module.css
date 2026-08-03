@@ -1,6 +1,6 @@
 .product-card {
   background-color: var(--surface-main);
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
   position: relative;
   transition: all 0.4s ease;
@@ -58,7 +58,7 @@
   width: 100%;
   aspect-ratio: 3/4;
   overflow: hidden;
-  border-radius: 8px 8px 0 0;
+  border-radius: 0;
 }
 
 .image-container img {
@@ -157,6 +157,7 @@
   margin: 0;
   font-weight: 900;
   flex-grow: 1;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -272,3 +273,87 @@
 .add-cart-btn:hover::before {
   transform: translateX(0);
 }
+
+@media (max-width: 768px) {
+  .product-card {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .image-container {
+    aspect-ratio: 4 / 5;
+    border-radius: 0;
+  }
+
+  .card-details {
+    padding: 8px 8px;
+  }
+  
+  .title-row {
+    margin-bottom: 2px;
+  }
+
+  .title-row h4 {
+    font-size: 0.95rem;
+  }
+
+  .product-description {
+    display: none !important;
+  }
+
+  .price-row {
+    margin-bottom: 4px;
+    gap: 6px;
+  }
+
+  .current-price {
+    font-size: 13px;
+  }
+  
+  .old-price {
+    font-size: 11px;
+  }
+
+  .discount-pill {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+
+  .add-cart-btn {
+    display: none !important;
+  }
+
+  .wishlist-btn {
+    width: 30px;
+    height: 30px;
+    bottom: 8px;
+    right: 8px;
+  }
+  
+  .wishlist-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .share-btn {
+    width: 30px;
+    height: 30px;
+    bottom: 44px;
+    right: 8px;
+  }
+  
+  .share-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .badge-tag {
+    bottom: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    font-size: 8px;
+  }
+}
+

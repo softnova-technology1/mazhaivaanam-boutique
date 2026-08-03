@@ -122,10 +122,10 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
       <section className="container" id="new-arrivals-explore" style={{ padding: '40px 0 20px 0' }}>
         <div className="flex flex-col gap-6 mb-10">
           
-          {/* Top row: Search and Sort */}
-          <div className="flex flex-wrap justify-between items-center gap-4 border-b border-[#E9DDC7] pb-4">
+          {/* Top row: Search and Mobile Categories */}
+          <div className="flex flex-row justify-between items-center gap-3 border-b border-[#E9DDC7] pb-4">
             {/* Search Bar */}
-            <div className={styles['search-bar-box']}>
+            <div className={`${styles['search-bar-box']} flex-1`}>
               <Search size={16} className={styles['search-icon']} />
               <input
                 type="text"
@@ -144,23 +144,41 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
                 </div>
               )}
             </div>
+
+            {/* Mobile View: Dropdown */}
+            <div className="sm:hidden w-[40%] relative">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className={styles['category-dropdown']}
+              >
+                {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          {/* Bottom row: Categories (Horizontal Scroll) */}
-          <div className="flex gap-8 overflow-x-auto no-scrollbar pb-2">
-            {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
-              <button
-                key={cat}
-                className={`filter-link whitespace-nowrap font-inter text-[11px] font-semibold tracking-[1.5px] uppercase pb-1 transition-all duration-300 border-b-2 ${
-                  selectedCategory === cat 
-                    ? 'text-primary border-primary' 
-                    : 'text-text-muted border-transparent hover:text-primary hover:border-primary/50'
-                }`}
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
+          {/* Bottom row: Desktop Categories */}
+          <div className="w-full">
+            {/* Desktop View: Horizontal Links */}
+            <div className="hidden sm:flex gap-8 overflow-x-auto no-scrollbar pb-2">
+              {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
+                <button
+                  key={cat}
+                  className={`filter-link whitespace-nowrap font-inter text-[11px] font-semibold tracking-[1.5px] uppercase pb-1 transition-all duration-300 border-b-2 ${
+                    selectedCategory === cat 
+                      ? 'text-primary border-primary' 
+                      : 'text-text-muted border-transparent hover:text-primary hover:border-primary/50'
+                  }`}
+                  onClick={() => setSelectedCategory(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </section>

@@ -4,7 +4,7 @@ import { formatCurrency } from '../../../utils/formatters';
 import { useCart } from '../../../hooks/useCart';
 import styles from './CartToast.module.css';
 
-export const CartToast = () => {
+export const CartToast = ({ setCurrentTab }) => {
   const [toastData, setToastData] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -107,6 +107,22 @@ export const CartToast = () => {
           )}
         </div>
       </div>
+      
+      {/* View Cart Button */}
+      {cartItem && (
+        <button 
+          className={styles.viewCartBtn}
+          onClick={() => {
+            setIsVisible(false);
+            if (setCurrentTab) {
+              window.history.pushState(null, '', '/cart');
+              setCurrentTab('cart');
+            }
+          }}
+        >
+          View Cart
+        </button>
+      )}
     </div>
   );
 };

@@ -299,7 +299,7 @@ void main() {
       <main className="pt-0">
         {/* Hero Section */}
         <section 
-          className="relative h-[600px] flex flex-col items-center justify-center text-center px-4 overflow-hidden"
+          className="relative min-h-[650px] md:min-h-[600px] md:h-[600px] py-24 md:py-0 flex flex-col items-center justify-center text-center px-4 overflow-hidden"
           style={{ 
             backgroundImage: "url('/Images/limited.png')",
             backgroundSize: 'cover',
@@ -310,7 +310,7 @@ void main() {
           {/* Dark Overlay matching Best Sellers */}
           <div className="absolute inset-0 bg-black/60 z-0"></div>
           
-          <div className="relative z-10 hero-content flex flex-col items-center justify-center">
+          <div className="relative z-10 hero-content flex flex-col items-center justify-center mt-12 md:mt-0 pb-16 md:pb-0">
             <div className="inline-flex items-center px-5 py-2 mb-6 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
               <span className="font-label-caps text-[10px] text-white tracking-[0.2em] uppercase">Limited Exclusive Offer</span>
             </div>
@@ -323,7 +323,7 @@ void main() {
               Enjoy special prices on selected sarees for a limited period. Elevate your wardrobe with premium collections while these exclusive offers last.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-[300px] sm:max-w-none mx-auto">
               <button 
                 onClick={() => setCurrentTab('catalog')}
                 className="btn-cloud w-full sm:w-auto px-10 py-4 bg-secondary text-white hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
@@ -341,8 +341,8 @@ void main() {
         </section>
 
         {/* Live Offer Countdown */}
-        <section className="relative -mt-24 z-20 px-margin-mobile md:px-margin-desktop">
-          <div className="max-w-7xl mx-auto bg-[#FDFBF7] border border-[#D4AF37]/40 p-10 md:p-14 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_20px_50px_rgba(179,138,74,0.15)] relative overflow-hidden">
+        <section className="relative -mt-12 md:-mt-24 z-20 px-4 md:px-margin-desktop">
+          <div className="max-w-7xl mx-auto bg-[#FDFBF7] border border-[#D4AF37]/40 p-8 md:p-14 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_20px_50px_rgba(179,138,74,0.15)] relative overflow-hidden">
             {/* Subtle decorative background pattern */}
             <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "radial-gradient(#D4AF37 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
             
@@ -379,7 +379,7 @@ void main() {
         {/* Featured Offer Banner */}
         <section className="py-16 px-margin-mobile md:px-margin-desktop bg-surface-container-low overflow-hidden">
           <div className="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-20">
-            <div className="relative group h-[600px] overflow-hidden rounded-xl">
+            <div className="hidden md:block relative group h-[600px] overflow-hidden rounded-xl">
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                 alt="A multi-generational Indian family dressed in opulent silk attire, celebrating together in a heritage courtyard." 
@@ -430,7 +430,7 @@ void main() {
             <h3 className="font-display-lg text-4xl md:text-5xl text-primary leading-tight">Exclusive Offers</h3>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
             {(showAllOffers ? [...galleryItems, ...galleryItems.slice(0, 2)] : galleryItems.slice(0, 4)).map((item, index) => {
               // Calculate a dummy original price for the offer display (40% higher)
               const originalPrice = Math.round(parseInt(item.price.replace(/[^\d]/g, '')) * 1.4);
@@ -454,23 +454,23 @@ void main() {
                   }
                   setCurrentTab('product-detail');
                 }}>
-                  <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
+                  <div className="relative w-full p-1.5 md:p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-3 md:mb-6 rounded-sm">
                     <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
                       <img 
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                         alt={item.title}
                         src={item.image}
                       />
-                      <div className="absolute top-3 left-3 bg-red-800 text-white px-2.5 py-1 shadow-sm border border-white/20">
-                        <span className="font-label-caps text-[8.5px] tracking-[0.2em] uppercase font-bold">FLAT 30% OFF</span>
+                      <div className="absolute top-1.5 left-1.5 md:top-3 md:left-3 bg-red-800 text-white px-1.5 py-0.5 md:px-2.5 md:py-1 shadow-sm border border-white/20">
+                        <span className="font-label-caps text-[6px] md:text-[8.5px] tracking-[0.1em] md:tracking-[0.2em] uppercase font-bold whitespace-nowrap leading-none block">FLAT 30% OFF</span>
                       </div>
                     </div>
                   </div>
-                  <div className="text-center flex-1 flex flex-col justify-start px-2 w-full">
-                    <h4 className="font-display-lg text-[19px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
-                    <div className="flex items-center justify-center gap-3 mt-1">
-                      <p className="text-[#5F6652]/60 line-through text-[12px]">₹ {originalPrice.toLocaleString('en-IN')}</p>
-                      <p className="text-red-800 font-label-caps text-[13px] tracking-[0.2em] font-bold">{item.price}</p>
+                  <div className="text-center flex-1 flex flex-col justify-start px-1 md:px-2 w-full">
+                    <h4 className="font-display-lg text-[13px] md:text-[19px] text-primary mb-1 md:mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
+                    <div className="flex items-center justify-center gap-1.5 md:gap-3 mt-0.5 md:mt-1 flex-wrap">
+                      <p className="text-[#5F6652]/60 line-through text-[9px] md:text-[12px]">₹ {originalPrice.toLocaleString('en-IN')}</p>
+                      <p className="text-red-800 font-label-caps text-[10px] md:text-[13px] tracking-[0.1em] md:tracking-[0.2em] font-bold">{item.price}</p>
                     </div>
                   </div>
                 </div>
@@ -508,10 +508,10 @@ void main() {
             </div>
           </div>
           
-          <div ref={galleryRef} className="flex overflow-x-auto gap-6 lg:gap-8 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div ref={galleryRef} className="flex overflow-x-auto gap-4 md:gap-6 lg:gap-8 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {[...galleryItems, ...galleryItems].map((item, index) => (
-              <div key={index} className="w-[280px] md:w-[340px] shrink-0 group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
-                <div className="relative w-full p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-6 rounded-sm">
+              <div key={index} className="w-[150px] md:w-[340px] shrink-0 group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
+                <div className="relative w-full p-1.5 md:p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-3 md:mb-6 rounded-sm">
                   <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
                     <img 
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
@@ -519,18 +519,18 @@ void main() {
                       src={item.image}
                     />
                     {item.tag && (
-                      <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 shadow-sm border border-white/40">
-                        <span className="text-[#B38A4A] font-label-caps text-[8.5px] tracking-[0.2em] uppercase font-bold">{item.tag}</span>
+                      <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-white/95 backdrop-blur-md px-1.5 md:px-2.5 py-0.5 md:py-1 shadow-sm border border-white/40">
+                        <span className="text-[#B38A4A] font-label-caps text-[6px] md:text-[8.5px] tracking-[0.1em] md:tracking-[0.2em] uppercase font-bold leading-none block">{item.tag}</span>
                       </div>
                     )}
                   </div>
                 </div>
-                <div className="text-center flex-1 flex flex-col justify-start px-2 w-full">
-                  <h4 className="font-display-lg text-[21px] text-primary mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
-                  <div className="flex items-center justify-center gap-3 mt-1">
-                    <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                    <p className="text-[#5F6652] font-label-caps text-[11px] tracking-[0.2em]">{item.price}</p>
-                    <div className="w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                <div className="text-center flex-1 flex flex-col justify-start px-1 md:px-2 w-full">
+                  <h4 className="font-display-lg text-[13px] md:text-[21px] text-primary mb-1 md:mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
+                  <div className="flex items-center justify-center gap-1.5 md:gap-3 mt-0.5 md:mt-1">
+                    <div className="w-2 md:w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                    <p className="text-[#5F6652] font-label-caps text-[9px] md:text-[11px] tracking-[0.1em] md:tracking-[0.2em]">{item.price}</p>
+                    <div className="w-2 md:w-4 h-[1px] bg-[#D4AF37]/40"></div>
                   </div>
                 </div>
               </div>
@@ -556,60 +556,60 @@ void main() {
               <h2 className="font-display-lg text-4xl md:text-[52px] leading-tight text-[#FDFBF7]">Bespoke Offer Tiers</h2>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 h-auto md:h-[360px] pt-2">
+            <div className="flex flex-row justify-center md:grid md:grid-cols-3 gap-3 md:gap-6 h-auto md:h-[360px] pt-2">
               {/* Card 1 */}
-              <div className="relative group overflow-hidden rounded-t-full rounded-b-md border border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setCurrentTab('catalog')}>
+              <div className="relative group overflow-hidden rounded-full md:rounded-t-full md:rounded-b-md border border-[#D4AF37] md:border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:block bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none" onClick={() => setCurrentTab('catalog')}>
                 <img 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                  className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                   alt="A vibrant Diwali celebration scene at a luxury estate." 
                   src="/Images/diwali.png"
                 />
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
+                <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
                 
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] bg-black/40 backdrop-blur-md border border-[#D4AF37]/30 p-5 flex flex-col items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
-                  <h3 className="font-display-lg text-2xl md:text-[28px] mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Diwali Offers</h3>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
-                    <span className="font-label-caps text-[9px] tracking-[0.2em] text-[#D4AF37]">UP TO 40% OFF</span>
-                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
+                <div className="md:absolute md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[85%] md:bg-black/40 md:backdrop-blur-md md:border border-[#D4AF37]/30 p-1 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-700 w-full h-full md:h-auto rounded-full md:rounded-none">
+                  <h3 className="font-display-lg text-[12px] md:text-[28px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Diwali Offers</h3>
+                  <div className="flex items-center gap-1 md:gap-2">
+                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
+                    <span className="font-label-caps text-[6px] md:text-[9px] tracking-[0.1em] md:tracking-[0.2em] text-[#D4AF37] whitespace-nowrap">UP TO 40%</span>
+                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
                   </div>
                 </div>
               </div>
               
               {/* Card 2 */}
-              <div className="relative group overflow-hidden rounded-t-full rounded-b-md border border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setCurrentTab('catalog')}>
+              <div className="relative group overflow-hidden rounded-full md:rounded-t-full md:rounded-b-md border border-[#D4AF37] md:border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:block bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none" onClick={() => setCurrentTab('catalog')}>
                 <img 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                  className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                   alt="Bridal silk sarees in shades of crimson and gold." 
                   src="/Images/bridal.png"
                 />
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
+                <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
                 
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] bg-black/40 backdrop-blur-md border border-[#D4AF37]/30 p-5 flex flex-col items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
-                  <h3 className="font-display-lg text-2xl md:text-[28px] mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Bridal Offers</h3>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
-                    <span className="font-label-caps text-[9px] tracking-[0.2em] text-[#D4AF37]">20% OFF TRUSSEAU</span>
-                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
+                <div className="md:absolute md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[85%] md:bg-black/40 md:backdrop-blur-md md:border border-[#D4AF37]/30 p-1 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-700 w-full h-full md:h-auto rounded-full md:rounded-none">
+                  <h3 className="font-display-lg text-[12px] md:text-[28px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Bridal Offers</h3>
+                  <div className="flex items-center gap-1 md:gap-2">
+                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
+                    <span className="font-label-caps text-[6px] md:text-[9px] tracking-[0.1em] md:tracking-[0.2em] text-[#D4AF37] whitespace-nowrap">20% OFF</span>
+                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
                   </div>
                 </div>
               </div>
               
               {/* Card 3 */}
-              <div className="relative group overflow-hidden rounded-t-full rounded-b-md border border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700" onClick={() => setCurrentTab('catalog')}>
+              <div className="relative group overflow-hidden rounded-full md:rounded-t-full md:rounded-b-md border border-[#D4AF37] md:border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:block bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none" onClick={() => setCurrentTab('catalog')}>
                 <img 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                  className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                   alt="A collection of vibrant festival sarees in bright colors." 
                   src="/Images/wedding.png"
                 />
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
+                <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
                 
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] bg-black/40 backdrop-blur-md border border-[#D4AF37]/30 p-5 flex flex-col items-center text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-700">
-                  <h3 className="font-display-lg text-2xl md:text-[28px] mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Wedding Combo</h3>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
-                    <span className="font-label-caps text-[9px] tracking-[0.2em] text-[#D4AF37]">SAVE ₹ 5,000 ON SETS</span>
-                    <div className="w-4 h-[1px] bg-[#D4AF37]"></div>
+                <div className="md:absolute md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[85%] md:bg-black/40 md:backdrop-blur-md md:border border-[#D4AF37]/30 p-1 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-700 w-full h-full md:h-auto rounded-full md:rounded-none">
+                  <h3 className="font-display-lg text-[12px] md:text-[28px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Combo Set</h3>
+                  <div className="flex items-center gap-1 md:gap-2">
+                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
+                    <span className="font-label-caps text-[6px] md:text-[9px] tracking-[0.1em] md:tracking-[0.2em] text-[#D4AF37] whitespace-nowrap">SAVE 5K</span>
+                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
                   </div>
                 </div>
               </div>

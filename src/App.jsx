@@ -297,7 +297,7 @@ function AppContent() {
       )}
 
       {/* Cart Popup Notification */}
-      <CartToast />
+      <CartToast setCurrentTab={handleNavbarNavigation} />
     </div>
   );
 }

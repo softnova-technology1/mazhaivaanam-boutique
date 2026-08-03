@@ -533,7 +533,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                 <button onClick={() => handleCatalogClick()} className={styles.drawerLink}>Shop</button>
               </li>
               <li className={styles.drawerItem}>
-                <button onClick={() => handleCatalogClick('Bridal Collection')} className={styles.drawerLink}>New Arrivals</button>
+                <button onClick={() => handleTabChange('new-arrivals')} className={styles.drawerLink}>New Arrivals</button>
               </li>
               
               {/* Accordion Collections */}
@@ -558,7 +558,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
 
 
               <li className={styles.drawerItem}>
-                <button onClick={() => handleCatalogClick('Handloom Collection')} className={styles.drawerLink}>Best Sellers</button>
+                <button onClick={() => handleTabChange('best-sellers')} className={styles.drawerLink}>Best Sellers</button>
               </li>
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('limited-offer')} className={`${styles.drawerLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>

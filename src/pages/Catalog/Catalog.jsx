@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
-<<<<<<< HEAD
 import { getBadgeClass } from '../../utils/badgeHelper';
-import { Heart, Star, ChevronDown, Search, ArrowRight, Share2 } from 'lucide-react';
-=======
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X } from 'lucide-react';
->>>>>>> a3c3c69533917a57d00556d4fa6c2a82f261a013
 import styles from './Catalog.module.css';
 
 // Premium Master Saree Collection (as defined in user's design)

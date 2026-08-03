@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
-import { Heart, Star, ChevronDown, Search, ArrowRight, Share2 } from 'lucide-react';
+import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X } from 'lucide-react';
 import styles from './Catalog.module.css';
 
 // Premium Master Saree Collection (as defined in user's design)
@@ -476,6 +476,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
 
@@ -696,9 +697,25 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
       {/* 3. Sidebar Filters + Product Grid Layout */}
       <main id="catalog-products-section" className={styles['main-layout']}>
-        <aside className={styles['filters-sidebar']}>
+        {/* Mobile Filter Overlay */}
+        {isMobileFilterOpen && (
+          <div 
+            className={styles['mobile-filter-overlay']} 
+            onClick={() => setIsMobileFilterOpen(false)} 
+          />
+        )}
+
+        <aside className={`${styles['filters-sidebar']} ${isMobileFilterOpen ? styles['mobile-filter-open'] : ''}`}>
           <div className={styles['sticky-sidebar-content']}>
-            <h2 className={styles['sidebar-title']}>Refine Selection</h2>
+            <div className={styles['sidebar-header-mobile']}>
+              <h2 className={styles['sidebar-title']}>Refine Selection</h2>
+              <button 
+                className={styles['close-filter-btn']}
+                onClick={() => setIsMobileFilterOpen(false)}
+              >
+                <X size={24} />
+              </button>
+            </div>
             <p className={styles['sidebar-subtitle']}>Curated for elegance</p>
 
             <div className={styles['space-y-6']}>
@@ -852,6 +869,12 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
           <div className={styles['products-header']}>
             <div className={styles['products-header-left']}>
               <p>Showing {products.length} of {ALL_PRODUCTS.length} Masterpieces</p>
+              <button 
+                className={styles['mobile-filter-toggle']} 
+                onClick={() => setIsMobileFilterOpen(true)}
+              >
+                <Filter size={16} /> Filter & Sort
+              </button>
             </div>
             
             <div className={styles['header-search-box']}>
@@ -1131,38 +1154,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
           )}
         </section>
       </main>
-
-      {/* 4. Curated Edit Section */}
-      <section className={styles['curated-edit-section']}>
-        <img 
-          src="/Images/shop1.png" 
-          alt="Curated Edit Background" 
-          className={styles['curated-bg-image']}
-        />
-        <div className={styles['curated-container']}>
-          <div className={styles['curated-image-box']}>
-            <div className={styles['curated-image-frame']}>
-              <img 
-                src="/Images/shop2.png" 
-                alt="Editorial Craftsmanship weaver loom closeup" 
-              />
-            </div>
-          </div>
-          <div className={styles['curated-info-box']}>
-            <h2 className={styles['curated-label']}>THE CURATED EDIT</h2>
-            <h3 className={styles['curated-heading']}>Masterpieces of the Monsoon Season</h3>
-            <p className={styles['curated-desc']}>
-              Each piece in our Curated Edit represents the pinnacle of artisanal skill. From the selection of the finest mulberry silk to the weeks of meticulous hand-weaving, these are more than sarees—they are heritage heirlooms crafted to last generations.
-            </p>
-            <div className={styles['curated-bullets']}>
-              <p className={styles['bullet-item']}>✓ 100% AUTHENTIC HANDLOOM</p>
-              <p className={styles['bullet-item']}>✓ SUSTAINABLY SOURCED FIBERS</p>
-              <p className={styles['bullet-item']}>✓ CERTIFIED SILK MARK</p>
-            </div>
-            <button className={styles['story-btn']}>DISCOVER THE STORY →</button>
-          </div>
-        </div>
-      </section>
 
       {/* 5. Newsletter Section */}
       <section className={styles['newsletter-section']}>

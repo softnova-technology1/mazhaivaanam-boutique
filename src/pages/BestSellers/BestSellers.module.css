@@ -573,10 +573,76 @@
 }
 
 @media (max-width: 768px) {
-  .toolbar { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .toolbar { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 16px; 
+    border: none !important;
+  }
   .toolbar-right { width: 100%; justify-content: space-between; }
-  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: 1fr; }
+  .page-header { padding: 20px 20px 20px; }
   .page-header h1 { font-size: 2rem; }
+  
+  .catalog-container {
+    padding: 0 40px;
+  }
+  
+  .product-grid {
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .product-image-container {
+    border-radius: 0;
+    aspect-ratio: 4 / 5;
+  }
+
+  .price-row {
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 4px 0 6px 0;
+  }
+
+  .product-title {
+    font-size: 0.95rem;
+  }
+
+  .current-price {
+    font-size: 13px;
+  }
+
+  .old-price {
+    font-size: 11px;
+  }
+
+  .discount-pill {
+    font-size: 8px;
+    padding: 2px 4px;
+    white-space: nowrap;
+  }
+
+  .bestseller-badge {
+    font-size: 7px;
+    padding: 3px 6px;
+    letter-spacing: 0.5px;
+    bottom: 8px;
+    left: 8px;
+  }
+
+  .cart-btn, .product-desc {
+    display: none !important;
+  }
+  
+  .hide-on-mobile {
+    display: none !important;
+  }
   
   /* Fix list view squishing on mobile */
   .grid-list .product-card {

@@ -1,5 +1,5 @@
 .contactPageContainer {
-  padding-bottom: 120px;
+  padding-bottom: 0;
   background-color: var(--bg-main);
 }
 
@@ -216,7 +216,8 @@
 
 /* Order Support Banner Styling */
 .trackingBannerSection {
-  padding: 80px 0 40px 0;
+  padding-top: 64px;
+  padding-bottom: 0;
   width: 100%;
 }
 
@@ -332,7 +333,8 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 64px;
-  padding: 80px 0;
+  padding-top: 64px;
+  padding-bottom: 0;
   align-items: start;
 }
 
@@ -617,7 +619,8 @@
 
 /* Boutique locations flagship store cards */
 .locationsSection {
-  padding: 80px 0;
+  padding-top: 64px;
+  padding-bottom: 0;
 }
 
 .locationsMainTitle {
@@ -761,7 +764,8 @@
 
 /* Locate Our Boutiques Maps Section */
 .mapsSection {
-  padding: 60px 0;
+  padding-top: 64px;
+  padding-bottom: 0;
   width: 100%;
 }
 
@@ -836,7 +840,8 @@
 
 /* FAQ Lounge list of accordions */
 .faqLoungeSection {
-  padding: 80px 0;
+  padding-top: 64px;
+  padding-bottom: 64px;
   max-width: 768px;
   margin: 0 auto;
 }

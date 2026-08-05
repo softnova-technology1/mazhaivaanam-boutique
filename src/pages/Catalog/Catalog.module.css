@@ -172,7 +172,10 @@
 
 /* 2. Signature Weaves Section */
 .signature-weaves-section {
-  padding: 40px 80px 20px;
+  padding-top: 64px;
+  padding-bottom: 0;
+  padding-left: 80px;
+  padding-right: 80px;
   background-color: var(--bg-main);
 }
 
@@ -254,7 +257,10 @@
 .main-layout {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 40px 80px 80px;
+  padding-top: 64px;
+  padding-bottom: 64px;
+  padding-left: 80px;
+  padding-right: 80px;
   display: flex;
   gap: 50px;
 }
@@ -1198,9 +1204,10 @@
 
 /* 5. Newsletter Section */
 .newsletter-section {
-  padding: 100px 20px;
- 
-  
+  padding-top: 64px;
+  padding-bottom: 64px;
+  padding-left: 20px;
+  padding-right: 20px;
   text-align: center;
 }
 
@@ -1304,7 +1311,7 @@
   .curated-heading { font-size: 2rem; }
   .curated-container { max-height: none; }
   .curated-image-box { display: none; }
-  .newsletter-section { padding: 0px 20px 40px; }
+  .newsletter-section { padding: 36px 20px; }
   .newsletter-box h3 { margin-top: 0; }
   .pagination {
     margin-top: 0px;
@@ -1663,7 +1670,7 @@
   }
   
   .newsletter-section {
-    padding: 50px 20px 20px;
+    padding: 36px 20px;
   }
   
   .newsletter-box h3 {

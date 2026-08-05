@@ -1163,17 +1163,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
         </section>
       </main>
 
-      {/* 5. Newsletter Section */}
-      <section className={styles['newsletter-section']}>
-        <div className={styles['newsletter-box']}>
-          <h3>Join the Family</h3>
-          <p>Subscribe to receive updates on new collections, private events, and the stories behind our weaves.</p>
-          <form className={styles['newsletter-form']} onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="YOUR EMAIL ADDRESS" required />
-            <button type="submit" className={styles['newsletter-submit-btn']}>SUBSCRIBE</button>
-          </form>
-        </div>
-      </section>
     </div>
   );
 };

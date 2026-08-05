@@ -50,7 +50,6 @@ const AnimatedCounter = ({ end, duration = 2000, suffix = '', decimals = 0 }) =>
 };
 
 export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) => {
-  const [email, setEmail] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const reviews = useMemo(() => [
@@ -132,14 +131,6 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
 
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (email.trim()) {
-      alert(`Thank you for subscribing, ${email}! Welcome to the Mazhai Vaanam Family.`);
-      setEmail('');
-    }
-  };
-
   const handleCategoryClick = (category) => {
     if (setCatalogFilter) {
       setCatalogFilter({ category: category, occasion: '', label: category });
@@ -179,7 +170,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
                 </button>
                 <button 
                   onClick={() => setCurrentTab && setCurrentTab('contact')} 
-                  className={`${styles['btn-custom']} pill`}
+                  className={styles['btn-custom']}
                 >
                   BOOK CONSULTATION
                 </button>
@@ -221,7 +212,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           </div>
           <span 
             onClick={() => setCurrentTab && setCurrentTab('collections')}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#D4AF37] text-[#2D3326] font-label-caps text-[10px] tracking-widest hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] border border-[#D4AF37] text-[#2D3326] font-label-caps text-[10px] tracking-widest hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-colors cursor-pointer"
           >
             VIEW ALL COLLECTIONS
             <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -234,11 +225,12 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
             <img 
               src="/Images/cotton3.png" 
               alt="Everyday Elegance" 
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+              className="absolute inset-0 w-full h-full object-cover group-hover:blur-[2px] group-hover:scale-105 transition-all duration-700 ease-in-out"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_80px_rgba(0,0,0,0.85)]"></div>
             <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">CASUAL & CHIC</span>
+              <span className="text-[#FFD700] font-label-caps text-[10px] font-bold tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">CASUAL & CHIC</span>
               <h3 className="font-display-lg text-3xl md:text-4xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Everyday Elegance</h3>
               <p className="text-white/80 text-sm font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
                 Breathable comfort meets sophisticated style. Premium cotton sarees crafted for seamless day-to-night wear.
@@ -255,11 +247,12 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
             <img 
               src="/Images/silk1.png" 
               alt="Festive Glow" 
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+              className="absolute inset-0 w-full h-full object-cover group-hover:blur-[2px] group-hover:scale-105 transition-all duration-700 ease-in-out"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_80px_rgba(0,0,0,0.85)]"></div>
             <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">CELEBRATION READY</span>
+              <span className="text-[#FFD700] font-label-caps text-[10px] font-bold tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">CELEBRATION READY</span>
               <h3 className="font-display-lg text-3xl md:text-4xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Festive Glow</h3>
               <p className="text-white/80 text-sm font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
                 Illuminate your celebrations. Exquisite pure silk sarees woven with rich traditional zari motifs.
@@ -276,11 +269,12 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
             <img 
               src="/Images/fancy1.png" 
               alt="Style Studio" 
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+              className="absolute inset-0 w-full h-full object-cover group-hover:blur-[2px] group-hover:scale-105 transition-all duration-700 ease-in-out"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_80px_rgba(0,0,0,0.85)]"></div>
             <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">MODERN TRENDS</span>
+              <span className="text-[#FFD700] font-label-caps text-[10px] font-bold tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">MODERN TRENDS</span>
               <h3 className="font-display-lg text-3xl md:text-4xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Style Studio</h3>
               <p className="text-white/80 text-sm font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
                 Step into the spotlight. Fashion-forward fancy sarees featuring modern patterns and unique textures.
@@ -297,11 +291,12 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
             <img 
               src="/Images/black1.png" 
               alt="Black Magic" 
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+              className="absolute inset-0 w-full h-full object-cover group-hover:blur-[2px] group-hover:scale-105 transition-all duration-700 ease-in-out"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/90 via-[#111111]/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_80px_rgba(0,0,0,0.85)]"></div>
             <div className="relative z-10 p-8 md:p-12 flex flex-col justify-end w-full h-full mt-auto pointer-events-none">
-              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">BOLD & BEAUTIFUL</span>
+              <span className="text-[#FFD700] font-label-caps text-[10px] font-bold tracking-[0.3em] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] mb-3 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">BOLD & BEAUTIFUL</span>
               <h3 className="font-display-lg text-3xl md:text-4xl text-white mb-2 transform group-hover:-translate-y-2 transition-transform duration-500">Black Magic</h3>
               <p className="text-white/80 text-sm font-body font-light mb-4 leading-relaxed pr-6 transform group-hover:-translate-y-2 transition-transform duration-500 delay-75 pointer-events-auto">
                 Embrace the midnight allure. Deeply glamorous dark-hued masterpieces for unforgettable evenings.
@@ -326,7 +321,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           <div className="flex justify-center md:justify-end pb-2 mt-2 md:mt-0">
             <button 
               onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
-              className="pill px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[8px] hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
+              className="px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[10px] hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
             >
               VIEW ALL <span className="text-[14px]">→</span>
             </button>
@@ -538,21 +533,56 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
         </div>
       </section>
 
-      {/* 9. Newsletter Block */}
+      {/* 9. WhatsApp Group / Family Block */}
       <section className={`${styles['newsletter-section']} container`}>
         <div className={styles['newsletter-box']}>
-          <h2>Join the Mazhai Vaanam Family</h2>
-          <p>Be the first to discover our new collections, artisan stories, and heritage previews.</p>
-          <form onSubmit={handleSubscribe} className={styles['newsletter-form']}>
-            <input 
-              type="email" 
-              placeholder="YOUR EMAIL ADDRESS" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <button type="submit">SUBSCRIBE</button>
-          </form>
+          <h2>Join our Mazhai Vaanam Family</h2>
+          <p>Be the first to discover our new collections, artisan stories, and heritage previews directly inside our exclusive WhatsApp group.</p>
+          <div className="flex justify-center mt-6">
+            <a 
+              href="https://chat.whatsapp.com/GzB9oJp0gNfIq2W5N7tK2P" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2"
+              style={{
+                display: 'inline-flex',
+                backgroundColor: 'var(--primary-dark)',
+                color: '#FFFFFF',
+                padding: '16px 40px',
+                borderRadius: '10px',
+                fontFamily: 'var(--font-body)',
+                fontSize: '12px',
+                fontWeight: '600',
+                letterSpacing: '0.15em',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                margin: '0 auto'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--accent)';
+                e.currentTarget.style.color = 'var(--primary-dark)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--primary-dark)';
+                e.currentTarget.style.color = '#FFFFFF';
+              }}
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="16" 
+                height="16" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+              >
+                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+              </svg>
+              JOIN OUR FAMILY
+            </a>
+          </div>
         </div>
       </section>
 

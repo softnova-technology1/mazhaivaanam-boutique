@@ -12,7 +12,7 @@
   color: white;
   padding: 16px 32px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -89,10 +89,10 @@
 }
 
 .heroSubtitle {
-  font-family: 'Kaushan Script', cursive;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   font-weight: 400;
-  letter-spacing: 1px;
+  letter-spacing: 0px;
   color: var(--accent);
   text-transform: none;
   margin-bottom: 8px;
@@ -101,13 +101,14 @@
 }
 
 .heroTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 42px;
   color: white;
   line-height: 1.15;
   margin: 0 0 40px 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 @media (max-width: 768px) {
   .heroTitle {
@@ -135,7 +136,7 @@
   background-color: var(--primary);
   color: white;
   padding: 20px 48px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -182,7 +183,7 @@
   align-items: center;
   gap: 10px;
   color: rgba(255, 255, 255, 0.9);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -239,7 +240,7 @@
 }
 
 .trackingTag {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -249,15 +250,16 @@
 }
 
 .trackingInfo h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   color: var(--primary);
   margin: 0 0 12px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .trackingInfo p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -270,7 +272,7 @@
   border: none;
   border-radius: 24px 0 24px 0 !important;
   padding: 18px 40px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -361,15 +363,16 @@
 }
 
 .formTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   color: var(--primary);
   margin: 0 0 8px 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .formDesc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-muted);
   margin-bottom: 48px;
@@ -394,7 +397,7 @@
   outline: none !important;
   color: var(--text-main);
   padding: 4px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.6;
 }
@@ -411,7 +414,7 @@
   transition: all 0.2s ease-out;
   pointer-events: none;
   color: var(--outline);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -434,7 +437,7 @@
   outline: none !important;
   color: var(--text-main);
   padding: 6px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -444,7 +447,7 @@
   position: absolute;
   left: 0;
   top: -12px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -459,7 +462,7 @@
   outline: none !important;
   color: var(--text-main);
   padding: 4px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   resize: none;
 }
@@ -497,7 +500,7 @@
 }
 
 .attachmentBtnLabel span {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -514,7 +517,7 @@
   background-color: var(--primary-dark);
   color: white;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -541,15 +544,16 @@
 }
 
 .detailsTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   color: var(--primary);
   margin: 0 0 24px 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .detailsDesc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -579,22 +583,23 @@
 }
 
 .infoCardText h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 16px;
   color: var(--primary-dark);
   margin: 0 0 4px 0;
-  font-weight: 600;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .infoCardText p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-main);
   margin: 0 0 4px 0;
 }
 
 .infoCardText span {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
   display: block;
@@ -602,7 +607,7 @@
 
 .whatsappLink,
 .emailLink {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   color: #B5893D;
@@ -624,13 +629,14 @@
 }
 
 .locationsMainTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   color: var(--primary);
   margin: 0 0 64px 0;
   text-align: center;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .locationsGrid {
   display: grid;
@@ -693,12 +699,13 @@
 }
 
 .locationTitleHeader {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 22px;
   color: var(--primary);
   margin: 0 0 16px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .lineAccent::after {
   content: '';
@@ -710,7 +717,7 @@
 }
 
 .locationAddressText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -718,7 +725,7 @@
 }
 
 .locationHoursLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -728,7 +735,7 @@
 }
 
 .locationHoursValue {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -741,7 +748,7 @@
   background-color: var(--primary-dark);
   color: white;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -775,7 +782,7 @@
 }
 
 .mapsTag {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3em;
@@ -785,12 +792,13 @@
 }
 
 .mapsHeader h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   color: var(--primary);
   margin: 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .divider {
   width: 60px;
@@ -822,12 +830,13 @@
 }
 
 .mapCard h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 18px;
   color: var(--primary-dark);
   margin: 0 0 16px 0;
-  font-weight: 600;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .mapFrameWrapper {
   overflow: hidden;
@@ -847,13 +856,14 @@
 }
 
 .faqTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   color: var(--primary);
   margin-bottom: 48px;
   text-align: center;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .faqAccordionsWrapper {
   display: flex;
@@ -877,12 +887,13 @@
 }
 
 .faqQuestionHeader h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 18px;
   color: var(--text-main);
   margin: 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .faqChevronIcon {
   color: var(--text-muted);
@@ -905,7 +916,7 @@
 }
 
 .faqAnswerWrapper p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-muted);
   line-height: 1.6;

@@ -23,18 +23,22 @@
 }
 
 .login-card h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   color: var(--primary-dark);
   margin-bottom: 8px;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .login-subtitle {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-heading);
   font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 32px;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .auth-error-alert {
   background-color: #fef2f2;

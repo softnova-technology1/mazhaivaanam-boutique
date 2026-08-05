@@ -2,7 +2,7 @@
   width: 100%;
   padding-top: 20px;
   background-color: var(--bg-main);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   color: var(--text-main);
 }
 
@@ -75,17 +75,17 @@
 }
 
 .hero-content-box h1 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 3rem;
   color: #E6C687;
   margin: 0 0 16px 0;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0px;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
 }
 
 .hero-content-box p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   color: rgba(255, 249, 236, 0.9);
   line-height: 1.6;
@@ -355,7 +355,7 @@
 }
 
 .stats-lbl {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -367,12 +367,12 @@
 }
 
 .stats-val {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.8rem;
   color: #5c4d32;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: 0px;
   position: relative;
   z-index: 1;
 }
@@ -396,12 +396,13 @@
 }
 
 .section-heading-bar h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.8rem;
   color: var(--primary);
   margin: 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .sort-tag {
   font-size: 10px;
@@ -436,12 +437,13 @@
 }
 
 .empty-fallback-box h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   color: var(--primary);
   margin: 0 0 8px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .empty-fallback-box p {
   font-size: 13.5px;
@@ -590,7 +592,7 @@
   border: none;
   border-radius: 24px 0 24px 0 !important;
   padding: 12px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -648,13 +650,14 @@
 }
 
 .card-description-box h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.3rem;
   color: var(--text-main);
   margin: 0 0 8px 0;
-  font-weight: 900;
+  font-weight: 400;
   cursor: pointer;
-}
+
+  letter-spacing: 0px;}
 
 .card-prices-row {
   display: flex;
@@ -717,12 +720,13 @@
 }
 
 .mood-header h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.8rem;
   color: var(--primary);
   margin: 0 0 8px 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .mood-header p {
   font-size: 14px;
@@ -790,11 +794,12 @@
 }
 
 .mood-info h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   margin: 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 /* Recommended Section */
 .recommended-section {
@@ -811,12 +816,13 @@
 }
 
 .recommended-header h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.8rem;
   color: var(--primary);
   margin: 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .carousel-arrows {
   display: flex;
@@ -894,13 +900,14 @@
 }
 
 .rec-card h5 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.1rem;
   color: var(--text-main);
   margin: 0 0 4px 0;
   font-weight: 400;
   cursor: pointer;
-}
+
+  letter-spacing: 0px;}
 
 .rec-price {
   font-size: 14px;
@@ -1016,10 +1023,10 @@
 }
 
 .wardrobe-subtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 3.5px;
+  font-weight: 400;
+  letter-spacing: 0px;
   color: #E6C687;
   margin-bottom: 12px;
   text-transform: uppercase;
@@ -1028,12 +1035,12 @@
 }
 
 .wardrobe-banner-content h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 3.4rem;
   color: #FFF9EC;
   margin: 0 0 16px 0;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0px;
   text-shadow: 0 4px 25px rgba(0, 0, 0, 0.8);
 }
 
@@ -1050,7 +1057,7 @@
 }
 
 .wardrobe-banner-content p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   color: rgba(255, 249, 236, 0.92);
   line-height: 1.7;
@@ -1071,7 +1078,7 @@
   border: 1.5px solid #E6C687 !important;
   border-radius: 40px !important;
   padding: 16px 44px !important;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2.5px;
@@ -1130,23 +1137,24 @@
 }
 
 .recent-subtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 3px;
+  font-weight: 400;
+  letter-spacing: 0px;
   color: #E6C687;
   margin-bottom: 6px;
   text-transform: uppercase;
 }
 
 .recent-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 2.1rem;
   color: #FFF9EC;
   margin: 0 0 12px 0;
   font-weight: 400;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
+
+  letter-spacing: 0px;}
 
 .recent-gold-line {
   width: 60px;
@@ -1211,7 +1219,7 @@
 }
 
 .recent-category {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -1221,15 +1229,16 @@
 }
 
 .recent-name {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.15rem;
   color: #FFF9EC;
   margin: 0 0 4px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .recent-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 700;
   color: #F4E3B4;

@@ -5,6 +5,8 @@
   margin: 0 auto;
   padding: 40px 80px 64px 80px;
   font-family: 'Inter', sans-serif;
+  padding: 40px 80px 120px 80px;
+  font-family: var(--font-body);
   color: var(--text-main);
   background-color: var(--bg-main);
 }
@@ -44,7 +46,7 @@
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 40px;
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-family: var(--font-body);
 }
 
 .breadcrumb-link {
@@ -58,7 +60,7 @@
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-family: var(--font-body);
   cursor: pointer;
   padding: 6px 12px;
   border-radius: 20px;
@@ -94,7 +96,7 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-family: var(--font-body);
   padding: 6px 14px;
   background-color: rgba(200, 163, 77, 0.08);
   border-radius: 20px;
@@ -355,16 +357,17 @@
 }
 
 .info-header h1 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   line-height: 1.25;
   color: var(--primary);
   margin: 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .product-one-liner {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-style: italic;
   font-size: 1.05rem;
   color: var(--text-muted);
@@ -478,7 +481,7 @@
 }
 
 .final-price-amt {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 1.8rem;
   color: var(--primary);
   margin: 0;
@@ -563,7 +566,7 @@
   border: 1px dashed rgba(181, 137, 61, 0.4);
   padding: 12px 18px;
   border-radius: 4px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--primary-dark);
   margin-bottom: 24px;
@@ -613,7 +616,7 @@
 }
 
 .qty-value {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   color: var(--primary-dark);
@@ -641,7 +644,7 @@
   border-radius: 6px !important;
   border: none !important;
   padding: 17px 28px !important;
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-family: var(--font-body);
   font-size: 10.5px !important;
   font-weight: 700 !important;
   letter-spacing: 2.5px !important;
@@ -705,7 +708,7 @@
   color: var(--primary-dark) !important;
   border: 1.5px solid var(--primary) !important;
   padding: 17px 24px !important;
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-family: var(--font-body);
   font-size: 10.5px !important;
   font-weight: 700 !important;
   letter-spacing: 2.5px !important;
@@ -750,7 +753,7 @@
 /* Classic Detailed Description */
 .classic-description {
   margin-top: 32px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   line-height: 1.7;
   color: var(--text-main);
@@ -888,12 +891,13 @@
 }
 
 .card-header h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   color: var(--primary-dark);
   margin: 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .specs-intro {
   font-size: 13.5px;
@@ -958,12 +962,13 @@
 
 .rating-score-circle h2 {
   font-size: 2.2rem;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   margin: 0;
   color: var(--primary-dark);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.1;
-}
+
+  letter-spacing: 0px;}
 
 .stars-row-small {
   display: flex;
@@ -1065,12 +1070,13 @@
 }
 
 .craft-header h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   margin: 0;
   font-weight: 400;
   color: var(--text-main);
-}
+
+  letter-spacing: 0px;}
 
 .craft-content-grid {
   display: grid;
@@ -1181,12 +1187,13 @@
 }
 
 .timeline-step h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.25rem;
   color: var(--primary);
   margin: 0 0 6px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .timeline-step p {
   font-size: 13.5px;
@@ -1218,12 +1225,13 @@
 }
 
 .specs-col h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.4rem;
   color: var(--primary);
   margin: 0 0 10px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .spec-table-row {
   display: flex;
@@ -1293,11 +1301,12 @@
 }
 
 .packaging-text-block h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 2.4rem;
   margin: 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .packaging-text-block p {
   font-size: 14.5px;
@@ -1366,12 +1375,13 @@
 }
 
 .reviews-section-header h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 2rem;
   margin: 0 0 6px 0;
   font-weight: 400;
   color: var(--primary);
-}
+
+  letter-spacing: 0px;}
 
 .reviews-section-header p {
   font-size: 14px;
@@ -1499,7 +1509,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -1540,12 +1550,13 @@
 }
 
 .review-form-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.35rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--primary-dark);
   margin: 0 0 6px 0;
-}
+
+  letter-spacing: 0px;}
 
 .review-form-sub {
   font-size: 12.5px;
@@ -1606,7 +1617,7 @@
   border-bottom: 1.5px solid rgba(181, 137, 61, 0.35);
   padding: 10px 0;
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   color: var(--text-main);
   outline: none;
   transition: border-color 0.25s ease;
@@ -1631,7 +1642,7 @@
   border: none !important;
   border-radius: 5px !important;
   padding: 13px 32px !important;
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-family: var(--font-body);
   font-size: 10px !important;
   font-weight: 700 !important;
   letter-spacing: 2px !important;
@@ -1726,12 +1737,12 @@
 }
 
 .fabric-specs-col-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 400;
   color: var(--primary);
   margin: 0 0 28px 0;
-  letter-spacing: 0.2px;
+  letter-spacing: 0px;
 }
 
 .fabric-specs-divider {
@@ -1800,11 +1811,13 @@
 }
 
 .related-title-block h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: 24px;
   color: var(--primary-dark);
   margin-bottom: 4px;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .related-title-block p {
   font-size: 13px;
@@ -1916,12 +1929,13 @@
 }
 
 .related-info h4 {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-main);
   margin-bottom: 4px;
-}
+
+  letter-spacing: 0px;}
 
 .related-price {
   font-size: 13px;

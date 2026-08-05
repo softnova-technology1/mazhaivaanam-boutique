@@ -17,19 +17,22 @@
 }
 
 .title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 48px;
   color: var(--primary-dark);
   margin-bottom: 16px;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .subtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: 16px;
   color: var(--text-muted);
   line-height: 1.6;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .content {
   max-width: 1200px;
@@ -41,26 +44,28 @@
 }
 
 .policySection h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 24px;
   color: var(--primary);
   margin-bottom: 16px;
-  font-weight: 500;
+  font-weight: 400;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 8px;
-}
+
+  letter-spacing: 0px;}
 
 .policySection h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 20px;
   color: var(--primary-dark);
   margin-top: 24px;
   margin-bottom: 12px;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .policySection p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-main);
   line-height: 1.8;
@@ -74,7 +79,7 @@
 }
 
 .policySection ul li {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-main);
   line-height: 1.8;

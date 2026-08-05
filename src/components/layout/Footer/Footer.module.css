@@ -53,8 +53,8 @@
 .footer-brand h3 {
   font-family: var(--font-heading);
   font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 400;
+  letter-spacing: 0px;
   color: #ffffff;
   margin: 0;
   transition: color 0.3s ease;
@@ -65,13 +65,15 @@
 }
 
 .footer-brand p {
-  font-family: var(--font-body);
+  font-family: var(--font-heading);
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.6;
   max-width: 300px;
   margin: 0;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .social-icons {
   display: flex;
@@ -109,10 +111,10 @@
 .footer-link-group h4 {
   font-family: var(--font-heading);
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #ffffff;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0px;
   margin: 0 0 6px 0;
   position: relative;
   width: fit-content;

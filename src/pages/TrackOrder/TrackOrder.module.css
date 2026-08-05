@@ -48,7 +48,7 @@
 }
 
 .badgeLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3em;
@@ -58,13 +58,14 @@
 }
 
 .mainDisplayTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 56px;
   color: var(--primary);
   margin: 0 0 24px 0;
   line-height: 1.1;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 @media (max-width: 768px) {
   .mainDisplayTitle {
@@ -73,7 +74,7 @@
 }
 
 .heroSubText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 18px;
   color: var(--text-muted);
   line-height: 1.7;
@@ -124,7 +125,7 @@
 }
 
 .inputLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -139,7 +140,7 @@
   border: none !important;
   outline: none !important;
   color: var(--primary);
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 20px;
   font-weight: 500;
   padding: 4px 0;
@@ -151,7 +152,7 @@
 }
 
 .errorAlertText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--error);
   margin-top: 16px;
@@ -163,7 +164,7 @@
   background-color: var(--primary-dark);
   color: white;
   padding: 20px 48px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -264,7 +265,7 @@
 }
 
 .statusLiveOrderId {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 28px;
   font-weight: 500;
   color: var(--primary);
@@ -272,7 +273,7 @@
 }
 
 .arrivalScheduleText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   margin: 0;
@@ -288,7 +289,7 @@
   color: var(--secondary);
   border: 1px solid rgba(119, 90, 4, 0.2);
   padding: 8px 24px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -327,7 +328,7 @@
 }
 
 .metaLabelText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -336,15 +337,16 @@
 }
 
 .headlineDetailsText {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 20px;
   color: var(--primary);
   margin: 0 0 4px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .courierTrackLink {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   color: var(--secondary);
@@ -357,7 +359,7 @@
 }
 
 .updatedAgoText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   color: var(--text-muted);
   margin: 0;
@@ -376,10 +378,10 @@
 }
 
 .timelineLabelTitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-weight: 400;
+  letter-spacing: 0px;
   color: var(--secondary);
   margin: 0 0 48px 0;
 }
@@ -477,7 +479,7 @@
 }
 
 .timelineNodeText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -493,7 +495,7 @@
 }
 
 .timelineDateText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 4px;
@@ -550,7 +552,7 @@
 }
 
 .mapLocationMeta {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -559,12 +561,13 @@
 }
 
 .mapLocationValue {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 18px;
   color: var(--primary);
   margin: 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .mapCountdownBadge {
   position: absolute;
@@ -577,7 +580,7 @@
 }
 
 .countdownMetaLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -592,14 +595,15 @@
 }
 
 .countdownDaysValue {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 40px;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1;
-}
+
+  letter-spacing: 0px;}
 
 .countdownDaysUnit {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -617,15 +621,16 @@
 }
 
 .packagingHeadline {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--primary);
   margin: 0 0 16px 0;
-}
+
+  letter-spacing: 0px;}
 
 .packagingDescription {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -734,25 +739,26 @@
 }
 
 .btsBadgeSubheadline {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3em;
+  font-weight: 400;
+  letter-spacing: 0px;
   color: var(--secondary);
   display: block;
   margin-bottom: 16px;
 }
 
 .btsMainTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 40px;
   color: var(--primary);
   margin: 0 0 32px 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .btsNarrativeQuote {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 18px;
   color: var(--text-muted);
   font-style: italic;
@@ -766,7 +772,7 @@
 }
 
 .statsValueNumber {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 24px;
   color: var(--primary);
   margin: 0 0 4px 0;
@@ -774,7 +780,7 @@
 }
 
 .statsValueMeta {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -802,15 +808,16 @@
 }
 
 .pricingSectionTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   color: var(--primary);
   margin: 0 0 16px 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .pricingSectionDesc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-muted);
   margin-bottom: 48px;
@@ -831,20 +838,20 @@
 }
 
 .tableRowItemName {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-muted);
 }
 
 .tableRowItemPrice {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 20px;
   color: var(--primary);
   font-weight: 500;
 }
 
 .complimentaryBadge {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -886,7 +893,7 @@
 }
 
 .burgundyCardHeadline {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 20px;
   font-weight: 400;
   letter-spacing: 0.15em;
@@ -903,7 +910,7 @@
 }
 
 .burgundyMetaText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -912,7 +919,7 @@
 }
 
 .burgundyTotalPaidAmount {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 40px;
   font-weight: 400;
   line-height: 1;
@@ -924,7 +931,7 @@
 }
 
 .burgundyMetaSavings {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -933,7 +940,7 @@
 }
 
 .burgundySavingsValueAmount {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 24px;
   color: var(--secondary-fixed);
   margin: 0;
@@ -955,13 +962,13 @@
 }
 
 .pointsLabelText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   opacity: 0.85;
 }
 
 .pointsValueCount {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 700;
 }
@@ -987,12 +994,12 @@
 }
 
 .footerPaidLabel {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 24px;
 }
 
 .footerPaidAmount {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 40px;
   color: var(--secondary-fixed);
   font-weight: 700;

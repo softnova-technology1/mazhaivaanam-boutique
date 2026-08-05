@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
 }
 
@@ -55,11 +55,13 @@
 }
 
 .sidebar-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 20px;
   color: var(--primary);
   margin: 0 0 20px 0;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .filter-widget {
   margin-bottom: 20px;
@@ -74,7 +76,7 @@
   align-items: center;
   background: none;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   font-weight: 500;
   color: var(--primary);
@@ -101,7 +103,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   color: var(--text-main);
   cursor: pointer;
@@ -124,14 +126,16 @@
 }
 
 .collection-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 28px;
   color: var(--primary);
   margin: 0 0 20px 0;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .collection-description {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-main);
   line-height: 1.6;
@@ -149,7 +153,7 @@
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   margin-bottom: 30px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   color: var(--text-main);
 }
@@ -177,7 +181,7 @@
   gap: 5px;
   background: none;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -203,7 +207,7 @@
   text-align: left;
   background: none;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   cursor: pointer;
   color: var(--text-main);
@@ -303,7 +307,7 @@
   left: 0;
   background-color: #d32f2f; /* Matching the red save tag */
   color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   padding: 4px 8px;
@@ -320,7 +324,7 @@
 }
 
 .product-name {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 400;
   color: var(--primary);
@@ -341,14 +345,14 @@
 }
 
 .current-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   font-weight: 600;
   color: #d32f2f; /* Highlighted price */
 }
 
 .old-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
   text-decoration: line-through;
@@ -360,7 +364,7 @@
   color: #ffffff;
   border: none;
   padding: 12px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
@@ -402,7 +406,7 @@
   color: var(--primary);
   border: 1px solid var(--border-color);
   padding: 10px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -527,18 +531,19 @@
 }
 
 .qv-title {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--primary);
   margin: 0 0 15px 0;
   line-height: 1.4;
-}
+
+  letter-spacing: 0px;}
 
 .qv-badge {
   background-color: var(--primary-dark);
   color: #fff;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   padding: 4px 10px;
@@ -547,7 +552,7 @@
 }
 
 .qv-vendor {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -566,21 +571,21 @@
 }
 
 .qv-label {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-main);
   min-width: 70px;
 }
 
 .qv-current-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 20px;
   font-weight: 600;
   color: var(--primary);
 }
 
 .qv-old-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   text-decoration: line-through;
@@ -620,7 +625,7 @@
 .quantity-selector span {
   width: 40px;
   text-align: center;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   border-left: 1px solid var(--border-color);
   border-right: 1px solid var(--border-color);
@@ -638,7 +643,7 @@
   flex: 1;
   padding: 14px 0;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;

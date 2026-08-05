@@ -10,7 +10,7 @@
   padding: 16px;
   z-index: 9999;
   transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
 }
 
 .cartToastContainer.visible {
@@ -200,7 +200,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }

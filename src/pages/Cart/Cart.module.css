@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -45,16 +45,17 @@
 }
 
 .pageTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 3rem;
   color: var(--primary);
   line-height: 1.2;
   margin: 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .pageTagline {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   color: var(--text-muted);
   margin-top: 8px;
@@ -166,7 +167,7 @@
 }
 
 .itemName {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 24px;
   font-weight: 500;
   color: var(--primary);
@@ -174,7 +175,7 @@
 }
 
 .itemPrice {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 24px;
   font-weight: 500;
   color: var(--text-main);
@@ -183,7 +184,7 @@
 }
 
 .itemCollection {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -202,14 +203,14 @@
 }
 
 .specLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   opacity: 0.6;
 }
 
 .specValue {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 500;
   color: var(--text-main);
@@ -271,7 +272,7 @@
 }
 
 .quantityValue {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
@@ -285,7 +286,7 @@
 }
 
 .wishlistBtn {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -318,7 +319,7 @@
 }
 
 .removeBtn {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -377,15 +378,16 @@
 }
 
 .giftTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--primary);
   margin: 0;
-}
+
+  letter-spacing: 0px;}
 
 .giftDescription {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   margin-top: 4px;
@@ -468,7 +470,7 @@
 }
 
 .giftOptionText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -487,14 +489,15 @@
 }
 
 .summaryTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--primary);
   margin: 0;
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(200, 163, 77, 0.2);
-}
+
+  letter-spacing: 0px;}
 
 .couponBlock {
   display: flex;
@@ -503,7 +506,7 @@
 }
 
 .couponLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -528,7 +531,7 @@
   background: transparent;
   border: none;
   outline: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
@@ -542,7 +545,7 @@
 }
 
 .couponBtn {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -565,7 +568,7 @@
   align-items: center;
   background-color: rgba(217, 119, 6, 0.1);
   padding: 8px 12px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--accent-hover);
   border: 1px dashed rgba(217, 119, 6, 0.3);
@@ -583,7 +586,7 @@
 }
 
 .couponError {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--error);
   margin-top: 4px;
@@ -599,7 +602,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
 }
@@ -613,7 +616,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--accent-hover);
 }
@@ -630,7 +633,7 @@
 }
 
 .savingsText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -648,7 +651,7 @@
 }
 
 .totalLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -659,7 +662,7 @@
 }
 
 .totalAmount {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 32px;
   font-weight: 700;
   color: var(--primary);
@@ -667,7 +670,7 @@
 }
 
 .taxIncluded {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-style: italic;
   color: var(--text-muted);
@@ -681,7 +684,7 @@
   background-color: var(--primary-container);
   color: var(--text-on-primary);
   padding: 20px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -745,7 +748,7 @@
 }
 
 .trustBadgeText {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -765,20 +768,23 @@
 }
 
 .sectionTitleBlock h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 32px;
   font-weight: 400;
   color: var(--primary);
   margin: 0;
-}
+
+  letter-spacing: 0px;}
 
 .sectionTitleBlock p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-heading);
   font-size: 16px;
   color: var(--text-muted);
   opacity: 0.7;
   margin-top: 8px;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .carouselArrows {
   display: flex;
@@ -894,7 +900,7 @@
   border: none;
   color: var(--primary);
   padding: 12px 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -913,7 +919,7 @@
 }
 
 .recName {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 16px;
   color: var(--primary);
   margin: 0 0 4px 0;
@@ -921,7 +927,7 @@
 }
 
 .recPrice {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
@@ -936,7 +942,7 @@
   background-color: var(--primary-dark);
   color: white;
   padding: 16px 24px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   box-shadow: var(--shadow-lg);
@@ -965,14 +971,16 @@
 }
 
 .emptyCartTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 28px;
   color: var(--primary);
   margin: 0;
-}
+
+  font-weight: 400;
+  letter-spacing: 0px;}
 
 .emptyCartDesc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-muted);
   line-height: 1.6;

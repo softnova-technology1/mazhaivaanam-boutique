@@ -41,7 +41,7 @@
 }
 
 .offer-value {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-weight: 800;
   font-size: 15px;
   line-height: 1;
@@ -151,17 +151,18 @@
 }
 
 .title-row h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.3rem;
   color: var(--text-main);
   margin: 0;
-  font-weight: 900;
+  font-weight: 400;
   flex-grow: 1;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
+
+  letter-spacing: 0px;}
 
 .rating-badge-inline {
   display: flex;
@@ -174,7 +175,7 @@
   border-radius: 12px;
   font-size: 11px;
   font-weight: 700;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   white-space: nowrap;
   flex-shrink: 0;
   margin-left: 8px;
@@ -182,7 +183,7 @@
 }
 
 .product-description {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--text-muted);
   line-height: 1.4;
@@ -213,14 +214,14 @@
 }
 
 .current-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   font-weight: 600;
   color: var(--text-main);
 }
 
 .old-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   color: var(--text-muted);
   text-decoration: line-through;
@@ -241,14 +242,14 @@
   background-color: var(--primary-dark);
   color: #ffffff;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.4s ease;
   margin-top: auto;
-  border-radius: 24px 0 24px 0;
+  border-radius: 10px;
   position: relative;
   overflow: hidden;
 }
@@ -267,7 +268,6 @@
 
 .add-cart-btn:hover {
   background-color: var(--primary-dark);
-  border-radius: 0 24px 0 24px;
 }
 
 .add-cart-btn:hover::before {

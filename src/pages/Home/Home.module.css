@@ -5,7 +5,7 @@
 .home-wrapper {
   background-color: var(--bg-main);
   color: var(--text-main);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   overflow-x: clip;
 }
 
@@ -87,7 +87,7 @@
 }
 
 .hero-slide-tag {
-  font-family: 'Kaushan Script', cursive;
+  font-family: var(--font-body);
   font-size: 2.2rem;
   font-weight: 400;
   letter-spacing: 1px;
@@ -97,7 +97,7 @@
 }
 
 .hero-content h1 {
-  font-family: 'Kaushan Script', cursive;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 4.5vw, 4.5rem);
   font-weight: 400;
   letter-spacing: 0px;
@@ -123,7 +123,7 @@
 }
 
 .hero-content p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.9);
@@ -177,7 +177,7 @@
 .btn-explore,
 .btn-custom {
   padding: 18px 36px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 2px;
@@ -204,7 +204,7 @@
   background-color: transparent !important;
   border: 1px solid #FFFFFF !important;
   color: #FFFFFF !important;
-  border-radius: 9999px !important;
+  border-radius: 10px !important;
 }
 
 .btn-custom:hover {
@@ -322,7 +322,7 @@
 }
 
 .stats-num {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 48px;
   color: var(--primary);
 }
@@ -341,7 +341,7 @@
 }
 
 .stats-label {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -366,15 +366,16 @@
 }
 
 .curation-header h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 48px;
   font-weight: 400;
   color: var(--text-main);
   margin: 0;
-}
+
+  letter-spacing: 0px;}
 
 .view-all-link {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -441,7 +442,7 @@
 }
 
 .curation-tag {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.3em;
@@ -452,14 +453,15 @@
 }
 
 .curation-overlay h3 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 48px;
   font-weight: 400;
   margin: 0 0 16px 0;
-}
+
+  letter-spacing: 0px;}
 
 .shop-link {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -493,7 +495,7 @@
 }
 
 .section-label-small {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.4em;
@@ -504,12 +506,13 @@
 }
 
 .section-header-center h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 48px;
   font-weight: 400;
   color: var(--text-main);
   margin: 0;
-}
+
+  letter-spacing: 0px;}
 
 /* 5. The Bridal Edit */
 .bridal-edit-section {
@@ -558,7 +561,7 @@
 }
 
 .bridal-label {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.5em;
@@ -568,14 +571,15 @@
 }
 
 .bridal-text-content h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 72px;
   font-weight: 400;
   color: #FFFFFF;
   margin: 0;
   line-height: 1.1;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
+
+  letter-spacing: 0px;}
 
 .gold-divider {
   width: 80px;
@@ -584,7 +588,7 @@
 }
 
 .bridal-quote {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 18px;
   font-style: italic;
   line-height: 1.7;
@@ -597,12 +601,13 @@
   background-color: transparent;
   color: #FFFFFF;
   border: 1px solid #FFFFFF;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2em;
   padding: 20px 48px;
   cursor: pointer;
+  border-radius: 10px;
   transition: all 0.5s ease;
 }
 
@@ -640,7 +645,7 @@
 }
 
 .story-label {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.4em;
@@ -651,16 +656,17 @@
 }
 
 .story-text-pane h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 48px;
   font-weight: 400;
   color: var(--primary);
   margin: 0 0 32px 0;
   line-height: 1.25;
-}
+
+  letter-spacing: 0px;}
 
 .story-quote-italic {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 18px;
   font-style: italic;
   line-height: 1.7;
@@ -669,7 +675,7 @@
 }
 
 .story-text-pane p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   line-height: 2;
   color: var(--text-muted);
@@ -684,13 +690,13 @@
   background-color: var(--primary-dark);
   border: none;
   color: #FFFFFF;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 2px;
   padding: 16px 36px;
   cursor: pointer;
-  border-radius: 40px !important;
+  border-radius: 10px !important;
   text-transform: uppercase;
   transition: all 0.4s ease;
   width: fit-content;
@@ -818,17 +824,17 @@
 }
 
 .values-item h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.3rem;
-  font-weight: 900;
-  letter-spacing: 0.05em;
+  font-weight: 400;
+  letter-spacing: 0px;
   color: var(--text-main);
   margin: 0;
   text-transform: uppercase;
 }
 
 .values-item p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.8;
@@ -844,7 +850,7 @@
 }
 
 .instagram-hashtag {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -905,7 +911,7 @@
 }
 
 .quote-mark {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 72px;
   line-height: 1;
   color: var(--primary);
@@ -921,7 +927,7 @@
 }
 
 .social-text-card p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-style: italic;
   font-size: 16px;
   line-height: 1.7;
@@ -953,7 +959,7 @@
 }
 
 .social-author {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -962,7 +968,7 @@
 }
 
 .social-role {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
   display: block;
@@ -1016,7 +1022,7 @@
 }
 
 .caption-hashtag {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1px;
@@ -1024,7 +1030,7 @@
 }
 
 .caption-handle {
-  font-family: 'Kaushan Script', cursive;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--primary);
 }
@@ -1055,7 +1061,7 @@
 }
 
 .social-author-white {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -1064,7 +1070,7 @@
 }
 
 .social-role-gold {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--primary-light);
   opacity: 0.7;
@@ -1089,15 +1095,16 @@
 }
 
 .cta-content h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 28px;
   font-weight: 400;
   color: var(--primary-dark);
   margin-bottom: 12px;
-}
+
+  letter-spacing: 0px;}
 
 .cta-content p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.6;
   color: var(--text-muted);
@@ -1108,12 +1115,12 @@
   background-color: var(--primary-dark);
   color: #FFFFFF;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 2px;
   padding: 14px 28px;
-  border-radius: 40px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   align-self: flex-start;
@@ -1138,12 +1145,13 @@
 }
 
 .newsletter-box h2 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 48px;
   font-weight: 400;
   color: var(--text-main);
   margin-bottom: 24px;
-}
+
+  letter-spacing: 0px;}
 
 .newsletter-box p {
   color: var(--text-muted);
@@ -1166,9 +1174,9 @@
   flex-grow: 1;
   padding: 16px 24px;
   border: 1px solid var(--border-color) !important;
-  border-radius: 40px !important;
+  border-radius: 10px !important;
   outline: none !important;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -1191,12 +1199,13 @@
   background-color: var(--primary-dark);
   color: #FFFFFF;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;
   padding: 16px 40px;
   cursor: pointer;
+  border-radius: 10px;
   transition: background-color 0.3s ease;
 }
 
@@ -1212,7 +1221,7 @@
 }
 
 .review-section-tag {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 3px;
@@ -1271,7 +1280,7 @@
 }
 
 .review-quote-icon {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 80px;
   line-height: 1;
   color: var(--primary);
@@ -1289,7 +1298,7 @@
 }
 
 .review-text-content {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.6;
   color: var(--text-main);
@@ -1301,7 +1310,7 @@
   background-color: var(--bg-main);
   border: 1px dashed var(--border-color);
   color: var(--text-muted);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   padding: 6px 12px;
   border-radius: 40px;
@@ -1342,7 +1351,7 @@
 }
 
 .reviewer-name {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   color: var(--text-main);
@@ -1351,7 +1360,7 @@
 }
 
 .reviewer-status {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   color: var(--primary);
   font-weight: 600;

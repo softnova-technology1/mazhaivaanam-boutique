@@ -3,7 +3,7 @@
 .catalog-page {
   background-color: var(--bg-main, #FAF9F6);
   color: #1a1a1a;
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-body);
   min-height: 100vh;
   padding-bottom: 80px;
 }
@@ -310,7 +310,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 8px;
   font-weight: 800;
   line-height: 1.1;
@@ -328,7 +328,7 @@
   color: white;
   border: none;
   padding: 6px 12px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -404,16 +404,17 @@
 }
 
 .product-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.3rem;
   color: var(--text-main);
   margin: 0;
-  font-weight: 900;
+  font-weight: 400;
   flex-grow: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
+
+  letter-spacing: 0px;}
 
 .rating-badge {
   display: flex;
@@ -423,14 +424,14 @@
   background-color: #FFF9EC;
   padding: 4px 10px;
   border-radius: 16px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   color: var(--primary-dark, #4F4E22);
 }
 
 .product-desc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted, #696738);
   line-height: 1.5;
@@ -450,21 +451,21 @@
 }
 
 .current-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--primary-dark, #4F4E22);
 }
 
 .old-price {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.9rem;
   color: var(--text-light, #929C7A);
   text-decoration: line-through;
 }
 
 .discount-pill {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   color: #FFFFFF;
@@ -480,7 +481,7 @@
   background-color: var(--primary-dark);
   color: #ffffff !important;
   border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -541,12 +542,13 @@
 }
 
 .grid-list .product-info h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.3rem;
   color: var(--text-main);
   margin: 0 0 16px 0;
-  font-weight: 900;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .grid-list .product-price {
   font-size: 1.1rem;

@@ -71,9 +71,17 @@ function AppContent() {
   const [currentTab, setCurrentTab] = useState(initialState.tab);
   const [catalogFilter, setCatalogFilter] = useState({ category: '', occasion: '', label: 'All Collections' });
   const [selectedProduct, setSelectedProduct] = useState(initialState.prod);
+  const [directCheckoutItem, setDirectCheckoutItem] = useState(null);
   const { cartItemCount } = useCart();
   const [toastMessage, setToastMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+  // Clear directCheckoutItem when navigating away from checkout page
+  useEffect(() => {
+    if (currentTab !== 'checkout') {
+      setDirectCheckoutItem(null);
+    }
+  }, [currentTab]);
 
   // Initial loading effect
   useEffect(() => {
@@ -84,15 +92,12 @@ function AppContent() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Handler for navbar navigation to trigger loader
+  // Handler for navbar navigation
   const handleNavbarNavigation = (tab) => {
     if (tab === currentTab) return;
-    setIsLoading(true);
     setCurrentTab(tab);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
   };
+
 
   // Listen for global toast alerts
   useEffect(() => {
@@ -195,7 +200,13 @@ function AppContent() {
       case 'cart':
         return <Cart setCurrentTab={setCurrentTab} />;
       case 'checkout':
-        return <Checkout setCurrentTab={setCurrentTab} />;
+        return (
+          <Checkout 
+            setCurrentTab={setCurrentTab} 
+            directCheckoutItem={directCheckoutItem} 
+            setDirectCheckoutItem={setDirectCheckoutItem} 
+          />
+        );
       case 'my-orders':
         return <MyOrders setCurrentTab={setCurrentTab} />;
       case 'my-profile':
@@ -222,7 +233,13 @@ function AppContent() {
         return <Collections setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />;
 
       case 'pre-booking':
-        return <PreBooking setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
+        return (
+          <PreBooking 
+            setCurrentTab={setCurrentTab} 
+            setSelectedProduct={setSelectedProduct} 
+            setDirectCheckoutItem={setDirectCheckoutItem} 
+          />
+        );
       case 'shipping-policy':
         return <ShippingPolicy />;
       default:

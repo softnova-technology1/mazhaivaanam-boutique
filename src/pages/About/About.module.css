@@ -47,14 +47,15 @@
 }
 
 .heroTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 42px;
   color: white;
   margin: 0 0 24px 0;
   line-height: 1.1;
   font-weight: 400;
   animation: fadeIn 1s ease-out;
-}
+
+  letter-spacing: 0px;}
 
 @media (max-width: 768px) {
   .heroTitle {
@@ -75,7 +76,7 @@
 }
 
 .heroSubtext {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 18px;
   color: rgba(255, 255, 255, 0.9);
   max-width: 1200px;
@@ -101,7 +102,7 @@
 .primaryActionBtn,
 .secondaryActionBtn {
   padding: 20px 40px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -219,7 +220,7 @@
 }
 
 .sinceLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.25em;
@@ -233,13 +234,14 @@
 }
 
 .storySectionTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 44px;
   color: var(--primary);
   margin: 0 0 24px 0;
   font-weight: 400;
   line-height: 1.2;
-}
+
+  letter-spacing: 0px;}
 
 .storyBodyParagraphs {
   display: flex;
@@ -248,7 +250,7 @@
 }
 
 .storyBodyParagraphs p {
-  font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+  font-family: var(--font-body);
   font-size: 16px;
   color: var(--text-muted);
   line-height: 1.8;
@@ -275,7 +277,7 @@
 }
 
 .storyTagline {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: var(--font-body);
   font-size: 18px !important;
   font-style: italic;
   font-weight: 500 !important;
@@ -304,12 +306,13 @@
 }
 
 .principlesMainTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 48px;
   color: var(--primary);
   margin: 0;
   font-weight: 400;
-}
+
+  letter-spacing: 0px;}
 
 .principlesGrid {
   max-width: 1440px;
@@ -373,15 +376,16 @@
 }
 
 .principleCardTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 24px;
   color: var(--primary);
   margin: 0 0 16px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .principleCardDesc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -442,7 +446,7 @@
 }
 
 .signatureRole {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -451,7 +455,7 @@
 }
 
 .signatureName {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 20px;
   color: white;
   margin: 0;
@@ -485,7 +489,7 @@
 }
 
 .founderBlockquote {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 25px;
   font-style: italic;
   color: var(--primary);
@@ -503,7 +507,7 @@
 }
 
 .founderBodyDesc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-muted);
   line-height: 1.75;
@@ -548,7 +552,7 @@
 }
 
 .sareeJourneyBadge {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.25em;
@@ -563,12 +567,12 @@
 }
 
 .sareeJourneyTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 38px;
   color: #FFF9EC;
   margin: 0 0 8px 0;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0px;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -586,7 +590,7 @@
 }
 
 .sareeJourneySub {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: rgba(255, 249, 236, 0.75);
   margin: 0;
@@ -728,7 +732,7 @@
   right: -6px;
   background: #E6C687;
   color: #121A11;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   width: 20px;
@@ -741,10 +745,10 @@
 }
 
 .timelineNodeTitle {
-  font-family: 'Outfit', 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 400;
+  letter-spacing: 0px;
   text-transform: uppercase;
   color: #FFF9EC;
   margin: 0 0 10px 0;
@@ -756,7 +760,7 @@
 }
 
 .timelineNodeDesc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: rgba(255, 249, 236, 0.7);
   line-height: 1.55;
@@ -789,7 +793,7 @@
 }
 
 .whyBrandTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 38px;
   color: var(--primary);
   margin: 0 auto 48px auto;
@@ -797,7 +801,8 @@
   font-weight: 400;
   width: 100%;
   display: block;
-}
+
+  letter-spacing: 0px;}
 
 @media (max-width: 768px) {
   .whyBrandTitle {
@@ -834,15 +839,16 @@
 }
 
 .whyCard h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 22px;
   color: var(--primary);
   margin: 0 0 12px 0;
-  font-weight: 500;
-}
+  font-weight: 400;
+
+  letter-spacing: 0px;}
 
 .whyCard p {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -879,7 +885,7 @@
 }
 
 .metricVal {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 42px;
   color: rgb(13, 24, 5);
   margin: 0 0 4px 0;
@@ -894,7 +900,7 @@
 }
 
 .metricMeta {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -958,12 +964,12 @@
 }
 
 .newsletterTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 48px;
   color: #E6C687;
   margin: 0 0 16px 0;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0px;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
 }
 
@@ -974,7 +980,7 @@
 }
 
 .newsletterDesc {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   color: #FFF9EC;
   line-height: 1.7;
@@ -1004,7 +1010,7 @@
   border-bottom: 2px solid rgba(230, 198, 135, 0.5);
   border-radius: 0;
   padding: 14px 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.15em;
@@ -1027,7 +1033,7 @@
   background-color: var(--primary-dark);
   color: white;
   padding: 16px 36px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.15em;

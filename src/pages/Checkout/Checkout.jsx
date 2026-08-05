@@ -22,8 +22,11 @@ import {
 } from 'lucide-react';
 import styles from './Checkout.module.css';
 
-export const Checkout = ({ setCurrentTab }) => {
+export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutItem }) => {
   const { cart, cartTotal, clearCart } = useCart();
+  const checkoutItems = directCheckoutItem 
+    ? [{ ...directCheckoutItem, quantity: directCheckoutItem.quantity || 1 }] 
+    : cart;
 
   // Address Form States
   const [fullName, setFullName] = useState('');
@@ -63,12 +66,14 @@ export const Checkout = ({ setCurrentTab }) => {
 
   // Price calculations
   const GIFT_WRAP_PRICE = 499;
-  const mrpTotal = cart.reduce((sum, item) => sum + (item.oldPrice || Math.round(item.price * 1.15)) * item.quantity, 0);
-  const subtotal = cartTotal;
+  const mrpTotal = checkoutItems.reduce((sum, item) => sum + (item.oldPrice || Math.round(item.price * 1.15)) * item.quantity, 0);
+  const subtotal = directCheckoutItem 
+    ? (directCheckoutItem.price * (directCheckoutItem.quantity || 1))
+    : cartTotal;
   const exclusivePricingSavings = mrpTotal - subtotal;
   const festivalDiscount = Math.round(subtotal * 0.05); // 5% discount
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
-  const convenienceFee = cart.length > 0 ? 2 : 0;
+  const convenienceFee = checkoutItems.length > 0 ? 2 : 0;
   
   const finalAmount = Math.max(0, subtotal - festivalDiscount + giftPackAddon + convenienceFee);
   const totalSavings = exclusivePricingSavings + festivalDiscount;
@@ -137,7 +142,7 @@ export const Checkout = ({ setCurrentTab }) => {
       subtotal,
       festivalDiscount,
       giftPackAddon,
-      items: [...cart],
+      items: [...checkoutItems],
       placedOnDate: getFormattedDate(0),
       arrivalRange: `${getFormattedDate(6)} — ${getFormattedDate(9)}`
     };
@@ -150,8 +155,12 @@ export const Checkout = ({ setCurrentTab }) => {
     list.unshift({ ...orderDetails, status: 'IN TRANSIT' });
     localStorage.setItem('boutique_orders', JSON.stringify(list));
     
-    // Clear the cart reactive context
-    clearCart();
+    // Clear the cart reactive context or direct checkout item
+    if (directCheckoutItem) {
+      if (setDirectCheckoutItem) setDirectCheckoutItem(null);
+    } else {
+      clearCart();
+    }
     
     // Set visual confirmation status
     setOrderConfirmed(true);
@@ -211,7 +220,7 @@ Thank you for choosing handloom heritage.
     document.body.removeChild(element);
   };
 
-  if (cart.length === 0 && !orderConfirmed) {
+  if (checkoutItems.length === 0 && !orderConfirmed) {
     return (
       <div className={styles.checkoutPageContainer}>
         <div className={styles.emptyCheckoutBox}>
@@ -783,7 +792,7 @@ Thank you for choosing handloom heritage.
 
                 {/* Product Previews */}
                 <div className={styles.productPreviewsList}>
-                  {cart.map((item) => (
+                  {checkoutItems.map((item) => (
                     <div key={item.id} className={styles.productPreviewItem}>
                       <div className={styles.previewThumb}>
                         <img src={item.image} alt={item.name} />
@@ -857,16 +866,16 @@ Thank you for choosing handloom heritage.
               {/* Trust Badges */}
               <div className={styles.trustBadges}>
                 <div className={styles.trustBadgeItem}>
-                  <Truck className={styles.trustBadgeIcon} size={24} />
-                  <p className={styles.trustBadgeText}>WORLDWIDE SHIPPING</p>
+                  <ShieldCheck className={styles.trustBadgeIcon} size={24} />
+                  <p className={styles.trustBadgeText}>SECURE CHECKOUT</p>
+                </div>
+                <div className={styles.trustBadgeItem}>
+                  <Lock className={styles.trustBadgeIcon} size={24} />
+                  <p className={styles.trustBadgeText}>SSL ENCRYPTED</p>
                 </div>
                 <div className={styles.trustBadgeItem}>
                   <Award className={styles.trustBadgeIcon} size={24} />
-                  <p className={styles.trustBadgeText}>CERTIFIED PURE SILK</p>
-                </div>
-                <div className={styles.trustBadgeItem}>
-                  <RotateCcw className={styles.trustBadgeIcon} size={24} />
-                  <p className={styles.trustBadgeText}>7-DAY RETURNS</p>
+                  <p className={styles.trustBadgeText}>100% TRUSTED</p>
                 </div>
               </div>
             </div>

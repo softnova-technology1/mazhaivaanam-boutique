@@ -250,11 +250,10 @@
   text-transform: uppercase;
 }
 
-/* 3. Main Filter & Product Section */
 .main-layout {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 40px 80px 80px;
+  padding: 80px 80px 80px;
   display: flex;
   gap: 50px;
 }
@@ -341,7 +340,8 @@
 /* Fabric Filter Tags */
 .fabric-tags {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
 }
 

@@ -318,7 +318,6 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                 <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
                 <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
               </div>
-              <span className={styles['reviews-count']}>{Math.round(activeProduct.price / 4.5)} verified collectors</span>
             </div>
           </header>
 

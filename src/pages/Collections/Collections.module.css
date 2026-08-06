@@ -170,10 +170,11 @@
 
 /* Weaves Guide Section */
 .guide-section {
-  padding: 100px 0;
+  padding-top: 64px;
+  padding-bottom: 64px;
   background-color: var(--bg-main);
   border-top: 1px solid var(--border-color);
-  margin-top: 80px;
+  margin-top: 64px;
 }
 
 .guide-tag {

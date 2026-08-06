@@ -9,7 +9,7 @@
 .wishlist-content-wrapper {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 80px 120px 80px;
+  padding: 0 80px 64px 80px;
 }
 
 /* Toast Notifications */
@@ -154,8 +154,9 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
-  margin-bottom: 80px;
-  padding: 40px 0;
+  margin-bottom: 0;
+  padding-top: 64px;
+  padding-bottom: 0;
   position: relative;
   /* Soft background matching the luxury beige tone */
   background: radial-gradient(ellipse at top, rgba(251, 247, 240, 1) 0%, rgba(251, 247, 240, 0) 100%);
@@ -381,7 +382,9 @@
 
 /* Main Grid Favorites */
 .main-grid-section {
-  margin-bottom: 100px;
+  margin-bottom: 0;
+  padding-top: 64px;
+  padding-bottom: 0;
 }
 
 .section-heading-bar {
@@ -706,7 +709,9 @@
 
 /* Mood Categorizer */
 .mood-categorizer-section {
-  margin-bottom: 100px;
+  margin-bottom: 0;
+  padding-top: 64px;
+  padding-bottom: 0;
 }
 
 .mood-header {
@@ -798,7 +803,9 @@
 
 /* Recommended Section */
 .recommended-section {
-  margin-bottom: 100px;
+  margin-bottom: 0;
+  padding-top: 64px;
+  padding-bottom: 0;
 }
 
 .recommended-header {
@@ -912,8 +919,9 @@
 /* Recently Viewed */
 .recently-viewed-section {
   border-top: 1px solid rgba(136, 113, 116, 0.2);
-  padding: 40px 0;
-  margin-bottom: 80px;
+  padding-top: 64px;
+  padding-bottom: 64px;
+  margin-bottom: 0;
   text-align: center;
 }
 

@@ -204,7 +204,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
 
 
       {/* 3. Curation of Craft - Premium Redesign */}
-      <section className="py-10 md:py-16 px-4 md:px-10 max-w-[1400px] mx-auto">
+      <section className={`${styles['curation-section']} px-4 md:px-10 max-w-[1400px] mx-auto`}>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 relative gap-6 md:gap-0">
           <div className="relative pl-4 border-l-2 border-[#D4AF37]">
             <span className="font-label-caps text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase mb-3 block">Handpicked For You</span>
@@ -312,7 +312,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
 
       {/* 4. The Best Sellers */}
       <section className={`${styles['bestsellers-section']} container`}>
-        <div className="grid grid-cols-1 md:grid-cols-3 items-end mb-6 md:mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 items-end mb-6 md:mb-8">
           <div className="hidden md:block"></div>
           <div className={styles['section-header-center']} style={{ marginBottom: 0 }}>
             <span className={styles['section-label-small']}>EXCLUSIVES</span>

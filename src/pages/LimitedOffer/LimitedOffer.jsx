@@ -420,7 +420,7 @@ void main() {
         </section>
 
         {/* Offer Products Grid */}
-        <section className="py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <section className="pt-16 pb-0 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex flex-col items-center mb-14 text-center">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-px bg-[#D4AF37]"></div>
@@ -489,7 +489,7 @@ void main() {
         </section>
 
         {/* Product Grid */}
-        <section className="py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <section className="pt-16 pb-0 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex justify-between items-end mb-14">
             <div>
               <div className="flex items-center gap-3 mb-4">
@@ -540,7 +540,7 @@ void main() {
 
         {/* Offer Categories (Bento Grid Style) */}
         <section 
-          className="relative py-12 md:py-16 px-margin-mobile md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
+          className="relative pt-12 md:pt-16 pb-0 px-margin-mobile md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
           style={{ backgroundImage: "url('/Images/offer.png')" }}
         >
           {/* Dark Overlay for Readability */}
@@ -618,7 +618,7 @@ void main() {
         </section>
 
         {/* Combo Offers Horizontal */}
-        <section className="py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <section className="pt-16 pb-0 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex flex-col items-center text-center mb-12">
             <div className="flex items-center justify-center gap-4 mb-3">
               <div className="w-12 h-px bg-[#D4AF37]"></div>
@@ -708,7 +708,7 @@ void main() {
 
 
         {/* Lucky Draw Spinning Wheel */}
-        <section className="py-12 md:py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <section className="pt-12 md:pt-16 pb-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
           <div className="bg-[#FDFBF7] rounded-[2rem] border border-[#D4AF37]/30 shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 md:p-16 overflow-hidden relative">
             <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center relative z-10">
             <div className="reveal-on-scroll">

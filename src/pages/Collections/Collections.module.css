@@ -2,6 +2,21 @@
   min-height: 100vh;
 }
 
+.collection-page-main-title {
+  font-size: 42px;
+  color: var(--primary-dark);
+  margin-bottom: 16px;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+@media (min-width: 320px) and (max-width: 425px) {
+  .collection-page-main-title {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+}
+
+
 .hero {
   background-color: var(--surface-container-highest);
   text-align: center;
@@ -361,5 +376,33 @@
 @media (max-width: 600px) {
   .collections-grid {
     grid-template-columns: 1fr;
+    padding: 0 10px;
+    grid-auto-rows: 280px;
+  }
+  .card-wide, .card-tall, .card-half, .card-equal {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+  .glass-plate {
+    padding: 10px 14px;
+  }
+  .glass-text h2 {
+    font-size: 1.1rem;
+  }
+  .guide-section {
+    padding: 30px 0;
+    margin-top: 30px;
+  }
+  .guide-header h2 {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+  .guide-intro {
+    font-size: 11px;
+    padding: 0 10px;
+  }
+  .guide-image-box {
+    height: auto;
+    aspect-ratio: 4/3;
   }
 }

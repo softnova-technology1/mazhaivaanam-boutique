@@ -41,6 +41,19 @@
   margin: 0 auto;
 }
 
+.mobile-filter-btn {
+  display: none;
+}
+.mobile-filter-overlay {
+  display: none;
+}
+.close-filter-btn {
+  display: none;
+}
+.mobile-sidebar-header {
+  display: block;
+}
+
 /* Sidebar */
 .filters-sidebar {
   width: 250px;
@@ -706,19 +719,117 @@
   .qv-actions {
     flex-direction: column;
   }
+  
+  /* Mobile Sidebar Override */
+  .mobile-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--primary);
+  }
+  .filters-sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 280px;
+    height: 100vh;
+    background-color: var(--bg-main);
+    z-index: 1000;
+    padding: 20px;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  }
+  .filters-sidebar.open {
+    left: 0;
+  }
+  .mobile-filter-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+  }
+  .close-filter-btn {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-main);
+  }
+  .mobile-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .mobile-sidebar-header .sidebar-title {
+    margin: 0;
+  }
+  .sticky-sidebar-content {
+    position: static;
+  }
 }
 
 @media (min-width: 320px) and (max-width: 425px) {
   .hero-content h1 {
     font-size: 2.2rem;
   }
-  .prebook-grid {
-    grid-template-columns: 1fr;
+  .toolbar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+  }
+  .toolbar-left {
+    white-space: nowrap;
+  }
+  .toolbar-right {
+    width: auto;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .sort-label {
+    display: none;
+  }
+  .sort-btn, .mobile-filter-btn {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .product-name {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+  .current-price {
+    font-size: 13px;
+  }
+  .old-price {
+    font-size: 10px;
+  }
+  .prebook-btn {
+    font-size: 11px;
+    padding: 10px 0;
   }
   .qv-details h3 {
     font-size: 1.5rem;
   }
   .qv-actions button {
     width: 100%;
+  }
+  .view-toggles {
+    display: none;
   }
 }

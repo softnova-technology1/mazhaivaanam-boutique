@@ -563,6 +563,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('limited-offer')} className={`${styles.drawerLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
               </li>
+              <li className={styles.drawerItem}>
+                <button onClick={() => handleTabChange('pre-booking')} className={`${styles.drawerLink} ${styles.preBookingLink} ${currentTab === 'pre-booking' ? styles.active : ''}`}>Pre-Booking</button>
+              </li>
 
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('wishlist')} className={styles.drawerLink}>Wishlist</button>

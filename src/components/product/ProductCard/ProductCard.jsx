@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Heart, Star, Share2 } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
 import { formatCurrency } from '../../../utils/formatters';
+import { getBadgeClass } from '../../../utils/badgeHelper';
 import styles from './ProductCard.module.css';
 
 export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTab }) => {
@@ -92,9 +93,9 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
         <img src={image} alt={name} loading="lazy" />
 
         {/* Status badges */}
-        {isNew && <span className={styles['badge-tag']}>NEW ARRIVAL</span>}
-        {isLimited && <span className={styles['badge-tag']}>LIMITED EDITION</span>}
-        {tag && <span className={styles['badge-tag']}>{tag}</span>}
+        {isNew && <span className={`${styles['badge-tag']} ${getBadgeClass('NEW ARRIVAL')}`}>NEW ARRIVAL</span>}
+        {isLimited && <span className={`${styles['badge-tag']} ${getBadgeClass('LIMITED EDITION')}`}>LIMITED EDITION</span>}
+        {tag && <span className={`${styles['badge-tag']} ${getBadgeClass(tag)}`}>{tag}</span>}
 
         {/* Share Button */}
         <div 

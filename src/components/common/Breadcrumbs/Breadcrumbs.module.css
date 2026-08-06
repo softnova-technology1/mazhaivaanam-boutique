@@ -7,7 +7,7 @@
 
 .breadcrumb-container {
   padding: 16px 80px; /* Reduced vertical padding to keep it tightly aligned */
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   display: flex;
   align-items: center;

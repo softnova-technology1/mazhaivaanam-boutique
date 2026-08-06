@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
+import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft } from 'lucide-react';
 import { ALL_PRODUCTS } from '../Catalog/Catalog';
 import styles from './ProductDetail.module.css';
@@ -253,7 +254,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
               className={styles['main-img']}
             />
             {activeProduct.tag && (
-              <span className={styles['image-badge-tag']}>{activeProduct.tag}</span>
+              <span className={`${styles['image-badge-tag']} ${getBadgeClass(activeProduct.tag)}`}>{activeProduct.tag}</span>
             )}
 
             <div className={styles['viewport-controls']}>
@@ -299,8 +300,8 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
         <div className={styles['info-column']}>
           <header className={styles['info-header']}>
             <div className={styles['header-badges']}>
-              <span className={styles['edition-badge']}>Limited Edition</span>
-              {activeProduct.tag && <span className={styles['bestseller-badge']}>{activeProduct.tag}</span>}
+              <span className={`${styles['edition-badge']} ${getBadgeClass('Limited Edition')}`}>Limited Edition</span>
+              {activeProduct.tag && <span className={`${styles['bestseller-badge']} ${getBadgeClass(activeProduct.tag)}`}>{activeProduct.tag}</span>}
             </div>
             <p className={styles['collection-sub']}>MAZHAI VAANAM SIGNATURE COLLECTION</p>
             <h1>{activeProduct.name} Saree - Royal Heritage Edition</h1>

@@ -88,7 +88,7 @@ export const SORT_OPTIONS = [
 ];
 
 
-export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
+export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckoutItem }) => {
   const [selectedSort, setSelectedSort] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
   
@@ -112,7 +112,9 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
   };
 
   const handlePreorderClick = (product) => {
-    addToCart(product, 1);
+    if (setDirectCheckoutItem) {
+      setDirectCheckoutItem(product);
+    }
     if (setSelectedProduct && setCurrentTab) {
       setSelectedProduct(product);
       setCurrentTab('checkout');
@@ -302,10 +304,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                     className={styles['prebook-btn']} 
                     onClick={(e) => {
                       e.stopPropagation();
-                      addToCart(product, 1);
-                      if (setCurrentTab) {
-                        setCurrentTab('checkout');
-                      }
+                      handlePreorderClick(product);
                     }}
                   >
                     PRE BOOK NOW
@@ -374,11 +373,14 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct }) => {
                     role="button"
                     className={styles['qv-view-details-btn']}
                     onClick={() => {
-                      addToCart(quickViewProduct, quantity);
-                      setQuickViewProduct(null);
-                      if (setCurrentTab) {
+                      if (setDirectCheckoutItem) {
+                        setDirectCheckoutItem({ ...quickViewProduct, quantity });
+                      }
+                      if (setSelectedProduct && setCurrentTab) {
+                        setSelectedProduct(quickViewProduct);
                         setCurrentTab('checkout');
                       }
+                      setQuickViewProduct(null);
                     }}
                   >
                     Buy it now

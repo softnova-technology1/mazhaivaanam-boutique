@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 2px;
@@ -117,10 +117,10 @@
 }
 
 .brandTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   font-weight: 400;
-  letter-spacing: 4px;
+  letter-spacing: 0px;
   color: var(--primary-dark);
   line-height: 1.1;
   margin: 0;
@@ -137,10 +137,10 @@
 }
 
 .brandSubtitle {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-heading);
   font-size: 8px;
-  font-weight: 500;
-  letter-spacing: 6px;
+  font-weight: 400;
+  letter-spacing: 0px;
   color: var(--text-muted);
   display: block;
   margin-top: 6px;
@@ -186,7 +186,7 @@
   right: -4px;
   background-color: var(--primary-dark);
   color: #ffffff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   width: 17px;
@@ -267,7 +267,7 @@
   align-items: center;
   text-align: left;
   padding: 12px 24px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -379,7 +379,7 @@
   background: transparent !important;
   border: none !important;
   outline: none !important;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -514,11 +514,11 @@
 }
 
 .megaMenuColumn h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 14px;
-  font-weight: 900;
+  font-weight: 400;
   color: var(--text-main);
-  letter-spacing: 1px;
+  letter-spacing: 0px;
   margin: 0 0 8px 0;
   text-transform: uppercase;
 }
@@ -527,7 +527,7 @@
   background: none;
   border: none;
   text-align: left;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
   cursor: pointer;
@@ -605,7 +605,7 @@
 }
 
 .bannerInfo span {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   color: #FFFFFF;
@@ -615,7 +615,7 @@
   background-color: var(--accent);
   border: none;
   color: var(--primary-dark);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -675,7 +675,7 @@
   border: none;
   text-align: left;
   padding: 8px 20px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
   cursor: pointer;
@@ -743,7 +743,7 @@
   width: 100%;
   background: none;
   border: none;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-body);
   font-size: 2.2rem;
   color: var(--primary-dark);
   padding-right: 40px;
@@ -770,10 +770,10 @@
 }
 
 .searchSuggestionsBlock h3 {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-heading);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-weight: 400;
+  letter-spacing: 0px;
   color: var(--text-muted);
   text-transform: uppercase;
   margin: 0 0 20px 0;
@@ -790,7 +790,7 @@
   border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 8px 20px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: #5D554D;
   cursor: pointer;
@@ -852,10 +852,10 @@
 }
 
 .drawerHeader h3 {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-heading);
   font-size: 18px;
-  font-weight: 800;
-  letter-spacing: 2.5px;
+  font-weight: 400;
+  letter-spacing: 0px;
   text-transform: uppercase;
   color: var(--primary-dark);
   margin: 0;
@@ -899,7 +899,7 @@
 }
 
 .wishlistHeaderLabel {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -933,15 +933,16 @@
 }
 
 .cartItemInfo h4 {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   color: #1a1a1a;
   margin: 0;
-}
+
+  letter-spacing: 0px;}
 
 .cartItemPrice {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--primary);
   font-weight: 600;
@@ -988,7 +989,7 @@
 }
 
 .quantityControls span {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
   color: #1a1a1a;
@@ -1012,7 +1013,7 @@
   background: none;
   border: none;
   color: var(--primary);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1039,7 +1040,7 @@
 .summaryRow {
   display: flex;
   justify-content: space-between;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   color: #1a1a1a;
@@ -1053,7 +1054,7 @@
 }
 
 .summaryNotice {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   color: var(--text-muted);
   margin-bottom: 20px;
@@ -1070,7 +1071,7 @@
   background: none !important;
   border: 1.5px solid var(--primary-dark) !important;
   color: var(--primary-dark) !important;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -1099,7 +1100,7 @@
   background-color: var(--primary-dark) !important;
   border: 1.5px solid var(--primary-dark) !important;
   color: #FFFFFF !important;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -1133,7 +1134,7 @@
 }
 
 .emptyCartMessage p {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
   margin: 0;
@@ -1144,7 +1145,7 @@
   background-color: var(--primary-dark);
   border: none;
   color: #FFFFFF;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -1188,11 +1189,12 @@
 }
 
 .drawerLogo {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 1.6rem;
-  letter-spacing: 2px;
+  letter-spacing: 0px;
   color: var(--primary-dark);
-}
+
+  font-weight: 400;}
 
 .closeBtn {
   background: none;
@@ -1220,7 +1222,7 @@
 .drawerLink {
   background: none;
   border: none;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 2px;
@@ -1254,7 +1256,7 @@
 .drawerSubLink {
   background: none;
   border: none;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--text-muted);
   cursor: pointer;

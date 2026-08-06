@@ -3,12 +3,12 @@
   align-items: center;
   justify-content: center;
   padding: 12px 28px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  border-radius: 24px 0 24px 0; /* Unique elegant petal shape */
+  border-radius: 10px; /* Consistently rounded to 10px */
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -48,7 +48,6 @@
 
 .btn-primary:hover:not(:disabled) {
   background-color: var(--primary-dark);
-  border-radius: 0 24px 0 24px; /* Flips the petal shape on hover */
   box-shadow: 0 6px 16px rgba(79, 78, 34, 0.2);
 }
 
@@ -61,7 +60,6 @@
 .btn-secondary:hover:not(:disabled) {
   background-color: var(--primary-dark);
   color: #ffffff;
-  border-radius: 0 24px 0 24px;
 }
 
 .btn-outline {

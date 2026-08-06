@@ -279,10 +279,133 @@ a {
   right: 15% !important;
 }
 
+/* Premium Dynamic Badge Styling */
+.badge-bestseller {
+  background-color: #d32f2f !important; /* Premium Ruby Red */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4) !important;
+}
+
+.badge-new-arrival {
+  background-color: #fed579 !important; /* Premium Light Honey Yellow */
+  color: #251a00 !important; /* Dark Charcoal for readability */
+  box-shadow: 0 4px 12px rgba(254, 213, 121, 0.4) !important;
+}
+
+.badge-limited-edition {
+  background-color: #722f37 !important; /* Wine red / Burgundy */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(114, 47, 55, 0.4) !important;
+}
+
+.badge-festival-choice {
+  background-color: #5a3c6a !important; /* Royal Plum / Violet */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(90, 60, 106, 0.4) !important;
+}
+
+.badge-default {
+  background-color: #7d756d !important; /* Elegant slate grey */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(125, 117, 109, 0.4) !important;
+}
+
 @media (max-width: 576px) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     padding: 16px 0;
   }
+}
+
+/* ==========================================================================
+   GLOBAL BUTTON SHAPE STANDARDIZATION
+   Consistently styles all rectangular/pill buttons to have 10px rounded corners.
+   Excludes the hero cloud button (.btn-cloud) and circular buttons (wishlist, share, arrows, close).
+   ========================================================================== */
+
+/* Target standard buttons globally while avoiding circular/helper buttons */
+button:not([class*="btn-cloud"]):not([class*="close"]):not([class*="arrow"]):not([class*="wishlist"]):not([class*="share"]):not([class*="qty"]):not([class*="quantity"]):not([class*="avatar"]):not([class*="indicator"]):not([class*="dots"]):not([class*="spinner"]):not([class*="thumb"]):not([class*="closeDrawerBtn"]) {
+  border-radius: 10px !important;
+}
+
+/* Target specific button classes across pages & components */
+[class*="btn-bridal-explore"],
+[class*="cta-btn"],
+[class*="newsletter-form"] button,
+[class*="newsletter-submit-btn"],
+[class*="add-cart-btn"],
+[class*="cart-btn"],
+[class*="preorder-btn"],
+[class*="prebook-btn"],
+[class*="add-trousseau-btn"],
+[class*="concierge-btn"],
+[class*="card-bottom-cart-btn"],
+[class*="submit-review-btn"],
+[class*="submitBtn"],
+[class*="submitMessageBtn"],
+[class*="cancelBtn"],
+[class*="addAddressBtn"],
+[class*="enquireBtn"],
+[class*="trackOrderActionBtn"],
+[class*="locationActionBtn"],
+[class*="guide-cta-btn"],
+[class*="viewCartBtn"],
+[class*="checkoutBtn"],
+[class*="primaryCartBtn"],
+[class*="secondaryActionBtn"],
+[class*="newsletterSubmitBtn"],
+[class*="load-more-btn"],
+[class*="reset-btn"],
+[class*="shopping-btn"],
+[class*="wardrobe-discover-btn"],
+[class*="quick-view-btn"],
+[class*="qv-view-details-btn"],
+[class*="qv-prebook-btn"] {
+  border-radius: 10px !important;
+}
+
+/* Enforce on generic button component */
+[class*="_btn_"]:not([class*="btn-cloud"]):not([class*="wishlist"]):not([class*="share"]):not([class*="spinner"]) {
+  border-radius: 10px !important;
+}
+
+/* Span/Link buttons */
+.rounded-full[class*="collections"],
+.rounded-full[class*="category"],
+.rounded-full[class*="catalog"] {
+  border-radius: 10px !important;
+}
+
+/* ==========================================================================
+   GLOBAL HEADING TYPOGRAPHY OVERRIDE
+   Sets standard defaults for page headings (h1, h2) across the application.
+   Naturally overridden by class selectors (e.g. hero headers) to preserve design.
+   ========================================================================== */
+
+h1, h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  font-style: normal;
+  color: rgb(45, 51, 38);
+}
+
+@media (min-width: 769px) {
+  h1, h2 {
+    font-size: 48px;
+    line-height: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  h1, h2 {
+    font-size: 32px;
+    line-height: 36px;
+  }
+}
+
+/* Set Playfair Display and correct color for other lower-level subheadings */
+h3, h4, h5, h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: rgb(45, 51, 38);
 }

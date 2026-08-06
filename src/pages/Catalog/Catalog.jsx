@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
+import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X } from 'lucide-react';
 import styles from './Catalog.module.css';
 
@@ -581,6 +582,13 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const currentProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    setTimeout(() => {
+      document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
+  };
+
   const handleShareClick = (e, product) => {
     e.stopPropagation();
     const productUrl = `${window.location.origin}/product/${product.id}`;
@@ -659,41 +667,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       
 
 
-      {/* 2. Signature Weaves Section */}
-      <section className={styles['signature-weaves-section']} id="catalog-explore-anchor">
-        <div className={styles['section-header']}>
-          <h2>Our Signature Weaves</h2>
-        </div>
-        <div className={styles['weave-cards-container']}>
-          <div className={styles['weave-card']} onClick={() => handleWeaveClick('Everyday Elegance')}>
-            <div className={`${styles['weave-image-frame']} ${styles['frame-silk']}`}>
-              <img src="/Images/cotton3.jpg" alt="Everyday Elegance" />
-            </div>
-            <p>EVERYDAY ELEGANCE</p>
-          </div>
 
-          <div className={styles['weave-card']} onClick={() => handleWeaveClick('Festive Glow')}>
-            <div className={`${styles['weave-image-frame']} ${styles['frame-cotton']}`}>
-              <img src="/Images/silk.webp" alt="Festive Glow" />
-            </div>
-            <p>FESTIVE GLOW</p>
-          </div>
 
-          <div className={styles['weave-card']} onClick={() => handleWeaveClick('Style Studio')}>
-            <div className={`${styles['weave-image-frame']} ${styles['frame-banarasi']}`}>
-              <img src="/Images/fancy.jpg" alt="Style Studio" />
-            </div>
-            <p>STYLE STUDIO</p>
-          </div>
-
-          <div className={styles['weave-card']} onClick={() => handleWeaveClick('Black Magic')}>
-            <div className={`${styles['weave-image-frame']} ${styles['frame-organza']}`}>
-              <img src="/Images/black.jpg" alt="Black Magic" />
-            </div>
-            <p>BLACK MAGIC</p>
-          </div>
-        </div>
-      </section>
 
       {/* 3. Sidebar Filters + Product Grid Layout */}
       <main id="catalog-products-section" className={styles['main-layout']}>
@@ -708,7 +683,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
         <aside className={`${styles['filters-sidebar']} ${isMobileFilterOpen ? styles['mobile-filter-open'] : ''}`}>
           <div className={styles['sticky-sidebar-content']}>
             <div className={styles['sidebar-header-mobile']}>
-              <h2 className={styles['sidebar-title']}>Refine Selection</h2>
+              <h2 className={styles['sidebar-title']}>Filters</h2>
               <button 
                 className={styles['close-filter-btn']}
                 onClick={() => setIsMobileFilterOpen(false)}
@@ -716,28 +691,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 <X size={24} />
               </button>
             </div>
-            <p className={styles['sidebar-subtitle']}>Curated for elegance</p>
 
             <div className={styles['space-y-6']}>
-              {/* Quick Discover Links */}
-              <div className={styles['quick-links-menu']}>
-                <div role="button" className={styles['quick-link-item']} onClick={() => setCurrentTab && setCurrentTab('best-sellers')}>
-                  <span>Best Sellers</span>
-                  <ArrowRight size={16} className={styles['quick-link-icon']} />
-                </div>
-                <div role="button" className={styles['quick-link-item']} onClick={() => setCurrentTab && setCurrentTab('new-arrivals')}>
-                  <span>New Arrivals</span>
-                  <ArrowRight size={16} className={styles['quick-link-icon']} />
-                </div>
-                <div role="button" className={styles['quick-link-item']} onClick={() => setCurrentTab && setCurrentTab('limited-offer')}>
-                  <span>Limited Offer</span>
-                  <ArrowRight size={16} className={styles['quick-link-icon']} />
-                </div>
-                <div role="button" className={styles['quick-link-item']} onClick={() => setCurrentTab && setCurrentTab('pre-booking')}>
-                  <span>Pre-Booking</span>
-                  <ArrowRight size={16} className={styles['quick-link-icon']} />
-                </div>
-              </div>
 
               {/* Collection Filter Widget */}
               <div className={styles['filter-widget']}>
@@ -1045,7 +1000,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                       >
                         <img src={product.image} alt={product.name} loading="lazy" />
                         {product.tag && (
-                          <span className={styles['badge-tag']}>{product.tag}</span>
+                          <span className={`${styles['badge-tag']} ${getBadgeClass(product.tag)}`}>{product.tag}</span>
                         )}
                         <div 
                           className={styles['share-btn']}
@@ -1125,7 +1080,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   <button 
                     className={styles['pagination-arrow']} 
                     disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   >
                     <span className="material-symbols-outlined">chevron_left</span>
                   </button>
@@ -1134,7 +1089,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                       <span 
                         key={idx} 
                         className={`${styles['page-num']} ${currentPage === idx + 1 ? styles['active-page'] : ''}`}
-                        onClick={() => setCurrentPage(idx + 1)}
+                        onClick={() => handlePageChange(idx + 1)}
                         style={{ cursor: 'pointer' }}
                       >
                         {String(idx + 1).padStart(2, '0')}
@@ -1144,7 +1099,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   <button 
                     className={styles['pagination-arrow']} 
                     disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   >
                     <span className="material-symbols-outlined">chevron_right</span>
                   </button>

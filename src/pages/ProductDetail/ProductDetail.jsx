@@ -313,11 +313,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
             <div className={styles['ratings-row']}>
               <div className={styles['stars-group']}>
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
               </div>
             </div>
           </header>
@@ -444,30 +444,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             </p>
           </div>
 
-          {/* Trust Value Box */}
-          <div className={styles['trust-box']}>
-            <div className={styles['trust-item']}>
-              <span className="material-symbols-outlined">verified</span>
-              <div>
-                <h6>100% Original Masterpiece</h6>
-                <p>Certified by Silk Mark India & Handloom Mark verification standards.</p>
-              </div>
-            </div>
-            <div className={styles['trust-item']}>
-              <span className="material-symbols-outlined">redeem</span>
-              <div>
-                <h6>Luxury Gift Box Packaging</h6>
-                <p>Each saree arrives encased in our signature teak-finish legacy box wrap.</p>
-              </div>
-            </div>
-            <div className={styles['trust-item']}>
-              <span className="material-symbols-outlined">local_shipping</span>
-              <div>
-                <h6>Express Global Insured Shipping</h6>
-                <p>Completely insured shipping with custom tracked delivery (3-5 business days).</p>
-              </div>
-            </div>
-          </div>
+
         </div>
 
       </div>
@@ -553,8 +530,8 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                     <Star
                       key={n}
                       size={22}
-                      fill={(hoverRating || reviewForm.rating) >= n ? 'var(--accent)' : 'transparent'}
-                      stroke={(hoverRating || reviewForm.rating) >= n ? 'var(--accent)' : 'rgba(79,78,34,0.3)'}
+                      fill={(hoverRating || reviewForm.rating) >= n ? '#B38A4A' : 'transparent'}
+                      stroke={(hoverRating || reviewForm.rating) >= n ? '#B38A4A' : 'rgba(79,78,34,0.3)'}
                       style={{ cursor: 'pointer', transition: 'transform 0.15s ease' }}
                       onMouseEnter={() => setHoverRating(n)}
                       onMouseLeave={() => setHoverRating(0)}
@@ -642,11 +619,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
           {/* Static curated reviews */}
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
             </div>
             <p className={styles['review-quote']}>
               "The gold zari work is absolutely breathtaking. It sits lighter than expected and drapes like a dream. Truly an heirloom masterpiece."
@@ -665,11 +642,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
             </div>
             <p className={styles['review-quote']}>
               "Wore this for my daughter's wedding reception. The colors are incredibly rich. Everyone asked about the provenance of the fabric."
@@ -688,11 +665,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
             </div>
             <p className={styles['review-quote']}>
               "The custom teak wooden box packaging itself is worth 5 stars. It felt like receiving a heritage heirloom from another era."

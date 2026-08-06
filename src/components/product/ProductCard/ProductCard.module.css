@@ -151,18 +151,19 @@
 }
 
 .title-row h4 {
-  font-family: var(--font-heading);
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.3rem;
-  color: var(--text-main);
+  color: var(--primary-dark);
   margin: 0;
-  font-weight: 400;
+  font-weight: 700;
   flex-grow: 1;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .rating-badge-inline {
   display: flex;

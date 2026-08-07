@@ -151,18 +151,19 @@
 }
 
 .title-row h4 {
-  font-family: var(--font-heading);
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.3rem;
-  color: var(--text-main);
+  color: var(--primary-dark);
   margin: 0;
-  font-weight: 400;
+  font-weight: 700;
   flex-grow: 1;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .rating-badge-inline {
   display: flex;
@@ -293,10 +294,31 @@
   
   .title-row {
     margin-bottom: 2px;
+    flex-wrap: nowrap;
+    gap: 4px;
+    align-items: center;
   }
 
   .title-row h4 {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .rating-badge-inline {
+    font-size: 8px;
+    padding: 1px 4px;
+    gap: 2px;
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+
+  .rating-badge-inline svg {
+    width: 8px;
+    height: 8px;
   }
 
   .product-description {
@@ -305,20 +327,26 @@
 
   .price-row {
     margin-bottom: 4px;
-    gap: 6px;
+    gap: 3px;
+    flex-wrap: nowrap;
+    align-items: center;
   }
 
   .current-price {
-    font-size: 13px;
+    font-size: 10px;
+    white-space: nowrap;
   }
   
   .old-price {
-    font-size: 11px;
+    font-size: 8px;
+    white-space: nowrap;
   }
 
   .discount-pill {
-    font-size: 9px;
-    padding: 2px 4px;
+    font-size: 7px;
+    padding: 1px 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .add-cart-btn {

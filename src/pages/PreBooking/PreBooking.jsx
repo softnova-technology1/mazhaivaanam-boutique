@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './PreBooking.module.css';
-import { ChevronDown, ArrowRight, Grid, List } from 'lucide-react';
+import { ChevronDown, ArrowRight, Grid, List, Filter, X } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
 
@@ -99,6 +99,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
   const [selectedTimes, setSelectedTimes] = useState([]);
 
   const [viewMode, setViewMode] = useState('grid');
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
@@ -179,10 +180,20 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
 
 
       <main className={styles['main-layout']}>
+        {/* Mobile Filter Overlay */}
+        {isMobileFilterOpen && (
+          <div className={styles['mobile-filter-overlay']} onClick={() => setIsMobileFilterOpen(false)} />
+        )}
+
         {/* Left Sidebar */}
-        <aside className={styles['filters-sidebar']}>
+        <aside className={`${styles['filters-sidebar']} ${isMobileFilterOpen ? styles['open'] : ''}`}>
           <div className={styles['sticky-sidebar-content']}>
-            <h2 className={styles['sidebar-title']}>Filters</h2>
+            <div className={styles['mobile-sidebar-header']}>
+              <h2 className={styles['sidebar-title']}>Filters</h2>
+              <button className={styles['close-filter-btn']} onClick={() => setIsMobileFilterOpen(false)}>
+                <X size={20} />
+              </button>
+            </div>
 
             {/* Estimated Delivery Widget */}
             <div className={styles['filter-widget']}>
@@ -238,6 +249,12 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
               <span>Showing 1 - {sortedProducts.length} of {sortedProducts.length} products</span>
             </div>
             <div className={styles['toolbar-right']}>
+              <button 
+                className={styles['mobile-filter-btn']}
+                onClick={() => setIsMobileFilterOpen(true)}
+              >
+                <Filter size={14} /> Filters
+              </button>
               <div className={styles['sort-dropdown']}>
                 <span className={styles['sort-label']}>Sort by:</span>
                 <div role="button" 

@@ -884,7 +884,6 @@
   overflow: hidden;
   background-color: #eae7e7;
   margin-bottom: 16px;
-  border-radius: 120px 120px 0 0; /* Arched luxury dome */
 }
 
 .rec-img {
@@ -1424,5 +1423,26 @@
   .section-heading-bar h3 {
     font-size: 1.3rem;
     white-space: nowrap;
+  }
+
+  /* Fix overlapping labels on mobile */
+  .card-badge-container {
+    bottom: 8px;
+    top: auto;
+    left: 4px;
+  }
+
+  .card-savings-badge {
+    bottom: 8px;
+    right: 4px;
+    font-size: 6px;
+    padding: 3px 4px;
+    letter-spacing: 0px;
+  }
+
+  .price-drop-badge, .tag-badge, .limited-badge {
+    font-size: 6px;
+    padding: 3px 4px;
+    letter-spacing: 0px;
   }
 }

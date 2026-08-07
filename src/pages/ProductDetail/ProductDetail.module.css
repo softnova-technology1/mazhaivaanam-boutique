@@ -3,9 +3,7 @@
 .details-wrapper {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 80px 64px 80px;
-  font-family: 'Inter', sans-serif;
-  padding: 40px 80px 120px 80px;
+  padding: 80px;
   font-family: var(--font-body);
   color: var(--text-main);
   background-color: var(--bg-main);
@@ -238,6 +236,10 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.share-control-btn {
+  border-radius: 50% !important;
 }
 
 .gallery-control-btn:hover {
@@ -1351,7 +1353,7 @@
 
 /* Reviews Voices of Grace */
 .reviews-section {
-  margin-top: 120px;
+  margin-top: 80px;
 }
 
 .reviews-section-header {
@@ -1623,6 +1625,12 @@
 }
 
 /* ── Submit review button ── */
+.submit-review-wrapper {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .submit-review-btn {
   position: relative !important;
   overflow: hidden !important;
@@ -1783,7 +1791,7 @@
 
 /* Related Products Section */
 .related-products-section {
-  margin-top: 64px;
+  margin-top: 80px;
   margin-bottom: 0;
   border-top: 1px solid rgba(136, 113, 116, 0.2);
 }
@@ -1931,11 +1939,19 @@
   font-weight: 600;
 }
 
+/* Hide Mobile Elements by default */
+.mobile-variant-text,
+.sticky-bottom-bar {
+  display: none;
+}
+
 /* Responsive Media Queries */
 @media (max-width: 1024px) {
   .details-wrapper {
-    padding: 40px 40px 100px 40px;
+    padding: 60px 40px;
   }
+  .related-products-section { margin-top: 60px; }
+  .reviews-section { margin-top: 60px; }
 
   .product-columns-grid {
     grid-template-columns: 1fr;
@@ -1945,6 +1961,8 @@
   .gallery-column {
     position: static;
     margin: 0 auto;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .section-grid {
@@ -1983,8 +2001,10 @@
 
 @media (max-width: 768px) {
   .details-wrapper {
-    padding: 30px 20px 80px 20px;
+    padding: 40px 24px;
   }
+  .related-products-section { margin-top: 40px; }
+  .reviews-section { margin-top: 40px; }
 
   .actions-wrapper {
     flex-direction: column;
@@ -2018,6 +2038,72 @@
 }
 
 @media (min-width: 320px) and (max-width: 425px) {
+  .details-wrapper {
+    padding: 32px 10px;
+  }
+  .related-products-section { margin-top: 32px; }
+  .reviews-section { margin-top: 32px; }
+
+  .gallery-column {
+    min-width: 100%;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .info-column {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .product-one-liner {
+    white-space: normal;
+    word-break: break-word;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .main-image-viewport {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3/4;
+    margin: 0;
+    border-radius: 0 !important;
+  }
+  
+  /* Remove hover effects on mobile touch */
+  .main-image-viewport:hover {
+    transform: none;
+    border-color: rgb(122, 120, 2);
+    box-shadow: 0 20px 40px -15px rgba(48, 47, 11, 0.336), 0 4px 12px -2px rgba(79, 78, 34, 0.04);
+  }
+  .main-image-viewport:hover .main-img {
+    transform: none;
+  }
+  .main-image-viewport:hover::after {
+    inset: 10px;
+    border-color: rgba(200, 163, 77, 0.35);
+  }
+  .main-image-viewport:hover::before {
+    animation: none;
+  }
+  
+  .viewport-controls {
+    flex-direction: column;
+    bottom: 12px;
+    right: 12px;
+  }
+  
+  .mobile-variant-text {
+    display: block;
+    font-size: 14px;
+    margin: 15px 16px 10px 16px;
+    color: #333;
+  }
+
   .info-header h1 {
     font-size: 1.6rem;
   }
@@ -2042,5 +2128,78 @@
   .actions-wrapper {
     flex-direction: column;
     gap: 12px;
+  }
+  
+  /* Apply recommendations from analysis report */
+  .trust-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .thumbnails-strip {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 16px 15px 16px;
+    scrollbar-width: none; /* Firefox */
+  }
+  .thumbnails-strip::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+  
+  .thumb-box {
+    width: 70px !important;
+    height: 70px !important;
+    flex-shrink: 0;
+    border-radius: 8px;
+  }
+  .active-thumb {
+    border: 2px solid #000 !important;
+  }
+  
+  .breadcrumb-nav {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  
+  .breadcrumb-link, .breadcrumb-active {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+  
+  .related-grid {
+    scroll-snap-type: x mandatory;
+  }
+  
+  .related-card {
+    min-width: 100%;
+    scroll-snap-align: start;
+  }
+  
+  .related-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .reviews-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .review-panel-inner {
+    padding: 24px 20px;
+  }
+  
+  .review-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .submit-review-wrapper {
+    justify-content: center;
   }
 }

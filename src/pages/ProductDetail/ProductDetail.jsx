@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { getBadgeClass } from '../../utils/badgeHelper';
-import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
 import { ALL_PRODUCTS } from '../Catalog/Catalog';
 import styles from './ProductDetail.module.css';
 
@@ -79,8 +79,8 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   }, [activeProduct]);
 
   // Derived calculations for price details card
-  const boutiquePrice = activeProduct.oldPrice || Math.round(activeProduct.price * 1.3);
-  const finalPrice = activeProduct.price;
+  const boutiquePrice = (activeProduct.oldPrice || Math.round(activeProduct.price * 1.3)) * quantity;
+  const finalPrice = activeProduct.price * quantity;
   const totalSavings = boutiquePrice - finalPrice;
   const totalDiscountPct = Math.round((totalSavings / boutiquePrice) * 100);
 
@@ -134,8 +134,9 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   // Helper to dynamically match thumbnail close-ups based on product color/category
   const getThumbnails = () => {
     const main = activeProduct.image;
-    const blueDetail = "https://lh3.googleusercontent.com/aida-public/AB6AXuDW1BVBttTYx6eh282HWz2UO-XxicvibX7HoJI02xqGXzblo73v9MpUYoYytZjreT9bf5c4roypOmkdJdlwPq78f1aBOzSzkLbxj63Y96RSWsKLU1MAKnL4CI_j7DPMFvbvbm79U9XS01BfzDHxuC9hjKlQqaDtz8CDdOtTdoZMQBvoXdqvMROyo309-BM2Ay3uESQ2RWFwbIz-d11cc_c6sSoowde0hm7HG5YC-uThsvviHdLtk8Z1";
-    const goldDetail = "https://lh3.googleusercontent.com/aida/AP1WRLtAhThut48mQQG6cMMAplW2QvUeMqjJsm4zGt5FYcVGpNwa-BjnNIbYOv6-jbwXUfGb6vN7tdIOA4QbU68bFdiehK2dYDh1bHgSYZNvYzGpuwydfvZi6OnjFiL6fo9-ImfvxzVZfTlRzRNIdz3uRAFwJ7GA2088LYVPMknyaeAW0cRyIGptYt62_PLbc_T1YJEkiHbxOQbd6lKzWFlOMRuHvXebutBegaXUlUjzQgex7kDeRzVgJsdURmA";
+    // Using local catalog images for details to prevent external link blocking
+    const blueDetail = "/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg";
+    const goldDetail = "/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg";
 
     const cat = activeProduct.category || "";
     const col = activeProduct.color || "";
@@ -258,6 +259,22 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             )}
 
             <div className={styles['viewport-controls']}>
+              <button 
+                className={`${styles['gallery-control-btn']} ${styles['share-control-btn']}`} 
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: activeProduct.name,
+                      text: activeProduct.description,
+                      url: window.location.href,
+                    }).catch(console.error);
+                  }
+                }}
+                aria-label="Share product"
+              >
+                <Share2 size={18} color="currentColor" />
+              </button>
+
               <span
                 className={styles['gallery-control-btn']}
                 role="button"
@@ -277,6 +294,10 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                 />
               </span>
             </div>
+          </div>
+
+          <div className={styles['mobile-variant-text']}>
+             <strong>Selected Color:</strong> {activeProduct.name.split(' ')[0]}
           </div>
 
           <div className={styles['thumbnails-strip']}>
@@ -318,13 +339,12 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
             <div className={styles['ratings-row']}>
               <div className={styles['stars-group']}>
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
-                <Star size={14} fill="var(--accent)" stroke="var(--accent)" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
+                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
               </div>
-              <span className={styles['reviews-count']}>{Math.round(activeProduct.price / 4.5)} verified collectors</span>
             </div>
           </header>
 
@@ -336,11 +356,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                 <>
                   <div className={styles['price-card-row']}>
                     <span>Original Retail Value</span>
-                    <span className={styles['old-price-slashed']}>{formatCurrency(activeProduct.oldPrice || Math.round(activeProduct.price * 1.15))}</span>
+                    <span className={styles['old-price-slashed']}>{formatCurrency((activeProduct.oldPrice || Math.round(activeProduct.price * 1.15)) * quantity)}</span>
                   </div>
                   <div className={styles['price-card-row']}>
                     <span style={{ color: '#C55A44', fontWeight: 'bold' }}>Special Pre-Order Offer</span>
-                    <span style={{ color: '#C55A44', fontWeight: 'bold' }}>{formatCurrency(activeProduct.price)}</span>
+                    <span style={{ color: '#C55A44', fontWeight: 'bold' }}>{formatCurrency(activeProduct.price * quantity)}</span>
                   </div>
                   <div className={styles['price-card-footer']}>
                     <div className={styles['savings-banner']} style={{ backgroundColor: 'rgba(181, 137, 61, 0.1)' }}>
@@ -350,7 +370,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                     <div className={styles['final-price-box']}>
                       <p className={styles['final-price-lbl']}>FINAL TOTAL PRICE</p>
                       <p className={styles['final-price-amt']}>
-                        {formatCurrency(activeProduct.price)}
+                        {formatCurrency(activeProduct.price * quantity)}
                       </p>
                     </div>
                   </div>
@@ -363,7 +383,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                   </div>
                   <div className={styles['price-card-row']}>
                     <span>Mazhai Vaanam Base Price</span>
-                    <span className={styles['medium-price']}>{formatCurrency(activeProduct.price)}</span>
+                    <span className={styles['medium-price']}>{formatCurrency(activeProduct.price * quantity)}</span>
                   </div>
 
 
@@ -450,30 +470,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             </p>
           </div>
 
-          {/* Trust Value Box */}
-          <div className={styles['trust-box']}>
-            <div className={styles['trust-item']}>
-              <span className="material-symbols-outlined">verified</span>
-              <div>
-                <h6>100% Original Masterpiece</h6>
-                <p>Certified by Silk Mark India & Handloom Mark verification standards.</p>
-              </div>
-            </div>
-            <div className={styles['trust-item']}>
-              <span className="material-symbols-outlined">redeem</span>
-              <div>
-                <h6>Luxury Gift Box Packaging</h6>
-                <p>Each saree arrives encased in our signature teak-finish legacy box wrap.</p>
-              </div>
-            </div>
-            <div className={styles['trust-item']}>
-              <span className="material-symbols-outlined">local_shipping</span>
-              <div>
-                <h6>Express Global Insured Shipping</h6>
-                <p>Completely insured shipping with custom tracked delivery (3-5 business days).</p>
-              </div>
-            </div>
-          </div>
+
         </div>
 
       </div>
@@ -490,7 +487,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
               className={styles['arrow-btn']} 
               onClick={() => {
                 const container = document.getElementById('related-carousel');
-                if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
+                if (container) container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
               }} 
               aria-label="Scroll left"
             >
@@ -500,7 +497,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
               className={styles['arrow-btn']} 
               onClick={() => {
                 const container = document.getElementById('related-carousel');
-                if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
+                if (container) container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
               }} 
               aria-label="Scroll right"
             >
@@ -559,8 +556,8 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                     <Star
                       key={n}
                       size={22}
-                      fill={(hoverRating || reviewForm.rating) >= n ? 'var(--accent)' : 'transparent'}
-                      stroke={(hoverRating || reviewForm.rating) >= n ? 'var(--accent)' : 'rgba(79,78,34,0.3)'}
+                      fill={(hoverRating || reviewForm.rating) >= n ? '#B38A4A' : 'transparent'}
+                      stroke={(hoverRating || reviewForm.rating) >= n ? '#B38A4A' : 'rgba(79,78,34,0.3)'}
                       style={{ cursor: 'pointer', transition: 'transform 0.15s ease' }}
                       onMouseEnter={() => setHoverRating(n)}
                       onMouseLeave={() => setHoverRating(0)}
@@ -603,7 +600,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                     required
                   />
                 </div>
-                <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end' }}>
+                <div className={styles['submit-review-wrapper']}>
                   <button type="submit" className={styles['submit-review-btn']}>
                     Submit Review
                   </button>
@@ -648,11 +645,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
           {/* Static curated reviews */}
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
             </div>
             <p className={styles['review-quote']}>
               "The gold zari work is absolutely breathtaking. It sits lighter than expected and drapes like a dream. Truly an heirloom masterpiece."
@@ -671,11 +668,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
             </div>
             <p className={styles['review-quote']}>
               "Wore this for my daughter's wedding reception. The colors are incredibly rich. Everyone asked about the provenance of the fabric."
@@ -694,11 +691,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
 
           <div className={styles['review-card']}>
             <div className={styles['review-stars']}>
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
-              <Star size={12} fill="var(--accent)" stroke="var(--accent)" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
+              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
             </div>
             <p className={styles['review-quote']}>
               "The custom teak wooden box packaging itself is worth 5 stars. It felt like receiving a heritage heirloom from another era."
@@ -716,7 +713,6 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
           </div>
         </div>
       </section>
-
 
     </div>
   );

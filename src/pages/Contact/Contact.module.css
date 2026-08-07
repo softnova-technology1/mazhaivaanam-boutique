@@ -3,6 +3,12 @@
   background-color: var(--bg-main);
 }
 
+@media (min-width: 320px) and (max-width: 425px) {
+  .contactPageContainer {
+    padding-bottom: 0px;
+  }
+}
+
 /* Toast Alerts */
 .toastNotification {
   position: fixed;
@@ -148,6 +154,13 @@
   border-radius: 9999px !important;
   z-index: 1;
 }
+
+@media (min-width: 320px) and (max-width: 425px) {
+  .enquireBtn {
+    padding: 10px 48px;
+  }
+}
+
 
 .enquireBtn:hover {
   background-color: var(--primary-dark) !important;
@@ -344,6 +357,12 @@
   .formsSectionGrid {
     grid-template-columns: 1fr;
     gap: 60px;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 425px) {
+  .formsSectionGrid {
+    padding: 40px 0 20px 0;
   }
 }
 
@@ -638,6 +657,15 @@
 
   letter-spacing: 0px;}
 
+@media (min-width: 320px) and (max-width: 425px) {
+  .locationsSection {
+    padding: 30px 0;
+  }
+  .locationsMainTitle {
+    margin: 0 0 30px 0;
+  }
+}
+
 .locationsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -864,6 +892,18 @@
   font-weight: 400;
 
   letter-spacing: 0px;}
+
+@media (min-width: 320px) and (max-width: 425px) {
+  .mapsSection {
+    padding: 10px 0;
+  }
+  .faqLoungeSection {
+    padding: 10px 0;
+  }
+  .faqTitle {
+    margin-bottom: 10px;
+  }
+}
 
 .faqAccordionsWrapper {
   display: flex;

@@ -1,0 +1,8 @@
+@media (min-width: 320px) and (max-width: 425px) {
+  .mobileContainer {
+    min-height: 40vh !important;
+    justify-content: flex-start !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+}

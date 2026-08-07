@@ -41,7 +41,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const [errors, setErrors] = useState({});
 
   // UI Interactive States
-  const [deliveryMode, setDeliveryMode] = useState('express'); // 'express' | 'standard'
+  const [deliveryMode, setDeliveryMode] = useState('pickup'); // 'pickup' | 'standard'
   const [giftPackaging, setGiftPackaging] = useState(false);
   const [giftMessage, setGiftMessage] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' | 'upi' | 'netbanking'
@@ -74,8 +74,9 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const festivalDiscount = Math.round(subtotal * 0.05); // 5% discount
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
   const convenienceFee = checkoutItems.length > 0 ? 2 : 0;
+  const shippingFee = checkoutItems.length > 0 ? (deliveryMode === 'standard' ? 100 : 0) : 0;
   
-  const finalAmount = Math.max(0, subtotal - festivalDiscount + giftPackAddon + convenienceFee);
+  const finalAmount = Math.max(0, subtotal - festivalDiscount + giftPackAddon + convenienceFee + shippingFee);
   const totalSavings = exclusivePricingSavings + festivalDiscount;
 
   const handleCompleteOrder = (e) => {
@@ -142,6 +143,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       subtotal,
       festivalDiscount,
       giftPackAddon,
+      shippingFee,
       items: [...checkoutItems],
       placedOnDate: getFormattedDate(0),
       arrivalRange: `${getFormattedDate(6)} — ${getFormattedDate(9)}`
@@ -205,7 +207,7 @@ Subtotal (MRP): ${formatCurrency(orderCache.mrpTotal)}
 Exclusive Member Price: ${formatCurrency(orderCache.subtotal)}
 Festival Discount: -${formatCurrency(orderCache.festivalDiscount)}
 Gift Wrap Packaging: +${formatCurrency(orderCache.giftPackAddon)}
-White Glove Shipping: FREE
+${orderCache.deliveryMode === 'pickup' ? 'Self Pickup' : 'Standard Shipping'}: ${orderCache.deliveryMode === 'pickup' ? 'FREE' : '+' + formatCurrency(orderCache.shippingFee)}
 FINAL AMOUNT PAID: ${formatCurrency(orderCache.finalAmount)}
 -----------------------------------------
 Thank you for choosing handloom heritage.
@@ -326,21 +328,7 @@ Thank you for choosing handloom heritage.
                         <span className={`${styles.timelineStepLabel} ${styles.activeLabel}`}>Confirmed</span>
                       </div>
                       
-                      {/* Step 2 */}
-                      <div className={styles.timelineStepBlock}>
-                        <div className={styles.timelineStepDot}>
-                          <Star size={14} />
-                        </div>
-                        <span className={styles.timelineStepLabel}>Quality Check</span>
-                      </div>
-                      
-                      {/* Step 3 */}
-                      <div className={styles.timelineStepBlock}>
-                        <div className={styles.timelineStepDot}>
-                          <Gift size={14} />
-                        </div>
-                        <span className={styles.timelineStepLabel}>Packaging</span>
-                      </div>
+
 
                       {/* Step 4 */}
                       <div className={styles.timelineStepBlock}>
@@ -454,8 +442,8 @@ Thank you for choosing handloom heritage.
                     </div>
                   )}
                   <div className={styles.successPriceRow}>
-                    <span>White Glove Shipping</span>
-                    <span className={styles.shippingFreeText}>FREE</span>
+                    <span>{orderCache.deliveryMode === 'pickup' ? 'Self Pickup' : 'Standard Shipping'}</span>
+                    <span>{orderCache.deliveryMode === 'pickup' ? 'FREE' : formatCurrency(orderCache.shippingFee)}</span>
                   </div>
                 </div>
 
@@ -649,14 +637,14 @@ Thank you for choosing handloom heritage.
                 <h2 className={styles.sectionTitle}>Delivery Mode</h2>
                 <div className={styles.deliveryModeGrid}>
                   <label 
-                    className={`${styles.deliveryLabelCard} ${deliveryMode === 'express' ? styles.selectedDelivery : ''}`}
-                    onClick={() => setDeliveryMode('express')}
+                    className={`${styles.deliveryLabelCard} ${deliveryMode === 'pickup' ? styles.selectedDelivery : ''}`}
+                    onClick={() => setDeliveryMode('pickup')}
                   >
                     <input 
                       type="radio" 
                       name="delivery" 
-                      checked={deliveryMode === 'express'} 
-                      onChange={() => setDeliveryMode('express')}
+                      checked={deliveryMode === 'pickup'} 
+                      onChange={() => setDeliveryMode('pickup')}
                       className={styles.hiddenRadio}
                     />
                     <div className={styles.deliveryInfo}>
@@ -681,7 +669,7 @@ Thank you for choosing handloom heritage.
                       <span className={styles.deliveryOptionTitle}>Standard Delivery</span>
                       <p className={styles.deliveryOptionSubtitle}>Delivery in 5-7 business days</p>
                     </div>
-                    <span className={styles.deliveryCost}>FREE</span>
+                    <span className={styles.deliveryCost}>{formatCurrency(100)}</span>
                   </label>
                 </div>
               </section>
@@ -831,8 +819,8 @@ Thank you for choosing handloom heritage.
                     </div>
                   )}
                   <div className={styles.priceRow}>
-                    <span>Shipping</span>
-                    <span className={styles.discountValue} style={{ fontWeight: '600' }}>FREE</span>
+                    <span>{deliveryMode === 'pickup' ? 'Self Pickup' : 'Shipping'}</span>
+                    <span className={styles.priceValue}>{deliveryMode === 'pickup' ? 'FREE' : formatCurrency(shippingFee)}</span>
                   </div>
                 </div>
 

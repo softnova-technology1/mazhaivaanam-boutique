@@ -186,7 +186,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
               <div className={styles.detailsLeftCol}>
                 
                 {/* Live Status Card */}
-                <div className={`${styles.statusLiveCard} ${styles.goldShimmer}`}>
+                <div className={styles.statusLiveCard}>
                   <div className={styles.statusLiveHeader}>
                     <div>
                       <h3 className={styles.statusLiveOrderId}>Order #{activeOrder.orderId}</h3>
@@ -229,71 +229,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
                   </div>
                 </div>
 
-                {/* Narrative Step Timeline */}
-                <div className={styles.timelineVisualBox}>
-                  <h4 className={styles.timelineLabelTitle}>THE LUXURY JOURNEY</h4>
-                  
-                  <div className={styles.horizontalTimelineWrapper}>
-                    <div className={styles.horizontalLineBg}></div>
-                    {/* Fill line up to 65% for transit */}
-                    <div 
-                      className={styles.horizontalLineFill} 
-                      style={{ width: activeOrder.status === 'DELIVERED' ? '100%' : '65%' }}
-                    ></div>
-                    
-                    <div className={styles.timelineStepsFlex}>
-                      
-                      {/* Step 1 */}
-                      <div className={styles.timelineStepBlockNode}>
-                        <div className={`${styles.timelineCircleNode} ${styles.completedCircleNode}`}>
-                          <CheckCircle size={14} fill="currentColor" className={styles.checkIconFill} />
-                        </div>
-                        <p className={styles.timelineNodeText}>ORDER PLACED</p>
-                        <p className={styles.timelineDateText}>Oct 12</p>
-                      </div>
 
-                      {/* Step 2 */}
-                      <div className={styles.timelineStepBlockNode}>
-                        <div className={`${styles.timelineCircleNode} ${styles.completedCircleNode}`}>
-                          <CheckCircle size={14} fill="currentColor" className={styles.checkIconFill} />
-                        </div>
-                        <p className={styles.timelineNodeText}>QUALITY INSPECTION</p>
-                        <p className={styles.timelineDateText}>Oct 14</p>
-                      </div>
-
-                      {/* Step 3 */}
-                      <div className={styles.timelineStepBlockNode}>
-                        <div className={`${styles.timelineCircleNode} ${styles.completedCircleNode}`}>
-                          <CheckCircle size={14} fill="currentColor" className={styles.checkIconFill} />
-                        </div>
-                        <p className={styles.timelineNodeText}>LUXURY PACKAGING</p>
-                        <p className={styles.timelineDateText}>Oct 15</p>
-                      </div>
-
-                      {/* Step 4 */}
-                      <div className={`${styles.timelineStepBlockNode} ${activeOrder.status !== 'DELIVERED' ? styles.pulseNode : ''}`}>
-                        <div className={`${styles.timelineCircleNode} ${styles.activeCourierCircleNode}`}>
-                          <Truck size={16} />
-                        </div>
-                        <p className={`${styles.timelineNodeText} ${styles.activeNodeLabel}`}>IN TRANSIT</p>
-                        <p className={styles.timelineDateText}>Sorting Hub</p>
-                      </div>
-
-                      {/* Step 5 */}
-                      <div className={`${styles.timelineStepBlockNode} ${activeOrder.status !== 'DELIVERED' ? styles.pendingNode : ''}`}>
-                        <div className={`${styles.timelineCircleNode} ${activeOrder.status === 'DELIVERED' ? styles.completedCircleNode : styles.pendingCircleNode}`}>
-                          {activeOrder.status === 'DELIVERED' ? (
-                            <CheckCircle size={14} fill="currentColor" className={styles.checkIconFill} />
-                          ) : (
-                            <div className={styles.pendingDotInner}></div>
-                          )}
-                        </div>
-                        <p className={styles.timelineNodeText}>DELIVERED</p>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
 
               </div>
 
@@ -330,61 +266,14 @@ export const TrackOrder = ({ setCurrentTab }) => {
                   </div>
                 </div>
 
-                {/* Packaging Experience */}
-                <div className={styles.packagingExperienceBox}>
-                  <div>
-                    <h4 className={styles.packagingHeadline}>The Signature Experience</h4>
-                    <p className={styles.packagingDescription}>
-                      Your Mazhai Vaanam saree arrives in our climate-controlled signature box, complete with a hand-signed Certificate of Authenticity.
-                    </p>
-                  </div>
-                  <div className={styles.packagingImageBox}>
-                    <div className={styles.packagingBoxCoverImg}></div>
-                  </div>
-                </div>
+
 
               </div>
 
             </div>
           </section>
 
-          {/* Behind the Scenes Artisan block */}
-          <section className={styles.btsArtisanSection}>
-            <div className={styles.btsContentWrapper}>
-              <div className={styles.btsImageLayout}>
-                <div className={styles.btsLoomCornerBorderTL}></div>
-                <img 
-                  src="https://lh3.googleusercontent.com/aida/AP1WRLtAhThut48mQQG6cMMAplW2QvUeMqjJsm4zGt5FYcVGpNwa-BjnNIbYOv6-jbwXUfGb6vN7tdIOA4QbU68bFdiehK2dYDh1bHgSYZNvYzGpuwydfvZi6OnjFiL6fo9-ImfvxzVZfTlRzRNIdz3uRAFwJ7GA2088LYVPMknyaeAW0cRyIGptYt62_PLbc_T1YJEkiHbxOQbd6lKzWFlOMRuHvXebutBegaXUlUjzQgex7kDeRzVgJsdURmA" 
-                  alt="Artisan Loom Craftsmanship" 
-                  className={styles.btsWeaverImage}
-                />
-                <div className={styles.btsLoomCornerBorderBR}></div>
-              </div>
 
-              <div className={styles.btsTextLayout}>
-                <span className={styles.btsBadgeSubheadline}>BEHIND THE SCENES</span>
-                <h2 className={styles.btsMainTitle}>Artistry in Every Thread</h2>
-                <p className={styles.btsNarrativeQuote}>
-                  "The rhythm of the loom is the heartbeat of our heritage. Your saree has spent 210 hours under the meticulous care of Master Weaver Arjun Rao before beginning its journey to you."
-                </p>
-
-                <div className={styles.btsWeavingStatsGrid}>
-                  <div>
-                    <p className={styles.statsValueNumber}>12</p>
-                    <p className={styles.statsValueMeta}>DAYS WEAVING</p>
-                  </div>
-                  <div>
-                    <p className={styles.statsValueNumber}>Pure Zari</p>
-                    <p className={styles.statsValueMeta}>AUTHENTICITY</p>
-                  </div>
-                  <div>
-                    <p className={styles.statsValueNumber}>GI Tagged</p>
-                    <p className={styles.statsValueMeta}>HERITAGE</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
 
           {/* Pricing & Acquisition Savings Table */}
           <section className={styles.pricingAcquisitionSection}>

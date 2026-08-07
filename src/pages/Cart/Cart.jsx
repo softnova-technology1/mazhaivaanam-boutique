@@ -155,7 +155,8 @@ export const Cart = ({ setCurrentTab }) => {
   const festivalDiscount = Math.round(subtotal * 0.05); // 5% discount
   const couponDiscount = couponApplied ? 1000 : 0;
   const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
-  const finalAmount = Math.max(0, mrpTotal - totalSavings) + (cart.length > 0 ? 2 : 0);
+  const shippingFee = cart.length > 0 ? 100 : 0;
+  const finalAmount = Math.max(0, mrpTotal - totalSavings) + (cart.length > 0 ? 2 : 0) + shippingFee;
 
   const handleCheckout = () => {
     setCurrentTab('checkout');
@@ -341,8 +342,8 @@ export const Cart = ({ setCurrentTab }) => {
                   )}
                   <div className={styles.priceRow}>
                     <span>Shipping</span>
-                    <span className={styles.priceValue} style={{ color: 'var(--accent)', fontWeight: '600' }}>
-                      FREE EXPRESS
+                    <span className={styles.priceValue}>
+                      {formatCurrency(shippingFee)}
                     </span>
                   </div>
                 </div>

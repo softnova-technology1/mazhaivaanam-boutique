@@ -515,34 +515,34 @@
 .price-drop-badge {
   background-color: #fed579;
   color: #251a00;
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 2px;
+  padding: 6px 12px;
+  border-radius: 4px;
 }
 
 .tag-badge {
   background-color: var(--primary-dark);
   color: #ffffff;
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 20px;
+  padding: 6px 12px;
+  border-radius: 4px;
 }
 
 .limited-badge {
   background-color: rgba(73, 0, 23, 0.85);
   color: #ffffff;
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 2px;
+  padding: 6px 12px;
+  border-radius: 4px;
 }
 
 .remove-card-btn {

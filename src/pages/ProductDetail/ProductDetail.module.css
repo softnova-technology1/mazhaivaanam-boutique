@@ -207,10 +207,10 @@
   background-color: var(--primary);
   color: #ffffff;
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 800;
   letter-spacing: 1.5px;
-  padding: 5px 14px;
-  border-radius: 20px;
+  padding: 6px 12px;
+  border-radius: 4px;
   text-transform: uppercase;
   z-index: 4;
 }
@@ -326,26 +326,13 @@
   gap: 8px;
 }
 
-.edition-badge {
-  font-size: 8px;
-  font-weight: 600;
+.detail-badge {
+  font-size: 9px;
+  font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  background-color: var(--primary-dark);
-  color: #ffffff;
-  padding: 4px 10px;
-  border-radius: 2px;
-}
-
-.bestseller-badge {
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  background-color: #d32f2f;
-  color: #ffffff;
-  padding: 4px 10px;
-  border-radius: 2px;
+  padding: 6px 12px;
+  border-radius: 4px;
 }
 
 .collection-sub {
@@ -1913,15 +1900,16 @@
 
 .related-tag {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  background-color: var(--accent);
+  top: 12px;
+  left: 12px;
+  background-color: rgb(211, 89, 89);
   color: white;
   font-size: 9px;
-  font-weight: bold;
-  padding: 4px 8px;
-  border-radius: 2px;
-  letter-spacing: 1px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 4px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
 .related-info {

@@ -300,8 +300,13 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
         <div className={styles['info-column']}>
           <header className={styles['info-header']}>
             <div className={styles['header-badges']}>
-              <span className={`${styles['edition-badge']} ${getBadgeClass('Limited Edition')}`}>Limited Edition</span>
-              {activeProduct.tag && <span className={`${styles['bestseller-badge']} ${getBadgeClass(activeProduct.tag)}`}>{activeProduct.tag}</span>}
+              {(activeProduct.category === "Limited Offer" || 
+                activeProduct.isLimited || 
+                (activeProduct.id && (activeProduct.id.startsWith('wish-') || activeProduct.id.startsWith('offer-')))) && 
+               !(activeProduct.tag && activeProduct.tag.toUpperCase().includes('LIMIT')) && (
+                <span className={`${styles['detail-badge']} ${getBadgeClass('Limited Edition')}`}>Limited Edition</span>
+              )}
+              {activeProduct.tag && <span className={`${styles['detail-badge']} ${getBadgeClass(activeProduct.tag)}`}>{activeProduct.tag}</span>}
             </div>
             <p className={styles['collection-sub']}>MAZHAI VAANAM SIGNATURE COLLECTION</p>
             <h1>{activeProduct.name} Saree - Royal Heritage Edition</h1>
@@ -508,7 +513,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             <div key={prod.id} className={styles['related-card']} onClick={() => window.location.href = `/product/${prod.id}`}>
               <div className={styles['related-image-wrapper']}>
                 <img src={prod.image} alt={prod.name} />
-                {prod.tag && <span className={styles['related-tag']}>{prod.tag}</span>}
+                {prod.tag && <span className={`${styles['related-tag']} ${getBadgeClass(prod.tag)}`}>{prod.tag}</span>}
               </div>
               <div className={styles['related-info']}>
                 <h4>{prod.name}</h4>

@@ -478,7 +478,9 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
               <h4>Join Our Community</h4>
               <p>Share your stories and drapes with us to get featured in our seasonal gallery.</p>
               <button 
-                onClick={() => setCurrentTab && setCurrentTab('contact')}
+                onClick={() => {
+                  document.getElementById('whatsapp-family-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className={styles['cta-btn']}
               >
                 SHARE YOUR MOMENT
@@ -534,7 +536,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
       </section>
 
       {/* 9. WhatsApp Group / Family Block */}
-      <section className={`${styles['newsletter-section']} container`}>
+      <section id="whatsapp-family-section" className={`${styles['newsletter-section']} container`}>
         <div className={styles['newsletter-box']}>
           <h2>Join our Mazhai Vaanam Family</h2>
           <p>Be the first to discover our new collections, artisan stories, and heritage previews directly inside our exclusive WhatsApp group.</p>

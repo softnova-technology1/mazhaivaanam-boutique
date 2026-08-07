@@ -34,14 +34,16 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
         name: "Golden Temple Kanjeevaram",
         price: 18500,
         image: "https://images.unsplash.com/photo-1596783074918-c84cb06531ca?auto=format&fit=crop&w=300&q=80",
-        category: "Silk Sarees"
+        category: "Silk Sarees",
+        isLimited: true
       },
       {
         id: 'wish-2',
         name: "Crimson Banarasi Brocade",
         price: 24000,
         image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=300&q=80",
-        category: "Banarasi"
+        category: "Banarasi",
+        isLimited: true
       }
     ];
   });

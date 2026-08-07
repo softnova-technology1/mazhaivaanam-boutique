@@ -403,7 +403,7 @@
 .quick-view-btn {
   width: 100%;
   background-color: #ffffff;
-  color: var(--primary);
+  color: black;
   border: 1px solid var(--border-color);
   padding: 10px 0;
   font-family: var(--font-body);

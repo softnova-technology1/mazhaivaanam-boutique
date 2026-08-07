@@ -194,7 +194,7 @@ export const Cart = ({ setCurrentTab }) => {
             <button 
               className={styles.shimmerBtn} 
               onClick={() => setCurrentTab('catalog')}
-              style={{ maxWidth: '280px', marginTop: '12px' }}
+              style={{ width: 'fit-content', minWidth: '280px', padding: '15px 30px', marginTop: '12px' }}
             >
               Explore Collections
               <ArrowRight className={styles.checkoutIcon} size={18} />

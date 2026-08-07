@@ -62,7 +62,20 @@ export const CartToast = ({ setCurrentTab }) => {
           <X size={16} />
         </button>
       </div>
-      <div className={styles.toastBody}>
+      <div 
+        className={styles.toastBody}
+        onClick={(e) => {
+          if (e.target.closest(`.${styles.actionRow}`)) {
+            return;
+          }
+          setIsVisible(false);
+          if (setCurrentTab) {
+            window.history.pushState(null, '', '/cart');
+            setCurrentTab('cart');
+          }
+        }}
+        style={{ cursor: 'pointer' }}
+      >
         <div className={styles.imageContainer}>
           <img src={product.image} alt={product.name} className={styles.productImage} />
         </div>

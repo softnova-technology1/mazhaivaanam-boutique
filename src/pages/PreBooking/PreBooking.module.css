@@ -328,6 +328,13 @@
   text-transform: uppercase;
 }
 
+@media (min-width: 320px) and (max-width: 425px) {
+  .discount-badge {
+    font-size: 8px;
+    padding: 2px 4px;
+  }
+}
+
 .product-info {
   display: flex;
   flex-direction: column;

@@ -23,6 +23,13 @@ export const MyOrders = ({ setCurrentTab }) => {
   const { addToCart } = useCart();
   const [orders, setOrders] = useState([]);
   const [toastMessage, setToastMessage] = useState('');
+  const [expandedOrderIds, setExpandedOrderIds] = useState([]);
+
+  const toggleOrderExpansion = (orderId) => {
+    setExpandedOrderIds(prev => 
+      prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]
+    );
+  };
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
@@ -226,13 +233,21 @@ Thank you for choosing handloom heritage.
           <div className={styles.ordersStack}>
             {orders.map((order) => {
               const isDelivered = order.status === 'DELIVERED';
+              const isExpanded = expandedOrderIds.includes(order.orderId);
               
               return (
-                <article key={order.orderId} className={styles.orderCard}>
+                <article key={order.orderId} className={`${styles.orderCard} ${isExpanded ? styles.expandedCard : ''}`}>
                   {/* Shimmer element */}
                   <div className={styles.shimmerGold}></div>
                   
-                  <div className={styles.orderCardLayout}>
+                  <div 
+                    className={styles.orderCardLayout} 
+                    onClick={() => {
+                      if (window.innerWidth <= 425) {
+                        toggleOrderExpansion(order.orderId);
+                      }
+                    }}
+                  >
                     {/* Saree Thumbnail Image */}
                     <div className={styles.productThumbBox}>
                       <img 
@@ -250,9 +265,20 @@ Thank you for choosing handloom heritage.
                             {order.items[0]?.name || 'Luxury Saree'}
                             {order.items.length > 1 && ` & ${order.items.length - 1} other item(s)`}
                           </h3>
-                          <span className={`${styles.statusBadge} ${isDelivered ? styles.deliveredBadge : styles.transitBadge}`}>
-                            {order.status}
-                          </span>
+                          <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                            <span className={`${styles.statusBadge} ${isDelivered ? styles.deliveredBadge : styles.transitBadge}`}>
+                              {order.status}
+                            </span>
+                            <svg 
+                              xmlns="http://www.w3.org/2000/svg" 
+                              width="16" height="16" 
+                              viewBox="0 0 24 24" 
+                              fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" 
+                              className={`${styles.chevronIcon} ${isExpanded ? styles.chevronOpen : ''}`}
+                            >
+                              <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                          </div>
                         </div>
                         <p className={styles.orderMetaText}>
                           ORDER #{order.orderId} • PLACED ON {order.placedOnDate.toUpperCase()}

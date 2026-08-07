@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { getBadgeClass } from '../../utils/badgeHelper';
-import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
 import { ALL_PRODUCTS } from '../Catalog/Catalog';
 import styles from './ProductDetail.module.css';
 
@@ -79,8 +79,8 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   }, [activeProduct]);
 
   // Derived calculations for price details card
-  const boutiquePrice = activeProduct.oldPrice || Math.round(activeProduct.price * 1.3);
-  const finalPrice = activeProduct.price;
+  const boutiquePrice = (activeProduct.oldPrice || Math.round(activeProduct.price * 1.3)) * quantity;
+  const finalPrice = activeProduct.price * quantity;
   const totalSavings = boutiquePrice - finalPrice;
   const totalDiscountPct = Math.round((totalSavings / boutiquePrice) * 100);
 
@@ -134,8 +134,9 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   // Helper to dynamically match thumbnail close-ups based on product color/category
   const getThumbnails = () => {
     const main = activeProduct.image;
-    const blueDetail = "https://lh3.googleusercontent.com/aida-public/AB6AXuDW1BVBttTYx6eh282HWz2UO-XxicvibX7HoJI02xqGXzblo73v9MpUYoYytZjreT9bf5c4roypOmkdJdlwPq78f1aBOzSzkLbxj63Y96RSWsKLU1MAKnL4CI_j7DPMFvbvbm79U9XS01BfzDHxuC9hjKlQqaDtz8CDdOtTdoZMQBvoXdqvMROyo309-BM2Ay3uESQ2RWFwbIz-d11cc_c6sSoowde0hm7HG5YC-uThsvviHdLtk8Z1";
-    const goldDetail = "https://lh3.googleusercontent.com/aida/AP1WRLtAhThut48mQQG6cMMAplW2QvUeMqjJsm4zGt5FYcVGpNwa-BjnNIbYOv6-jbwXUfGb6vN7tdIOA4QbU68bFdiehK2dYDh1bHgSYZNvYzGpuwydfvZi6OnjFiL6fo9-ImfvxzVZfTlRzRNIdz3uRAFwJ7GA2088LYVPMknyaeAW0cRyIGptYt62_PLbc_T1YJEkiHbxOQbd6lKzWFlOMRuHvXebutBegaXUlUjzQgex7kDeRzVgJsdURmA";
+    // Using local catalog images for details to prevent external link blocking
+    const blueDetail = "/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg";
+    const goldDetail = "/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg";
 
     const cat = activeProduct.category || "";
     const col = activeProduct.color || "";
@@ -258,6 +259,22 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
             )}
 
             <div className={styles['viewport-controls']}>
+              <button 
+                className={`${styles['gallery-control-btn']} ${styles['share-control-btn']}`} 
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: activeProduct.name,
+                      text: activeProduct.description,
+                      url: window.location.href,
+                    }).catch(console.error);
+                  }
+                }}
+                aria-label="Share product"
+              >
+                <Share2 size={18} color="currentColor" />
+              </button>
+
               <span
                 className={styles['gallery-control-btn']}
                 role="button"
@@ -277,6 +294,10 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                 />
               </span>
             </div>
+          </div>
+
+          <div className={styles['mobile-variant-text']}>
+             <strong>Selected Color:</strong> {activeProduct.name.split(' ')[0]}
           </div>
 
           <div className={styles['thumbnails-strip']}>
@@ -331,11 +352,11 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                 <>
                   <div className={styles['price-card-row']}>
                     <span>Original Retail Value</span>
-                    <span className={styles['old-price-slashed']}>{formatCurrency(activeProduct.oldPrice || Math.round(activeProduct.price * 1.15))}</span>
+                    <span className={styles['old-price-slashed']}>{formatCurrency((activeProduct.oldPrice || Math.round(activeProduct.price * 1.15)) * quantity)}</span>
                   </div>
                   <div className={styles['price-card-row']}>
                     <span style={{ color: '#C55A44', fontWeight: 'bold' }}>Special Pre-Order Offer</span>
-                    <span style={{ color: '#C55A44', fontWeight: 'bold' }}>{formatCurrency(activeProduct.price)}</span>
+                    <span style={{ color: '#C55A44', fontWeight: 'bold' }}>{formatCurrency(activeProduct.price * quantity)}</span>
                   </div>
                   <div className={styles['price-card-footer']}>
                     <div className={styles['savings-banner']} style={{ backgroundColor: 'rgba(181, 137, 61, 0.1)' }}>
@@ -345,7 +366,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                     <div className={styles['final-price-box']}>
                       <p className={styles['final-price-lbl']}>FINAL TOTAL PRICE</p>
                       <p className={styles['final-price-amt']}>
-                        {formatCurrency(activeProduct.price)}
+                        {formatCurrency(activeProduct.price * quantity)}
                       </p>
                     </div>
                   </div>
@@ -358,7 +379,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                   </div>
                   <div className={styles['price-card-row']}>
                     <span>Mazhai Vaanam Base Price</span>
-                    <span className={styles['medium-price']}>{formatCurrency(activeProduct.price)}</span>
+                    <span className={styles['medium-price']}>{formatCurrency(activeProduct.price * quantity)}</span>
                   </div>
 
 
@@ -485,7 +506,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
               className={styles['arrow-btn']} 
               onClick={() => {
                 const container = document.getElementById('related-carousel');
-                if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
+                if (container) container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
               }} 
               aria-label="Scroll left"
             >
@@ -495,7 +516,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
               className={styles['arrow-btn']} 
               onClick={() => {
                 const container = document.getElementById('related-carousel');
-                if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
+                if (container) container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
               }} 
               aria-label="Scroll right"
             >
@@ -598,7 +619,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
                     required
                   />
                 </div>
-                <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end' }}>
+                <div className={styles['submit-review-wrapper']}>
                   <button type="submit" className={styles['submit-review-btn']}>
                     Submit Review
                   </button>
@@ -711,7 +732,6 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
           </div>
         </div>
       </section>
-
 
     </div>
   );

@@ -138,6 +138,15 @@
     grid-template-columns: 1fr;
     gap: 48px;
   }
+  .title {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 28px;
+  }
 }
 
 .editorialCol {

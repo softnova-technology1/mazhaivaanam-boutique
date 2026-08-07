@@ -85,6 +85,18 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
     return () => window.removeEventListener('click', handleOutsideClick);
   }, []);
 
+  // Prevent background scrolling when drawers/modals are open
+  useEffect(() => {
+    if (isCartOpen || isMobileMenuOpen || isSearchOpen || isWishlistOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isCartOpen, isMobileMenuOpen, isSearchOpen, isWishlistOpen]);
+
   const popularSearches = ['Pure Silk Sarees', 'Bridal Kanjeevaram', 'Organza Silk', 'Banarasi Brocade', 'Black Magic'];
 
   const collectionsList = [
@@ -219,8 +231,8 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               {/* Account Dropdown Trigger */}
               <div 
                 className={styles.accountDropdownWrapper}
-                onMouseEnter={() => setIsAccountOpen(true)}
-                onMouseLeave={() => setIsAccountOpen(false)}
+                onPointerEnter={(e) => e.pointerType === 'mouse' && setIsAccountOpen(true)}
+                onPointerLeave={(e) => e.pointerType === 'mouse' && setIsAccountOpen(false)}
               >
                 <button 
                   className={styles.iconCircle} 

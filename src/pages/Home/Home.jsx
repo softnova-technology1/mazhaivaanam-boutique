@@ -506,7 +506,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
                 <span className={styles['review-quote-icon']}>“</span>
                 <div className={styles['rating-stars']}>
                   {[...Array(rev.rating)].map((_, i) => (
-                    <Star key={i} size={16} fill="#FFC107" stroke="#FFC107" />
+                    <Star key={i} size={16} fill="#B38A4A" stroke="#B38A4A" />
                   ))}
                 </div>
                 <p className={styles['review-text-content']}>

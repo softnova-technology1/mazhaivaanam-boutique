@@ -404,30 +404,31 @@
 }
 
 .product-title {
-  font-family: var(--font-heading);
+  font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.3rem;
-  color: var(--text-main);
+  color: var(--primary-dark);
   margin: 0;
-  font-weight: 400;
+  font-weight: 700;
   flex-grow: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .rating-badge {
   display: flex;
   align-items: center;
   gap: 4px;
-  border: 1px solid var(--secondary, #FFBEA2);
-  background-color: #FFF9EC;
+  background-color: #FFF9E6;
+  color: #B38A4A;
+  border: 1px solid #FFE7A5;
   padding: 4px 10px;
   border-radius: 16px;
   font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
-  color: var(--primary-dark, #4F4E22);
 }
 
 .product-desc {
@@ -467,11 +468,11 @@
 .discount-pill {
   font-family: var(--font-body);
   font-size: 10px;
-  font-weight: 700;
-  color: #FFFFFF;
-  background-color: #D34B4B;
-  padding: 4px 8px;
+  background-color: #fcece8;
+  color: #d14d3b;
+  padding: 2px 6px;
   border-radius: 4px;
+  font-weight: 600;
 }
 
 /* Cloud Shaped Add To Cart Button */

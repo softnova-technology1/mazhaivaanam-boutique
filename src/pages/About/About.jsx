@@ -135,7 +135,7 @@ export const About = ({ setCurrentTab }) => {
       {/* Our Philosophy (Principles) */}
       <section className={styles.principlesSection}>
         <div className={styles.principlesHeader}>
-          <h3 className={styles.principlesMainTitle}>The Atelier Principles</h3>
+          <h3 className={styles.principlesMainTitle}>Our Curated Collections</h3>
         </div>
 
         <div className={styles.principlesGrid}>
@@ -144,76 +144,50 @@ export const About = ({ setCurrentTab }) => {
           <div className={styles.principleCard}>
             <div className={styles.principleImgFrame}>
               <img
-                src="/Images/timeless.png"
+                src="/Images/silk.jpg"
+                alt="Premium Silk Saree"
               />
             </div>
-            <h4 className={styles.principleCardTitle}>Timeless Elegance</h4>
-            <p className={styles.principleCardDesc}>Designs that transcend seasons, crafted for the woman who values enduring style.</p>
+            <h4 className={styles.principleCardTitle}>Silk Sarees</h4>
+            <p className={styles.principleCardDesc}>Discover our majestic pure silk sarees, featuring intricate zari borders and rich traditional motifs.</p>
           </div>
 
           {/* Card 2 */}
           <div className={`${styles.principleCard} ${styles.pushedCard}`}>
             <div className={styles.principleImgFrame}>
               <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpzmYR2UUsyl0klN0MjKHnkG18I33_hoQcsi5DtvwAGE4KeEu1TjJ2boomJJWDxDphIdnXHMz0T0JL4apFc8eOoQ-Sz7a4fRhDEoqTkDRGnRCX6OqDJLKPbEjSN5nvNJsU_Fhlr6UdKBSjDFzfopZQgOZ3lM57Hf6_4gb10o78rVFDWZPkyQYCpiJ8yjNP-Pjh7WeZkSPPQDwvHJj86CoFCz1Ry-oiTsMJ6HqKxV5vwWr5Z4kjpNCI"
-                alt="Golden thread spools in workshop"
+                src="/Images/cotton3.jpg"
+                alt="Cotton Saree"
               />
             </div>
-            <h4 className={styles.principleCardTitle}>Authentic Craft</h4>
-            <p className={styles.principleCardDesc}>Every thread is placed by hand, honoring the techniques of master weavers.</p>
+            <h4 className={styles.principleCardTitle}>Cotton Sarees</h4>
+            <p className={styles.principleCardDesc}>Breathable, lightweight handloomed cottons offering unparalleled comfort and everyday elegance.</p>
           </div>
 
           {/* Card 3 */}
           <div className={styles.principleCard}>
             <div className={styles.principleImgFrame}>
               <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxNn8pnIfOMXOOJP6GsFti9iuwi6J0VKd4JMRoX_fb69SHVyIbpqOTsNijML_uMQlOUi3CQgkdUmW3sJoPqgfRF15QKMv0vKxyK-NxB3c2VeU7F6dAahOgjFpHahV7UsScJK-vfV7LFb7KzUfwt38hRWEYczEKwMs88M1TPB9Xz-SF4vaCuF7-3sbwlHMQoooTEX8CN14ZuVy5q1WFrz-dRd4ibR5hQVfnF0lZicG2n3TQt7ADGDtV"
-                alt="Inspecting gold zari border with magnifying glass"
+                src="/Images/fancy.jpg"
+                alt="Festival Saree Collection"
               />
             </div>
-            <h4 className={styles.principleCardTitle}>Uncompromising Quality</h4>
-            <p className={styles.principleCardDesc}>Triple-layer inspection ensures that only perfection reaches your doorstep.</p>
+            <h4 className={styles.principleCardTitle}>Festival Collection</h4>
+            <p className={styles.principleCardDesc}>Vibrant and grand drapes specially curated to add a touch of royal splendor to your celebrations.</p>
           </div>
 
           {/* Card 4 */}
           <div className={`${styles.principleCard} ${styles.pushedCard}`}>
             <div className={styles.principleImgFrame}>
               <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHI7sOUpxj13CrxgFbd1lFkoEd9U3m0jWOHj70Dsxm70niHnFQ9GM1BC7m1fmWJB1RF9BIey-6F8dG8v2XzkKqPSsHPkeDiS2uBtfVzgaQA-Y52vt8qV7DngGJt-LmVNlVedtHlfRrIRLJf1O7_1FjonuXjXV8xY2oueRcb7LpxfcrCzWzaw8Bk696bV1FMuwRvnfiSH_ClKkMkdCKOOIqnVay5IrCTcByH81vkxvk3sY9OvUu70Ra"
-                alt="Luxury showroom layout minimal"
+                src="/Images/black.jpg"
+                alt="Black Love Saree Collection"
               />
             </div>
-            <h4 className={styles.principleCardTitle}>Customer First</h4>
-            <p className={styles.principleCardDesc}>A bespoke shopping journey designed to celebrate you at every single touchpoint.</p>
+            <h4 className={styles.principleCardTitle}>Black Love</h4>
+            <p className={styles.principleCardDesc}>A striking collection of bold, beautiful black sarees that make a powerful statement for any occasion.</p>
           </div>
 
-        </div>
-      </section>
-
-      {/* Brand Mission & Vision */}
-      <section className={styles.founderSection}>
-        <div className={styles.founderLayoutGrid}>
-          <div className={styles.founderImageBox}>
-            <img
-              src="/Images/sareemodel.png"
-              alt="Royal silk saree drape showcasing rich handloom zari art"
-              className={styles.founderPortraitImg}
-            />
-            <div className={styles.founderSignatureOverlay}>
-              <p className={styles.signatureRole}>OUR CORE PURPOSE</p>
-              <p className={styles.signatureName}>Artisan First Heritage</p>
-            </div>
-          </div>
-
-          <div className={styles.founderTextDetails}>
-            <Quote size={56} className={styles.founderQuoteIcon} />
-            <blockquote className={styles.founderBlockquote}>
-              "Mazhai Vaanam — meaning 'Rainy Sky' — was created with a singular purpose: to bring authentic handloom sarees directly from traditional artisans to modern women across the world."
-            </blockquote>
-            <p className={styles.founderBodyDesc}>
-              Our mission goes beyond selling sarees. We partner directly with rural master weavers to ensure fair livelihoods while preserving centuries-old handloom techniques. Each Mazhai Vaanam saree is an eco-luxury heirloom — hand-woven with pure silks, organic dyes, and genuine zari — empowering you to drape yourself in authentic culture, dignity, and sustainable fashion.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -306,29 +280,29 @@ export const About = ({ setCurrentTab }) => {
         </div>
       </section>
 
-      {/* Why Mazhai Vaanam */}
-      <section className={styles.whyBrandSection}>
-        <div className={styles.whyBrandWrapper}>
-          <h3 className={styles.whyBrandTitle}>The Mazhai Vaanam Difference</h3>
-
-          <div className={styles.whyBrandGrid}>
-            <div className={styles.whyCard}>
-              <Award size={36} className={styles.whyCardIcon} />
-              <h4>100% Handloom</h4>
-              <p>We strictly prohibit power-loom products. Each saree is a labor of love, woven manually by master artisans.</p>
+      {/* Brand Mission & Vision */}
+      <section className={styles.founderSection}>
+        <div className={styles.founderLayoutGrid}>
+          <div className={styles.founderImageBox}>
+            <img
+              src="/Images/sareemodel.png"
+              alt="Royal silk saree drape showcasing rich handloom zari art"
+              className={styles.founderPortraitImg}
+            />
+            <div className={styles.founderSignatureOverlay}>
+              <p className={styles.signatureRole}>OUR CORE PURPOSE</p>
+              <p className={styles.signatureName}>Artisan First Heritage</p>
             </div>
+          </div>
 
-            <div className={styles.whyCard}>
-              <Sparkles size={36} className={styles.whyCardIcon} />
-              <h4>Exclusive Designs</h4>
-              <p>Limited edition pieces with motifs that are unique to our label, ensuring you own a rare masterpiece.</p>
-            </div>
-
-            <div className={styles.whyCard}>
-              <ShieldCheck size={36} className={styles.whyCardIcon} />
-              <h4>Eco-Luxury Packaging</h4>
-              <p>Sustainable, handcrafted boxes designed for preservation and gift-giving excellence.</p>
-            </div>
+          <div className={styles.founderTextDetails}>
+            <Quote size={56} className={styles.founderQuoteIcon} />
+            <blockquote className={styles.founderBlockquote}>
+              "Mazhai Vaanam — meaning 'Rainy Sky' — was created with a singular purpose: to bring authentic handloom sarees directly from traditional artisans to modern women across the world."
+            </blockquote>
+            <p className={styles.founderBodyDesc}>
+              Our mission goes beyond selling sarees. We partner directly with rural master weavers to ensure fair livelihoods while preserving centuries-old handloom techniques. Each Mazhai Vaanam saree is an eco-luxury heirloom — hand-woven with pure silks, organic dyes, and genuine zari — empowering you to drape yourself in authentic culture, dignity, and sustainable fashion.
+            </p>
           </div>
         </div>
       </section>
@@ -360,29 +334,6 @@ export const About = ({ setCurrentTab }) => {
             </p>
             <p className={styles.metricMeta}>Artisans Empowered</p>
           </div>
-        </div>
-      </section>
-
-      {/* Family Newsletter */}
-      <section className={styles.newsletterSection}>
-        <div className={styles.newsletterThreadBackground}></div>
-        <div className={styles.newsletterContent}>
-          <h3 className={styles.newsletterTitle}>Join The Family</h3>
-          <p className={styles.newsletterDesc}>
-            Subscribe to receive exclusive access to our newest collection launches and artisan stories.
-          </p>
-
-          <form onSubmit={(e) => { e.preventDefault(); alert("Subscription saved! Welcome to the Atelier family."); }} className={styles.newsletterForm}>
-            <input
-              type="email"
-              placeholder="YOUR EMAIL ADDRESS"
-              required
-              className={styles.newsletterInput}
-            />
-            <button type="submit" className={styles.newsletterSubmitBtn}>
-              SUBSCRIBE
-            </button>
-          </form>
         </div>
       </section>
 

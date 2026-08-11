@@ -271,8 +271,8 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
                       </>
                     ) : (
                       <>
-                        <button onClick={() => { handleTabChange('login'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Sign In</button>
-                        <button onClick={() => { handleTabChange('login'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Register</button>
+                        <button onClick={() => { handleTabChange('login'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Login</button>
+                        <button onClick={() => { handleTabChange('register'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Register</button>
                         <div className={styles.dropdownDivider}></div>
                         <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Wishlist</button>
                       </>

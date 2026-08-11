@@ -1,14 +1,21 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Button } from '../../components/common/Button/Button';
 import styles from './Login.module.css';
 
-export const Login = ({ setCurrentTab }) => {
+export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
   const { login } = useAuth();
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(initialIsRegistering);
+
+  // Update state if prop changes (e.g. user navigates from nav again)
+  React.useEffect(() => {
+    setIsRegistering(initialIsRegistering);
+  }, [initialIsRegistering]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -30,8 +37,10 @@ export const Login = ({ setCurrentTab }) => {
   return (
     <div className={`${styles['login-page']} container`}>
       <div className={`${styles['login-card']} glass-card`}>
-        <h2>Welcome Back</h2>
-        <p className={styles['login-subtitle']}>Sign in to your Mazhai Vaanam Boutique account</p>
+        <h2>{isRegistering ? 'Create an Account' : 'Welcome Back'}</h2>
+        <p className={styles['login-subtitle']}>
+          {isRegistering ? 'Create your Mazhai Vaanam Boutique account' : 'Login to your Mazhai Vaanam Boutique account'}
+        </p>
 
         {error && <div className={styles['auth-error-alert']}>{error}</div>}
 
@@ -47,6 +56,20 @@ export const Login = ({ setCurrentTab }) => {
               required
             />
           </div>
+
+          {isRegistering && (
+            <div className="form-group">
+              <label htmlFor="email">Email ID</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email id"
+                required
+              />
+            </div>
+          )}
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
@@ -66,9 +89,22 @@ export const Login = ({ setCurrentTab }) => {
             loading={loading}
             className={styles['login-submit-btn']}
           >
-            Sign In
+            {isRegistering ? 'Create an Account' : 'Login'}
           </Button>
         </form>
+
+        <p className={styles['toggle-text']}>
+          {isRegistering ? 'Already have an account? ' : "Don't have an account? "}
+          <span 
+            onClick={() => {
+              setIsRegistering(!isRegistering);
+              setCurrentTab(!isRegistering ? 'register' : 'login');
+            }} 
+            className={styles['toggle-link']}
+          >
+            {isRegistering ? 'Login' : 'Create an Account'}
+          </span>
+        </p>
       </div>
     </div>
   );

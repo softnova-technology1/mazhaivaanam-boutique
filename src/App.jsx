@@ -57,7 +57,7 @@ function getInitialState() {
       'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
       'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
       'limited-offer', 'new-arrivals', 'best-sellers', 'collections',
-      'pre-booking', 'shipping-policy', 'my-profile', 'saved-address'
+      'pre-booking', 'shipping-policy', 'my-profile', 'saved-address', 'register'
     ];
     if (validTabs.includes(tabName)) {
       tab = tabName;
@@ -214,7 +214,8 @@ function AppContent() {
       case 'saved-address':
         return <SavedAddress setCurrentTab={setCurrentTab} />;
       case 'login':
-        return <Login setCurrentTab={setCurrentTab} />;
+      case 'register':
+        return <Login setCurrentTab={setCurrentTab} initialIsRegistering={currentTab === 'register'} />;
       case 'support':
         return <Support setCurrentTab={setCurrentTab} />;
       case 'privacy':

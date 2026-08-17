@@ -1283,7 +1283,7 @@
   background-color: #FFFFFF;
   border: 1px solid var(--border-color);
   border-radius: 24px;
-  padding: 32px 40px;
+  padding: 24px 32px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -1300,19 +1300,19 @@
 
 .review-quote-icon {
   font-family: var(--font-body);
-  font-size: 80px;
+  font-size: 54px;
   line-height: 1;
   color: var(--primary);
   opacity: 0.15;
-  margin-bottom: -35px;
-  margin-top: -15px;
+  margin-bottom: -20px;
+  margin-top: -10px;
   align-self: flex-start;
 }
 
 .rating-stars {
   display: flex;
   gap: 4px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   align-self: flex-start;
 }
 
@@ -1321,7 +1321,7 @@
   font-size: 15px;
   line-height: 1.6;
   color: var(--text-main);
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   text-align: left;
 }
 
@@ -1333,7 +1333,7 @@
   font-size: 11px;
   padding: 6px 12px;
   border-radius: 40px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   letter-spacing: 0.5px;
   width: fit-content;
   align-self: flex-start;
@@ -1442,8 +1442,44 @@
     gap: 24px;
   }
 
+  .values-item {
+    padding: 0 8px;
+    gap: 12px;
+  }
+
+  .values-item::after {
+    display: none;
+  }
+
+  .values-item h4 {
+    font-size: 1rem;
+  }
+
+  .values-item p {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
   .social-grid {
     column-count: 1;
+  }
+
+  .bestsellers-section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .bestsellers-section .section-header-center {
+    text-align: center;
+  }
+
+  .bestsellers-section .section-header-center h2 {
+    font-size: 24px;
+  }
+
+  .bestsellers-section .section-label-small {
+    font-size: 9px;
+    margin-bottom: 4px;
   }
 }
 
@@ -1456,14 +1492,6 @@
     flex-direction: column;
     gap: 12px;
     align-items: stretch;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .values-grid {
-    grid-template-columns: 1fr;
   }
 
   .social-bento-grid {
@@ -1560,7 +1588,7 @@
 
   .review-marquee-card {
     width: 300px;
-    padding: 24px 20px;
+    padding: 16px 16px;
   }
 
   .newsletter-box {

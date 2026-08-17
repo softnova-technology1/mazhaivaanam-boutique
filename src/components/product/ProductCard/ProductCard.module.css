@@ -1,6 +1,6 @@
 .product-card {
   background-color: var(--surface-main);
-  border-radius: 0;
+  border-radius: 16px;
   overflow: hidden;
   position: relative;
   transition: all 0.4s ease;

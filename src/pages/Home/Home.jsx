@@ -312,20 +312,9 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
 
       {/* 4. The Best Sellers */}
       <section className={`${styles['bestsellers-section']} container`}>
-        <div className="grid grid-cols-1 md:grid-cols-3 items-end mb-6 md:mb-8">
-          <div className="hidden md:block"></div>
-          <div className={styles['section-header-center']} style={{ marginBottom: 0 }}>
-            <span className={styles['section-label-small']}>EXCLUSIVES</span>
-            <h2>The Best Sellers</h2>
-          </div>
-          <div className="flex justify-center md:justify-end pb-2 mt-2 md:mt-0">
-            <button 
-              onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
-              className="px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[10px] hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
-            >
-              VIEW ALL <span className="text-[14px]">→</span>
-            </button>
-          </div>
+        <div className={styles['section-header-center']}>
+          <span className={styles['section-label-small']}>EXCLUSIVES</span>
+          <h2>The Best Sellers</h2>
         </div>
         <div className="product-grid">
           {bestSellers.map((product) => (
@@ -336,6 +325,14 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
               setCurrentTab={setCurrentTab}
             />
           ))}
+        </div>
+        <div className="flex justify-center mt-10 mb-4">
+          <button 
+            onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
+            className="px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[10px] hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
+          >
+            VIEW ALL <span className="text-[14px]">→</span>
+          </button>
         </div>
       </section>
 

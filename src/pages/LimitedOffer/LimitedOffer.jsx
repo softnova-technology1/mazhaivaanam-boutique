@@ -299,7 +299,7 @@ void main() {
       <main className="pt-0">
         {/* Hero Section */}
         <section 
-          className="relative min-h-[650px] md:min-h-[600px] md:h-[600px] py-24 md:py-0 flex flex-col items-center justify-center text-center px-4 overflow-hidden"
+          className="relative min-h-[480px] md:min-h-[600px] md:h-[600px] py-12 md:py-0 flex flex-col items-center justify-center text-center px-4 overflow-hidden"
           style={{ 
             backgroundImage: "url('/Images/limited.png')",
             backgroundSize: 'cover',
@@ -310,29 +310,29 @@ void main() {
           {/* Dark Overlay matching Best Sellers */}
           <div className="absolute inset-0 bg-black/60 z-0"></div>
           
-          <div className="relative z-10 hero-content flex flex-col items-center justify-center mt-12 md:mt-0 pb-16 md:pb-0">
-            <div className="inline-flex items-center px-5 py-2 mb-6 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
+          <div className="relative z-10 hero-content flex flex-col items-center justify-center mt-6 md:mt-0 pb-6 md:pb-0">
+            <div className="inline-flex items-center px-5 py-2 mb-4 md:mb-6 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
               <span className="font-label-caps text-[10px] text-white tracking-[0.2em] uppercase">Limited Exclusive Offer</span>
             </div>
             
-            <h1 className="font-display-lg text-4xl md:text-[42px] text-white mb-4 leading-[1.1] drop-shadow-2xl">
+            <h1 className="font-display-lg text-3xl md:text-[42px] text-white mb-3 md:mb-4 leading-[1.1] drop-shadow-2xl">
               Exclusive Offers, <span className={`italic serif font-light ${styles['text-shimmer']}`}>Limited Time</span>
             </h1>
             
-            <p className="text-white/90 text-lg mb-10 max-w-4xl mx-auto">
+            <p className="text-white/90 text-sm md:text-lg mb-6 md:mb-10 max-w-4xl mx-auto">
               Enjoy special prices on selected sarees for a limited period. Elevate your wardrobe with premium collections while these exclusive offers last.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-[300px] sm:max-w-none mx-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full max-w-[280px] sm:max-w-none mx-auto">
               <button 
                 onClick={() => setCurrentTab('catalog')}
-                className="btn-cloud w-full sm:w-auto px-10 py-4 bg-secondary text-white hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
+                className="btn-cloud w-full sm:w-auto px-6 py-3 sm:px-10 sm:py-4 bg-secondary text-white hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
               >
                 EXPLORE COLLECTION
               </button>
               <button 
                 onClick={() => setCurrentTab('about')}
-                className="pill rounded-full w-full sm:w-auto px-10 py-4 border border-white text-white bg-transparent hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-500 font-label-caps text-label-caps tracking-widest transform hover:-translate-y-1"
+                className="pill rounded-full w-full sm:w-auto px-6 py-3 sm:px-10 sm:py-4 border border-white text-white bg-transparent hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-500 font-label-caps text-label-caps tracking-widest transform hover:-translate-y-1"
               >
                 OUR HERITAGE
               </button>
@@ -342,7 +342,7 @@ void main() {
 
         {/* Live Offer Countdown */}
         <section className="relative -mt-12 md:-mt-24 z-20 px-4 md:px-margin-desktop">
-          <div className="max-w-7xl mx-auto bg-[#FDFBF7] border border-[#D4AF37]/40 p-8 md:p-14 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-12 shadow-[0_20px_50px_rgba(179,138,74,0.15)] relative overflow-hidden">
+          <div className="max-w-7xl mx-auto bg-[#FDFBF7] border border-[#D4AF37]/40 py-6 px-4 md:p-14 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 shadow-[0_20px_50px_rgba(179,138,74,0.15)] relative overflow-hidden">
             {/* Subtle decorative background pattern */}
             <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "radial-gradient(#D4AF37 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
             
@@ -350,27 +350,27 @@ void main() {
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent"></div>
             
             <div className="flex-1 text-center md:text-left relative z-10">
-              <span className="font-label-caps text-[10px] text-[#D4AF37] tracking-[0.3em] uppercase block mb-4">Time is running out</span>
-              <h2 className="font-display-lg font-bold tracking-tight text-4xl md:text-5xl mb-5 text-[#B38A4A]">The Grand Gala Sale</h2>
-              <p className="text-on-surface-variant max-w-md mx-auto md:mx-0 text-sm md:text-base leading-relaxed">
+              <span className="font-label-caps text-[10px] text-[#D4AF37] tracking-[0.3em] uppercase block mb-2 md:mb-4">Time is running out</span>
+              <h2 className="font-display-lg font-bold tracking-tight text-2xl sm:text-3xl md:text-5xl mb-3 md:mb-5 text-[#B38A4A]">The Grand Gala Sale</h2>
+              <p className="text-on-surface-variant max-w-md mx-auto md:mx-0 text-xs sm:text-sm md:text-base leading-relaxed">
                 Our most prestigious annual celebration ends soon. Secure your heritage pieces today before they return to the vault.
               </p>
             </div>
             
             <div className="flex gap-3 md:gap-5 text-center relative z-10" id="countdown">
-              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-4 min-w-[90px] shadow-sm">
-                <span className="font-display-lg text-4xl text-primary">{timeLeft.days.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[9px] text-[#D4AF37] tracking-[0.2em] mt-2">DAYS</span>
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-3 min-w-[75px] md:p-4 md:min-w-[90px] shadow-sm">
+                <span className="font-display-lg text-2xl md:text-4xl text-primary">{timeLeft.days.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">DAYS</span>
               </div>
-              <div className="font-display-lg text-4xl text-primary/30 self-center -mt-6">:</div>
-              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-4 min-w-[90px] shadow-sm">
-                <span className="font-display-lg text-4xl text-primary">{timeLeft.hours.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[9px] text-[#D4AF37] tracking-[0.2em] mt-2">HOURS</span>
+              <div className="font-display-lg text-2xl md:text-4xl text-primary/30 self-center -mt-3 md:-mt-6">:</div>
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-3 min-w-[75px] md:p-4 md:min-w-[90px] shadow-sm">
+                <span className="font-display-lg text-2xl md:text-4xl text-primary">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">HOURS</span>
               </div>
-              <div className="font-display-lg text-4xl text-primary/30 self-center -mt-6">:</div>
-              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-4 min-w-[90px] shadow-sm">
-                <span className="font-display-lg text-4xl text-primary">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[9px] text-[#D4AF37] tracking-[0.2em] mt-2">MINS</span>
+              <div className="font-display-lg text-2xl md:text-4xl text-primary/30 self-center -mt-3 md:-mt-6">:</div>
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-3 min-w-[75px] md:p-4 md:min-w-[90px] shadow-sm">
+                <span className="font-display-lg text-2xl md:text-4xl text-primary">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">MINS</span>
               </div>
             </div>
           </div>
@@ -540,20 +540,20 @@ void main() {
 
         {/* Offer Categories (Bento Grid Style) */}
         <section 
-          className="relative pt-12 md:pt-16 pb-0 px-margin-mobile md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
+          className="relative pt-8 md:pt-16 pb-6 md:pb-16 px-margin-mobile md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
           style={{ backgroundImage: "url('/Images/offer.png')" }}
         >
           {/* Dark Overlay for Readability */}
           <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]"></div>
           
           <div className="relative z-10 max-w-container-max mx-auto">
-            <div className="mb-10 flex flex-col items-center text-center">
-              <div className="flex items-center justify-center gap-4 mb-3">
+            <div className="mb-5 md:mb-10 flex flex-col items-center text-center">
+              <div className="flex items-center justify-center gap-4 mb-2 md:mb-3">
                 <div className="w-12 h-px bg-[#D4AF37]"></div>
                 <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Curation of Joy</span>
                 <div className="w-12 h-px bg-[#D4AF37]"></div>
               </div>
-              <h2 className="font-display-lg text-4xl md:text-[52px] leading-tight text-[#FDFBF7]">Bespoke Offer Tiers</h2>
+              <h2 className="font-display-lg text-2xl sm:text-3xl md:text-[52px] leading-tight text-[#FDFBF7]">Bespoke Offer Tiers</h2>
             </div>
             
             <div className="flex flex-row justify-center md:grid md:grid-cols-3 gap-3 md:gap-6 h-auto md:h-[360px] pt-2">

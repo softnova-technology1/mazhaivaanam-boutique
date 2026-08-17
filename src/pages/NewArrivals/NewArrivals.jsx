@@ -120,7 +120,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
 
       {/* 3. Filter & Search Controls */}
       <section className="container" id="new-arrivals-explore" style={{ padding: '40px 0 20px 0' }}>
-        <div className="flex flex-col gap-6 mb-10">
+        <div className="flex flex-col gap-6 mb-4 sm:mb-10">
           
           {/* Top row: Search and Mobile Categories */}
           <div className="flex flex-row justify-between items-center gap-3 border-b border-[#E9DDC7] pb-4">
@@ -162,9 +162,9 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
           </div>
 
           {/* Bottom row: Desktop Categories */}
-          <div className="w-full">
+          <div className="hidden sm:block w-full">
             {/* Desktop View: Horizontal Links */}
-            <div className="hidden sm:flex gap-8 overflow-x-auto no-scrollbar pb-2">
+            <div className="flex gap-8 overflow-x-auto no-scrollbar pb-2">
               {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
                 <button
                   key={cat}

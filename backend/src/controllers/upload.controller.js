@@ -1,12 +1,12 @@
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 import path from 'path';
-import r2Client, { R2_BUCKET, R2_PUBLIC_URL } from '../config/r2.js';
+import s3Client, { S3_BUCKET, S3_PUBLIC_URL } from '../config/r2.js';
 import { successResponse, errorResponse } from '../utils/apiResponse.js';
 
 /**
  * POST /api/admin/upload
- * Upload image to Cloudflare R2
+ * Upload image to AWS S3
  */
 export const uploadImage = async (req, res, next) => {
   try {
@@ -18,18 +18,17 @@ export const uploadImage = async (req, res, next) => {
     const ext = path.extname(req.file.originalname) || '.jpg';
     const key = `${folder}/${randomUUID()}${ext}`;
 
-    // Upload to R2
-    await r2Client.send(
+    // Upload to S3
+    await s3Client.send(
       new PutObjectCommand({
-        Bucket: R2_BUCKET,
+        Bucket: S3_BUCKET,
         Key: key,
         Body: req.file.buffer,
         ContentType: req.file.mimetype,
-        // R2 doesn't need ACL — use public bucket or custom domain
       })
     );
 
-    const url = `${R2_PUBLIC_URL}/${key}`;
+    const url = `${S3_PUBLIC_URL}/${key}`;
 
     successResponse(res, {
       url,
@@ -44,18 +43,18 @@ export const uploadImage = async (req, res, next) => {
 
 /**
  * DELETE /api/admin/upload/:publicId
- * Delete image from Cloudflare R2
+ * Delete image from AWS S3
  */
 export const deleteImage = async (req, res, next) => {
   try {
     const { publicId } = req.params;
 
-    // publicId is the R2 object key (may contain slashes for folders)
+    // publicId is the S3 object key (may contain slashes for folders)
     const key = req.query.fullId || publicId;
 
-    await r2Client.send(
+    await s3Client.send(
       new DeleteObjectCommand({
-        Bucket: R2_BUCKET,
+        Bucket: S3_BUCKET,
         Key: key,
       })
     );

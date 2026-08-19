@@ -1,6 +1,6 @@
 import multer from 'multer';
 
-// Use memory storage — files go to buffer, then to Cloudflare R2
+// Use memory storage — files go to buffer, then to AWS S3
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {

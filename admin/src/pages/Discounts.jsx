@@ -1,0 +1,482 @@
+import { useState, useEffect } from 'react';
+import { discountAPI, categoryAPI } from '../api/api.js';
+import { Search, Percent, X, Zap, Tag, Calendar, Trash2, Edit, Filter } from 'lucide-react';
+
+const formatCurrency = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
+
+const STATUS_STYLES = {
+  active: { className: 'badge-success', label: 'Active' },
+  scheduled: { className: 'badge-warning', label: 'Scheduled' },
+  expired: { className: 'badge-danger', label: 'Expired' },
+  inactive: { className: 'badge-neutral', label: 'Inactive' },
+  none: { className: 'badge-neutral', label: 'No Discount' },
+};
+
+export default function Discounts() {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({ status: 'all', category: '', search: '' });
+  const [modal, setModal] = useState({ open: false, product: null });
+  const [bulkModal, setBulkModal] = useState(false);
+  const [form, setForm] = useState({ type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' });
+  const [bulkForm, setBulkForm] = useState({ category: '', tag: '', type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' });
+  const [saving, setSaving] = useState(false);
+
+  // Stats
+  const activeCount = products.filter((p) => p.discountStatus === 'active').length;
+  const scheduledCount = products.filter((p) => p.discountStatus === 'scheduled').length;
+  const expiredCount = products.filter((p) => p.discountStatus === 'expired').length;
+
+  useEffect(() => {
+    categoryAPI.getAll().then((r) => setCategories(r.data)).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    loadProducts();
+  }, [filters.status, filters.category]);
+
+  const loadProducts = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.status && filters.status !== 'all') params.set('status', filters.status);
+      if (filters.category) params.set('category', filters.category);
+      if (filters.search) params.set('search', filters.search);
+      const res = await discountAPI.getAll(params.toString());
+      if (res.success) setProducts(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    loadProducts();
+  };
+
+  const openEdit = (product) => {
+    const d = product.discount || {};
+    setForm({
+      type: d.type || 'percentage',
+      value: d.value || '',
+      startDate: d.startDate ? new Date(d.startDate).toISOString().slice(0, 10) : '',
+      endDate: d.endDate ? new Date(d.endDate).toISOString().slice(0, 10) : '',
+      isActive: d.isActive !== undefined ? d.isActive : true,
+      label: d.label || '',
+    });
+    setModal({ open: true, product });
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await discountAPI.update(modal.product._id, {
+        ...form,
+        value: Number(form.value),
+      });
+      setModal({ open: false, product: null });
+      loadProducts();
+    } catch (err) {
+      alert(err.message);
+    }
+    setSaving(false);
+  };
+
+  const handleRemove = async (productId, productName) => {
+    if (!confirm(`Remove discount from "${productName}"?`)) return;
+    try {
+      await discountAPI.remove(productId);
+      loadProducts();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleBulkSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await discountAPI.bulkUpdate({
+        ...bulkForm,
+        value: Number(bulkForm.value),
+      });
+      setBulkModal(false);
+      loadProducts();
+    } catch (err) {
+      alert(err.message);
+    }
+    setSaving(false);
+  };
+
+  // Compute preview
+  const previewPrice = modal.product
+    ? form.type === 'percentage'
+      ? Math.round(modal.product.price * (1 - Number(form.value || 0) / 100))
+      : Math.max(0, modal.product.price - Number(form.value || 0))
+    : 0;
+
+  return (
+    <div className="page-container">
+      {/* Header */}
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Discounts</h1>
+          <p className="page-subtitle">Manage product discounts & offers</p>
+        </div>
+        <button className="btn btn-primary" onClick={() => { setBulkForm({ category: '', tag: '', type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' }); setBulkModal(true); }}>
+          <Zap size={18} /> Bulk Discount
+        </button>
+      </div>
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}>
+        <div className="card" style={{ padding: 18 }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Total Products</div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{products.length}</div>
+        </div>
+        <div className="card" style={{ padding: 18, borderColor: 'rgba(34, 197, 94, 0.3)' }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Active Discounts</div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--success)' }}>{activeCount}</div>
+        </div>
+        <div className="card" style={{ padding: 18, borderColor: 'rgba(245, 158, 11, 0.3)' }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--warning)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Scheduled</div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--warning)' }}>{scheduledCount}</div>
+        </div>
+        <div className="card" style={{ padding: 18, borderColor: 'rgba(239, 68, 68, 0.3)' }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Expired</div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--danger)' }}>{expiredCount}</div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="filter-bar" style={{ marginBottom: 20 }}>
+        <form onSubmit={handleSearch} className="search-bar" style={{ flex: 1, maxWidth: 320 }}>
+          <Search size={16} />
+          <input
+            placeholder="Search products..."
+            value={filters.search}
+            onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
+          />
+        </form>
+        <select className="form-select" value={filters.status} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}>
+          <option value="all">All Status</option>
+          <option value="active">Active</option>
+          <option value="scheduled">Scheduled</option>
+          <option value="expired">Expired</option>
+          <option value="inactive">Inactive</option>
+          <option value="none">No Discount</option>
+        </select>
+        <select className="form-select" value={filters.category} onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}>
+          <option value="">All Categories</option>
+          {categories.map((c) => (
+            <option key={c._id} value={c.slug}>{c.name}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Table */}
+      {loading ? (
+        <div className="loader"><div className="spinner" /></div>
+      ) : products.length === 0 ? (
+        <div className="card empty-state">
+          <Percent size={40} />
+          <p>No products found matching your filters.</p>
+        </div>
+      ) : (
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Original Price</th>
+                <th>Discount</th>
+                <th>Sale Price</th>
+                <th>Label</th>
+                <th>Date Range</th>
+                <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((p) => {
+                const st = STATUS_STYLES[p.discountStatus] || STATUS_STYLES.none;
+                const hasDiscount = p.discountStatus !== 'none';
+                return (
+                  <tr key={p._id}>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{ width: 44, height: 44, borderRadius: 8, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
+                          {p.images?.[0]?.url && <img src={p.images[0].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                        </div>
+                        <div>
+                          <div style={{ color: 'var(--text-primary)', fontWeight: 500, fontSize: '0.9rem' }}>{p.name}</div>
+                          <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{p.category?.name || '—'}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ fontWeight: 500 }}>{formatCurrency(p.price)}</td>
+                    <td>
+                      {hasDiscount ? (
+                        <span style={{ fontWeight: 600, color: 'var(--primary)' }}>
+                          {p.discount?.type === 'percentage' ? `${p.discount.value}%` : formatCurrency(p.discount?.value || 0)}
+                          <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginLeft: 4 }}>
+                            {p.discount?.type === 'percentage' ? 'OFF' : 'FLAT'}
+                          </span>
+                        </span>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)' }}>—</span>
+                      )}
+                    </td>
+                    <td>
+                      {hasDiscount && p.discountedPrice < p.price ? (
+                        <div>
+                          <span style={{ fontWeight: 600, color: 'var(--success)' }}>{formatCurrency(p.discountedPrice)}</span>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--success)' }}>
+                            Save {formatCurrency(p.price - p.discountedPrice)}
+                          </div>
+                        </div>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)' }}>{formatCurrency(p.price)}</span>
+                      )}
+                    </td>
+                    <td>
+                      {p.discount?.label ? (
+                        <span className="badge badge-primary" style={{ fontSize: '0.7rem' }}>
+                          <Tag size={10} /> {p.discount.label}
+                        </span>
+                      ) : '—'}
+                    </td>
+                    <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                      {hasDiscount ? (
+                        <div>
+                          {p.discount?.startDate && <div>{new Date(p.discount.startDate).toLocaleDateString('en-IN')}</div>}
+                          {p.discount?.endDate && <div style={{ color: new Date(p.discount.endDate) < new Date() ? 'var(--danger)' : 'inherit' }}>
+                            to {new Date(p.discount.endDate).toLocaleDateString('en-IN')}
+                          </div>}
+                          {!p.discount?.startDate && !p.discount?.endDate && 'No expiry'}
+                        </div>
+                      ) : '—'}
+                    </td>
+                    <td><span className={`badge ${st.className}`}>{st.label}</span></td>
+                    <td style={{ textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
+                        <button className="btn-ghost btn-icon" onClick={() => openEdit(p)} title="Set Discount">
+                          <Edit size={16} />
+                        </button>
+                        {hasDiscount && (
+                          <button className="btn-ghost btn-icon" onClick={() => handleRemove(p._id, p.name)} title="Remove Discount" style={{ color: 'var(--danger)' }}>
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Edit Discount Modal */}
+      {modal.open && (
+        <div className="modal-overlay" onClick={() => setModal({ open: false, product: null })}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">
+                <Percent size={18} style={{ color: 'var(--primary)' }} /> Set Discount
+              </h3>
+              <button className="btn-ghost btn-icon" onClick={() => setModal({ open: false, product: null })}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleSave}>
+              <div className="modal-body">
+                {/* Product Preview */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', marginBottom: 20 }}>
+                  <div style={{ width: 56, height: 56, borderRadius: 10, background: 'var(--bg-surface-hover)', overflow: 'hidden', flexShrink: 0 }}>
+                    {modal.product.images?.[0]?.url && <img src={modal.product.images[0].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem' }}>{modal.product.name}</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      Original: {formatCurrency(modal.product.price)} | MRP: {formatCurrency(modal.product.mrpPrice)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Discount Type</label>
+                    <select className="form-select" value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}>
+                      <option value="percentage">Percentage (%)</option>
+                      <option value="fixed">Fixed Amount (₹)</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Discount Value</label>
+                    <input
+                      className="form-input"
+                      type="number"
+                      min="0"
+                      max={form.type === 'percentage' ? 100 : modal.product.price}
+                      required
+                      value={form.value}
+                      onChange={(e) => setForm((f) => ({ ...f, value: e.target.value }))}
+                      placeholder={form.type === 'percentage' ? 'e.g. 15' : 'e.g. 500'}
+                    />
+                  </div>
+                </div>
+
+                {/* Price Preview */}
+                {form.value && (
+                  <div style={{ padding: 16, background: 'var(--success-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Sale Price Preview</div>
+                      <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--success)', marginTop: 4 }}>{formatCurrency(previewPrice)}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Customer Saves</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--success)' }}>{formatCurrency(modal.product.price - previewPrice)}</div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="form-group">
+                  <label className="form-label">Offer Label</label>
+                  <input
+                    className="form-input"
+                    value={form.label}
+                    onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
+                    placeholder="e.g. Summer Sale, Festival Offer"
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Start Date</label>
+                    <input className="form-input" type="date" value={form.startDate} onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">End Date</label>
+                    <input className="form-input" type="date" value={form.endDate} onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))} />
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 8 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    <input type="checkbox" checked={form.isActive} onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))} />
+                    Discount Active
+                  </label>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-outline" onClick={() => setModal({ open: false, product: null })}>Cancel</button>
+                <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : 'Save Discount'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Discount Modal */}
+      {bulkModal && (
+        <div className="modal-overlay" onClick={() => setBulkModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">
+                <Zap size={18} style={{ color: 'var(--primary)' }} /> Bulk Discount
+              </h3>
+              <button className="btn-ghost btn-icon" onClick={() => setBulkModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleBulkSave}>
+              <div className="modal-body">
+                <div style={{ padding: 14, background: 'var(--warning-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, color: 'var(--warning)', fontSize: '0.85rem' }}>
+                  ⚡ This will apply the same discount to all products matching the selected category or tag. Existing discounts will be overwritten.
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Category</label>
+                    <select className="form-select" value={bulkForm.category} onChange={(e) => setBulkForm((f) => ({ ...f, category: e.target.value }))}>
+                      <option value="">All Categories</option>
+                      {categories.map((c) => (
+                        <option key={c._id} value={c.slug}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Tag</label>
+                    <select className="form-select" value={bulkForm.tag} onChange={(e) => setBulkForm((f) => ({ ...f, tag: e.target.value }))}>
+                      <option value="">All Tags</option>
+                      <option value="BESTSELLER">Bestseller</option>
+                      <option value="NEW ARRIVAL">New Arrival</option>
+                      <option value="LIMITED EDITION">Limited Edition</option>
+                      <option value="FESTIVAL CHOICE">Festival Choice</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Discount Type</label>
+                    <select className="form-select" value={bulkForm.type} onChange={(e) => setBulkForm((f) => ({ ...f, type: e.target.value }))}>
+                      <option value="percentage">Percentage (%)</option>
+                      <option value="fixed">Fixed Amount (₹)</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Discount Value</label>
+                    <input
+                      className="form-input"
+                      type="number"
+                      min="0"
+                      max={bulkForm.type === 'percentage' ? 100 : undefined}
+                      required
+                      value={bulkForm.value}
+                      onChange={(e) => setBulkForm((f) => ({ ...f, value: e.target.value }))}
+                      placeholder={bulkForm.type === 'percentage' ? 'e.g. 15' : 'e.g. 500'}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Offer Label</label>
+                  <input
+                    className="form-input"
+                    value={bulkForm.label}
+                    onChange={(e) => setBulkForm((f) => ({ ...f, label: e.target.value }))}
+                    placeholder="e.g. Mega Sale, Pongal Special"
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Start Date</label>
+                    <input className="form-input" type="date" value={bulkForm.startDate} onChange={(e) => setBulkForm((f) => ({ ...f, startDate: e.target.value }))} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">End Date</label>
+                    <input className="form-input" type="date" value={bulkForm.endDate} onChange={(e) => setBulkForm((f) => ({ ...f, endDate: e.target.value }))} />
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 8 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    <input type="checkbox" checked={bulkForm.isActive} onChange={(e) => setBulkForm((f) => ({ ...f, isActive: e.target.checked }))} />
+                    Activate Immediately
+                  </label>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-outline" onClick={() => setBulkModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Applying...' : 'Apply Bulk Discount'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

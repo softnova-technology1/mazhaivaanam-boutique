@@ -4,7 +4,7 @@ import { Button } from '../../components/common/Button/Button';
 import styles from './Login.module.css';
 
 export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,21 +17,33 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
     setIsRegistering(initialIsRegistering);
   }, [initialIsRegistering]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    // Simulate login delay
-    setTimeout(() => {
-      const result = login(username, password);
+    try {
+      let result;
+      if (isRegistering) {
+        result = await register({
+          firstName: username.trim(),
+          lastName: 'Customer',
+          email: email.trim(),
+          password: password.trim()
+        });
+      } else {
+        result = await login(email.trim() || username.trim(), password.trim());
+      }
       setLoading(false);
       if (result.success) {
         setCurrentTab('shop');
       } else {
-        setError(result.message);
+        setError(result.message || 'Authentication failed');
       }
-    }, 600);
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || 'Authentication error');
+    }
   };
 
   return (

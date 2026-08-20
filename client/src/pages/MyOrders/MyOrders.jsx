@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
+import { orderAPI } from '../../services/api';
 import { 
   ShoppingBag, 
   User, 
@@ -37,51 +38,39 @@ export const MyOrders = ({ setCurrentTab }) => {
   };
 
   useEffect(() => {
-    // Load customer orders from localStorage
     const saved = localStorage.getItem('boutique_orders');
     const localOrders = saved ? JSON.parse(saved) : [];
 
-    // Default aesthetic mock orders from the user's template
-    const defaultOrders = [
-      {
-        orderId: "MV-829410",
-        placedOnDate: "October 24, 2024",
-        status: "IN TRANSIT",
-        mrpTotal: 45000,
-        subtotal: 38250,
-        totalSavings: 6750,
-        finalAmount: 38250,
-        items: [
-          {
-            id: 'mock-order-1',
-            name: "Ruby Zari Saree",
-            price: 38250,
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA-Fz8Qd23ixdQ0rKI1jAcmVnYjLh1Taz4BUqAhKLbXN0XEu5JS1v-VJemXMGmtTZEK7IYukMi8SGA14deM8VAhD0B_cgWERSwLSAHc_935I-U9--Fo5-7qqx7rURmdeo8CPYorbexv69aUCDrD2jqa8BM0aozAr4OLgLEmk_qqE4tuUc2D_sUmTTPpqBjDK65hvLsW6iofdER6BuqNN2j6MGdn_flF2Q_CQr368K7GHkBchBwD7nrI",
-            category: "Royal Heritage Collection"
+    const token = localStorage.getItem('boutique_token');
+    if (token) {
+      orderAPI.getMyOrders()
+        .then(dbOrders => {
+          if (dbOrders && dbOrders.length > 0) {
+            const normalized = dbOrders.map(o => ({
+              orderId: o.orderId,
+              placedOnDate: new Date(o.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+              status: o.status?.toUpperCase() || 'PLACED',
+              mrpTotal: o.totalAmount,
+              subtotal: o.subtotal || o.totalAmount,
+              totalSavings: o.discountAmount || 0,
+              finalAmount: o.totalAmount,
+              items: (o.items || []).map(i => ({
+                id: i.product?._id || i.product,
+                name: i.name,
+                price: i.price,
+                image: i.image || '/Images/saree1.png',
+                quantity: i.quantity,
+              }))
+            }));
+            setOrders([...normalized, ...localOrders]);
+          } else {
+            setOrders(localOrders);
           }
-        ]
-      },
-      {
-        orderId: "MV-815200",
-        placedOnDate: "September 12, 2024",
-        status: "DELIVERED",
-        mrpTotal: 60000,
-        subtotal: 52400,
-        totalSavings: 7600,
-        finalAmount: 52400,
-        items: [
-          {
-            id: 'mock-order-2',
-            name: "Emerald Forest Silk Saree",
-            price: 52400,
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuClFxEoToM86GEDAKe302joVPKI1qcRqmo913T2rk-oVR4PQbWjF-DjKcgMkrYrdJLKqQ4TMBRNztqh2Dqt6u71i1d3uLx3ZsV6uHmGgwJYIM8ShcYYf8T2AcIml3otTDJUrrNDZGnaYzRitzZLreSLC-egh8XOEKGdRxxkbUyH0FVvzaDrKdvpwd5h4tMPR9cg7HSOUXA0nh01OsdQdzY4FDccYwkUKXmROCCqlCM28sYRT_OzwEU3",
-            category: "Prakriti Series"
-          }
-        ]
-      }
-    ];
-
-    setOrders([...localOrders, ...defaultOrders]);
+        })
+        .catch(() => setOrders(localOrders));
+    } else {
+      setOrders(localOrders);
+    }
   }, []);
 
   // Invoice Download Helper (Generates text receipt locally)

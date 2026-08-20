@@ -43,12 +43,42 @@ export default function Products() {
   };
 
   const openCreate = () => {
-    setForm({ name: '', description: '', category: categories[0]?._id || '', fabric: 'Pure Silk', price: '', mrpPrice: '', occasion: 'Traditional', tag: '', isFeatured: false, isActive: true, imageFile: null, imagePreview: '' });
+    setForm({
+      name: '',
+      description: '',
+      category: categories[0]?._id || '',
+      fabric: 'Pure Silk',
+      price: '',
+      mrpPrice: '',
+      stock: 25,
+      occasion: 'Traditional',
+      tag: '',
+      imageUrl: '',
+      isFeatured: false,
+      isActive: true,
+      imageFile: null,
+      imagePreview: '/Images/saree1.png'
+    });
     setModal({ open: true, product: null });
   };
 
   const openEdit = (product) => {
-    setForm({ name: product.name, description: product.description, category: product.category?._id || '', fabric: product.fabric, price: product.price, mrpPrice: product.mrpPrice, occasion: product.occasion, tag: product.tag || '', isFeatured: product.isFeatured, isActive: product.isActive, imageFile: null, imagePreview: product.images?.[0]?.url || '' });
+    setForm({
+      name: product.name,
+      description: product.description,
+      category: product.category?._id || product.category || '',
+      fabric: product.fabric,
+      price: product.price,
+      mrpPrice: product.mrpPrice,
+      stock: product.stock?.available ?? 25,
+      occasion: product.occasion,
+      tag: product.tag || '',
+      imageUrl: product.images?.[0]?.url || '',
+      isFeatured: Boolean(product.isFeatured),
+      isActive: product.isActive !== false,
+      imageFile: null,
+      imagePreview: product.images?.[0]?.url || ''
+    });
     setModal({ open: true, product });
   };
 
@@ -56,13 +86,34 @@ export default function Products() {
     e.preventDefault();
     setSaving(true);
     try {
-      const body = { ...form, price: Number(form.price), mrpPrice: Number(form.mrpPrice) || 0, tag: form.tag || null };
-      
+      const body = {
+        name: form.name,
+        description: form.description,
+        category: form.category,
+        fabric: form.fabric,
+        price: Number(form.price),
+        mrpPrice: Number(form.mrpPrice) || 0,
+        stock: Number(form.stock) || 0,
+        occasion: form.occasion,
+        tag: form.tag || null,
+        isFeatured: Boolean(form.isFeatured),
+        isActive: Boolean(form.isActive),
+      };
+
       if (form.imageFile) {
-        const res = await uploadAPI.upload(form.imageFile);
-        body.images = [{ url: res.data.url, publicId: res.data.publicId }];
-      } else if (modal.product?.images) {
+        try {
+          const res = await uploadAPI.upload(form.imageFile);
+          body.images = [{ url: res.data.url, publicId: res.data.publicId }];
+        } catch (uploadErr) {
+          console.warn('Upload API fallback:', uploadErr);
+          body.images = [{ url: form.imagePreview || '/Images/saree1.png', publicId: '' }];
+        }
+      } else if (form.imageUrl && form.imageUrl.trim()) {
+        body.images = [{ url: form.imageUrl.trim(), publicId: '' }];
+      } else if (modal.product?.images?.length) {
         body.images = modal.product.images;
+      } else {
+        body.images = [{ url: form.imagePreview || '/Images/saree1.png', publicId: '' }];
       }
 
       if (modal.product) {
@@ -72,12 +123,14 @@ export default function Products() {
       }
       setModal({ open: false, product: null });
       loadProducts();
-    } catch (err) { alert(err.message); }
+    } catch (err) {
+      alert(err.message || 'Error saving product');
+    }
     setSaving(false);
   };
 
   const handleDelete = async (id, name) => {
-    if (!confirm(`Delete "${name}"?`)) return;
+    if (!confirm(`Delete "${name}" from MongoDB database?`)) return;
     try {
       await productAPI.delete(id);
       loadProducts();
@@ -273,6 +326,15 @@ export default function Products() {
                       }}
                     />
                   </div>
+                  <div style={{ marginTop: 12 }}>
+                    <label className="form-label" style={{ fontSize: '0.75rem' }}>Or Direct Image Path / URL</label>
+                    <input 
+                      className="form-input" 
+                      placeholder="/Images/saree1.png or https://..." 
+                      value={form.imageUrl || ''} 
+                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))} 
+                    />
+                  </div>
                 </div>
 
                 {/* Right Column: Details */}
@@ -307,6 +369,10 @@ export default function Products() {
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">MRP Price (₹)</label>
                       <input className="form-input" type="number" min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Stock Quantity</label>
+                      <input className="form-input" type="number" min="0" value={form.stock ?? 25} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
                     </div>
                   </div>
                   <div className="form-row">

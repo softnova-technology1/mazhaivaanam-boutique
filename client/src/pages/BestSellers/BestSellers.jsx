@@ -1,13 +1,15 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { ALL_PRODUCTS } from '../Catalog/Catalog';
+import { getBestSellers } from '../../services/api';
 import { getBadgeClass } from '../../utils/badgeHelper';
-import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star, Share2 } from 'lucide-react';
+import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star, Share2, Loader2 } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import styles from './BestSellers.module.css';
 
 export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
   const [wishlist, setWishlist] = useState([]);
+  const [liveBestSellers, setLiveBestSellers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -17,6 +19,21 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
     if (saved) {
       setWishlist(JSON.parse(saved));
     }
+
+    let isMounted = true;
+    setLoading(true);
+    getBestSellers(50)
+      .then(items => {
+        if (isMounted) {
+          setLiveBestSellers(items || []);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load best sellers:', err);
+        if (isMounted) setLoading(false);
+      });
+    return () => { isMounted = false; };
   }, []);
 
   const [gridView, setGridView] = useState(3);
@@ -80,21 +97,20 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   ];
 
   const bestSellers = useMemo(() => {
-    // Filter only products with BESTSELLER tag
-    let products = ALL_PRODUCTS.filter(product => product.tag === "BESTSELLER");
+    let products = [...liveBestSellers];
     
     if (sortOption === 'price-asc') {
       products.sort((a, b) => a.price - b.price);
     } else if (sortOption === 'price-desc') {
       products.sort((a, b) => b.price - a.price);
     } else if (sortOption === 'alpha-asc') {
-      products.sort((a, b) => a.name.localeCompare(b.name));
+      products.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     } else if (sortOption === 'alpha-desc') {
-      products.sort((a, b) => b.name.localeCompare(a.name));
+      products.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
     }
     
     return products;
-  }, [sortOption]);
+  }, [liveBestSellers, sortOption]);
 
   const handleProductClick = (product) => {
     if (setSelectedProduct) setSelectedProduct(product);
@@ -108,26 +124,24 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
       {/* HEADER SECTION */}
       <div className={styles['page-header']}>
         <div className={`${styles['breadcrumbs']} hidden sm:block`}>
-          <span onClick={() => setCurrentTab('home')}>Home</span> &gt; <span>Best Sellers</span>
+          <span>Home</span> / <span>Collections</span> / <span className={styles['active-crumb']}>Best Sellers</span>
         </div>
-        <h1>Customer Favorites</h1>
-        <p style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '16px', color: 'var(--text-muted)' }}>
-          Explore the sarees our customers love the most. These best-selling designs are celebrated for their exceptional quality, timeless appeal, and effortless elegance.
+        <h1 className={styles['page-title']}>Best Sellers</h1>
+        <p className={styles['page-subtitle']}>
+          Our most coveted handloom sarees, chosen and loved by discerning women across the world.
         </p>
       </div>
 
-      {/* CATALOG CONTAINER */}
-      <div className={`${styles['catalog-container']} container`}>
-        
-        {/* LEFT SIDEBAR */}
-        <aside className={`${styles['sidebar']} hidden lg:block`}>
-          <div className={styles['sidebar-section']}>
+      <div className={styles['main-layout']}>
+        {/* SIDEBAR */}
+        <aside className={styles['sidebar']}>
+          <div className={styles['sidebar-card']}>
             <div className={styles['sidebar-heading']}>
               <h3>Premium Collections</h3>
             </div>
             
             <div className={styles['sidebar-product-list']}>
-              {ALL_PRODUCTS.slice(0, 3).map(prod => (
+              {liveBestSellers.slice(0, 3).map(prod => (
                 <div key={prod.id} className={styles['sidebar-product-card']} onClick={() => handleProductClick(prod)}>
                   <img src={prod.image} alt={prod.name} loading="lazy" />
                   <div className={styles['sidebar-product-info']}>
@@ -155,7 +169,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
           {/* TOOLBAR */}
           <div className={styles['toolbar']}>
             <div className={styles['result-count']}>
-              There are {ALL_PRODUCTS.length > 5000 ? ALL_PRODUCTS.length : 5612} results in total
+              There are {liveBestSellers.length} masterpieces in total
             </div>
             
             <div className={styles['toolbar-right']}>

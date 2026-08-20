@@ -1,79 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './PreBooking.module.css';
-import { ChevronDown, ArrowRight, Grid, List, Filter, X } from 'lucide-react';
+import { ChevronDown, ArrowRight, Grid, List, Filter, X, Loader2 } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
+import { getPreorderProducts } from '../../services/api';
 
-export const PREORDER_PRODUCTS = [
-  {
-    id: 'pre-1',
-    name: "Sona Roopa Kanjeevaram",
-    category: "Blended South Cotton",
-    fabric: "Pure Silk",
-    color: "#6B102A",
-    occasion: "Wedding",
-    price: 30600,
-    oldPrice: 34000,
-    progress: 75,
-    weaver: "Master Weaver Ramalingam",
-    image: "/Images/saree11.png",
-    description: "Exquisite gold and silver zari Kanjeevaram, meticulously hand-woven with traditional wedding temple motifs.",
-    isPreorder: true,
-    estimatedDays: 12,
-    discount: "10%"
-  },
-  {
-    id: 'pre-2',
-    name: "Shahi Shikargah Banarasi",
-    category: "Handloom Sarees",
-    fabric: "Pure Silk",
-    color: "#C8A34D",
-    occasion: "Wedding",
-    price: 41400,
-    oldPrice: 46000,
-    progress: 50,
-    weaver: "Master Weaver Kabir",
-    image: "/Images/saree13.png",
-    description: "Featuring complex hunting scenes woven in 24k gold zari, this Katan silk Banarasi is an imperial masterwork.",
-    isPreorder: true,
-    estimatedDays: 22,
-    discount: "10%"
-  },
-  {
-    id: 'pre-3',
-    name: "Chanderi Indigo Bloom",
-    category: "Linen Cotton",
-    fabric: "Pure Silk",
-    color: "#1A237E",
-    occasion: "Party Wear",
-    price: 18900,
-    oldPrice: 21000,
-    progress: 90,
-    weaver: "Artisan Meenakshi",
-    image: "/Images/saree14.png",
-    description: "Delicate Chanderi silk with hand-woven indigo floral butis, golden borders, and tissue pallu.",
-    isPreorder: true,
-    estimatedDays: 5,
-    discount: "10%"
-  },
-  {
-    id: 'pre-4',
-    name: "Organic Sage Cotton",
-    category: "Chanderi Cotton",
-    fabric: "Cotton",
-    color: "#004D40",
-    occasion: "Festival",
-    price: 11250,
-    oldPrice: 12500,
-    progress: 40,
-    weaver: "Weaver Kumar",
-    image: "/Images/saree2.png",
-    description: "Loom-woven pure organic cotton tinted with natural plant dyes, showcasing structural elegance and breathable weight.",
-    isPreorder: true,
-    estimatedDays: 28,
-    discount: "10%"
-  }
-];
+export const PREORDER_PRODUCTS = [];
 
 export const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
@@ -87,8 +19,9 @@ export const SORT_OPTIONS = [
   { value: 'date-desc', label: 'Date, new to old' },
 ];
 
-
 export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckoutItem }) => {
+  const [preorderList, setPreorderList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedSort, setSelectedSort] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
   
@@ -103,6 +36,23 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    getPreorderProducts()
+      .then(items => {
+        if (isMounted) {
+          setPreorderList(items || []);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load preorder products:', err);
+        if (isMounted) setLoading(false);
+      });
+    return () => { isMounted = false; };
+  }, []);
 
   const handleFilterToggle = (setState, filterId) => {
     setState(prev => 
@@ -123,7 +73,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
   };
 
   const sortedProducts = React.useMemo(() => {
-    let filtered = [...PREORDER_PRODUCTS];
+    let filtered = [...preorderList];
     
     // Apply Price Filters
     if (selectedPriceFilters.length > 0) {
@@ -141,9 +91,9 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
     if (selectedTimes.length > 0) {
       filtered = filtered.filter(product => {
         return selectedTimes.some(filter => {
-          if (filter === 'under-15') return product.estimatedDays < 15;
-          if (filter === '15-30') return product.estimatedDays >= 15 && product.estimatedDays <= 30;
-          if (filter === 'over-30') return product.estimatedDays > 30;
+          if (filter === 'under-15') return (product.estimatedDays || 14) < 15;
+          if (filter === '15-30') return (product.estimatedDays || 14) >= 15 && (product.estimatedDays || 14) <= 30;
+          if (filter === 'over-30') return (product.estimatedDays || 14) > 30;
           return false;
         });
       });
@@ -151,10 +101,10 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
 
     switch (selectedSort) {
       case 'alpha-asc':
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
         break;
       case 'alpha-desc':
-        sorted.sort((a, b) => b.name.localeCompare(a.name));
+        filtered.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
         break;
       case 'price-asc':
         filtered.sort((a, b) => a.price - b.price);
@@ -168,11 +118,10 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
       case 'relevance':
       case 'featured':
       default:
-        // Use default order for these as we don't have real data fields for them yet
         break;
     }
     return filtered;
-  }, [selectedSort, selectedPriceFilters, selectedTimes]);
+  }, [preorderList, selectedSort, selectedPriceFilters, selectedTimes]);
 
   return (
     <div className={styles['prebooking-page-container']}>
@@ -301,38 +250,49 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
           </div>
 
           {/* Product Grid */}
-          <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
-            {sortedProducts.map((product) => (
-              <div key={product.id} className={styles['product-card']}>
-                <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
-                  <div className={styles['discount-badge']}>Save {product.discount}</div>
-                  <img src={product.image} alt={product.name} className={styles['product-image']} />
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--primary)' }}>
+              <Loader2 size={36} style={{ animation: 'spin 1s linear infinite' }} />
+              <p style={{ marginTop: 16, color: '#7D756D', fontSize: '14px' }}>Loading pre-order sarees from database...</p>
+            </div>
+          ) : sortedProducts.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 0' }}>
+              <h3 style={{ color: 'var(--primary)', fontSize: '20px' }}>No pre-order sarees available at the moment.</h3>
+            </div>
+          ) : (
+            <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
+              {sortedProducts.map((product) => (
+                <div key={product.id} className={styles['product-card']}>
+                  <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
+                    <div className={styles['discount-badge']}>Save {product.discount || '10%'}</div>
+                    <img src={product.image} alt={product.name} className={styles['product-image']} />
+                  </div>
+                  <div className={styles['product-info']}>
+                    <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
+                      {product.name} | PRE BOOKING
+                    </h3>
+                    <div className={styles['product-price-row']}>
+                      <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
+                      <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                    </div>
+                    <div 
+                      role="button" 
+                      className={styles['prebook-btn']} 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePreorderClick(product);
+                      }}
+                    >
+                      PRE BOOK NOW
+                    </div>
+                    <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); }}>
+                      Quick view
+                    </div>
+                  </div>
                 </div>
-                <div className={styles['product-info']}>
-                  <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
-                    {product.name} | {product.id.toUpperCase()} | PRE BOOKING
-                  </h3>
-                  <div className={styles['product-price-row']}>
-                    <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                    <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
-                  </div>
-                  <div 
-                    role="button" 
-                    className={styles['prebook-btn']} 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePreorderClick(product);
-                    }}
-                  >
-                    PRE BOOK NOW
-                  </div>
-                  <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); }}>
-                    Quick view
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
       </main>
 

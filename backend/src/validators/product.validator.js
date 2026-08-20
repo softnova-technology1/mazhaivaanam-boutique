@@ -14,7 +14,14 @@ export const createProductValidator = {
     occasion: Joi.string().valid('Wedding', 'Festival', 'Party Wear', 'Reception', 'Traditional', 'Casual', 'Bridal').optional(),
     price: Joi.number().min(0).required(),
     mrpPrice: Joi.number().min(0).optional(),
-    tag: Joi.string().valid('BESTSELLER', 'NEW ARRIVAL', 'LIMITED EDITION', 'FESTIVAL CHOICE', null).allow(null).optional(),
+    images: Joi.array().items(
+      Joi.object({
+        url: Joi.string().required(),
+        publicId: Joi.string().allow('', null).optional(),
+      })
+    ).optional(),
+    stock: Joi.number().min(0).optional(),
+    tag: Joi.string().valid('BESTSELLER', 'NEW ARRIVAL', 'LIMITED EDITION', 'FESTIVAL CHOICE', '', null).allow('', null).optional(),
     isFeatured: Joi.boolean().optional(),
     isActive: Joi.boolean().optional(),
     isPreorder: Joi.boolean().optional(),

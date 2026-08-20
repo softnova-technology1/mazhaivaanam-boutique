@@ -13,7 +13,7 @@ import { CartToast } from './components/common/CartToast/CartToast';
 import { Home } from './pages/Home/Home';
 import { Cart } from './pages/Cart/Cart';
 import { Login } from './pages/Login/Login';
-import { Catalog, ALL_PRODUCTS } from './pages/Catalog/Catalog';
+import { Catalog } from './pages/Catalog/Catalog';
 import { About } from './pages/About/About';
 import { Contact } from './pages/Contact/Contact';
 import { Footer } from './components/layout/Footer/Footer';
@@ -33,8 +33,8 @@ import { Collections } from './pages/Collections/Collections';
 import { ShippingPolicy } from './pages/ShippingPolicy/ShippingPolicy';
 import { MyProfile } from './pages/MyProfile/MyProfile';
 import { SavedAddress } from './pages/SavedAddress/SavedAddress';
-
-import { PreBooking, PREORDER_PRODUCTS } from './pages/PreBooking/PreBooking';
+import { PreBooking } from './pages/PreBooking/PreBooking';
+import { getProductByIdOrSlug } from './services/api';
 import './App.css';
 
 function getInitialState() {
@@ -47,12 +47,7 @@ function getInitialState() {
   } else if (path === '/catalog') {
     tab = 'catalog';
   } else if (path.startsWith('/product/')) {
-    const productId = path.replace('/product/', '');
-    const found = ALL_PRODUCTS.find(p => p.id === productId) || PREORDER_PRODUCTS.find(p => p.id === productId);
-    if (found) {
-      prod = found;
-      tab = 'product-detail';
-    }
+    tab = 'product-detail';
   } else {
     const tabName = path.substring(1);
     const validTabs = [
@@ -90,7 +85,7 @@ function AppContent() {
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -99,7 +94,6 @@ function AppContent() {
     if (tab === currentTab) return;
     setCurrentTab(tab);
   };
-
 
   // Listen for global toast alerts
   useEffect(() => {
@@ -129,13 +123,16 @@ function AppContent() {
         setCurrentTab('catalog');
       } else if (path.startsWith('/product/')) {
         const productId = path.replace('/product/', '');
-        const prod = ALL_PRODUCTS.find(p => p.id === productId) || PREORDER_PRODUCTS.find(p => p.id === productId);
-        if (prod) {
-          setSelectedProduct(prod);
-          setCurrentTab('product-detail');
-        } else {
-          setCurrentTab('shop');
-        }
+        getProductByIdOrSlug(productId)
+          .then(prod => {
+            if (prod) {
+              setSelectedProduct(prod);
+              setCurrentTab('product-detail');
+            } else {
+              setCurrentTab('shop');
+            }
+          })
+          .catch(() => setCurrentTab('shop'));
       } else if ([
         'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
         'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',

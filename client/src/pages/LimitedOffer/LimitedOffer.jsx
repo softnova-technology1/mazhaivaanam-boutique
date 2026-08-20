@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { getProducts } from '../../services/api';
 import styles from './LimitedOffer.module.css';
 
 export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
@@ -17,43 +18,46 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
 
   // View All Offers State
   const [showAllOffers, setShowAllOffers] = useState(false);
+  const [liveProducts, setLiveProducts] = useState([]);
 
-  const galleryItems = [
+  useEffect(() => {
+    let isMounted = true;
+    getProducts({ limit: 6 })
+      .then(res => {
+        if (isMounted && res.products && res.products.length > 0) {
+          const items = res.products.map(p => ({
+            id: p.id,
+            title: p.name,
+            price: `₹ ${p.price.toLocaleString('en-IN')}`,
+            image: p.image,
+            tag: p.tag || 'FESTIVAL CHOICE',
+            raw: p
+          }));
+          setLiveProducts(items);
+        }
+      })
+      .catch(console.error);
+    return () => { isMounted = false; };
+  }, []);
+
+  const galleryItems = liveProducts.length > 0 ? liveProducts : [
     {
       title: "Banarasi Silk Elegance",
       price: "₹ 14,500",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAiws1LqlrLrZC3jcnsCtT5_Rku07pHF2AlAn7Zyj1gO2Sam7TcnCtkrPrhBfdF_BOMAWWOU0SUREtD1wIyNSDP3dqQV5uU58sfI1KUYmJx8KnyPQnAdhw-EbPeEOqsWH8JU3TVWcMOKKM_SIVyDKWaiWZJiHMR3edgYspjB9OHkEmy82KsiXdiS06-88TnLGP2c_xctj2Ybvh47BXpYvsvjX8nG0HX88Bol8iYSomxPmNzeKJg-zXY",
+      image: "/Images/silk1.png",
       tag: "FESTIVAL CHOICE"
     },
     {
       title: "Golden Temple Kanchipuram",
       price: "₹ 22,800",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCDgVmqwuLg4cRCmfYi1gTvh-1pWOTm42ozSAB0G-QGoHRFNM2GM9Qw31SxFySO36kmEw3Egv5p25Ues8POMis97hEgmfCZKLBnfeNosKbtpvlJlzObawUlUHRVI5rVuBKu8ZTI10IrlFS7UciPSrmsGb5dYxkKDvNavM_fWz5Rn-emc-ti2v2U_BlTJLv35gntt22r4PaHCn8LF-1nUd6Pe7gWrEZgRHIG5dwB0sAUtvlw4XeUK3HR",
-      tag: null
-    },
-    {
-      title: "Hand-Painted Organza",
-      price: "₹ 11,200",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC5sgxRjroNTNCuoxkwsqyIDePKlQiHflxsCP7kxClGHeksK7eqj_r46kvqTvbuwD-n4FSyRIpjl15vqvbsptSdrRRjlcOvZ_Tg3G2g0XTx7hgYdnPfBvkyysP_hIjytE65LdgWCxmcDn7K4TgKyWB_4Fm5HDy8urdJvci79Z9xUldtkCO_J74BlU95VdXnxazJ9yknpEBkXGMCV_ejzdAS--iDT1UPnqFzbmJ86ZHPzMHqGocFzP31",
+      image: "/Images/saree1.png",
       tag: "BESTSELLER"
     },
     {
-      title: "Emerald Heritage Pattu",
-      price: "₹ 18,900",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBa97nLerZJ32cFOROn_rj1WxFojT9ps_a64W4pdZXgcWLH-wCKzsGXaUOZwYjNiX2aBWVopyRyxJ-Jn_KZbJgMgKbsz9mmMBZ9f18wZs9IC6wBjr7PPJwLAjTVFf-rvAYjuEag1YaqaRBUyJDN_ulJIXQK2viX3czJjP9AYKwSowNhNx81blxVR4ybDVYfnd28RewkE8YCjkt8lRkF-vm4vp8kFC0Ps4hMVcy0cDpgzeIWtLsMzXB2",
-      tag: null
-    },
-    {
-      title: "Royal Crimson Silk",
-      price: "₹ 24,500",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAiws1LqlrLrZC3jcnsCtT5_Rku07pHF2AlAn7Zyj1gO2Sam7TcnCtkrPrhBfdF_BOMAWWOU0SUREtD1wIyNSDP3dqQV5uU58sfI1KUYmJx8KnyPQnAdhw-EbPeEOqsWH8JU3TVWcMOKKM_SIVyDKWaiWZJiHMR3edgYspjB9OHkEmy82KsiXdiS06-88TnLGP2c_xctj2Ybvh47BXpYvsvjX8nG0HX88Bol8iYSomxPmNzeKJg-zXY",
+      title: "Handloom Cotton Saree",
+      price: "₹ 4,200",
+      image: "/Images/fancy1.png",
       tag: "NEW ARRIVAL"
-    },
-    {
-      title: "Mysore Crepe Golden",
-      price: "₹ 16,300",
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCDgVmqwuLg4cRCmfYi1gTvh-1pWOTm42ozSAB0G-QGoHRFNM2GM9Qw31SxFySO36kmEw3Egv5p25Ues8POMis97hEgmfCZKLBnfeNosKbtpvlJlzObawUlUHRVI5rVuBKu8ZTI10IrlFS7UciPSrmsGb5dYxkKDvNavM_fWz5Rn-emc-ti2v2U_BlTJLv35gntt22r4PaHCn8LF-1nUd6Pe7gWrEZgRHIG5dwB0sAUtvlw4XeUK3HR",
-      tag: null
     }
   ];
 

@@ -1,22 +1,22 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, ShoppingBag, PackageSearch, Layers3,
-  ClipboardList, Users, Star, MessageSquare, Ticket, LogOut, Tags, Percent
+  ClipboardList, Users, Star, MessageSquare, Ticket, LogOut, Tags, Percent, Store
 } from 'lucide-react';
 import './Sidebar.css';
 
 const NAV_ITEMS = [
-  { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { path: '/products', icon: ShoppingBag, label: 'Products' },
-  { path: '/orders', icon: ClipboardList, label: 'Orders' },
-  { path: '/inventory', icon: PackageSearch, label: 'Inventory' },
-  { path: '/discounts', icon: Percent, label: 'Discounts' },
-  { path: '/categories', icon: Layers3, label: 'Categories' },
-  { path: '/users', icon: Users, label: 'Users' },
-  { path: '/reviews', icon: Star, label: 'Reviews' },
-  { path: '/inquiries', icon: MessageSquare, label: 'Inquiries' },
-  { path: '/coupons', icon: Ticket, label: 'Coupons' },
+  { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
+  { path: '/admin/products', icon: ShoppingBag, label: 'Products' },
+  { path: '/admin/orders', icon: ClipboardList, label: 'Orders' },
+  { path: '/admin/inventory', icon: PackageSearch, label: 'Inventory' },
+  { path: '/admin/discounts', icon: Percent, label: 'Discounts' },
+  { path: '/admin/categories', icon: Layers3, label: 'Categories' },
+  { path: '/admin/users', icon: Users, label: 'Users' },
+  { path: '/admin/reviews', icon: Star, label: 'Reviews' },
+  { path: '/admin/inquiries', icon: MessageSquare, label: 'Inquiries' },
+  { path: '/admin/coupons', icon: Ticket, label: 'Coupons' },
 ];
 
 export default function Sidebar() {
@@ -42,14 +42,20 @@ export default function Sidebar() {
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `sidebar-link ${isActive && (item.path === '/' ? location.pathname === '/' : true) ? 'active' : ''}`
+              `sidebar-link ${isActive && (item.path === '/admin' ? location.pathname === '/admin' : true) ? 'active' : ''}`
             }
-            end={item.path === '/'}
+            end={item.path === '/admin'}
           >
             <item.icon size={18} />
             <span>{item.label}</span>
           </NavLink>
         ))}
+
+        <div className="sidebar-section-label" style={{ marginTop: '1rem' }}>STORE</div>
+        <Link to="/" className="sidebar-link">
+          <Store size={18} />
+          <span>View Customer Store</span>
+        </Link>
       </nav>
 
       <div className="sidebar-footer">

@@ -1,16 +1,75 @@
-# React + Vite
+# Mazhai Vaanam Boutique (மழை வானம்)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A full-stack luxury Indian saree boutique e-commerce platform built with React, Vite, Express.js, and MongoDB.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📁 Clean 2-Folder Architecture
 
-## React Compiler
+```
+mazhaivaanam-boutique/
+├── client/          👉 [DEPLOYMENT 1] Single Unified Frontend (Customer Store + Admin Panel)
+│   ├── src/
+│   │   ├── admin/   # Admin Dashboard, analytics, inventory, order management (accessible at /admin)
+│   │   ├── pages/   # Customer Boutique pages: Home, Catalog, ProductDetail, Cart, Checkout, etc.
+│   │   ├── components/
+│   │   ├── context/
+│   │   └── App.jsx  # Main Router (Routes / to Customer, /admin to Admin)
+│   ├── public/
+│   ├── package.json
+│   ├── vercel.json  # SPA routing rewrites
+│   └── vite.config.js
+│
+├── backend/         👉 [DEPLOYMENT 2] REST API Backend (Express.js + MongoDB)
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   └── app.js
+│   ├── seed.js      # Database seed script
+│   ├── server.js    # Entry point
+│   └── package.json
+│
+├── package.json     # Workspace convenience runner
+└── README.md
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the Oxlint configuration
+## 🚀 Quick Start (Local Development)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### 1. Run Frontend (Client)
+```bash
+npm run dev:client
+# or
+cd client && npm run dev
+```
+- **Customer Store**: [http://localhost:5173](http://localhost:5173)
+- **Admin Dashboard**: [http://localhost:5173/admin](http://localhost:5173/admin)
+
+### 2. Run Backend (API)
+```bash
+npm run dev:backend
+# or
+cd backend && npm run dev
+```
+- **API Health Check**: [http://localhost:5000/api/health](http://localhost:5000/api/health)
+
+---
+
+## 🌐 Production Deployment (Only 2 Deployments)
+
+### 1. Frontend Deploy (Vercel / Netlify / Cloudflare Pages)
+- **Root Directory**: `client`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Single URL**: 
+  - Store: `https://yourdomain.com`
+  - Admin: `https://yourdomain.com/admin`
+
+### 2. Backend Deploy (Render / Railway / VPS)
+- **Root Directory**: `backend`
+- **Build Command**: `npm install`
+- **Start Command**: `node server.js`
+- **Environment Variables**: `PORT`, `MONGO_URI`, `JWT_SECRET`, `FRONTEND_URL`

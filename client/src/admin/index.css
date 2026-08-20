@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ==================== DESIGN TOKENS ==================== */
-:root {
+.admin-app-root {
   --bg-primary: #0B0B0F;
   --bg-secondary: #13131A;
   --bg-surface: #1A1A24;
@@ -44,26 +44,12 @@
   --header-height: 64px;
 
   --transition: 0.2s ease;
-}
 
-/* ==================== RESET ==================== */
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 14px;
-  scroll-behavior: smooth;
-}
-
-body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  background: #0B0B0F;
+  color: #FAFAFA;
+  min-height: 100vh;
   line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
 }
 
 a {

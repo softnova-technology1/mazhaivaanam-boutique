@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { productAPI, categoryAPI } from '../api/api.js';
-import { Plus, Search, Edit, Trash2, Eye, Star, X } from 'lucide-react';
+import { productAPI, categoryAPI, uploadAPI } from '../api/api.js';
+import { Plus, Search, Edit, Trash2, Eye, Star, X, UploadCloud, Image as ImageIcon } from 'lucide-react';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -43,12 +43,12 @@ export default function Products() {
   };
 
   const openCreate = () => {
-    setForm({ name: '', description: '', category: categories[0]?._id || '', fabric: 'Pure Silk', price: '', mrpPrice: '', occasion: 'Traditional', tag: '', isFeatured: false, isActive: true });
+    setForm({ name: '', description: '', category: categories[0]?._id || '', fabric: 'Pure Silk', price: '', mrpPrice: '', occasion: 'Traditional', tag: '', isFeatured: false, isActive: true, imageFile: null, imagePreview: '' });
     setModal({ open: true, product: null });
   };
 
   const openEdit = (product) => {
-    setForm({ name: product.name, description: product.description, category: product.category?._id || '', fabric: product.fabric, price: product.price, mrpPrice: product.mrpPrice, occasion: product.occasion, tag: product.tag || '', isFeatured: product.isFeatured, isActive: product.isActive });
+    setForm({ name: product.name, description: product.description, category: product.category?._id || '', fabric: product.fabric, price: product.price, mrpPrice: product.mrpPrice, occasion: product.occasion, tag: product.tag || '', isFeatured: product.isFeatured, isActive: product.isActive, imageFile: null, imagePreview: product.images?.[0]?.url || '' });
     setModal({ open: true, product });
   };
 
@@ -57,6 +57,14 @@ export default function Products() {
     setSaving(true);
     try {
       const body = { ...form, price: Number(form.price), mrpPrice: Number(form.mrpPrice) || 0, tag: form.tag || null };
+      
+      if (form.imageFile) {
+        const res = await uploadAPI.upload(form.imageFile);
+        body.images = [{ url: res.data.url, publicId: res.data.publicId }];
+      } else if (modal.product?.images) {
+        body.images = modal.product.images;
+      }
+
       if (modal.product) {
         await productAPI.update(modal.product._id, body);
       } else {
@@ -191,70 +199,144 @@ export default function Products() {
       {/* Create/Edit Modal */}
       {modal.open && (
         <div className="modal-overlay" onClick={() => setModal({ open: false, product: null })}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" style={{ maxWidth: 850, width: '100%' }} onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3 className="modal-title">{modal.product ? 'Edit Product' : 'Add Product'}</h3>
               <button className="btn-ghost btn-icon" onClick={() => setModal({ open: false, product: null })}><X size={20} /></button>
             </div>
             <form onSubmit={handleSave}>
-              <div className="modal-body">
-                <div className="form-group">
-                  <label className="form-label">Product Name</label>
-                  <input className="form-input" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+              <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
+                
+                {/* Left Column: Image Upload */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label className="form-label">Product Image</label>
+                  <div 
+                    style={{
+                      border: '2px dashed var(--border-color)',
+                      borderRadius: 12,
+                      flex: 1,
+                      minHeight: 350,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'var(--bg-secondary)',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      transition: 'border-color 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
+                    onClick={() => document.getElementById('product-image-upload').click()}
+                  >
+                    {form.imagePreview ? (
+                      <>
+                        <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div 
+                          style={{ 
+                            position: 'absolute', 
+                            inset: 0, 
+                            background: 'rgba(0,0,0,0.5)', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            opacity: 0, 
+                            transition: 'opacity 0.2s' 
+                          }} 
+                          onMouseEnter={e => e.currentTarget.style.opacity = 1} 
+                          onMouseLeave={e => e.currentTarget.style.opacity = 0}
+                        >
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
+                            <UploadCloud size={32} />
+                            <span style={{ fontWeight: 500 }}>Change Image</span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                        <UploadCloud size={48} style={{ marginBottom: 16, opacity: 0.6 }} />
+                        <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-primary)' }}>Click to upload</div>
+                        <div style={{ fontSize: '0.8rem', marginTop: 8 }}>Supports PNG, JPG, WEBP</div>
+                      </div>
+                    )}
+                    <input 
+                      id="product-image-upload" 
+                      type="file" 
+                      accept="image/*" 
+                      style={{ display: 'none' }}
+                      onChange={e => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Description</label>
-                  <textarea className="form-textarea" required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Category</label>
-                    <select className="form-select" required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
-                      {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
-                    </select>
+
+                {/* Right Column: Details */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Product Name</label>
+                    <input className="form-input" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Fabric</label>
-                    <select className="form-select" required value={form.fabric} onChange={e => setForm(f => ({ ...f, fabric: e.target.value }))}>
-                      {['Pure Silk', 'Cotton', 'Tussar', 'Organza', 'Linen', 'Georgette', 'Chiffon', 'Chanderi'].map(f => <option key={f}>{f}</option>)}
-                    </select>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Description</label>
+                    <textarea className="form-textarea" required rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
                   </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Price (₹)</label>
-                    <input className="form-input" type="number" required min="0" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} />
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Category</label>
+                      <select className="form-select" required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
+                        {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Fabric</label>
+                      <select className="form-select" required value={form.fabric} onChange={e => setForm(f => ({ ...f, fabric: e.target.value }))}>
+                        {['Pure Silk', 'Cotton', 'Tussar', 'Organza', 'Linen', 'Georgette', 'Chiffon', 'Chanderi'].map(f => <option key={f}>{f}</option>)}
+                      </select>
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">MRP Price (₹)</label>
-                    <input className="form-input" type="number" min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Price (₹)</label>
+                      <input className="form-input" type="number" required min="0" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">MRP Price (₹)</label>
+                      <input className="form-input" type="number" min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
+                    </div>
                   </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Occasion</label>
-                    <select className="form-select" value={form.occasion} onChange={e => setForm(f => ({ ...f, occasion: e.target.value }))}>
-                      {['Wedding', 'Festival', 'Party Wear', 'Reception', 'Traditional', 'Casual', 'Bridal'].map(o => <option key={o}>{o}</option>)}
-                    </select>
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Occasion</label>
+                      <select className="form-select" value={form.occasion} onChange={e => setForm(f => ({ ...f, occasion: e.target.value }))}>
+                        {['Wedding', 'Festival', 'Party Wear', 'Reception', 'Traditional', 'Casual', 'Bridal'].map(o => <option key={o}>{o}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Tag</label>
+                      <select className="form-select" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
+                        <option value="">None</option>
+                        <option value="BESTSELLER">Bestseller</option>
+                        <option value="NEW ARRIVAL">New Arrival</option>
+                        <option value="LIMITED EDITION">Limited Edition</option>
+                        <option value="FESTIVAL CHOICE">Festival Choice</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Tag</label>
-                    <select className="form-select" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
-                      <option value="">None</option>
-                      <option value="BESTSELLER">Bestseller</option>
-                      <option value="NEW ARRIVAL">New Arrival</option>
-                      <option value="LIMITED EDITION">Limited Edition</option>
-                      <option value="FESTIVAL CHOICE">Festival Choice</option>
-                    </select>
+                  <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
+                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} /> 
+                      Featured Product
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
+                      <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} /> 
+                      Active Status
+                    </label>
                   </div>
-                </div>
-                <div style={{ display: 'flex', gap: 20, marginTop: 8 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                    <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} /> Featured
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                    <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} /> Active
-                  </label>
                 </div>
               </div>
               <div className="modal-footer">

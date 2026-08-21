@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ShieldCheck, Leaf, LockKeyhole, Gift, Star } from 'lucide-react';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';
-import { ALL_PRODUCTS } from '../Catalog/Catalog';
+import { getBestSellers } from '../../services/api';
 import styles from './Home.module.css';
 
 const AnimatedCounter = ({ end, duration = 2000, suffix = '', decimals = 0 }) => {
@@ -91,8 +91,18 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
     }
   ], []);
 
-  const bestSellers = useMemo(() => {
-    return ALL_PRODUCTS.filter(product => product.tag === "BESTSELLER").slice(0, 4);
+  const [bestSellers, setBestSellers] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getBestSellers(4)
+      .then(items => {
+        if (isMounted && items) {
+          setBestSellers(items);
+        }
+      })
+      .catch(err => console.error('Failed to load best sellers:', err));
+    return () => { isMounted = false; };
   }, []);
 
   const slides = useMemo(() => [

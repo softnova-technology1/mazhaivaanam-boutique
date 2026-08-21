@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { ALL_PRODUCTS } from '../Catalog/Catalog';
+import React, { useState, useMemo, useEffect } from 'react';
+import { getNewArrivals } from '../../services/api';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';
-import { Search, ChevronDown } from 'lucide-react';
+import { Search, ChevronDown, Loader2 } from 'lucide-react';
 import { SORT_OPTIONS } from '../PreBooking/PreBooking';
 import styles from './NewArrivals.module.css';
 
@@ -11,14 +11,33 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
   const [selectedSort, setSelectedSort] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
+  const [liveArrivals, setLiveArrivals] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    getNewArrivals(50)
+      .then(items => {
+        if (isMounted) {
+          setLiveArrivals(items || []);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load new arrivals:', err);
+        if (isMounted) setLoading(false);
+      });
+    return () => { isMounted = false; };
+  }, []);
 
   // Reset visibleCount when filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setVisibleCount(8);
   }, [selectedCategory, searchQuery, selectedSort]);
 
   // Click listener to automatically close dropdown on outside clicks
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isSortOpen) return;
     const closeDropdown = () => setIsSortOpen(false);
     document.addEventListener('click', closeDropdown);
@@ -26,17 +45,11 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
   }, [isSortOpen]);
 
   const newArrivals = useMemo(() => {
-    // Filter only products marked as NEW ARRIVAL
-    let items = ALL_PRODUCTS.filter(p => p.tag === 'NEW ARRIVAL');
-    
-    // Fallback just in case
-    if (items.length === 0) {
-      items = ALL_PRODUCTS.slice(0, 4);
-    }
+    let items = [...liveArrivals];
 
     // Filter by Category Selection
     if (selectedCategory !== 'All') {
-      items = items.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase());
+      items = items.filter(p => p.category && p.category.toLowerCase() === selectedCategory.toLowerCase());
     }
 
     // Filter by Search Text Input
@@ -52,10 +65,10 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
     // Sort Logic
     switch (selectedSort) {
       case 'alpha-asc':
-        items.sort((a, b) => a.name.localeCompare(b.name));
+        items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
         break;
       case 'alpha-desc':
-        items.sort((a, b) => b.name.localeCompare(a.name));
+        items.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
         break;
       case 'price-asc':
       case 'price-low':
@@ -66,7 +79,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
         items.sort((a, b) => b.price - a.price);
         break;
       case 'rating':
-        items.sort((a, b) => b.rating - a.rating);
+        items.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case 'date-asc':
       case 'date-desc':
@@ -74,12 +87,11 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
       case 'relevance':
       case 'featured':
       default:
-        // Default order
         break;
     }
 
     return items;
-  }, [selectedCategory, searchQuery, selectedSort]);
+  }, [liveArrivals, selectedCategory, searchQuery, selectedSort]);
 
   const displayedProducts = useMemo(() => {
     return newArrivals.slice(0, visibleCount);

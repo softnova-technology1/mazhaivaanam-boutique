@@ -19,8 +19,10 @@ export default function Discounts() {
   const [filters, setFilters] = useState({ status: 'all', category: '', search: '' });
   const [modal, setModal] = useState({ open: false, product: null });
   const [bulkModal, setBulkModal] = useState(false);
+  const [bulkRemoveModal, setBulkRemoveModal] = useState(false);
   const [form, setForm] = useState({ type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' });
   const [bulkForm, setBulkForm] = useState({ category: '', tag: '', type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' });
+  const [bulkRemoveForm, setBulkRemoveForm] = useState({ category: '', tag: '' });
   const [saving, setSaving] = useState(false);
 
   // Stats
@@ -61,8 +63,8 @@ export default function Discounts() {
     setForm({
       type: d.type || 'percentage',
       value: d.value || '',
-      startDate: d.startDate ? new Date(d.startDate).toISOString().slice(0, 10) : '',
-      endDate: d.endDate ? new Date(d.endDate).toISOString().slice(0, 10) : '',
+      startDate: d.startDate ? new Date(d.startDate).toISOString().slice(0, 16) : '',
+      endDate: d.endDate ? new Date(d.endDate).toISOString().slice(0, 16) : '',
       isActive: d.isActive !== undefined ? d.isActive : true,
       label: d.label || '',
     });
@@ -111,6 +113,19 @@ export default function Discounts() {
     setSaving(false);
   };
 
+  const handleBulkRemoveSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await discountAPI.bulkRemove(bulkRemoveForm);
+      setBulkRemoveModal(false);
+      loadProducts();
+    } catch (err) {
+      alert(err.message);
+    }
+    setSaving(false);
+  };
+
   // Compute preview
   const previewPrice = modal.product
     ? form.type === 'percentage'
@@ -126,9 +141,14 @@ export default function Discounts() {
           <h1 className="page-title">Discounts</h1>
           <p className="page-subtitle">Manage product discounts & offers</p>
         </div>
-        <button className="btn btn-primary" onClick={() => { setBulkForm({ category: '', tag: '', type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' }); setBulkModal(true); }}>
-          <Zap size={18} /> Bulk Discount
-        </button>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button className="btn btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger-border)' }} onClick={() => { setBulkRemoveForm({ category: '', tag: '' }); setBulkRemoveModal(true); }}>
+            <Trash2 size={18} /> Bulk Remove
+          </button>
+          <button className="btn btn-primary" onClick={() => { setBulkForm({ category: '', tag: '', type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' }); setBulkModal(true); }}>
+            <Zap size={18} /> Bulk Discount
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -252,9 +272,9 @@ export default function Discounts() {
                     <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                       {hasDiscount ? (
                         <div>
-                          {p.discount?.startDate && <div>{new Date(p.discount.startDate).toLocaleDateString('en-IN')}</div>}
-                          {p.discount?.endDate && <div style={{ color: new Date(p.discount.endDate) < new Date() ? 'var(--danger)' : 'inherit' }}>
-                            to {new Date(p.discount.endDate).toLocaleDateString('en-IN')}
+                          {p.discount?.startDate && <div>{new Date(p.discount.startDate).toLocaleString('en-IN', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</div>}
+                          {p.discount?.endDate && <div style={{ color: new Date(p.discount.endDate) < new Date() ? 'var(--danger)' : 'inherit', marginTop: 2 }}>
+                            to {new Date(p.discount.endDate).toLocaleString('en-IN', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}
                           </div>}
                           {!p.discount?.startDate && !p.discount?.endDate && 'No expiry'}
                         </div>
@@ -355,12 +375,12 @@ export default function Discounts() {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label className="form-label">Start Date</label>
-                    <input className="form-input" type="date" value={form.startDate} onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))} />
+                    <label className="form-label">Start Date & Time</label>
+                    <input className="form-input" type="datetime-local" value={form.startDate} onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))} />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">End Date</label>
-                    <input className="form-input" type="date" value={form.endDate} onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))} />
+                    <label className="form-label">End Date & Time</label>
+                    <input className="form-input" type="datetime-local" value={form.endDate} onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))} />
                   </div>
                 </div>
 
@@ -453,12 +473,12 @@ export default function Discounts() {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label className="form-label">Start Date</label>
-                    <input className="form-input" type="date" value={bulkForm.startDate} onChange={(e) => setBulkForm((f) => ({ ...f, startDate: e.target.value }))} />
+                    <label className="form-label">Start Date & Time</label>
+                    <input className="form-input" type="datetime-local" value={bulkForm.startDate} onChange={(e) => setBulkForm((f) => ({ ...f, startDate: e.target.value }))} />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">End Date</label>
-                    <input className="form-input" type="date" value={bulkForm.endDate} onChange={(e) => setBulkForm((f) => ({ ...f, endDate: e.target.value }))} />
+                    <label className="form-label">End Date & Time</label>
+                    <input className="form-input" type="datetime-local" value={bulkForm.endDate} onChange={(e) => setBulkForm((f) => ({ ...f, endDate: e.target.value }))} />
                   </div>
                 </div>
 
@@ -472,6 +492,53 @@ export default function Discounts() {
               <div className="modal-footer">
                 <button type="button" className="btn btn-outline" onClick={() => setBulkModal(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Applying...' : 'Apply Bulk Discount'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Remove Modal */}
+      {bulkRemoveModal && (
+        <div className="modal-overlay" onClick={() => setBulkRemoveModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title" style={{ color: 'var(--danger)' }}>
+                <Trash2 size={18} /> Remove Discounts in Bulk
+              </h3>
+              <button className="btn-ghost btn-icon" onClick={() => setBulkRemoveModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleBulkRemoveSave}>
+              <div className="modal-body">
+                <div style={{ padding: 14, background: 'var(--danger-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, color: 'var(--danger)', fontSize: '0.85rem' }}>
+                  ⚠️ This will permanently remove discounts from all products matching the selected category or tag.
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Category</label>
+                    <select className="form-select" value={bulkRemoveForm.category} onChange={(e) => setBulkRemoveForm((f) => ({ ...f, category: e.target.value }))}>
+                      <option value="">All Categories</option>
+                      {categories.map((c) => (
+                        <option key={c._id} value={c.slug}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Tag</label>
+                    <select className="form-select" value={bulkRemoveForm.tag} onChange={(e) => setBulkRemoveForm((f) => ({ ...f, tag: e.target.value }))}>
+                      <option value="">All Tags</option>
+                      <option value="BESTSELLER">Bestseller</option>
+                      <option value="NEW ARRIVAL">New Arrival</option>
+                      <option value="LIMITED EDITION">Limited Edition</option>
+                      <option value="FESTIVAL CHOICE">Festival Choice</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-outline" onClick={() => setBulkRemoveModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary" style={{ background: 'var(--danger)', borderColor: 'var(--danger)' }} disabled={saving}>{saving ? 'Removing...' : 'Remove Discounts'}</button>
               </div>
             </form>
           </div>

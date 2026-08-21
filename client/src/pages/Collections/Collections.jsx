@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getCategories } from '../../services/api';
 import styles from './Collections.module.css';
 
-const COLLECTIONS = [
-  { id: 'everyday-elegance', label: 'Everyday Elegance', image: '/Images/saree1.png', gridClass: 'card-wide', subtitle: 'CASUAL & CHIC' },
-  { id: 'festive-glow', label: 'Festive Glow', image: '/Images/silk1.png', gridClass: 'card-tall', subtitle: 'CELEBRATION READY' },
-  { id: 'style-studio', label: 'Style Studio', image: '/Images/fancy1.png', gridClass: 'card-half', subtitle: 'MODERN TRENDS' },
-  { id: 'black-magic', label: 'Black Magic', image: '/Images/black1.png', gridClass: 'card-half', subtitle: 'BOLD & BEAUTIFUL' }
+const DEFAULT_COLLECTIONS = [
+  { id: 'everyday-elegance', label: 'Everyday Elegance', name: 'Everyday Elegance', image: '/Images/saree1.png', gridClass: 'card-wide', subtitle: 'CASUAL & CHIC' },
+  { id: 'festive-glow', label: 'Festive Glow', name: 'Festive Glow', image: '/Images/silk1.png', gridClass: 'card-tall', subtitle: 'CELEBRATION READY' },
+  { id: 'style-studio', label: 'Style Studio', name: 'Style Studio', image: '/Images/fancy1.png', gridClass: 'card-half', subtitle: 'MODERN TRENDS' },
+  { id: 'black-magic', label: 'Black Magic', name: 'Black Magic', image: '/Images/black1.png', gridClass: 'card-half', subtitle: 'BOLD & BEAUTIFUL' }
 ];
 
 export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
+  const [categories, setCategories] = useState(DEFAULT_COLLECTIONS);
+
+  useEffect(() => {
+    let isMounted = true;
+    getCategories()
+      .then(dbCats => {
+        if (isMounted && dbCats && dbCats.length > 0) {
+          const gridClasses = ['card-wide', 'card-tall', 'card-half', 'card-half'];
+          const images = ['/Images/saree1.png', '/Images/silk1.png', '/Images/fancy1.png', '/Images/black1.png'];
+          const mapped = dbCats.map((c, i) => ({
+            id: c._id || c.slug,
+            label: c.name,
+            name: c.name,
+            subtitle: c.subtitle || 'HANDLOOM HERITAGE',
+            image: c.image?.url || images[i % images.length],
+            gridClass: gridClasses[i % gridClasses.length],
+          }));
+          setCategories(mapped);
+        }
+      })
+      .catch(err => console.error('Failed to load categories:', err));
+    return () => { isMounted = false; };
+  }, []);
+
   const handleCollectionClick = (label) => {
     if (setCatalogFilter) {
       setCatalogFilter({ category: label, occasion: '', label: label });
@@ -35,18 +60,18 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
           <div className={styles['divider']} />
         </div>
         <div className={styles['collections-grid']}>
-          {COLLECTIONS.map(collection => (
+          {categories.map(collection => (
             <div 
               key={collection.id} 
-              className={`${styles['collection-card']} ${styles[collection.gridClass]}`}
-              onClick={() => handleCollectionClick(collection.label)}
+              className={`${styles['collection-card']} ${styles[collection.gridClass] || styles['card-half']}`}
+              onClick={() => handleCollectionClick(collection.label || collection.name)}
             >
-              <img src={collection.image} alt={collection.label} />
+              <img src={collection.image} alt={collection.label || collection.name} />
               <div className={styles['card-overlay']}>
                 <div className={styles['glass-plate']}>
                   <div className={styles['glass-text']}>
                     <span>{collection.subtitle}</span>
-                    <h2>{collection.label}</h2>
+                    <h2>{collection.label || collection.name}</h2>
                   </div>
                   <div className={styles['glass-arrow']}>→</div>
                 </div>

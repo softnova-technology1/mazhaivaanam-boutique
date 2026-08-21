@@ -27,7 +27,7 @@
   --info-bg: rgba(59, 130, 246, 0.12);
 
   --text-primary: #FAFAFA;
-  --text-secondary: #A0A0B2;
+  --text-secondary: #ffffff;
   --text-muted: #6B6B80;
   --text-inverse: #0B0B0F;
 
@@ -209,7 +209,7 @@ ul, ol {
   display: block;
   font-size: 0.8rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: WHITE;
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -389,6 +389,7 @@ ul, ol {
 .modal-title {
   font-size: 1.15rem;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .modal-body {

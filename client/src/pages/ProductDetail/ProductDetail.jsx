@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
-import { ALL_PRODUCTS } from '../Catalog/Catalog';
+import { getProducts } from '../../services/api';
 import styles from './ProductDetail.module.css';
 
-export const ProductDetail = ({ product, setCurrentTab }) => {
+export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedHue, setSelectedHue] = useState('');
@@ -13,6 +13,7 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   // Review form state
   const [reviewForm, setReviewForm] = useState({ name: '', location: '', text: '', rating: 5 });
@@ -76,6 +77,16 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
     
     // Scroll to top on mount
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    let isMounted = true;
+    getProducts({ limit: 12 })
+      .then(res => {
+        if (isMounted && res.products) {
+          setRelatedProducts(res.products.filter(p => p.id !== activeProduct.id));
+        }
+      })
+      .catch(err => console.error('Failed to load related products:', err));
+    return () => { isMounted = false; };
   }, [activeProduct]);
 
   // Derived calculations for price details card
@@ -506,8 +517,19 @@ export const ProductDetail = ({ product, setCurrentTab }) => {
           </div>
         </div>
         <div id="related-carousel" className={styles['related-grid']}>
-          {(ALL_PRODUCTS || []).filter(p => p.id !== activeProduct.id).slice(0, 12).map(prod => (
-            <div key={prod.id} className={styles['related-card']} onClick={() => window.location.href = `/product/${prod.id}`}>
+          {(relatedProducts || []).slice(0, 12).map(prod => (
+            <div 
+              key={prod.id} 
+              className={styles['related-card']} 
+              onClick={() => {
+                if (setSelectedProduct) {
+                  setSelectedProduct(prod);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                  window.location.href = `/product/${prod.id}`;
+                }
+              }}
+            >
               <div className={styles['related-image-wrapper']}>
                 <img src={prod.image} alt={prod.name} />
                 {prod.tag && <span className={`${styles['related-tag']} ${getBadgeClass(prod.tag)}`}>{prod.tag}</span>}

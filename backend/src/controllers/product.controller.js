@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Product from '../models/Product.js';
 import Category from '../models/Category.js';
 import Inventory from '../models/Inventory.js';
@@ -219,10 +220,12 @@ export const searchProducts = async (req, res, next) => {
  */
 export const getProductBySlug = async (req, res, next) => {
   try {
-    const product = await Product.findOne({
-      slug: req.params.slug,
-      isActive: true,
-    })
+    const isId = mongoose.isValidObjectId(req.params.slug);
+    const query = isId
+      ? { $or: [{ _id: req.params.slug }, { slug: req.params.slug }], isActive: true }
+      : { slug: req.params.slug, isActive: true };
+
+    const product = await Product.findOne(query)
       .populate('category', 'name slug')
       .populate('collection', 'name slug')
       .lean();
@@ -262,9 +265,10 @@ export const createProduct = async (req, res, next) => {
     const product = await Product.create(req.body);
 
     // Create inventory entry
+    const initialStock = req.body.stock !== undefined ? Number(req.body.stock) : (req.body.isPreorder ? 1 : 25);
     await Inventory.create({
       product: product._id,
-      totalStock: 0,
+      totalStock: initialStock,
       lowStockThreshold: 5,
     });
 
@@ -290,6 +294,14 @@ export const updateProduct = async (req, res, next) => {
     Object.assign(product, req.body);
     await product.save();
 
+    if (req.body.stock !== undefined) {
+      await Inventory.findOneAndUpdate(
+        { product: product._id },
+        { totalStock: Number(req.body.stock) },
+        { upsert: true }
+      );
+    }
+
     const populated = await Product.findById(product._id).populate('category', 'name slug');
 
     successResponse(res, populated, 'Product updated');
@@ -313,6 +325,29 @@ export const deleteProduct = async (req, res, next) => {
     await product.save();
 
     successResponse(res, null, 'Product deleted');
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * DELETE /api/admin/products/:id/hard
+ * Permanently delete a product and its inventory (Admin)
+ */
+export const hardDeleteProduct = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return errorResponse(res, 'Product not found', 404);
+    }
+
+    // Delete inventory record
+    await Inventory.findOneAndDelete({ product: product._id });
+    
+    // Delete product
+    await Product.findByIdAndDelete(req.params.id);
+
+    successResponse(res, null, 'Product permanently deleted');
   } catch (error) {
     next(error);
   }

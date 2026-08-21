@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { orderAPI } from '../api/api.js';
-import { Search, ChevronDown, ChevronUp, Truck, MapPin } from 'lucide-react';
+import { orderAPI, dashboardAPI } from '../api/api.js';
+import { Search, ChevronDown, ChevronUp, Truck, MapPin, ShoppingBag, Clock, CheckCircle, Check, Navigation, XCircle } from 'lucide-react';
 
 const STATUSES = ['', 'PROCESSING', 'CONFIRMED', 'SHIPPED', 'IN TRANSIT', 'OUT FOR DELIVERY', 'DELIVERED', 'CANCELLED'];
 const STATUS_COLORS = { PROCESSING: 'warning', CONFIRMED: 'info', SHIPPED: 'primary', 'IN TRANSIT': 'info', 'OUT FOR DELIVERY': 'primary', DELIVERED: 'success', CANCELLED: 'danger', RETURNED: 'neutral' };
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
+  const [stats, setStats] = useState(null);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -14,7 +15,15 @@ export default function Orders() {
   const [expanded, setExpanded] = useState(null);
   const [updateForm, setUpdateForm] = useState({ status: '', trackingNumber: '', courier: '', note: '' });
 
+  useEffect(() => { loadStats(); }, []);
   useEffect(() => { loadOrders(); }, [page, statusFilter]);
+
+  const loadStats = async () => {
+    try {
+      const res = await dashboardAPI.getOverview();
+      setStats(res.data);
+    } catch (err) { console.error(err); }
+  };
 
   const loadOrders = async () => {
     setLoading(true);
@@ -38,15 +47,55 @@ export default function Orders() {
       await orderAPI.updateStatus(orderId, updateForm);
       setExpanded(null);
       loadOrders();
+      loadStats();
     } catch (err) { alert(err.message); }
   };
+
+  const totalOrders = stats?.overview?.totalOrders || 0;
+  const getCount = (status) => stats?.statusBreakdown?.find(s => s._id === status)?.count || 0;
 
   return (
     <div className="page-container">
       <div className="page-header">
         <div>
           <h1 className="page-title">Orders</h1>
-          <p className="page-subtitle">{pagination.total || 0} total orders</p>
+          <p className="page-subtitle">{totalOrders} total orders</p>
+        </div>
+      </div>
+
+      {/* Alert Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === '' ? '1px solid var(--primary)' : undefined }} onClick={() => { setStatusFilter(''); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3B82F6', flexShrink: 0 }}><ShoppingBag size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{totalOrders}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Total Orders</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'PROCESSING' ? '1px solid var(--warning)' : undefined }} onClick={() => { setStatusFilter('PROCESSING'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F59E0B', flexShrink: 0 }}><Clock size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('PROCESSING')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Processing</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'CONFIRMED' ? '1px solid var(--info)' : undefined }} onClick={() => { setStatusFilter('CONFIRMED'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(14,165,233,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0EA5E9', flexShrink: 0 }}><Check size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('CONFIRMED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Confirmed</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'SHIPPED' ? '1px solid var(--primary)' : undefined }} onClick={() => { setStatusFilter('SHIPPED'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B5CF6', flexShrink: 0 }}><Truck size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('SHIPPED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Shipped</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'IN TRANSIT' ? '1px solid var(--info)' : undefined }} onClick={() => { setStatusFilter('IN TRANSIT'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(6,182,212,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#06B6D4', flexShrink: 0 }}><Navigation size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('IN TRANSIT')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>In Transit</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'OUT FOR DELIVERY' ? '1px solid var(--primary)' : undefined }} onClick={() => { setStatusFilter('OUT FOR DELIVERY'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(249,115,22,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F97316', flexShrink: 0 }}><MapPin size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('OUT FOR DELIVERY')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Out For Delivery</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'DELIVERED' ? '1px solid var(--success)' : undefined }} onClick={() => { setStatusFilter('DELIVERED'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(16,185,129,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10B981', flexShrink: 0 }}><CheckCircle size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('DELIVERED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Delivered</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'CANCELLED' ? '1px solid var(--danger)' : undefined }} onClick={() => { setStatusFilter('CANCELLED'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#EF4444', flexShrink: 0 }}><XCircle size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('CANCELLED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Cancelled</div></div>
         </div>
       </div>
 

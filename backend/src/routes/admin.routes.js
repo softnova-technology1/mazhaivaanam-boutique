@@ -7,7 +7,7 @@ import { updateOrderStatusValidator } from '../validators/order.validator.js';
 import upload from '../middleware/upload.middleware.js';
 
 // Controllers
-import { createProduct, updateProduct, deleteProduct } from '../controllers/product.controller.js';
+import { createProduct, updateProduct, deleteProduct, hardDeleteProduct } from '../controllers/product.controller.js';
 import {
   createCategory, updateCategory, deleteCategory,
   createCollection, updateCollection, deleteCollection,
@@ -22,7 +22,7 @@ import {
 import { uploadImage, deleteImage } from '../controllers/upload.controller.js';
 import { getDashboard, getSalesAnalytics, getUsers, updateUserRole } from '../controllers/admin.controller.js';
 import { getCoupons, createCoupon, updateCoupon, deleteCoupon } from '../controllers/coupon.controller.js';
-import { getDiscounts, updateDiscount, removeDiscount, bulkUpdateDiscounts } from '../controllers/discount.controller.js';
+import { getDiscounts, updateDiscount, removeDiscount, bulkUpdateDiscounts, bulkRemoveDiscounts } from '../controllers/discount.controller.js';
 
 const router = Router();
 
@@ -37,6 +37,7 @@ router.get('/dashboard/sales', getSalesAnalytics);
 router.post('/products', validate(createProductValidator), createProduct);
 router.put('/products/:id', validate(updateProductValidator), updateProduct);
 router.delete('/products/:id', deleteProduct);
+router.delete('/products/:id/hard', hardDeleteProduct);
 
 // Categories
 router.post('/categories', createCategory);
@@ -81,6 +82,7 @@ router.delete('/coupons/:id', deleteCoupon);
 // Discounts
 router.get('/discounts', getDiscounts);
 router.put('/discounts/bulk', bulkUpdateDiscounts);
+router.post('/discounts/bulk-remove', bulkRemoveDiscounts);
 router.put('/discounts/:productId', updateDiscount);
 router.delete('/discounts/:productId', removeDiscount);
 

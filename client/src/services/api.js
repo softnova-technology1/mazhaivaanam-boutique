@@ -1,84 +1,194 @@
-// Mock data representing items in a premium boutique
-const PRODUCTS = [
-  {
-    id: 1,
-    name: 'Kanjeevaram Silk Saree',
-    category: 'Saree',
-    price: 18500,
-    rating: 4.9,
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80',
-    description: 'Exquisite handwoven Kanjeevaram pure silk saree with intricate gold zari work, traditional borders and rich pallu.',
-    featured: true,
-  },
-  {
-    id: 2,
-    name: 'Royal Banarasi Saree',
-    category: 'Saree',
-    price: 24000,
-    rating: 4.8,
-    image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80',
-    description: 'Timeless Banarasi silk saree adorned with classic floral motifs and a grand gold border, perfect for wedding seasons.',
-    featured: true,
-  },
-  {
-    id: 3,
-    name: 'Designer Silk Lehenga',
-    category: 'Lehenga',
-    price: 32000,
-    rating: 5.0,
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=600&q=80',
-    description: 'Elegant contemporary designer lehenga in dusty pink silk, featuring hand-embroidered sequin details and a soft net dupatta.',
-    featured: true,
-  },
-  {
-    id: 4,
-    name: 'Anarkali Salwar Suit',
-    category: 'Suits',
-    price: 9500,
-    rating: 4.6,
-    image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=600&q=80',
-    description: 'Georgette Anarkali suit set with elaborate mirror embroidery, paired with a matching churidar and block-printed dupatta.',
-    featured: false,
-  },
-  {
-    id: 5,
-    name: 'Handloom Cotton Saree',
-    category: 'Saree',
-    price: 4200,
-    rating: 4.5,
-    image: 'https://images.unsplash.com/photo-1610030469668-93535c17b6b3?auto=format&fit=crop&w=600&q=80',
-    description: 'Lightweight, breathable pure handloom cotton saree with minimalist borders and classic block patterns, ideal for daily elegance.',
-    featured: false,
-  },
-  {
-    id: 6,
-    name: 'Pastel Embroidered Kurti',
-    category: 'Kurti',
-    price: 3500,
-    rating: 4.7,
-    image: 'https://images.unsplash.com/photo-1608748010899-18f300247112?auto=format&fit=crop&w=600&q=80',
-    description: 'Elegant cotton-silk blend kurti featuring intricate hand-embroidery around the neckline and sleeves.',
-    featured: false,
-  }
-];
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-export const getProducts = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(PRODUCTS);
-    }, 400); // Simulate network latency
+/**
+ * Helper to normalize MongoDB product document to frontend UI format
+ */
+export function normalizeProduct(p) {
+  if (!p) return null;
+  const id = p._id || p.id;
+  const image = p.images?.[0]?.url || p.image || '/Images/saree1.png';
+  const categoryName = typeof p.category === 'object' ? p.category?.name : (p.category || 'Handloom Sarees');
+  const categorySlug = typeof p.category === 'object' ? p.category?.slug : (p.categorySlug || '');
+
+  return {
+    ...p,
+    id: String(id),
+    _id: String(id),
+    image,
+    category: categoryName,
+    categoryName,
+    categorySlug,
+    price: Number(p.price || 0),
+    oldPrice: Number(p.mrpPrice || p.oldPrice || p.price || 0),
+    mrpPrice: Number(p.mrpPrice || p.oldPrice || p.price || 0),
+    rating: Number(p.averageRating || p.rating || 4.8),
+    fabric: p.fabric || 'Pure Silk',
+    occasion: p.occasion || 'Traditional',
+    color: typeof p.color === 'object' ? p.color?.hex || '#6B102A' : (p.color || '#6B102A'),
+    colorName: typeof p.color === 'object' ? p.color?.name || '' : '',
+    tag: p.tag || (p.isFeatured ? 'BESTSELLER' : ''),
+    isPreorder: Boolean(p.isPreorder),
+    deposit: p.preorderDeposit || 5000,
+    progress: p.preorderProgress || 70,
+    weaver: p.preorderWeaver || 'Master Weaver',
+    estimatedDays: p.preorderEstimatedDays || 14,
+    discount: p.preorderDiscount || (p.discountActive ? `${p.discount?.value}%` : ''),
+  };
+}
+
+async function request(endpoint, options = {}) {
+  const token = localStorage.getItem('boutique_token') || localStorage.getItem('mv_admin_token');
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+    ...options.headers,
+  };
+
+  if (options.body instanceof FormData) {
+    delete headers['Content-Type'];
+  }
+
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers,
+    body: options.body instanceof FormData ? options.body : options.body ? JSON.stringify(options.body) : undefined,
   });
+
+  const data = await res.json().catch(() => ({ success: false, message: 'Invalid response from server' }));
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Request failed');
+  }
+
+  return data;
+}
+
+// ====== PRODUCTS API ======
+export const getProducts = async (params = {}) => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      query.set(key, value);
+    }
+  });
+
+  const queryString = query.toString() ? `?${query.toString()}` : '';
+  const res = await request(`/products${queryString}`);
+  const rawList = res.data || [];
+  return {
+    products: rawList.map(normalizeProduct),
+    pagination: res.pagination || { total: rawList.length, page: 1, limit: rawList.length, totalPages: 1 },
+  };
 };
 
-export const getProductById = (id) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const product = PRODUCTS.find((p) => p.id === parseInt(id));
-      if (product) {
-        resolve(product);
-      } else {
-        reject(new Error('Product not found'));
-      }
-    }, 300);
-  });
+export const getProductById = async (idOrSlug) => {
+  const res = await request(`/products/${idOrSlug}`);
+  return normalizeProduct(res.data);
+};
+
+export const getProductByIdOrSlug = getProductById;
+
+export const getFeaturedProducts = async (limit = 8) => {
+  const res = await request(`/products/featured?limit=${limit}`);
+  return (res.data || []).map(normalizeProduct);
+};
+
+export const getNewArrivals = async (limit = 12) => {
+  const res = await request(`/products/new-arrivals?limit=${limit}`);
+  return (res.data || []).map(normalizeProduct);
+};
+
+export const getBestSellers = async (limit = 12) => {
+  const res = await request(`/products/best-sellers?limit=${limit}`);
+  return (res.data || []).map(normalizeProduct);
+};
+
+export const getPreorderProducts = async () => {
+  const res = await request('/products/pre-orders');
+  return (res.data || []).map(normalizeProduct);
+};
+
+export const searchProducts = async (q) => {
+  const res = await request(`/products/search?q=${encodeURIComponent(q)}`);
+  return (res.data || []).map(normalizeProduct);
+};
+
+// ====== CATEGORIES & COLLECTIONS API ======
+export const getCategories = async () => {
+  const res = await request('/categories');
+  return res.data || [];
+};
+
+export const getCollections = async () => {
+  const res = await request('/collections');
+  return res.data || [];
+};
+
+// ====== AUTH API ======
+export const authAPI = {
+  login: async (email, password) => {
+    const res = await request('/auth/login', {
+      method: 'POST',
+      body: { email, password },
+    });
+    const token = res.data?.accessToken || res.data?.tokens?.accessToken;
+    if (token) {
+      localStorage.setItem('boutique_token', token);
+    }
+    return res.data;
+  },
+  register: async (userData) => {
+    const res = await request('/auth/register', {
+      method: 'POST',
+      body: userData,
+    });
+    const token = res.data?.accessToken || res.data?.tokens?.accessToken;
+    if (token) {
+      localStorage.setItem('boutique_token', token);
+    }
+    return res.data;
+  },
+  getMe: async () => {
+    const res = await request('/auth/me');
+    return res.data?.user || res.data;
+  },
+  logout: () => {
+    localStorage.removeItem('boutique_token');
+    localStorage.removeItem('boutique_user');
+  },
+};
+
+// ====== ORDER API ======
+export const orderAPI = {
+  createOrder: async (orderData) => {
+    const res = await request('/orders', {
+      method: 'POST',
+      body: orderData,
+    });
+    return res.data;
+  },
+  getMyOrders: async (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    const res = await request(`/orders/my-orders${query ? '?' + query : ''}`);
+    return res.data || [];
+  },
+  getOrderById: async (id) => {
+    const res = await request(`/orders/${id}`);
+    return res.data;
+  },
+  trackOrder: async (orderNumber) => {
+    const res = await request(`/orders/track/${orderNumber}`);
+    return res.data;
+  },
+};
+
+// ====== CONTACT API ======
+export const contactAPI = {
+  submitInquiry: async (inquiryData) => {
+    const res = await request('/contact', {
+      method: 'POST',
+      body: inquiryData,
+    });
+    return res.data;
+  },
 };

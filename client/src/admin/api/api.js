@@ -52,6 +52,7 @@ export const productAPI = {
   create: (body) => request('/admin/products', { method: 'POST', body }),
   update: (id, body) => request(`/admin/products/${id}`, { method: 'PUT', body }),
   delete: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
+  hardDelete: (id) => request(`/admin/products/${id}/hard`, { method: 'DELETE' }),
 };
 
 // ====== CATEGORIES ======
@@ -117,8 +118,9 @@ export const uploadAPI = {
 
 // ====== DISCOUNTS ======
 export const discountAPI = {
-  getAll: (params = '') => request(`/admin/discounts${params ? '?' + params : ''}`),
-  update: (productId, body) => request(`/admin/discounts/${productId}`, { method: 'PUT', body }),
-  remove: (productId) => request(`/admin/discounts/${productId}`, { method: 'DELETE' }),
+  getAll: (params) => request(`/admin/discounts?${params}`),
+  update: (id, body) => request(`/admin/discounts/${id}`, { method: 'PUT', body }),
+  remove: (id) => request(`/admin/discounts/${id}`, { method: 'DELETE' }),
   bulkUpdate: (body) => request('/admin/discounts/bulk', { method: 'PUT', body }),
+  bulkRemove: (body) => request('/admin/discounts/bulk-remove', { method: 'POST', body }),
 };

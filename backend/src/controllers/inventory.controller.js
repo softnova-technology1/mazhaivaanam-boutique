@@ -5,7 +5,12 @@ import { successResponse, errorResponse } from '../utils/apiResponse.js';
 export const getAllInventory = async (req, res, next) => {
   try {
     const inventory = await Inventory.find()
-      .populate('product', 'name slug images price isActive')
+      .populate({
+        path: 'product',
+        select: 'name slug images price isActive category',
+        populate: { path: 'category', select: 'name slug' }
+      })
+      .sort({ createdAt: -1 })
       .lean();
 
     // Add virtual fields

@@ -6,11 +6,14 @@ import {
   createOrder, verifyPayment, getUserOrders,
   getOrderById, cancelOrder, trackOrder,
 } from '../controllers/order.controller.js';
+import { validateCoupon } from '../controllers/coupon.controller.js';
 
 const router = Router();
 
-// Order tracking — public
+// Order tracking & Coupon validation — public / customer
 router.get('/tracking/:orderId', trackOrder);
+router.get('/track/:orderId', trackOrder);
+router.post('/validate-coupon', validateCoupon);
 
 // Protected routes
 router.post('/', protect, validate(createOrderValidator), createOrder);

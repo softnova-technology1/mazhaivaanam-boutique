@@ -54,6 +54,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeQuickPill, setActiveQuickPill] = useState('all');
   const ITEMS_PER_PAGE = 20;
 
   // Initial fetch from MongoDB API
@@ -162,9 +163,18 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     } else if (selectedSort === 'best-selling') {
       filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     } else if (selectedSort === 'date-old') {
-      filtered.sort((a, b) => masterProducts.indexOf(a) - masterProducts.indexOf(b));
+      filtered.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateA - dateB;
+      });
     } else if (selectedSort === 'date-new' || selectedSort === 'featured' || selectedSort === 'relevant') {
-      filtered.sort((a, b) => masterProducts.indexOf(b) - masterProducts.indexOf(a));
+      filtered.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        if (dateA !== dateB) return dateB - dateA;
+        return masterProducts.indexOf(a) - masterProducts.indexOf(b);
+      });
     }
 
     setProducts(filtered);
@@ -308,6 +318,27 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 </div>
               </div>
 
+              {/* Fabric Filter Widget */}
+              <div className={styles['filter-widget']}>
+                <div className={styles['filter-widget-header']}>
+                  <div className={styles['widget-title-box']}>
+                    <span className="material-symbols-outlined">styler</span>
+                    <h4>Fabric</h4>
+                  </div>
+                </div>
+                <div className={styles['fabric-tags']}>
+                  {['All', 'Pure Silk', 'Cotton', 'Tussar', 'Organza', 'Linen', 'Georgette', 'Chiffon', 'Chanderi'].map(fab => (
+                    <button 
+                      key={fab} 
+                      onClick={() => setSelectedFabric(fab)}
+                      className={`${styles['tag-btn']} ${selectedFabric === fab ? styles['active-tag'] : ''}`}
+                    >
+                      {fab}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Availability Filter Widget */}
               <div className={styles['filter-widget']}>
                 <div className={styles['filter-widget-header']}>
@@ -412,6 +443,71 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
             <p className={styles['category-content-description']}>
               {CATEGORY_CONTENT[selectedCategory]?.description || ''}
             </p>
+          </div>
+
+          {/* Interactive Visual Fabric & Occasion Filter Ribbon */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            overflowX: 'auto',
+            padding: '12px 4px 16px 4px',
+            marginBottom: 16,
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}>
+            {[
+              { id: 'all', label: '✨ All Weaves', apply: () => { setSelectedCategory('All'); setSelectedFabric('All'); setMaxPrice(50000); setSearchQuery(''); } },
+              { id: 'kanjeevaram', label: '🥻 Pure Kanjeevaram', apply: () => { setSelectedFabric('Pure Silk'); setSearchQuery(''); } },
+              { id: 'banarasi', label: '👑 Banarasi Brocade', apply: () => { setSelectedFabric('All'); setSearchQuery('Banarasi'); } },
+              { id: 'bridal', label: '🔴 Bridal Red', apply: () => { setSearchQuery('Red'); } },
+              { id: 'temple', label: '🏛️ Temple Border', apply: () => { setSearchQuery('Temple'); } },
+              { id: 'budget', label: '💰 Under ₹15,000', apply: () => { setMaxPrice(15000); } },
+              { id: 'festive', label: '🌟 Festive Glow', apply: () => { setSelectedCategory('Festive Glow'); } },
+              { id: 'tussar', label: '🍂 Pure Tussar', apply: () => { setSelectedFabric('Tussar'); } },
+            ].map((pill) => {
+              const isActive = activeQuickPill === pill.id;
+              return (
+                <button
+                  key={pill.id}
+                  type="button"
+                  onClick={() => {
+                    if (isActive && pill.id !== 'all') {
+                      setActiveQuickPill('all');
+                      setSelectedCategory('All');
+                      setSelectedFabric('All');
+                      setMaxPrice(50000);
+                      setSearchQuery('');
+                    } else {
+                      setActiveQuickPill(pill.id);
+                      pill.apply();
+                    }
+                  }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    padding: '8px 16px',
+                    borderRadius: 30,
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s ease',
+                    border: isActive ? '1px solid var(--primary)' : '1px solid var(--border-color)',
+                    background: isActive ? 'rgba(200, 163, 77, 0.18)' : 'var(--bg-surface)',
+                    color: isActive ? 'var(--primary-dark)' : 'var(--text-main)',
+                    boxShadow: isActive ? '0 4px 12px rgba(200, 163, 77, 0.15)' : 'none',
+                    transform: isActive ? 'scale(1.02)' : 'scale(1)'
+                  }}
+                >
+                  {pill.label}
+                  {isActive && pill.id !== 'all' && (
+                    <span style={{ fontSize: '0.75rem', opacity: 0.7, marginLeft: 2 }}>✕</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           <div className={styles['products-header']}>

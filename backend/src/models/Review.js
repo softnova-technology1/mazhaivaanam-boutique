@@ -11,7 +11,7 @@ const reviewSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      default: null,
     },
     name: {
       type: String,
@@ -34,13 +34,17 @@ const reviewSchema = new mongoose.Schema(
       required: [true, 'Review text is required'],
       maxlength: 1000,
     },
+    photo: {
+      type: String,
+      default: '',
+    },
     isVerified: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isApproved: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   {

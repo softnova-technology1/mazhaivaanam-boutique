@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { discountAPI, categoryAPI } from '../api/api.js';
-import { Search, Percent, X, Zap, Tag, Calendar, Trash2, Edit, Filter } from 'lucide-react';
+import { Search, Percent, X, Zap, Tag, Calendar, Trash2, Edit, Filter, Clock, Sparkles, Layers } from 'lucide-react';
 
 const formatCurrency = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
 
@@ -133,6 +133,16 @@ export default function Discounts() {
       : Math.max(0, modal.product.price - Number(form.value || 0))
     : 0;
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters.status, filters.category, filters.search]);
+
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const paginatedProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   return (
     <div className="page-container">
       {/* Header */}
@@ -152,26 +162,49 @@ export default function Discounts() {
       </div>
 
       {/* Stats Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}>
-        <div className="card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Total Products</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{products.length}</div>
+      <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filters.status === 'active' ? '1px solid var(--primary)' : undefined }} onClick={() => setFilters((f) => ({ ...f, status: f.status === 'active' ? 'all' : 'active' }))}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--success)' }}>
+            <Tag size={20} />
+          </div>
+          <div>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700 }}>{activeCount}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Active Discounts</div>
+          </div>
         </div>
-        <div className="card" style={{ padding: 18, borderColor: 'rgba(34, 197, 94, 0.3)' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Active Discounts</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--success)' }}>{activeCount}</div>
+
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filters.status === 'scheduled' ? '1px solid var(--primary)' : undefined }} onClick={() => setFilters((f) => ({ ...f, status: f.status === 'scheduled' ? 'all' : 'scheduled' }))}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--info)' }}>
+            <Calendar size={20} />
+          </div>
+          <div>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700 }}>{scheduledCount}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Scheduled</div>
+          </div>
         </div>
-        <div className="card" style={{ padding: 18, borderColor: 'rgba(245, 158, 11, 0.3)' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--warning)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Scheduled</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--warning)' }}>{scheduledCount}</div>
+
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filters.status === 'expired' ? '1px solid var(--primary)' : undefined }} onClick={() => setFilters((f) => ({ ...f, status: f.status === 'expired' ? 'all' : 'expired' }))}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--danger)' }}>
+            <Clock size={20} />
+          </div>
+          <div>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700 }}>{expiredCount}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Expired</div>
+          </div>
         </div>
-        <div className="card" style={{ padding: 18, borderColor: 'rgba(239, 68, 68, 0.3)' }}>
-          <div style={{ fontSize: '0.75rem', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Expired</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--danger)' }}>{expiredCount}</div>
+
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filters.status === 'all' ? '1px solid var(--primary)' : undefined }} onClick={() => setFilters((f) => ({ ...f, status: 'all' }))}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(200,163,77,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)' }}>
+            <Layers size={20} />
+          </div>
+          <div>
+            <div style={{ fontSize: '1.3rem', fontWeight: 700 }}>{products.length}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Products</div>
+          </div>
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Filters Bar */}
       <div className="filter-bar" style={{ marginBottom: 20 }}>
         <form onSubmit={handleSearch} className="search-bar" style={{ flex: 1, maxWidth: 320 }}>
           <Search size={16} />
@@ -182,11 +215,10 @@ export default function Discounts() {
           />
         </form>
         <select className="form-select" value={filters.status} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}>
-          <option value="all">All Status</option>
-          <option value="active">Active</option>
+          <option value="all">All Discounts</option>
+          <option value="active">Active Discounts</option>
           <option value="scheduled">Scheduled</option>
           <option value="expired">Expired</option>
-          <option value="inactive">Inactive</option>
           <option value="none">No Discount</option>
         </select>
         <select className="form-select" value={filters.category} onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}>
@@ -206,10 +238,12 @@ export default function Discounts() {
           <p>No products found matching your filters.</p>
         </div>
       ) : (
+        <>
         <div className="table-container">
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: 50, textAlign: 'center' }}>#</th>
                 <th>Product</th>
                 <th>Original Price</th>
                 <th>Discount</th>
@@ -221,11 +255,14 @@ export default function Discounts() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => {
+              {paginatedProducts.map((p, idx) => {
                 const st = STATUS_STYLES[p.discountStatus] || STATUS_STYLES.none;
                 const hasDiscount = p.discountStatus !== 'none';
                 return (
                   <tr key={p._id}>
+                    <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
+                      {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
+                    </td>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={{ width: 44, height: 44, borderRadius: 8, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
@@ -250,23 +287,12 @@ export default function Discounts() {
                         <span style={{ color: 'var(--text-muted)' }}>—</span>
                       )}
                     </td>
-                    <td>
-                      {hasDiscount && p.discountedPrice < p.price ? (
-                        <div>
-                          <span style={{ fontWeight: 600, color: 'var(--success)' }}>{formatCurrency(p.discountedPrice)}</span>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--success)' }}>
-                            Save {formatCurrency(p.price - p.discountedPrice)}
-                          </div>
-                        </div>
-                      ) : (
-                        <span style={{ color: 'var(--text-muted)' }}>{formatCurrency(p.price)}</span>
-                      )}
+                    <td style={{ fontWeight: 600, color: hasDiscount ? 'var(--accent)' : 'inherit' }}>
+                      {formatCurrency(p.discountedPrice)}
                     </td>
                     <td>
                       {p.discount?.label ? (
-                        <span className="badge badge-primary" style={{ fontSize: '0.7rem' }}>
-                          <Tag size={10} /> {p.discount.label}
-                        </span>
+                        <span className="badge badge-primary">{p.discount.label}</span>
                       ) : '—'}
                     </td>
                     <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -299,6 +325,36 @@ export default function Discounts() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 24 }}>
+            <button
+              className="btn btn-sm btn-outline"
+              disabled={currentPage <= 1}
+              onClick={() => setCurrentPage(p => p - 1)}
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              className="btn btn-sm btn-outline"
+              disabled={currentPage >= totalPages}
+              onClick={() => setCurrentPage(p => p + 1)}
+            >
+              Next
+            </button>
+          </div>
+        )}
+        </>
       )}
 
       {/* Edit Discount Modal */}

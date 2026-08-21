@@ -11,14 +11,62 @@ import {
   X, 
   Check, 
   ChevronDown, 
-  ChevronUp 
+  ChevronUp,
+  ShoppingBag,
+  Heart,
+  Truck,
+  FileText,
+  Trash2,
+  ExternalLink,
+  Package,
+  Clock,
+  ArrowRight
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useCart } from '../../hooks/useCart';
+import { orderAPI } from '../../services/api';
+import { formatCurrency } from '../../utils/formatters';
+import InvoiceModal from '../../admin/components/InvoiceModal';
 import styles from './MyProfile.module.css';
 
 export const MyProfile = ({ setCurrentTab }) => {
   const { user, logout } = useAuth();
+  const { addToCart } = useCart();
   const [activeSection, setActiveSection] = useState('personal');
+
+  // Orders State
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [invoiceOrder, setInvoiceOrder] = useState(null);
+
+  // Wishlist State
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem('boutique_wishlist');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Load live orders on mount
+  useEffect(() => {
+    const loadOrders = async () => {
+      setOrdersLoading(true);
+      try {
+        const liveOrders = await orderAPI.getMyOrders();
+        if (liveOrders && liveOrders.length > 0) {
+          setOrders(liveOrders);
+        } else {
+          // fallback to localStorage
+          const saved = localStorage.getItem('boutique_orders');
+          if (saved) setOrders(JSON.parse(saved));
+        }
+      } catch (err) {
+        const saved = localStorage.getItem('boutique_orders');
+        if (saved) setOrders(JSON.parse(saved));
+      } finally {
+        setOrdersLoading(false);
+      }
+    };
+    loadOrders();
+  }, []);
 
   // 1. Personal Profile State
   const [profile, setProfile] = useState(() => {
@@ -231,9 +279,11 @@ export const MyProfile = ({ setCurrentTab }) => {
     }
   ];
 
-  const menuItems = [
+      const menuItems = [
     { id: 'personal', label: 'Personal Info', icon: <User size={18} /> },
-    { id: 'addresses', label: 'Delivery Details', icon: <MapPin size={18} /> },
+    { id: 'orders', label: 'My Orders', icon: <ShoppingBag size={18} /> },
+    { id: 'addresses', label: 'Saved Addresses', icon: <MapPin size={18} /> },
+    { id: 'wishlist', label: 'My Wishlist', icon: <Heart size={18} /> },
     { id: 'security', label: 'Security Settings', icon: <Lock size={18} /> },
     { id: 'help', label: 'Help & Support', icon: <HelpCircle size={18} /> }
   ];
@@ -242,8 +292,7 @@ export const MyProfile = ({ setCurrentTab }) => {
     <div className={styles.profileContainer}>
       <div className={styles.profileWrapper}>
         <header className={styles.pageHeader}>
-          {/* <span className={styles.pageSubtitle}>CONCIERGE PORTAL</span> */}
-          <h1 className={styles.pageTitle}>My Profile   </h1>
+          <h1 className={styles.pageTitle}>Customer Account Hub</h1>
         </header>
 
         <div className={styles.layoutGrid}>
@@ -252,7 +301,7 @@ export const MyProfile = ({ setCurrentTab }) => {
             <div className={styles.profileSummary}>
               <div className={styles.avatarCircle}>
                 <span className={styles.avatarInitials}>
-                  {profile.firstName[0]?.toUpperCase()}{profile.lastName[0]?.toUpperCase()}
+                  {profile.firstName[0]?.toUpperCase()}{profile.lastName[0]?.toUpperCase() || 'P'}
                 </span>
               </div>
               <h2 className={styles.userName}>{profile.firstName} {profile.lastName}</h2>
@@ -282,13 +331,13 @@ export const MyProfile = ({ setCurrentTab }) => {
           </aside>
 
           {/* Main Content Area */}
-          <main className={styles.mainContentArea}>
+          <main className={styles.contentCard}>
             
-            {/* TAB 1: ATELIER PROFILE */}
+            {/* TAB 1: PERSONAL INFO */}
             {activeSection === 'personal' && (
               <section className={styles.tabSection}>
-                <h3 className={styles.sectionHeader}>Personal Profile Details</h3>
-                <p className={styles.sectionSubtitle}>Manage your name, contact information, and styling dates.</p>
+                <h3 className={styles.sectionHeader}>Personal Profile</h3>
+                <p className={styles.sectionSubtitle}>Manage your contact details and celebration reminders.</p>
                 <div className={styles.sectionDivider}></div>
                 
                 <form onSubmit={handleProfileSave} className={styles.formGrid}>
@@ -362,6 +411,130 @@ export const MyProfile = ({ setCurrentTab }) => {
                     </button>
                   </div>
                 </form>
+              </section>
+            )}
+
+            {/* TAB: MY ORDERS */}
+            {activeSection === 'orders' && (
+              <section className={styles.tabSection}>
+                <h3 className={styles.sectionHeader}>My Order History</h3>
+                <p className={styles.sectionSubtitle}>View, track, and download tax invoices for your saree acquisitions.</p>
+                <div className={styles.sectionDivider}></div>
+
+                {ordersLoading ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                    <div style={{ width: 32, height: 32, border: '3px solid rgba(200, 163, 77, 0.3)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto' }} />
+                  </div>
+                ) : orders.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', background: 'var(--bg-surface)', borderRadius: 10, border: '1px dashed var(--border-color)' }}>
+                    <ShoppingBag size={42} style={{ color: 'var(--primary)', margin: '0 auto 12px auto', opacity: 0.6 }} />
+                    <h4 style={{ fontSize: '1.1rem', color: 'var(--text-main)', marginBottom: 6 }}>No orders found yet</h4>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 20 }}>Explore our handwoven saree atelier to place your first heirloom order.</p>
+                    <button onClick={() => setCurrentTab('catalog')} className={`${styles.submitBtn} menuLink`}>
+                      Explore Sarees
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    {orders.map((order, idx) => (
+                      <div 
+                        key={order.orderId || order._id || idx}
+                        style={{
+                          background: 'var(--bg-surface)',
+                          borderRadius: 12,
+                          border: '1px solid var(--border-color)',
+                          padding: '20px 24px'
+                        }}
+                      >
+                        {/* Order Header */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, borderBottom: '1px solid var(--border-color)', paddingBottom: 14, marginBottom: 16 }}>
+                          <div>
+                            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary)' }}>
+                              Order #{order.orderId || order._id}
+                            </div>
+                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 2 }}>
+                              Placed on {new Date(order.createdAt || order.placedOnDate || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <span style={{
+                              padding: '4px 10px',
+                              borderRadius: 20,
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              background: order.status === 'DELIVERED' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(200, 163, 77, 0.15)',
+                              color: order.status === 'DELIVERED' ? '#16a34a' : 'var(--primary-dark)',
+                              border: `1px solid ${order.status === 'DELIVERED' ? '#16a34a' : 'var(--primary)'}`
+                            }}>
+                              {order.status || 'CONFIRMED'}
+                            </span>
+                            <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                              ₹{Number(order.totalAmount || order.finalAmount || 0).toLocaleString('en-IN')}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Order Items List */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 18 }}>
+                          {order.items?.map((item, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                              <div style={{ width: 48, height: 48, borderRadius: 6, overflow: 'hidden', flexShrink: 0, background: '#111' }}>
+                                <img src={item.image || '/Images/saree1.png'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>{item.name}</div>
+                                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Qty: {item.quantity || 1} · ₹{Number(item.price).toLocaleString('en-IN')}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, borderTop: '1px solid var(--border-color)', paddingTop: 14 }}>
+                          <button
+                            onClick={() => {
+                              window.history.pushState(null, '', `/track-order?orderId=${order.orderId || order._id}`);
+                              setCurrentTab('track-order');
+                            }}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 6,
+                              padding: '6px 14px',
+                              background: 'transparent',
+                              border: '1px solid var(--border-color)',
+                              borderRadius: 6,
+                              fontSize: '0.82rem',
+                              fontWeight: 600,
+                              color: 'var(--text-main)',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <Truck size={14} /> Live Tracking
+                          </button>
+                          <button
+                            onClick={() => setInvoiceOrder(order)}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 6,
+                              padding: '6px 14px',
+                              background: 'rgba(200,163,77,0.12)',
+                              border: '1px solid var(--primary)',
+                              borderRadius: 6,
+                              fontSize: '0.82rem',
+                              fontWeight: 600,
+                              color: 'var(--primary-dark)',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <FileText size={14} /> View Tax Invoice
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </section>
             )}
 
@@ -731,6 +904,14 @@ export const MyProfile = ({ setCurrentTab }) => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* 3. Tax Invoice Modal View */}
+      {invoiceOrder && (
+        <InvoiceModal 
+          order={invoiceOrder} 
+          onClose={() => setInvoiceOrder(null)} 
+        />
       )}
     </div>
   );

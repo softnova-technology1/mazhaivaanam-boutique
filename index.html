@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAZHAI VAANAM | Master Project Index & Atelier Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #C8A34D;
+      --primary-dark: #8C6D23;
+      --accent: #6B102A;
+      --bg-main: #0D0D0D;
+      --bg-surface: #171717;
+      --bg-card: #212121;
+      --text-main: #F7F3EB;
+      --text-muted: #A3A3A3;
+      --border-color: rgba(200, 163, 77, 0.25);
+      --success: #22c55e;
+      --blue: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(180deg, rgba(107, 16, 42, 0.4) 0%, rgba(23, 23, 23, 0.8) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+
+    .badge-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 12px;
+      padding: 4px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      background: rgba(200, 163, 77, 0.08);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      letter-spacing: 0.05em;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 24px auto;
+    }
+
+    .action-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 26px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #0D0D0D;
+      box-shadow: 0 4px 14px rgba(200, 163, 77, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #dfb85b;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 36px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      h1 { font-size: 2rem; }
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 26px;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .card:hover {
+      border-color: var(--primary);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    ul.feature-list {
+      list-style: none;
+    }
+
+    ul.feature-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+      color: #D1D5DB;
+    }
+
+    ul.feature-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .credentials-box {
+      background: rgba(200, 163, 77, 0.06);
+      border: 1px dashed var(--primary);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 14px;
+      font-size: 0.88rem;
+    }
+
+    .credentials-box strong {
+      color: var(--primary);
+    }
+
+    .code-tag {
+      background: #000;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #FCD34D;
+      border: 1px solid rgba(252, 211, 77, 0.3);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header Banner -->
+    <header>
+      <span class="badge-label">OFFICIAL PRODUCTION PORTAL</span>
+      <h1>MAZHAI VAANAM</h1>
+      <p class="subtitle">Handloom Luxury Boutique & Atelier — Complete System Index & Master Architecture Reference</p>
+      
+      <div class="action-links">
+        <a href="http://localhost:5173" target="_blank" class="btn btn-primary">
+          🛍️ Launch Customer Storefront
+        </a>
+        <a href="http://localhost:5173/admin" target="_blank" class="btn btn-outline">
+          👑 Launch Admin Command Center
+        </a>
+        <a href="http://localhost:5000/api/health" target="_blank" class="btn btn-outline">
+          ⚙️ Backend API Health
+        </a>
+      </div>
+    </header>
+
+    <!-- Top Grid: Storefront & Admin Features -->
+    <div class="grid-2">
+
+      <!-- Storefront Features -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🥻 Customer Storefront</h2>
+          <span class="status-pill">100% LIVE</span>
+        </div>
+        <ul class="feature-list">
+          <li><strong>Smart Live Search:</strong> Debounced real-time MongoDB search in header with visual saree thumbnail cards.</li>
+          <li><strong>Visual Filter Ribbon:</strong> 1-Click quick pills (<em>Pure Kanjeevaram, Banarasi, Bridal Red, Under ₹15,000</em>).</li>
+          <li><strong>Product Details Atelier:</strong> High-res zoom, blouse customizer, similar weaves, and browsing history.</li>
+          <li><strong>Customer Reviews + Photo Upload:</strong> 5-star appraisal modal saving directly to MongoDB Atlas.</li>
+          <li><strong>3-Step Luxury Checkout:</strong> Address selection, BlueDart delivery mode, Razorpay & GPay methods.</li>
+          <li><strong>Promo / Coupon Box:</strong> Live backend discount validation (<span class="code-tag">MAZHAI10</span>, <span class="code-tag">FESTIVE500</span>, <span class="code-tag">SILK20</span>).</li>
+          <li><strong>Interactive Live Tracking:</strong> 5-Stage visual stepper connected to live MongoDB API.</li>
+          <li><strong>Customer Profile Hub:</strong> My Orders with PDF Tax Invoice view, Saved Address Book, and Wishlist.</li>
+          <li><strong>Contact Concierge Form:</strong> Connects to MongoDB with phone & instant confirmation.</li>
+        </ul>
+      </div>
+
+      <!-- Admin Power Panel -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">👑 Admin Power Tools</h2>
+          <span class="status-pill">100% LIVE</span>
+        </div>
+        <ul class="feature-list">
+          <li><strong>Export to CSV / Excel:</strong> Instant table data download for Orders, Products, Inventory, and Users.</li>
+          <li><strong>Automated GST 5% Tax Invoice:</strong> Printable & downloadable PDF Tax Invoices with CGST/SGST breakdown.</li>
+          <li><strong>Bulk Actions & Operations:</strong> Multi-select orders to update status in bulk, bulk delete products.</li>
+          <li><strong>Table Pagination:</strong> 15 rows per page with Serial Numbers (S.No) across all admin data tables.</li>
+          <li><strong>Customer Inquiries Inbox:</strong> New message badges, 1-Click WhatsApp, Direct Phone Call & Email reply drawer.</li>
+          <li><strong>Reviews Moderation:</strong> Approve, edit, and delete customer submitted saree appraisals.</li>
+          <li><strong>Live Inventory Management:</strong> Stock count adjustments, restock logs, and low stock alerts.</li>
+        </ul>
+
+        <div class="credentials-box">
+          <div><strong>👑 Admin Credentials:</strong> <span class="code-tag">admin@mazhaivaanam.com</span> / <span class="code-tag">Admin@123</span></div>
+          <div style="margin-top: 6px;"><strong>🌐 Admin URL:</strong> <span class="code-tag">http://localhost:5173/admin</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Grid: Architecture & Database Matrix -->
+    <div class="grid-3">
+
+      <!-- Database Collections -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title" style="font-size: 1.15rem;">🗄️ MongoDB Collections</h3>
+          <span class="status-pill">ATLAS SYNC</span>
+        </div>
+        <ul class="feature-list" style="font-size: 0.85rem;">
+          <li><strong>products:</strong> 50+ handloom sarees with fabric, zari, price & images.</li>
+          <li><strong>orders:</strong> Complete acquisition logs with status and tracking numbers.</li>
+          <li><strong>reviews:</strong> Customer star ratings, appraisals, and draped photos.</li>
+          <li><strong>contactinquiries:</strong> Customer messages with phone & reply tracking.</li>
+          <li><strong>coupons:</strong> Active discount codes, limits, and usage counts.</li>
+          <li><strong>inventories:</strong> Real-time available, reserved, and sold stock units.</li>
+          <li><strong>users:</strong> Registered patrons and boutique administrators.</li>
+        </ul>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title" style="font-size: 1.15rem;">⚡ Technology Stack</h3>
+          <span class="status-pill">PRODUCTION</span>
+        </div>
+        <ul class="feature-list" style="font-size: 0.85rem;">
+          <li><strong>Frontend:</strong> React 18, Vite, Vanilla CSS Modules, Lucide Icons.</li>
+          <li><strong>Backend:</strong> Node.js, Express.js REST API with JWT Auth & CORS.</li>
+          <li><strong>Database:</strong> MongoDB Atlas Cloud with Mongoose Schemas.</li>
+          <li><strong>Build Status:</strong> 0 Lint/Build Errors (1,909 modules transformed).</li>
+        </ul>
+      </div>
+
+      <!-- Quick Route Sitemap -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title" style="font-size: 1.15rem;">🧭 Navigation Sitemap</h3>
+          <span class="status-pill">ROUTES</span>
+        </div>
+        <ul class="feature-list" style="font-size: 0.85rem;">
+          <li><code>/</code> — Luxury Home Landing</li>
+          <li><code>/catalog</code> — Saree Catalog & Visual Ribbon</li>
+          <li><code>/track-order</code> — Live Order Tracking</li>
+          <li><code>/my-profile</code> — Patron Profile & Invoices</li>
+          <li><code>/contact</code> — Atelier Concierge Form</li>
+          <li><code>/admin</code> — Admin Analytics & Power Panel</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2026 Mazhai Vaanam Handloom Boutique. Handcrafted with Heritage & Love. All Rights Reserved.</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>

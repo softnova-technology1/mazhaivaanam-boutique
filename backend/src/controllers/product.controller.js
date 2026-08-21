@@ -149,15 +149,36 @@ export const getNewArrivals = async (req, res, next) => {
 
 /**
  * GET /api/products/best-sellers
+ * Returns best sellers (both manual 'BESTSELLER' tagged and dynamic highest-rated products)
  */
 export const getBestSellers = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 12;
-    const products = await Product.find({ isActive: true, tag: 'BESTSELLER' })
+
+    // 1. First get products explicitly tagged as BESTSELLER
+    let products = await Product.find({ isActive: true, tag: 'BESTSELLER' })
       .populate('category', 'name slug')
-      .sort({ averageRating: -1 })
+      .sort({ averageRating: -1, createdAt: -1 })
       .limit(limit)
       .lean();
+
+    // 2. If fewer than limit, dynamically fetch highest-rated / featured products to fill the quota
+    if (products.length < limit) {
+      const existingIds = products.map((p) => p._id);
+      const remainingLimit = limit - products.length;
+
+      const dynamicTopSellers = await Product.find({
+        isActive: true,
+        _id: { $nin: existingIds },
+      })
+        .populate('category', 'name slug')
+        .sort({ averageRating: -1, reviewCount: -1, createdAt: -1 })
+        .limit(remainingLimit)
+        .lean();
+
+      products = [...products, ...dynamicTopSellers];
+    }
+
     const enriched = products.map((p) => ({
       ...p,
       discountedPrice: computeDiscountedPrice(p.price, p.discount),

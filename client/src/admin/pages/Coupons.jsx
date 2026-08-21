@@ -17,6 +17,8 @@ export default function Coupons() {
   const [modal, setModal] = useState({ open: false, coupon: null });
   const [form, setForm] = useState({ code: '', description: '', type: 'percentage', value: '', minOrderAmount: '', maxDiscount: '', usageLimit: '', validUntil: '' });
   const [saving, setSaving] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
 
   useEffect(() => { loadCoupons(); }, []);
 
@@ -38,7 +40,7 @@ export default function Coupons() {
     setForm({
       code: c.code, description: c.description || '', type: c.type, value: c.value,
       minOrderAmount: c.minOrderAmount || '', maxDiscount: c.maxDiscount || '',
-      usageLimit: c.usageLimit || '', validUntil: c.validUntil?.slice(0, 10) || '',
+      usageLimit: c.usageLimit || '', validUntil: c.validUntil ? c.validUntil.slice(0, 10) : ''
     });
     setModal({ open: true, coupon: c });
   };
@@ -73,12 +75,16 @@ export default function Coupons() {
     } catch (err) { alert(err.message); }
   };
 
+  const activeCount = coupons.filter(c => c.isActive && new Date(c.validUntil) > new Date()).length;
+  const totalPages = Math.ceil(coupons.length / ITEMS_PER_PAGE);
+  const paginatedCoupons = coupons.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   return (
     <div className="page-container">
       <div className="page-header">
         <div>
           <h1 className="page-title">Coupons</h1>
-          <p className="page-subtitle">{coupons.length} discount codes</p>
+          <p className="page-subtitle">{coupons.length} coupon codes ({activeCount} active)</p>
         </div>
         <button className="btn btn-primary" onClick={openCreate}><Plus size={18} /> Create Coupon</button>
       </div>
@@ -91,10 +97,12 @@ export default function Coupons() {
           <p>No coupons yet. Create your first discount code!</p>
         </div>
       ) : (
+        <>
         <div className="table-container">
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: 50, textAlign: 'center' }}>#</th>
                 <th>Code</th>
                 <th>Type</th>
                 <th>Value</th>
@@ -106,8 +114,11 @@ export default function Coupons() {
               </tr>
             </thead>
             <tbody>
-              {coupons.map(c => (
+              {paginatedCoupons.map((c, idx) => (
                 <tr key={c._id}>
+                  <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
+                    {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
+                  </td>
                   <td style={{ fontWeight: 600, color: 'var(--primary)', letterSpacing: '0.05em' }}>{c.code}</td>
                   <td>{c.type === 'percentage' ? 'Percentage' : 'Fixed'}</td>
                   <td style={{ fontWeight: 600 }}>{c.type === 'percentage' ? `${c.value}%` : `₹${c.value}`}{c.maxDiscount ? ` (max ₹${c.maxDiscount})` : ''}</td>
@@ -126,6 +137,36 @@ export default function Coupons() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 24 }}>
+            <button
+              className="btn btn-sm btn-outline"
+              disabled={currentPage <= 1}
+              onClick={() => setCurrentPage(p => p - 1)}
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              className="btn btn-sm btn-outline"
+              disabled={currentPage >= totalPages}
+              onClick={() => setCurrentPage(p => p + 1)}
+            >
+              Next
+            </button>
+          </div>
+        )}
+        </>
       )}
 
       {/* Modal */}

@@ -20,7 +20,10 @@ import {
   adjustStock, getLowStockProducts, getOutOfStockProducts,
 } from '../controllers/inventory.controller.js';
 import { uploadImage, deleteImage } from '../controllers/upload.controller.js';
-import { getDashboard, getSalesAnalytics, getUsers, updateUserRole } from '../controllers/admin.controller.js';
+import {
+  getDashboard, getSalesAnalytics, getUsers, updateUserRole,
+  bulkUpdateOrderStatus, bulkDeleteProducts,
+} from '../controllers/admin.controller.js';
 import { getCoupons, createCoupon, updateCoupon, deleteCoupon } from '../controllers/coupon.controller.js';
 import { getDiscounts, updateDiscount, removeDiscount, bulkUpdateDiscounts, bulkRemoveDiscounts } from '../controllers/discount.controller.js';
 
@@ -35,6 +38,7 @@ router.get('/dashboard/sales', getSalesAnalytics);
 
 // Products
 router.post('/products', validate(createProductValidator), createProduct);
+router.post('/products/bulk/delete', bulkDeleteProducts);
 router.put('/products/:id', validate(updateProductValidator), updateProduct);
 router.delete('/products/:id', deleteProduct);
 router.delete('/products/:id/hard', hardDeleteProduct);
@@ -51,6 +55,7 @@ router.delete('/collections/:id', deleteCollection);
 
 // Orders
 router.get('/orders', getAllOrders);
+router.put('/orders/bulk/status', bulkUpdateOrderStatus);
 router.put('/orders/:orderId/status', validate(updateOrderStatusValidator), updateOrderStatus);
 
 // Users

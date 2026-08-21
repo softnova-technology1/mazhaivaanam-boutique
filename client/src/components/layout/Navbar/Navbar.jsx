@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus, MapPin, Gift, LogOut } from 'lucide-react';
+import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus, MapPin, Gift, LogOut, ArrowRight, Sparkles } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
 import { useAuth } from '../../../hooks/useAuth';
+import { getProducts } from '../../../services/api';
 import { formatCurrency } from '../../../utils/formatters';
 import styles from './Navbar.module.css';
 
-export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
+export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelectedProduct }) => {
   const { cart, removeFromCart, updateQuantity, cartTotal, cartItemCount, addToCart } = useCart();
   const { user, isAuthenticated, logout } = useAuth();
   const [isSticky, setIsSticky] = useState(false);
@@ -19,10 +20,12 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
   
   // Mobile accordion states
   const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState(false);
-
   
-  // Search input state
+  // Search input state & live search results
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   
   // Wishlist state (with mock items fallback)
   const [wishlist, setWishlist] = useState(() => {
@@ -344,7 +347,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('pre-booking')} className={`${styles.menuLink} ${styles.preBookingLink} ${currentTab === 'pre-booking' ? styles.active : ''}`}>Pre-Booking</button>
               </li>
-
+              <li className={styles.menuItem}>
+                <button onClick={() => handleTabChange('track-order')} className={`${styles.menuLink} ${currentTab === 'track-order' ? styles.active : ''}`}>Track Order</button>
+              </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('about')} className={`${styles.menuLink} ${currentTab === 'about' ? styles.active : ''}`}>About</button>
               </li>
@@ -356,9 +361,9 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
         </nav>
       </header>
 
-      {/* 4. Fullscreen Search Overlay */}
+      {/* 4. Fullscreen Search Overlay with Live Visual Cards */}
       {isSearchOpen && (
-        <div className={styles.searchOverlay}>
+        <div className={styles.searchOverlay} onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}>
           <button 
             className={styles.closeSearchBtn} 
             onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
@@ -367,11 +372,11 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
             <X size={32} strokeWidth={1.5} />
           </button>
           
-          <div className={styles.searchOverlayContent}>
+          <div className={styles.searchOverlayContent} onClick={(e) => e.stopPropagation()} style={{ maxWidth: 860, width: '92%' }}>
             <form onSubmit={(e) => { e.preventDefault(); handleSearchSubmit(searchQuery); }} className={styles.searchInputWrapper}>
               <input 
                 type="text" 
-                placeholder="Search Sarees..." 
+                placeholder="Search Silk Sarees, Kanjeevaram, Bridal..." 
                 className={styles.searchBigInput} 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -382,20 +387,106 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter }) => {
               </button>
             </form>
             
-            <div className={styles.searchSuggestionsBlock}>
-              <h3>Popular Searches</h3>
-              <div className={styles.suggestionsList}>
-                {popularSearches.map((tag) => (
-                  <button 
-                    key={tag} 
-                    className={styles.tagBtn}
-                    onClick={() => handleSearchTagClick(tag)}
-                  >
-                    {tag}
-                  </button>
-                ))}
+            {/* Live Search Results View */}
+            {searchQuery.trim().length >= 2 ? (
+              <div style={{ marginTop: 24, textAlign: 'left' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <span style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    {isSearching ? 'Searching handloom catalog...' : `${searchResults.length} Sarees Found for "${searchQuery}"`}
+                  </span>
+                  {searchResults.length > 0 && (
+                    <button 
+                      onClick={() => handleSearchSubmit(searchQuery)}
+                      style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 600 }}
+                    >
+                      View All in Catalog <ArrowRight size={14} />
+                    </button>
+                  )}
+                </div>
+
+                {isSearching ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+                    <div style={{ width: 32, height: 32, border: '3px solid rgba(200, 163, 77, 0.3)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                  </div>
+                ) : searchResults.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '30px 20px', background: 'rgba(255,255,255,0.03)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <p style={{ color: '#ffffff', fontSize: '1.05rem', marginBottom: 8 }}>No matching sarees found for "{searchQuery}"</p>
+                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>Try searching by fabric like <em>"Kanjeevaram"</em>, <em>"Pure Silk"</em>, or color like <em>"Pink"</em>, <em>"Gold"</em>.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 16, maxHeight: '55vh', overflowY: 'auto', paddingRight: 6 }}>
+                    {searchResults.map((product) => (
+                      <div 
+                        key={product.id}
+                        onClick={() => handleSelectSearchResult(product)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 14,
+                          background: 'rgba(255,255,255,0.06)',
+                          border: '1px solid rgba(200, 163, 77, 0.25)',
+                          borderRadius: 10,
+                          padding: 10,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(200, 163, 77, 0.15)';
+                          e.currentTarget.style.borderColor = 'var(--primary)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                          e.currentTarget.style.borderColor = 'rgba(200, 163, 77, 0.25)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }}
+                      >
+                        <div style={{ width: 64, height: 64, borderRadius: 8, overflow: 'hidden', flexShrink: 0, background: '#1a1a1a' }}>
+                          <img 
+                            src={product.image} 
+                            alt={product.name} 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                          />
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ color: '#ffffff', fontWeight: 600, fontSize: '0.88rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {product.name}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: 2 }}>
+                            {product.fabric || product.category}
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                            <span style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.88rem' }}>
+                              {formatCurrency(product.price)}
+                            </span>
+                            {product.oldPrice > product.price && (
+                              <span style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'line-through', fontSize: '0.75rem' }}>
+                                {formatCurrency(product.oldPrice)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
+            ) : (
+              <div className={styles.searchSuggestionsBlock}>
+                <h3>Popular Searches</h3>
+                <div className={styles.suggestionsList}>
+                  {popularSearches.map((tag) => (
+                    <button 
+                      key={tag} 
+                      className={styles.tagBtn}
+                      onClick={() => handleSearchTagClick(tag)}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

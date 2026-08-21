@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { inventoryAPI, productAPI, categoryAPI, uploadAPI } from '../api/api.js';
-import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud } from 'lucide-react';
+import { exportToCSV } from '../utils/exportCSV.js';
+import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud, Download } from 'lucide-react';
 
 export default function Inventory() {
   const [inventory, setInventory] = useState([]);
@@ -18,10 +19,17 @@ export default function Inventory() {
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 15;
+
   useEffect(() => { 
     loadInventory();
     categoryAPI.getAll().then(res => setCategories(res.data)).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, categoryFilter, filter]);
 
   const loadInventory = async () => {
     setLoading(true);
@@ -30,6 +38,27 @@ export default function Inventory() {
       setInventory(res.data);
     } catch (err) { console.error(err); }
     setLoading(false);
+  };
+
+  const handleExportCSV = () => {
+    if (!filtered.length) {
+      alert('No inventory data to export');
+      return;
+    }
+
+    const columns = [
+      { key: 'product.name', label: 'Product Name' },
+      { key: 'product.category.name', label: 'Category' },
+      { key: 'product.price', label: 'Price (INR)' },
+      { key: 'totalStock', label: 'Total Stock' },
+      { key: 'reserved', label: 'Reserved Stock' },
+      { key: 'sold', label: 'Sold Stock' },
+      { key: 'availableStock', label: 'Available Stock' },
+      { key: 'stockLevel', label: 'Stock Level %', formatter: (inv) => `${Math.round(Math.min(100, (inv.availableStock / (inv.totalStock || 1)) * 100))}%` },
+      { key: 'status', label: 'Stock Status', formatter: (inv) => inv.isOutOfStock ? 'Out of Stock' : inv.isLowStock ? 'Low Stock' : 'In Stock' },
+    ];
+
+    exportToCSV(filtered, columns, 'MazhaiVaanam_Inventory_Stock');
   };
 
   const handleRestock = async () => {
@@ -119,16 +148,28 @@ export default function Inventory() {
   const lowCount = baseFiltered.filter(i => i.isLowStock && !i.isOutOfStock).length;
   const outCount = baseFiltered.filter(i => i.isOutOfStock).length;
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedInventory = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   return (
     <div className="page-container">
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <h1 className="page-title">Inventory</h1>
+          <h1 className="page-title">Inventory Management</h1>
           <p className="page-subtitle">{totalCount} products tracked</p>
         </div>
-        <button className="btn btn-primary" onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Plus size={18} /> Add New Product
-        </button>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button 
+            className="btn btn-outline" 
+            onClick={handleExportCSV}
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          >
+            <Download size={16} /> Export to CSV
+          </button>
+          <button className="btn btn-primary" onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Plus size={18} /> Add New Product
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -166,10 +207,12 @@ export default function Inventory() {
       {loading ? (
         <div className="loader"><div className="spinner" /></div>
       ) : (
+        <>
         <div className="table-container">
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: 50, textAlign: 'center' }}>#</th>
                 <th>Product</th>
                 <th>Total Stock</th>
                 <th>Reserved</th>
@@ -181,13 +224,16 @@ export default function Inventory() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(inv => {
+              {paginatedInventory.map((inv, idx) => {
                 const avail = inv.availableStock;
                 const total = inv.totalStock || 1;
                 const pct = Math.min(100, (avail / total) * 100);
                 const barColor = inv.isOutOfStock ? 'var(--danger)' : inv.isLowStock ? 'var(--warning)' : 'var(--success)';
                 return (
                   <tr key={inv._id}>
+                    <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
+                      {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
+                    </td>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ width: 38, height: 38, borderRadius: 6, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
@@ -223,6 +269,36 @@ export default function Inventory() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 24 }}>
+            <button
+              className="btn btn-sm btn-outline"
+              disabled={currentPage <= 1}
+              onClick={() => setCurrentPage(p => p - 1)}
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setCurrentPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              className="btn btn-sm btn-outline"
+              disabled={currentPage >= totalPages}
+              onClick={() => setCurrentPage(p => p + 1)}
+            >
+              Next
+            </button>
+          </div>
+        )}
+        </>
       )}
 
       {/* Restock Modal */}

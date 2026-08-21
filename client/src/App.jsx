@@ -267,6 +267,7 @@ function AppContent() {
         currentTab={currentTab} 
         setCurrentTab={handleNavbarNavigation} 
         setCatalogFilter={setCatalogFilter}
+        setSelectedProduct={setSelectedProduct}
         cartItemCount={cartItemCount} 
       />
       <main className="main-content">

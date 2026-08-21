@@ -167,6 +167,13 @@ export const orderAPI = {
     });
     return res.data;
   },
+  validateCoupon: async (code, subtotal) => {
+    const res = await request('/orders/validate-coupon', {
+      method: 'POST',
+      body: { code, subtotal },
+    });
+    return res.data;
+  },
   getMyOrders: async (params = {}) => {
     const query = new URLSearchParams(params).toString();
     const res = await request(`/orders/my-orders${query ? '?' + query : ''}`);
@@ -188,6 +195,21 @@ export const contactAPI = {
     const res = await request('/contact', {
       method: 'POST',
       body: inquiryData,
+    });
+    return res.data;
+  },
+};
+
+// ====== REVIEW API ======
+export const reviewAPI = {
+  getByProduct: async (productId) => {
+    const res = await request(`/reviews/product/${productId}`);
+    return res.data || [];
+  },
+  createReview: async (productId, reviewData) => {
+    const res = await request(`/reviews/product/${productId}`, {
+      method: 'POST',
+      body: reviewData,
     });
     return res.data;
   },

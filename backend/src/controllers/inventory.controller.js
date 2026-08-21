@@ -13,8 +13,11 @@ export const getAllInventory = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .lean();
 
+    // Only include active and non-deleted products
+    const activeInventory = inventory.filter(inv => inv.product && inv.product.isActive !== false);
+
     // Add virtual fields
-    const enriched = inventory.map((inv) => ({
+    const enriched = activeInventory.map((inv) => ({
       ...inv,
       availableStock: Math.max(0, inv.totalStock - inv.reserved - inv.sold),
       isLowStock: inv.totalStock - inv.reserved - inv.sold <= inv.lowStockThreshold,

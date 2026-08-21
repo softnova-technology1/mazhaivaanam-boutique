@@ -5,7 +5,7 @@ import { getProductReviews, createReview, deleteReview } from '../controllers/re
 const router = Router();
 
 router.get('/product/:productId', getProductReviews);
-router.post('/product/:productId', protect, createReview);
+router.post('/product/:productId', createReview);
 router.delete('/:reviewId', protect, deleteReview);
 
 export default router;

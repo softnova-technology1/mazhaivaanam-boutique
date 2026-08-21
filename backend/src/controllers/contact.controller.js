@@ -4,18 +4,19 @@ import { successResponse, errorResponse } from '../utils/apiResponse.js';
 
 export const submitInquiry = async (req, res, next) => {
   try {
-    const { name, email, subject, message } = req.body;
-    const inquiry = await ContactInquiry.create({ name, email, subject, message });
+    const { name, email, phone, subject, message } = req.body;
+    const inquiry = await ContactInquiry.create({ name, email, phone: phone || '', subject: subject || 'General Inquiry', message });
 
     // Notify admin
     sendEmail({
       to: process.env.SMTP_USER,
-      subject: `New Contact Inquiry: ${subject}`,
+      subject: `New Contact Inquiry: ${subject || 'General Inquiry'}`,
       html: `
         <div style="font-family: sans-serif; padding: 20px;">
           <h2>New Inquiry from ${name}</h2>
           <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Subject:</strong> ${subject}</p>
+          <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+          <p><strong>Subject:</strong> ${subject || 'General Inquiry'}</p>
           <p><strong>Message:</strong></p>
           <p style="background: #f5f5f5; padding: 16px; border-radius: 8px;">${message}</p>
         </div>

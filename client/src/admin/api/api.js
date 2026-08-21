@@ -53,6 +53,7 @@ export const productAPI = {
   update: (id, body) => request(`/admin/products/${id}`, { method: 'PUT', body }),
   delete: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
   hardDelete: (id) => request(`/admin/products/${id}/hard`, { method: 'DELETE' }),
+  bulkDelete: (productIds) => request('/admin/products/bulk/delete', { method: 'POST', body: { productIds } }),
 };
 
 // ====== CATEGORIES ======
@@ -75,6 +76,7 @@ export const collectionAPI = {
 export const orderAPI = {
   getAll: (params = '') => request(`/admin/orders${params ? '?' + params : ''}`),
   updateStatus: (orderId, body) => request(`/admin/orders/${orderId}/status`, { method: 'PUT', body }),
+  bulkUpdateStatus: (orderIds, status, note = '') => request('/admin/orders/bulk/status', { method: 'PUT', body: { orderIds, status, note } }),
 };
 
 // ====== INVENTORY ======

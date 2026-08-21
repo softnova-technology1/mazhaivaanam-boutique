@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
+import { orderAPI } from '../../services/api';
 import { 
   Search, 
   MapPin, 
@@ -33,8 +34,9 @@ export const TrackOrder = ({ setCurrentTab }) => {
     placedOnDate: "October 12, 2024",
     arrivalRange: "October 24, 2024",
     status: "IN TRANSIT",
-    courier: "BlueDart Premium",
-    lastLocation: "Mumbai Sort Hub",
+    courier: "BlueDart Express",
+    trackingNumber: "BD98214589IN",
+    lastLocation: "Chennai Central Logistics Hub",
     lastLocationTime: "2 hours ago",
     countdownDays: 2,
     mrpTotal: 72800,
@@ -47,7 +49,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
         id: 'default-track-item',
         name: "Signature Silk Saree - Ruby Zari",
         price: 65000,
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA-Fz8Qd23ixdQ0rKI1jAcmVnYjLh1Taz4BUqAhKLbXN0XEu5JS1v-VJemXMGmtTZEK7IYukMi8SGA14deM8VAhD0B_cgWERSwLSAHc_935I-U9--Fo5-7qqx7rURmdeo8CPYorbexv69aUCDrD2jqa8BM0aozAr4OLgLEmk_qqE4tuUc2D_sUmTTPpqBjDK65hvLsW6iofdER6BuqNN2j6MGdn_flF2Q_CQr368K7GHkBchBwD7nrI"
+        image: "/Images/saree1.png"
       }
     ]
   };
@@ -63,30 +65,68 @@ export const TrackOrder = ({ setCurrentTab }) => {
     }
   }, []);
 
-  const handleLocateShipment = (searchId) => {
+  const handleLocateShipment = async (searchId) => {
     setErrorText('');
     const id = searchId.trim().toUpperCase();
 
     if (!id) {
-      setErrorText('Please enter a valid Order Number.');
+      setErrorText('Please enter a valid Order Number (e.g. MV-100234).');
       return;
     }
 
-    // 1. Check default mock order
+    // 1. Try Live MongoDB API
+    try {
+      const liveData = await orderAPI.trackOrder(id);
+      if (liveData) {
+        const orderPlacedDate = new Date(liveData.createdAt || Date.now());
+        const deliveryDate = liveData.estimatedDelivery 
+          ? new Date(liveData.estimatedDelivery) 
+          : new Date(orderPlacedDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+        
+        const diffDays = Math.ceil((deliveryDate - new Date()) / (1000 * 60 * 60 * 24));
+
+        const dynamicOrder = {
+          orderId: liveData.orderId,
+          email: liveData.shippingAddress?.email || liveData.user?.email || 'Valued Patron',
+          placedOnDate: orderPlacedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          arrivalRange: deliveryDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          status: liveData.status || 'PROCESSING',
+          courier: liveData.courier || 'BlueDart Premium Express',
+          trackingNumber: liveData.trackingNumber || '',
+          lastLocation: liveData.statusHistory?.[liveData.statusHistory?.length - 1]?.note || (liveData.status === 'DELIVERED' ? 'Delivered to Customer Doorstep' : 'Dispatched from Central Atelier Hub'),
+          lastLocationTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          countdownDays: diffDays > 0 ? diffDays : 0,
+          mrpTotal: liveData.items?.reduce((sum, it) => sum + (it.price * 1.15 * it.quantity), 0) || liveData.totalAmount || 0,
+          subtotal: liveData.totalAmount || 0,
+          totalSavings: Math.round((liveData.totalAmount || 0) * 0.05),
+          finalAmount: liveData.totalAmount || 0,
+          pointsEarned: Math.round((liveData.totalAmount || 0) * 0.1),
+          items: liveData.items || [],
+          statusHistory: liveData.statusHistory || []
+        };
+
+        setTrackedOrder(dynamicOrder);
+        setIsSearched(true);
+        return;
+      }
+    } catch (apiErr) {
+      console.log('Order not found in MongoDB via API, checking localStorage backup...', apiErr);
+    }
+
+    // 2. Check default mock order
     if (id === 'MV-98214-X') {
       setTrackedOrder(defaultMockOrder);
       setIsSearched(true);
       return;
     }
 
-    // 2. Check localStorage
+    // 3. Check localStorage
     const saved = localStorage.getItem('boutique_orders');
     const list = saved ? JSON.parse(saved) : [];
     const found = list.find(o => o.orderId.toUpperCase() === id);
 
     if (found) {
-      // Calculate dynamic tracking fields for user orders
-      const orderPlacedDate = new Date(found.placedOnDate);
+      const orderPlacedDate = new Date(found.placedOnDate || Date.now());
       const deliveryDate = new Date(orderPlacedDate);
       deliveryDate.setDate(deliveryDate.getDate() + 7);
       
@@ -99,9 +139,10 @@ export const TrackOrder = ({ setCurrentTab }) => {
         placedOnDate: found.placedOnDate,
         arrivalRange: found.arrivalRange || deliveryDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
         status: found.status || 'IN TRANSIT',
-        courier: 'White Glove Express Courier',
+        courier: found.courier || 'BlueDart Express',
+        trackingNumber: found.trackingNumber || 'BD890214589',
         lastLocation: found.city ? `${found.city} Distribution Center` : 'Atelier Sorting Hub',
-        lastLocationTime: 'Transit Stage 4: Outbound sorting',
+        lastLocationTime: 'Transit Stage: Inbound sorting',
         countdownDays: diffDays > 0 ? diffDays : 0,
         mrpTotal: found.mrpTotal,
         subtotal: found.subtotal,
@@ -114,7 +155,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
       setTrackedOrder(dynamicOrder);
       setIsSearched(true);
     } else {
-      setErrorText('We could not locate an active shipment matching that Order Number. Try "MV-98214-X" to see the track experience.');
+      setErrorText(`No active shipment found for "${id}". Check your Order ID from your confirmation or try "MV-98214-X".`);
       setIsSearched(false);
     }
   };

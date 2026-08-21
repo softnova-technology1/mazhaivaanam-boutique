@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
+import { orderAPI } from '../../services/api';
 import { 
   Lock, 
   ShieldCheck, 
@@ -18,7 +19,12 @@ import {
   Calendar,
   Download,
   Star,
-  Quote
+  Quote,
+  Tag,
+  Ticket,
+  Sparkles,
+  X,
+  Check
 } from 'lucide-react';
 import styles from './Checkout.module.css';
 
@@ -51,6 +57,12 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
 
+  // Coupon States
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponMsg, setCouponMsg] = useState({ type: '', text: '' });
+
   // Order Confirmation State
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [orderId, setOrderId] = useState('');
@@ -71,13 +83,41 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     ? (directCheckoutItem.price * (directCheckoutItem.quantity || 1))
     : cartTotal;
   const exclusivePricingSavings = mrpTotal - subtotal;
-  const festivalDiscount = Math.round(subtotal * 0.05); // 5% discount
+  const festivalDiscount = Math.round(subtotal * 0.05); // 5% festival discount
+  const couponDiscount = appliedCoupon ? appliedCoupon.discountAmount : 0;
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
   const convenienceFee = checkoutItems.length > 0 ? 2 : 0;
   const shippingFee = checkoutItems.length > 0 ? (deliveryMode === 'standard' ? 100 : 0) : 0;
   
-  const finalAmount = Math.max(0, subtotal - festivalDiscount + giftPackAddon + convenienceFee + shippingFee);
-  const totalSavings = exclusivePricingSavings + festivalDiscount;
+  const finalAmount = Math.max(0, subtotal - festivalDiscount - couponDiscount + giftPackAddon + convenienceFee + shippingFee);
+  const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
+
+  // Apply Coupon Handler
+  const handleApplyCoupon = async (e) => {
+    e.preventDefault();
+    if (!couponInput.trim()) {
+      setCouponMsg({ type: 'error', text: 'Please enter a coupon code' });
+      return;
+    }
+
+    setCouponLoading(true);
+    setCouponMsg({ type: '', text: '' });
+    try {
+      const res = await orderAPI.validateCoupon(couponInput.trim(), subtotal);
+      setAppliedCoupon(res);
+      setCouponMsg({ type: 'success', text: `Coupon "${res.code}" applied! You saved ${formatCurrency(res.discountAmount)}` });
+    } catch (err) {
+      setAppliedCoupon(null);
+      setCouponMsg({ type: 'error', text: err.message || 'Invalid or expired coupon code' });
+    }
+    setCouponLoading(false);
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setCouponMsg({ type: '', text: '' });
+  };
 
   const handleCompleteOrder = (e) => {
     e.preventDefault();
@@ -142,6 +182,8 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       mrpTotal,
       subtotal,
       festivalDiscount,
+      couponCode: appliedCoupon?.code || '',
+      couponDiscount,
       giftPackAddon,
       shippingFee,
       items: [...checkoutItems],
@@ -794,6 +836,86 @@ Thank you for choosing handloom heritage.
                   ))}
                 </div>
 
+                {/* Coupon Code Section */}
+                <div style={{ margin: '16px 0', padding: '14px 16px', background: 'rgba(200, 163, 77, 0.08)', borderRadius: 8, border: '1px dashed var(--primary)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)', marginBottom: 8 }}>
+                    <Ticket size={16} /> Have a Promo / Coupon Code?
+                  </div>
+
+                  {appliedCoupon ? (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(34, 197, 94, 0.15)', padding: '8px 12px', borderRadius: 6, border: '1px solid var(--success)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Check size={16} color="var(--success)" />
+                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--success)' }}>
+                          {appliedCoupon.code}
+                        </span>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                          (-{formatCurrency(appliedCoupon.discountAmount)})
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemoveCoupon}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--danger)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 2 }}
+                        title="Remove Coupon"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleApplyCoupon} style={{ display: 'flex', gap: 8 }}>
+                      <input
+                        type="text"
+                        placeholder="e.g. MAZHAI10"
+                        value={couponInput}
+                        onChange={(e) => {
+                          setCouponInput(e.target.value.toUpperCase());
+                          if (couponMsg.text) setCouponMsg({ type: '', text: '' });
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '8px 12px',
+                          borderRadius: 6,
+                          border: '1px solid var(--border-color)',
+                          background: 'var(--bg-surface)',
+                          color: 'var(--text-main)',
+                          fontSize: '0.85rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em'
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        disabled={couponLoading || !couponInput.trim()}
+                        style={{
+                          padding: '8px 16px',
+                          borderRadius: 6,
+                          background: 'var(--primary)',
+                          color: '#000',
+                          border: 'none',
+                          fontWeight: 600,
+                          fontSize: '0.82rem',
+                          cursor: couponLoading || !couponInput.trim() ? 'not-allowed' : 'pointer',
+                          opacity: couponLoading || !couponInput.trim() ? 0.6 : 1
+                        }}
+                      >
+                        {couponLoading ? 'Checking...' : 'Apply'}
+                      </button>
+                    </form>
+                  )}
+
+                  {couponMsg.text && (
+                    <div style={{
+                      marginTop: 8,
+                      fontSize: '0.78rem',
+                      color: couponMsg.type === 'error' ? 'var(--danger)' : 'var(--success)',
+                      fontWeight: 500
+                    }}>
+                      {couponMsg.text}
+                    </div>
+                  )}
+                </div>
+
                 {/* Price Breakdown */}
                 <div className={styles.priceBreakdown}>
                   <div className={styles.priceRow}>
@@ -805,9 +927,15 @@ Thank you for choosing handloom heritage.
                     <span className={styles.priceValue}>{formatCurrency(subtotal)}</span>
                   </div>
                   <div className={styles.discountRow}>
-                    <span>Discount</span>
+                    <span>Festival Discount</span>
                     <span className={styles.discountValue}>-{formatCurrency(festivalDiscount)}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <div className={styles.discountRow} style={{ color: 'var(--success)' }}>
+                      <span>Coupon Discount ({appliedCoupon?.code})</span>
+                      <span className={styles.discountValue} style={{ color: 'var(--success)' }}>-{formatCurrency(couponDiscount)}</span>
+                    </div>
+                  )}
                   <div className={styles.priceRow}>
                     <span>Convenient Fees</span>
                     <span className={styles.priceValue}>₹2</span>

@@ -13,6 +13,11 @@ const contactInquirySchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    phone: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     subject: {
       type: String,
       default: 'GENERAL INQUIRY',

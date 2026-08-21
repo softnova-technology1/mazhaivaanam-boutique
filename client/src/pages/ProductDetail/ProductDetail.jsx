@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
-import { getProducts } from '../../services/api';
+import { getProducts, reviewAPI } from '../../services/api';
 import styles from './ProductDetail.module.css';
 
 export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) => {
@@ -15,29 +15,49 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
 
-  // Review form state
-  const [reviewForm, setReviewForm] = useState({ name: '', location: '', text: '', rating: 5 });
+  // Review form state with photo upload support & MongoDB Atlas Sync
+  const [reviewForm, setReviewForm] = useState({ name: '', location: '', text: '', rating: 5, photo: '' });
   const [userReviews, setUserReviews] = useState([]);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
 
-  const handleSubmitReview = (e) => {
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
     if (!reviewForm.name.trim() || !reviewForm.text.trim()) return;
+    
     const newReview = {
       id: Date.now(),
       name: reviewForm.name.trim(),
       location: reviewForm.location.trim() || 'Verified Patron',
       text: reviewForm.text.trim(),
       rating: reviewForm.rating,
+      photo: reviewForm.photo || '',
       date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
     };
+
+    // Optimistic UI update
     setUserReviews(prev => [newReview, ...prev]);
-    setReviewForm({ name: '', location: '', text: '', rating: 5 });
+    setReviewForm({ name: '', location: '', text: '', rating: 5, photo: '' });
     setReviewSubmitted(true);
     setShowReviewForm(false);
     setTimeout(() => setReviewSubmitted(false), 4000);
+
+    // Save directly to MongoDB Atlas
+    try {
+      const prodId = activeProduct._id || activeProduct.id;
+      if (prodId) {
+        await reviewAPI.createReview(prodId, {
+          name: newReview.name,
+          location: newReview.location,
+          text: newReview.text,
+          rating: newReview.rating,
+          photo: newReview.photo,
+        });
+      }
+    } catch (err) {
+      console.log('Saved review locally:', err);
+    }
   };
 
   // Fallback product data if none is passed (e.g. direct nav)
@@ -57,7 +77,9 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
 
   const activeProduct = product || defaultProduct;
 
-  // Set initial images and color selection
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+
+  // Set initial images and color selection + Track Recently Viewed
   useEffect(() => {
     if (activeProduct.image) {
       setSelectedImage(activeProduct.image);
@@ -74,18 +96,63 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
         setIsWishlisted(wishlistItems.some(w => w.id === activeProduct.id));
       }
     }
+
+    // Save to Recently Viewed in localStorage
+    if (activeProduct.id && activeProduct.name) {
+      const savedViewed = localStorage.getItem('boutique_recently_viewed');
+      let viewedList = savedViewed ? JSON.parse(savedViewed) : [];
+      // Remove current if exists, then prepend
+      viewedList = viewedList.filter(item => item.id !== activeProduct.id);
+      viewedList.unshift({
+        id: activeProduct.id,
+        _id: activeProduct._id || activeProduct.id,
+        name: activeProduct.name,
+        price: activeProduct.price,
+        oldPrice: activeProduct.oldPrice,
+        image: activeProduct.image,
+        fabric: activeProduct.fabric,
+        category: activeProduct.category,
+        rating: activeProduct.rating || 4.8
+      });
+      // Keep up to 6 items
+      viewedList = viewedList.slice(0, 6);
+      localStorage.setItem('boutique_recently_viewed', JSON.stringify(viewedList));
+      setRecentlyViewed(viewedList.filter(item => item.id !== activeProduct.id));
+    }
     
     // Scroll to top on mount
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     let isMounted = true;
-    getProducts({ limit: 12 })
+    const categoryParam = activeProduct.category ? { category: activeProduct.category, limit: 8 } : { limit: 8 };
+    getProducts(categoryParam)
       .then(res => {
         if (isMounted && res.products) {
           setRelatedProducts(res.products.filter(p => p.id !== activeProduct.id));
         }
       })
       .catch(err => console.error('Failed to load related products:', err));
+
+    // Load Live Reviews from MongoDB Atlas
+    const prodId = activeProduct._id || activeProduct.id;
+    if (prodId) {
+      reviewAPI.getByProduct(prodId)
+        .then(dbReviews => {
+          if (isMounted && dbReviews && dbReviews.length > 0) {
+            setUserReviews(dbReviews.map(r => ({
+              id: r._id,
+              name: r.name,
+              location: r.location || 'Verified Patron',
+              text: r.text,
+              rating: r.rating,
+              photo: r.photo || '',
+              date: new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+            })));
+          }
+        })
+        .catch(() => {});
+    }
+
     return () => { isMounted = false; };
   }, [activeProduct]);
 
@@ -612,6 +679,30 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
                   />
                 </div>
                 <div className={styles['review-field-group']} style={{ gridColumn: '1 / -1' }}>
+                  <label className={styles['review-field-label']}>Photo of Your Draped Look (Optional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setReviewForm(f => ({ ...f, photo: reader.result }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginTop: 4 }}
+                  />
+                  {reviewForm.photo && (
+                    <div style={{ marginTop: 8, width: 64, height: 64, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--primary)' }}>
+                      <img src={reviewForm.photo} alt="Draped look preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles['review-field-group']} style={{ gridColumn: '1 / -1' }}>
                   <label className={styles['review-field-label']}>Your Review *</label>
                   <textarea
                     rows={4}
@@ -652,6 +743,13 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
                 ))}
               </div>
               <p className={styles['review-quote']}>&#x201C;{r.text}&#x201D;</p>
+              
+              {r.photo && (
+                <div style={{ width: 68, height: 68, borderRadius: 8, overflow: 'hidden', margin: '10px 0', border: '1px solid var(--primary)', background: '#111' }}>
+                  <img src={r.photo} alt="Patron draped saree" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              )}
+
               <div className={styles['reviewer-profile']}>
                 <div className={styles['reviewer-avatar-initial']}>
                   {r.name[0]?.toUpperCase()}
@@ -735,6 +833,187 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
           </div>
         </div>
       </section>
+
+      {/* 4. Similar Weaves You May Love Section */}
+      {relatedProducts.length > 0 && (
+        <section style={{ maxWidth: 1240, margin: '60px auto 40px auto', padding: '0 20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28, borderBottom: '1px solid rgba(200,163,77,0.2)', paddingBottom: 16 }}>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
+                Curated Recommendations
+              </span>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: 'var(--text-main)', marginTop: 4, marginBottom: 0 }}>
+                Similar Weaves You May Love
+              </h2>
+            </div>
+            <button 
+              onClick={() => setCurrentTab('catalog')} 
+              style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6 }}
+            >
+              Explore Full Atelier <ArrowRight size={16} />
+            </button>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
+            {relatedProducts.slice(0, 4).map((item) => (
+              <div 
+                key={item.id}
+                onClick={() => {
+                  setSelectedProduct(item);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                style={{
+                  background: 'var(--bg-surface)',
+                  borderRadius: 12,
+                  overflow: 'hidden',
+                  border: '1px solid var(--border-color)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-6px)';
+                  e.currentTarget.style.borderColor = 'var(--primary)';
+                  e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = 'var(--border-color)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <div style={{ width: '100%', height: 320, position: 'relative', overflow: 'hidden', background: '#111' }}>
+                  <img 
+                    src={item.image} 
+                    alt={item.name} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }} 
+                  />
+                  {item.tag && (
+                    <span style={{
+                      position: 'absolute',
+                      top: 12,
+                      left: 12,
+                      background: 'rgba(107, 16, 42, 0.9)',
+                      color: '#ffffff',
+                      padding: '4px 10px',
+                      borderRadius: 4,
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.06em',
+                      backdropFilter: 'blur(4px)'
+                    }}>
+                      {item.tag}
+                    </span>
+                  )}
+                </div>
+
+                <div style={{ padding: '16px 18px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>
+                      {item.fabric || item.category || 'Handloom Silk'}
+                    </span>
+                    <h3 style={{ fontSize: '1rem', color: 'var(--text-main)', margin: '4px 0 8px 0', fontWeight: 600, lineHeight: 1.4 }}>
+                      {item.name}
+                    </h3>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12, borderTop: '1px solid var(--border-color)', paddingTop: 10 }}>
+                    <div>
+                      <span style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                        ₹{Number(item.price).toLocaleString('en-IN')}
+                      </span>
+                      {item.oldPrice > item.price && (
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: 8 }}>
+                          ₹{Number(item.oldPrice).toLocaleString('en-IN')}
+                        </span>
+                      )}
+                    </div>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(item, 1);
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        background: 'rgba(200,163,77,0.15)',
+                        border: '1px solid var(--primary)',
+                        color: 'var(--primary-dark)',
+                        borderRadius: 6,
+                        fontWeight: 600,
+                        fontSize: '0.8rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      + Bag
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 5. Recently Viewed Sarees Section */}
+      {recentlyViewed.length > 0 && (
+        <section style={{ maxWidth: 1240, margin: '40px auto 70px auto', padding: '0 20px' }}>
+          <div style={{ marginBottom: 20 }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
+              Your Browsing History
+            </span>
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', color: 'var(--text-main)', marginTop: 4 }}>
+              Recently Viewed Weaves
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 18 }}>
+            {recentlyViewed.map((item) => (
+              <div 
+                key={item.id}
+                onClick={() => {
+                  setSelectedProduct(item);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  background: 'var(--bg-surface)',
+                  padding: 10,
+                  borderRadius: 8,
+                  border: '1px solid var(--border-color)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--primary)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-color)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <div style={{ width: 56, height: 56, borderRadius: 6, overflow: 'hidden', flexShrink: 0, background: '#111' }}>
+                  <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {item.name}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: 2 }}>
+                    {item.fabric || 'Pure Silk'}
+                  </div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginTop: 2 }}>
+                    ₹{Number(item.price).toLocaleString('en-IN')}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
     </div>
   );

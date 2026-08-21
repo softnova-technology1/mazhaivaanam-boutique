@@ -42,13 +42,14 @@ export const getDashboard = async (req, res, next) => {
       { $group: { _id: '$status', count: { $sum: 1 } } },
     ]);
 
-    // Low stock count
-    const allInv = await Inventory.find().lean();
-    const lowStockCount = allInv.filter((i) => {
+    // Low stock count (only active products)
+    const allInv = await Inventory.find().populate('product', 'isActive').lean();
+    const activeInv = allInv.filter((i) => i.product && i.product.isActive !== false);
+    const lowStockCount = activeInv.filter((i) => {
       const available = i.totalStock - i.reserved - i.sold;
       return available <= i.lowStockThreshold && available > 0;
     }).length;
-    const outOfStockCount = allInv.filter((i) => i.totalStock - i.reserved - i.sold <= 0).length;
+    const outOfStockCount = activeInv.filter((i) => i.totalStock - i.reserved - i.sold <= 0).length;
 
     successResponse(res, {
       overview: {
@@ -153,6 +154,62 @@ export const updateUserRole = async (req, res, next) => {
       { new: true }
     );
     successResponse(res, user, 'User role updated');
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * PUT /api/admin/orders/bulk-status
+ * Bulk update status for selected orders
+ */
+export const bulkUpdateOrderStatus = async (req, res, next) => {
+  try {
+    const { orderIds, status, note } = req.body;
+    if (!orderIds || !Array.isArray(orderIds) || orderIds.length === 0) {
+      return errorResponse(res, 'Please provide an array of order IDs', 400);
+    }
+    if (!status) {
+      return errorResponse(res, 'Please provide a target status', 400);
+    }
+
+    const historyEntry = {
+      status,
+      timestamp: new Date(),
+      note: note || `Bulk status updated to ${status} by admin`,
+    };
+
+    const result = await Order.updateMany(
+      { _id: { $in: orderIds } },
+      {
+        $set: { status },
+        $push: { statusHistory: historyEntry },
+      }
+    );
+
+    successResponse(res, result, `Successfully updated ${result.modifiedCount} orders to ${status}`);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * POST /api/admin/products/bulk-delete
+ * Bulk delete products
+ */
+export const bulkDeleteProducts = async (req, res, next) => {
+  try {
+    const { productIds } = req.body;
+    if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
+      return errorResponse(res, 'Please provide an array of product IDs', 400);
+    }
+
+    const result = await Product.updateMany(
+      { _id: { $in: productIds } },
+      { $set: { isActive: false } }
+    );
+
+    successResponse(res, result, `Successfully removed ${result.modifiedCount} products`);
   } catch (error) {
     next(error);
   }

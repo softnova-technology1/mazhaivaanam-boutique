@@ -1360,89 +1360,282 @@
   }
 }
 
-@media (min-width: 320px) and (max-width: 425px) {
-  .stats-section {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 24px 0;
-    margin-bottom: 20px;
-  }
-  
-  .stats-section::before {
-    top: 69px;
-    left: calc(50% - 174px);
-    width: 360px;
-    height: 45px;
-    background-size: 100% 100%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3000 200' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23cca245'%3E%3Cpath d='M 0 0 C 250 0, 250 200, 500 200 C 750 200, 750 0, 1000 0 C 1250 0, 1250 200, 1500 200 C 1750 200, 1750 0, 2000 0 C 2250 0, 2250 200, 2500 200 C 2750 200, 2750 0, 3000 0' stroke-width='2.5' opacity='0.9' /%3E%3Cpath d='M 0 30 C 250 30, 280 180, 500 200 C 720 180, 750 30, 1000 30 C 1250 30, 1280 180, 1500 200 C 1720 180, 1750 30, 2000 30 C 2250 30, 2280 180, 2500 200 C 2720 180, 2750 30, 3000 30' stroke-width='2.0' opacity='0.7' /%3E%3Cpath d='M 0 60 C 200 60, 200 200, 500 200 C 800 200, 800 60, 1000 60 C 1200 60, 1200 200, 1500 200 C 1800 200, 1800 60, 2000 60 C 2200 60, 2200 200, 2500 200 C 2800 200, 2800 60, 3000 60' stroke-width='1.5' opacity='0.5' /%3E%3C/g%3E%3C/svg%3E");
+@media (max-width: 768px) {
+  .wishlist-wrapper,
+  .wishlist-content-wrapper {
+    padding: 0 10px 40px 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
   }
 
+  /* 3 Stats Circles: Compact & perfectly centered with tight margins */
+  .stats-section {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 0 10px 0 !important;
+    margin-bottom: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .stats-section::before,
   .sparkle-stars-layer {
-    top: 69px;
-    left: calc(50% - 174px);
-    width: 360px;
-    height: 45px;
+    display: none !important;
   }
 
   .stats-card {
-    width: 100px;
-    height: 100px;
-    margin: 0;
-    flex-shrink: 0;
+    width: 86px !important;
+    height: 86px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    flex: 1 1 0 !important;
+    box-sizing: border-box !important;
+    padding: 4px 2px !important;
+    box-shadow: 0 4px 12px rgba(181, 137, 61, 0.1), inset 0 0 8px rgba(255, 255, 255, 0.9) !important;
+  }
+
+  .stats-card::before,
+  .stats-card::after {
+    display: none !important;
   }
 
   .stats-icon-badge {
-    margin-bottom: 4px;
-    width: 24px;
-    height: 24px;
+    margin-bottom: 2px !important;
+    width: 18px !important;
+    height: 18px !important;
   }
 
   .stats-icon {
-    width: 14px !important;
-    height: 14px !important;
+    width: 11px !important;
+    height: 11px !important;
   }
 
   .stats-lbl {
-    font-size: 6.5px;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
+    font-size: 6px !important;
+    letter-spacing: 0.3px !important;
+    margin-bottom: 1px !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
   }
 
   .stats-val {
-    font-size: 12px;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Section Heading Bar */
+  .main-grid-section {
+    margin-bottom: 14px !important;
+    padding: 0 !important;
   }
 
   .section-heading-bar {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 12px;
+    text-align: center !important;
+    margin-bottom: 10px !important;
+    width: 100% !important;
   }
 
   .section-heading-bar h3 {
-    font-size: 1.3rem;
-    white-space: nowrap;
+    font-size: 1.3rem !important;
+    margin: 0 !important;
+    color: var(--primary-dark) !important;
+    text-align: center !important;
   }
 
-  /* Fix overlapping labels on mobile */
+  /* Wishlist 2-Column Grid */
+  .wishlist-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .wishlist-item-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .card-image-box {
+    width: 100% !important;
+    aspect-ratio: 3/4 !important;
+    border-radius: 80px 80px 12px 12px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    margin-bottom: 4px !important;
+  }
+
+  .remove-card-btn {
+    top: 4px !important;
+    right: 4px !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    min-height: 24px !important;
+    border-radius: 50% !important;
+    background: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgba(146, 156, 122, 0.3) !important;
+    z-index: 10 !important;
+  }
+
+  .remove-card-btn svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .card-description-box {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    padding: 4px 2px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .card-category {
+    font-size: 7.5px !important;
+    letter-spacing: 0.8px !important;
+    margin-bottom: 1px !important;
+    color: #b5893d !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+  }
+
+  .card-description-box h4 {
+    font-size: 0.78rem !important;
+    line-height: 1.2 !important;
+    margin: 0 0 3px 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: break-word !important;
+    text-align: center !important;
+  }
+
+  .card-prices-row {
+    font-size: 11.5px !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .card-price-current {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+
+  .tag-badge, .limited-badge, .price-drop-badge {
+    font-size: 6px !important;
+    padding: 2px 4px !important;
+    letter-spacing: 0px !important;
+  }
+
   .card-badge-container {
-    bottom: 8px;
-    top: auto;
-    left: 4px;
+    bottom: 4px !important;
+    left: 4px !important;
   }
 
   .card-savings-badge {
-    bottom: 8px;
-    right: 4px;
-    font-size: 6px;
-    padding: 3px 4px;
-    letter-spacing: 0px;
+    bottom: 4px !important;
+    right: 4px !important;
+    font-size: 5.5px !important;
+    padding: 2px 4px !important;
   }
 
-  .price-drop-badge, .tag-badge, .limited-badge {
-    font-size: 6px;
-    padding: 3px 4px;
-    letter-spacing: 0px;
+  /* Recommended For You */
+  .recommended-section {
+    padding-top: 14px !important;
+    margin-bottom: 14px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .recommended-header {
+    text-align: center !important;
+    justify-content: center !important;
+    margin-bottom: 10px !important;
+    width: 100% !important;
+  }
+
+  .recommended-header h3 {
+    font-size: 1.3rem !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .marquee-wrapper {
+    width: 100% !important;
+    overflow: hidden !important;
+    padding-bottom: 8px !important;
+  }
+
+  .recommended-grid {
+    display: flex !important;
+    gap: 10px !important;
+  }
+
+  .rec-card {
+    flex: 0 0 130px !important;
+    width: 130px !important;
+  }
+
+  .rec-image-box {
+    width: 100% !important;
+    aspect-ratio: 3/4 !important;
+    border-radius: 12px !important;
+    margin-bottom: 4px !important;
+    overflow: hidden !important;
+  }
+
+  .rec-card h5 {
+    font-size: 0.8rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-bottom: 2px !important;
+  }
+
+  .rec-price {
+    font-size: 11px !important;
+  }
+
+  /* Mood & Recently Viewed sections compact */
+  .mood-categorizer-section {
+    padding-top: 14px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .mood-header {
+    margin-bottom: 12px !important;
+  }
+
+  .recently-viewed-section {
+    padding-top: 14px !important;
+    padding-bottom: 20px !important;
+    margin-bottom: 0 !important;
   }
 }

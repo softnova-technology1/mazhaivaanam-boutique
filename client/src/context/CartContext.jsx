@@ -18,17 +18,17 @@ export const CartProvider = ({ children }) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
-        window.dispatchEvent(new CustomEvent('show-cart-toast', { detail: { product, quantity } }));
         return prevCart.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      const updatedCart = [...prevCart, { ...product, quantity }];
-      window.dispatchEvent(new CustomEvent('show-cart-toast', { detail: { product, quantity } }));
-      return updatedCart;
+      return [...prevCart, { ...product, quantity }];
     });
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('show-cart-toast', { detail: { product, quantity } }));
+    }, 0);
   };
 
   const removeFromCart = (productId) => {

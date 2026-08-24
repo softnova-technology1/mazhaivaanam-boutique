@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getProducts } from '../../services/api';
 import styles from './LimitedOffer.module.css';
 
@@ -66,14 +67,23 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
 
   // Gallery Carousel Ref
   const galleryRef = useRef(null);
+  const autoScrollPausedRef = useRef(false);
+  const pauseTimerRef = useRef(null);
 
   const scrollGallery = (direction) => {
     if (galleryRef.current) {
-      const scrollAmount = 340; // match the width of the card
+      autoScrollPausedRef.current = true;
+      if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
+      
+      const scrollAmount = 360;
       galleryRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth'
       });
+
+      pauseTimerRef.current = setTimeout(() => {
+        autoScrollPausedRef.current = false;
+      }, 3000);
     }
   };
 
@@ -87,8 +97,8 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
     let isHovered = false;
 
     const scroll = () => {
-      if (!isHovered) {
-        scrollNode.scrollLeft += 1; // Speed of the continuous scroll
+      if (!isHovered && !autoScrollPausedRef.current) {
+        scrollNode.scrollLeft += 1;
         
         // When we've scrolled exactly halfway (past the first set), seamlessly reset to start
         if (scrollNode.scrollLeft >= scrollNode.scrollWidth / 2) {
@@ -112,6 +122,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
     
     return () => {
       cancelAnimationFrame(animationId);
+      if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
       scrollNode.removeEventListener('mouseenter', pause);
       scrollNode.removeEventListener('mouseleave', resume);
       scrollNode.removeEventListener('touchstart', pause);
@@ -424,22 +435,22 @@ void main() {
         </section>
 
         {/* Offer Products Grid */}
-        <section className="pt-16 pb-0 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-          <div className="flex flex-col items-center mb-14 text-center">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-px bg-[#D4AF37]"></div>
-              <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Festive Deals</span>
-              <div className="w-12 h-px bg-[#D4AF37]"></div>
+        <section className="pt-10 md:pt-16 pb-0 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
+          <div className="flex flex-col items-center mb-8 md:mb-14 text-center">
+            <div className="flex items-center gap-3 mb-2 md:mb-4">
+              <div className="w-8 md:w-12 h-px bg-[#D4AF37]"></div>
+              <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">Festive Deals</span>
+              <div className="w-8 md:w-12 h-px bg-[#D4AF37]"></div>
             </div>
-            <h3 className="font-display-lg text-4xl md:text-5xl text-primary leading-tight">Exclusive Offers</h3>
+            <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">Exclusive Offers</h3>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-8">
             {(showAllOffers ? [...galleryItems, ...galleryItems.slice(0, 2)] : galleryItems.slice(0, 4)).map((item, index) => {
               // Calculate a dummy original price for the offer display (40% higher)
               const originalPrice = Math.round(parseInt(item.price.replace(/[^\d]/g, '')) * 1.4);
               return (
-                <div key={`offer-${index}`} className="group cursor-pointer flex flex-col items-center" onClick={() => {
+                <div key={`offer-${index}`} className="group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => {
                   if (setSelectedProduct) {
                     setSelectedProduct({
                       id: `offer-${index}`,
@@ -458,23 +469,21 @@ void main() {
                   }
                   setCurrentTab('product-detail');
                 }}>
-                  <div className="relative w-full p-1.5 md:p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-3 md:mb-6 rounded-sm">
-                    <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
-                      <img 
-                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                        alt={item.title}
-                        src={item.image}
-                      />
-                      <div className="absolute top-1.5 left-1.5 md:top-3 md:left-3 bg-red-800 text-white px-1.5 py-0.5 md:px-2.5 md:py-1 shadow-sm border border-white/20">
-                        <span className="font-label-caps text-[6px] md:text-[8.5px] tracking-[0.1em] md:tracking-[0.2em] uppercase font-bold whitespace-nowrap leading-none block">FLAT 30% OFF</span>
-                      </div>
+                  <div className="relative w-full aspect-[3/4] overflow-hidden bg-surface-container-high">
+                    <img 
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                      alt={item.title}
+                      src={item.image}
+                    />
+                    <div className="absolute top-2 left-2 bg-red-700 text-white px-2 py-0.5 shadow-sm rounded-sm">
+                      <span className="font-label-caps text-[7px] md:text-[8.5px] tracking-[0.1em] md:tracking-[0.15em] uppercase font-bold whitespace-nowrap leading-none block">FLAT 30% OFF</span>
                     </div>
                   </div>
-                  <div className="text-center flex-1 flex flex-col justify-start px-1 md:px-2 w-full">
-                    <h4 className="font-display-lg text-[13px] md:text-[19px] text-primary mb-1 md:mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
-                    <div className="flex items-center justify-center gap-1.5 md:gap-3 mt-0.5 md:mt-1 flex-wrap">
-                      <p className="text-[#5F6652]/60 line-through text-[9px] md:text-[12px]">₹ {originalPrice.toLocaleString('en-IN')}</p>
-                      <p className="text-red-800 font-label-caps text-[10px] md:text-[13px] tracking-[0.1em] md:tracking-[0.2em] font-bold">{item.price}</p>
+                  <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-4 w-full">
+                    <h4 className="font-display-lg text-[12px] sm:text-[14px] md:text-[18px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
+                    <div className="flex items-center justify-center gap-1.5 md:gap-3 mt-0.5 flex-wrap">
+                      <p className="text-[#5F6652]/60 line-through text-[9.5px] md:text-[12px]">₹ {originalPrice.toLocaleString('en-IN')}</p>
+                      <p className="text-red-700 font-label-caps text-[11px] md:text-[13px] tracking-wide font-bold">{item.price}</p>
                     </div>
                   </div>
                 </div>
@@ -482,58 +491,65 @@ void main() {
             })}
           </div>
           
-          <div className="flex justify-center mt-10">
+          <div className="flex justify-center mt-6 md:mt-10 mb-8 md:mb-12">
             <button 
               onClick={() => setShowAllOffers(!showAllOffers)}
-              className="load-more-btn px-10 py-4 bg-primary border border-primary text-white font-bold font-label-caps text-[12px] tracking-[0.2em] uppercase hover:bg-transparent hover:text-primary transition-all duration-300 rounded-none shadow-sm"
+              className="px-10 py-3.5 bg-[#4F4E22] text-white font-bold font-label-caps text-[11px] md:text-[12px] tracking-[0.2em] uppercase hover:bg-[#3D3C1A] hover:scale-105 active:scale-95 transition-all duration-300 rounded-full shadow-lg border border-[#3D3C1A]/20 cursor-pointer"
+              style={{ backgroundColor: '#4F4E22', color: '#ffffff' }}
             >
-              {showAllOffers ? "View Less" : "View All Offers"}
+              {showAllOffers ? "VIEW LESS" : "VIEW ALL OFFERS"}
             </button>
           </div>
         </section>
 
         {/* Product Grid */}
-        <section className="pt-16 pb-0 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-          <div className="flex justify-between items-end mb-14">
+        <section className="pt-8 md:pt-16 pb-0 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
+          <div className="flex justify-between items-end mb-8 md:mb-14">
             <div>
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-2 md:mb-4">
                 <div className="w-8 h-px bg-[#D4AF37]"></div>
-                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Eligible Selection</span>
+                <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">Eligible Selection</span>
               </div>
-              <h3 className="font-display-lg text-4xl md:text-5xl text-primary leading-tight">The Buy 2 Get 1 Gallery</h3>
+              <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">The Buy 2 Get 1 Gallery</h3>
             </div>
-            <div className="hidden md:flex gap-4">
-              <div onClick={() => scrollGallery('left')} role="button" className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-[12px] text-[#D4AF37] hover:bg-[#F2A987] hover:border-[#F2A987] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
-                <span className="material-symbols-outlined text-[20px]">west</span>
-              </div>
-              <div onClick={() => scrollGallery('right')} role="button" className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-[12px] text-[#D4AF37] hover:bg-[#F2A987] hover:border-[#F2A987] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
-                <span className="material-symbols-outlined text-[20px]">east</span>
-              </div>
+            <div className="hidden md:flex gap-3">
+              <button 
+                onClick={() => scrollGallery('left')} 
+                aria-label="Previous items"
+                className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-full text-[#4F4E22] bg-[#FAF9F6] hover:bg-[#4F4E22] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+              >
+                <ChevronLeft size={20} strokeWidth={2.2} />
+              </button>
+              <button 
+                onClick={() => scrollGallery('right')} 
+                aria-label="Next items"
+                className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-full text-[#4F4E22] bg-[#FAF9F6] hover:bg-[#4F4E22] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+              >
+                <ChevronRight size={20} strokeWidth={2.2} />
+              </button>
             </div>
           </div>
           
-          <div ref={galleryRef} className="flex overflow-x-auto gap-4 md:gap-6 lg:gap-8 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div ref={galleryRef} className="flex overflow-x-auto gap-3 sm:gap-4 md:gap-6 lg:gap-8 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {[...galleryItems, ...galleryItems].map((item, index) => (
-              <div key={index} className="w-[150px] md:w-[340px] shrink-0 group cursor-pointer flex flex-col items-center" onClick={() => setCurrentTab('catalog')}>
-                <div className="relative w-full p-1.5 md:p-2.5 bg-white border border-[#D4AF37]/30 shadow-sm group-hover:shadow-2xl transition-all duration-700 mb-3 md:mb-6 rounded-sm">
-                  <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-high">
-                    <img 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                      alt={item.title}
-                      src={item.image}
-                    />
-                    {item.tag && (
-                      <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-white/95 backdrop-blur-md px-1.5 md:px-2.5 py-0.5 md:py-1 shadow-sm border border-white/40">
-                        <span className="text-[#B38A4A] font-label-caps text-[6px] md:text-[8.5px] tracking-[0.1em] md:tracking-[0.2em] uppercase font-bold leading-none block">{item.tag}</span>
-                      </div>
-                    )}
-                  </div>
+              <div key={index} className="w-[140px] sm:w-[180px] md:w-[340px] shrink-0 group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => setCurrentTab('catalog')}>
+                <div className="relative w-full aspect-[3/4] overflow-hidden bg-surface-container-high">
+                  <img 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                    alt={item.title}
+                    src={item.image}
+                  />
+                  {item.tag && (
+                    <div className="absolute top-2 left-2 bg-white/95 backdrop-blur-md px-1.5 py-0.5 shadow-sm border border-white/40 rounded-sm">
+                      <span className="text-[#B38A4A] font-label-caps text-[6.5px] md:text-[8.5px] tracking-[0.1em] uppercase font-bold leading-none block">{item.tag}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="text-center flex-1 flex flex-col justify-start px-1 md:px-2 w-full">
-                  <h4 className="font-display-lg text-[13px] md:text-[21px] text-primary mb-1 md:mb-1.5 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
-                  <div className="flex items-center justify-center gap-1.5 md:gap-3 mt-0.5 md:mt-1">
+                <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-4 w-full">
+                  <h4 className="font-display-lg text-[12px] sm:text-[14px] md:text-[21px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
+                  <div className="flex items-center justify-center gap-1.5 md:gap-3 mt-0.5">
                     <div className="w-2 md:w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                    <p className="text-[#5F6652] font-label-caps text-[9px] md:text-[11px] tracking-[0.1em] md:tracking-[0.2em]">{item.price}</p>
+                    <p className="text-[#5F6652] font-label-caps text-[9.5px] md:text-[11px] tracking-wide font-bold">{item.price}</p>
                     <div className="w-2 md:w-4 h-[1px] bg-[#D4AF37]/40"></div>
                   </div>
                 </div>
@@ -544,7 +560,7 @@ void main() {
 
         {/* Offer Categories (Bento Grid Style) */}
         <section 
-          className="relative pt-8 md:pt-16 pb-6 md:pb-16 px-margin-mobile md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
+          className="relative pt-8 md:pt-16 pb-6 md:pb-16 px-3 sm:px-6 md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
           style={{ backgroundImage: "url('/Images/offer.png')" }}
         >
           {/* Dark Overlay for Readability */}
@@ -621,28 +637,25 @@ void main() {
           </div>
         </section>
 
-
-
-
         {/* Lucky Draw Spinning Wheel */}
-        <section className="pt-12 md:pt-16 pb-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-          <div className="bg-[#FDFBF7] rounded-[2rem] border border-[#D4AF37]/30 shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 md:p-16 overflow-hidden relative">
-            <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center relative z-10">
+        <section className="pt-8 md:pt-16 pb-16 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
+          <div className="bg-[#FDFBF7] rounded-3xl border border-[#D4AF37]/30 shadow-[0_15px_40px_rgba(0,0,0,0.05)] p-5 sm:p-8 md:p-14 overflow-hidden relative">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center relative z-10">
             <div className="reveal-on-scroll">
-              <h3 className="font-display-lg text-4xl md:text-[52px] text-[#2D3326] mb-6">Festival Lucky Draw</h3>
-              <p className="text-[#2D3326]/70 text-lg mb-10 font-light leading-relaxed max-w-lg">Spin the heritage wheel for a chance to win exclusive gift cards, artisan blouses, or a signature silk saree from our royal vault.</p>
+              <h3 className="font-display-lg text-2xl sm:text-4xl md:text-[48px] text-[#2D3326] mb-3 md:mb-5 leading-tight">Festival Lucky Draw</h3>
+              <p className="text-[#2D3326]/80 text-xs sm:text-base mb-5 md:mb-8 font-normal leading-relaxed max-w-lg">Spin the heritage wheel for a chance to win exclusive gift cards, artisan blouses, or a signature silk saree from our royal vault.</p>
               
-              <ul className="space-y-4 mb-10">
-                <li className="flex items-center gap-3 text-[#2D3326]">
-                  <span className="material-symbols-outlined text-[#D4AF37]">check_circle</span>
+              <ul className="space-y-2.5 sm:space-y-3.5 mb-6 md:mb-8">
+                <li className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
+                  <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
                   <span>Grand Prize: Royal Banarasi Saree</span>
                 </li>
-                <li className="flex items-center gap-3 text-[#2D3326]">
-                  <span className="material-symbols-outlined text-[#D4AF37]">check_circle</span>
+                <li className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
+                  <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
                   <span>Gift Cards worth ₹ 10,000</span>
                 </li>
-                <li className="flex items-center gap-3 text-[#2D3326]">
-                  <span className="material-symbols-outlined text-[#D4AF37]">check_circle</span>
+                <li className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
+                  <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
                   <span>Artisan Blouse Customizations</span>
                 </li>
               </ul>
@@ -650,16 +663,16 @@ void main() {
               <button 
                 onClick={handleSpinWheel}
                 disabled={isSpinning}
-                className="px-10 py-4 bg-primary text-on-primary font-label-caps tracking-widest rounded-full shadow-xl hover:scale-105 transition-transform active:scale-95 disabled:opacity-50" 
+                className="w-full sm:w-auto px-8 py-3.5 bg-primary text-on-primary font-label-caps text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-transform active:scale-95 disabled:opacity-50" 
                 id="spin-btn"
               >
                 {spinText}
               </button>
             </div>
             
-            <div className="relative flex justify-center py-6">
+            <div className="relative flex justify-center py-4 md:py-6">
               <div 
-                className="w-72 h-72 md:w-[420px] md:h-[420px] border-8 border-[#D4AF37] relative shadow-[0_10px_30px_rgba(0,0,0,0.1)] overflow-hidden bg-white" 
+                className="w-56 h-56 sm:w-72 sm:h-72 md:w-[400px] md:h-[400px] border-4 md:border-8 border-[#D4AF37] relative shadow-[0_10px_30px_rgba(0,0,0,0.1)] overflow-hidden bg-white" 
                 id="wheel"
                 style={{
                   borderRadius: '50%',
@@ -694,7 +707,7 @@ void main() {
                         className="absolute inset-0 flex items-start justify-center"
                         style={{ transform: `rotate(${i * 60 + 30}deg)` }}
                       >
-                        <div className={`pt-6 md:pt-10 w-24 text-center font-display-lg text-[11px] md:text-sm tracking-wide leading-tight ${prize.color}`}>
+                        <div className={`pt-4 sm:pt-6 md:pt-10 w-20 sm:w-24 text-center font-display-lg text-[9.5px] sm:text-[11px] md:text-sm tracking-wide leading-tight ${prize.color}`}>
                           <span className="block" style={{ transform: isBottomHalf ? 'rotate(180deg)' : 'none' }}>
                             {prize.text}
                           </span>
@@ -706,19 +719,19 @@ void main() {
                 
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div 
-                    className={`w-10 h-10 bg-white rounded-full z-10 shadow-xl border-4 border-[#D4AF37] pointer-events-auto flex items-center justify-center transition-all duration-300 ${isSpinning ? 'opacity-80' : 'cursor-pointer hover:scale-110 hover:shadow-2xl'}`}
+                    className={`w-8 h-8 md:w-10 md:h-10 bg-white rounded-full z-10 shadow-xl border-2 md:border-4 border-[#D4AF37] pointer-events-auto flex items-center justify-center transition-all duration-300 ${isSpinning ? 'opacity-80' : 'cursor-pointer hover:scale-110 hover:shadow-2xl'}`}
                     onClick={isSpinning ? undefined : handleSpinWheel}
                     title={isSpinning ? "Spinning..." : "Click to Spin!"}
                   >
-                    <div className="w-3 h-3 bg-[#D4AF37] rounded-full"></div>
+                    <div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-[#D4AF37] rounded-full"></div>
                   </div>
                 </div>
               </div>
               
               {/* Golden Indicator */}
               <div 
-                className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-12 bg-[#D4AF37] z-20 drop-shadow-md" 
-                style={{ clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }}
+                className="absolute -top-1 md:-top-2 left-1/2 -translate-x-1/2 w-6 h-9 md:w-8 md:h-12 bg-[#D4AF37] z-20 drop-shadow-md" 
+                style={{ clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)' }}
               ></div>
             </div>
             </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus, MapPin, Gift, LogOut, ArrowRight, Sparkles } from 'lucide-react';
+import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus, MapPin, Gift, LogOut, ArrowRight, Sparkles, Truck, Package } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
 import { useAuth } from '../../../hooks/useAuth';
 import { getProducts } from '../../../services/api';
@@ -261,11 +261,14 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
                         <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
                           <ShoppingBag size={14} className={styles.dropdownIcon} /> My Orders
                         </button>
-                        <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
-                          <Heart size={14} className={styles.dropdownIcon} /> Wishlist
+                        <button onClick={() => { handleTabChange('track-order'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <Truck size={14} className={styles.dropdownIcon} /> Track Order
                         </button>
                         <button onClick={() => { handleTabChange('saved-address'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
                           <MapPin size={14} className={styles.dropdownIcon} /> Saved Address
+                        </button>
+                        <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <Heart size={14} className={styles.dropdownIcon} /> Wishlist
                         </button>
                         <div className={styles.dropdownDivider}></div>
                         <button onClick={() => { logout(); handleTabChange('shop'); setIsAccountOpen(false); }} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>
@@ -274,10 +277,19 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
                       </>
                     ) : (
                       <>
-                        <button onClick={() => { handleTabChange('login'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Login</button>
-                        <button onClick={() => { handleTabChange('register'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Register</button>
+                        <button onClick={() => { handleTabChange('login'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <User size={14} className={styles.dropdownIcon} /> Login
+                        </button>
+                        <button onClick={() => { handleTabChange('register'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <Sparkles size={14} className={styles.dropdownIcon} /> Register
+                        </button>
+                        <button onClick={() => { handleTabChange('track-order'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <Truck size={14} className={styles.dropdownIcon} /> Track Order
+                        </button>
                         <div className={styles.dropdownDivider}></div>
-                        <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>Wishlist</button>
+                        <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <Heart size={14} className={styles.dropdownIcon} /> Wishlist
+                        </button>
                       </>
                     )}
                   </div>
@@ -346,9 +358,6 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
               </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('pre-booking')} className={`${styles.menuLink} ${styles.preBookingLink} ${currentTab === 'pre-booking' ? styles.active : ''}`}>Pre-Booking</button>
-              </li>
-              <li className={styles.menuItem}>
-                <button onClick={() => handleTabChange('track-order')} className={`${styles.menuLink} ${currentTab === 'track-order' ? styles.active : ''}`}>Track Order</button>
               </li>
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('about')} className={`${styles.menuLink} ${currentTab === 'about' ? styles.active : ''}`}>About</button>

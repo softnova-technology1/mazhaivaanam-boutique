@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './PreBooking.module.css';
-import { ChevronDown, ArrowRight, Grid, List, Filter, X, Loader2 } from 'lucide-react';
+import { ChevronDown, ArrowRight, Grid, List, Filter, X, Loader2, Heart, Share2, Star } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
 import { getPreorderProducts } from '../../services/api';
@@ -125,9 +125,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
 
   return (
     <div className={styles['prebooking-page-container']}>
-      
-
-
       <main className={styles['main-layout']}>
         {/* Mobile Filter Overlay */}
         {isMobileFilterOpen && (
@@ -137,41 +134,94 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
         {/* Left Sidebar */}
         <aside className={`${styles['filters-sidebar']} ${isMobileFilterOpen ? styles['open'] : ''}`}>
           <div className={styles['sticky-sidebar-content']}>
-            <div className={styles['mobile-sidebar-header']}>
-              <h2 className={styles['sidebar-title']}>Filters</h2>
-              <button className={styles['close-filter-btn']} onClick={() => setIsMobileFilterOpen(false)}>
+            <div className={styles['sidebar-header']}>
+              <div className={styles['sidebar-title-group']}>
+                <Filter size={18} className={styles['filter-header-icon']} />
+                <h2 className={styles['sidebar-title']}>Filters</h2>
+              </div>
+              <button className={styles['close-filter-btn']} onClick={() => setIsMobileFilterOpen(false)} type="button">
                 <X size={20} />
               </button>
             </div>
 
-            {/* Estimated Delivery Widget */}
-            <div className={styles['filter-widget']}>
-              <div role="button" 
-                className={styles['widget-header-btn']} 
-                onClick={() => setIsTimeOpen(!isTimeOpen)}
-              >
-                <span>Delivery Time</span>
-                <ChevronDown size={14} className={`${styles['chevron-icon']} ${isTimeOpen ? styles['open'] : ''}`} />
-              </div>
-              {isTimeOpen && (
-                <div className={styles['widget-content']}>
-                  <label className={styles['checkbox-label']}>
-                    <input 
-                      type="checkbox" 
-                      checked={selectedTimes.includes('under-15')}
-                      onChange={() => handleFilterToggle(setSelectedTimes, 'under-15')}
-                    /> Under 20 Days
-                  </label>
-                  <label className={styles['checkbox-label']}>
-                    <input 
-                      type="checkbox" 
-                      checked={selectedTimes.includes('25-30')}
-                      onChange={() => handleFilterToggle(setSelectedTimes, '25-30')}
-                    /> 25 - 30 Days
-                  </label>
-                  
+            <div className={styles['sidebar-widgets-list']}>
+              {/* Estimated Delivery Widget */}
+              <div className={styles['filter-widget']}>
+                <div className={styles['widget-title-box']}>
+                  <span className="material-symbols-outlined">schedule</span>
+                  <h4>Delivery Timeline</h4>
                 </div>
+                <div className={styles['filter-chips-list']}>
+                  {[
+                    { id: 'under-15', label: 'Under 20 Days' },
+                    { id: '15-30', label: '25 - 30 Days' },
+                    { id: 'over-30', label: '35 - 40 Days' }
+                  ].map((time) => {
+                    const isSelected = selectedTimes.includes(time.id);
+                    return (
+                      <button
+                        key={time.id}
+                        type="button"
+                        className={`${styles['filter-chip']} ${isSelected ? styles['active-chip'] : ''}`}
+                        onClick={() => handleFilterToggle(setSelectedTimes, time.id)}
+                      >
+                        <span>{time.label}</span>
+                        {isSelected && <span className={styles['chip-check']}>✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Price Range Filter Widget */}
+              <div className={styles['filter-widget']}>
+                <div className={styles['widget-title-box']}>
+                  <span className="material-symbols-outlined">payments</span>
+                  <h4>Price Range</h4>
+                </div>
+                <div className={styles['filter-chips-list']}>
+                  {[
+                    { id: 'under-15k', label: 'Under ₹15,000' },
+                    { id: '15k-25k', label: '₹15,000 - ₹25,000' },
+                    { id: 'over-25k', label: 'Over ₹25,000' }
+                  ].map((price) => {
+                    const isSelected = selectedPriceFilters.includes(price.id);
+                    return (
+                      <button
+                        key={price.id}
+                        type="button"
+                        className={`${styles['filter-chip']} ${isSelected ? styles['active-chip'] : ''}`}
+                        onClick={() => handleFilterToggle(setSelectedPriceFilters, price.id)}
+                      >
+                        <span>{price.label}</span>
+                        {isSelected && <span className={styles['chip-check']}>✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles['sidebar-footer-actions']}>
+              {(selectedTimes.length > 0 || selectedPriceFilters.length > 0) && (
+                <button 
+                  className={styles['reset-all-btn']} 
+                  onClick={() => {
+                    setSelectedTimes([]);
+                    setSelectedPriceFilters([]);
+                  }} 
+                  type="button"
+                >
+                  RESET ALL FILTERS
+                </button>
               )}
+              <button 
+                className={styles['mobile-apply-btn']} 
+                onClick={() => setIsMobileFilterOpen(false)} 
+                type="button"
+              >
+                APPLY FILTERS ({sortedProducts.length})
+              </button>
             </div>
           </div>
         </aside>
@@ -181,43 +231,73 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
           {/* Header Description */}
           <div className={styles['collection-header']}>
             <h1 className={styles['collection-title']}>Pre Booking Collections</h1>
-            <div className={styles['collection-description']}>
-              <p><strong>Reserve Your Favourite Saree Before It's Gone!</strong></p>
-              <p>Our exclusive handloom sarees are crafted in limited quantities. Pre-book now to secure your preferred design before it sells out.</p>
-              <p>✨ <strong>Exclusive Collection</strong> – Handpicked premium sarees woven with timeless elegance and traditional craftsmanship.</p>
-              <p>🛍️ <strong>Priority Reservation</strong> – Confirm your booking today and we'll reserve your selected saree exclusively for you.</p>
-              <p>🚚 <strong>Delivery Timeline</strong> – Your saree will be carefully prepared and delivered within 35–40 days.</p>
-              <p>💝 <strong>Flexible Booking</strong> – Need to make a change? You can modify or exchange your booking before dispatch. (Refunds are not available.)</p>
-              <p>🌸 <strong>Own a Piece of Heritage</strong> – Experience authentic craftsmanship with every weave, designed to make every occasion memorable.</p>
+            <div className={styles['collection-divider']} />
+            <p className={styles['collection-subtitle']}>
+              Reserve Your Favourite Saree Before It's Gone! Our exclusive handloom sarees are crafted in limited quantities.
+            </p>
+
+            {/* Pre-Booking Guarantees / Highlights */}
+            <div className={styles['prebooking-highlights-grid']}>
+              <div className={styles['highlight-card']}>
+                <span className="material-symbols-outlined">auto_awesome</span>
+                <div>
+                  <h5>Exclusive Weaves</h5>
+                  <p>Handpicked limited-batch sarees</p>
+                </div>
+              </div>
+              <div className={styles['highlight-card']}>
+                <span className="material-symbols-outlined">event_available</span>
+                <div>
+                  <h5>Priority Reservation</h5>
+                  <p>Guaranteed loom allotment</p>
+                </div>
+              </div>
+              <div className={styles['highlight-card']}>
+                <span className="material-symbols-outlined">local_shipping</span>
+                <div>
+                  <h5>35–40 Days Delivery</h5>
+                  <p>Carefully woven and finished</p>
+                </div>
+              </div>
+              <div className={styles['highlight-card']}>
+                <span className="material-symbols-outlined">sync_saved_locally</span>
+                <div>
+                  <h5>Flexible Exchange</h5>
+                  <p>Modify booking prior to dispatch</p>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Toolbar */}
           <div className={styles['toolbar']}>
             <div className={styles['toolbar-left']}>
-              <span>Showing 1 - {sortedProducts.length} of {sortedProducts.length} products</span>
+              <span>Showing <strong>{sortedProducts.length}</strong> of <strong>{preorderList.length}</strong> Masterpieces</span>
             </div>
             <div className={styles['toolbar-right']}>
               <button 
                 className={styles['mobile-filter-btn']}
                 onClick={() => setIsMobileFilterOpen(true)}
+                type="button"
               >
                 <Filter size={14} /> Filters
               </button>
-              <div className={styles['sort-dropdown']}>
-                <span className={styles['sort-label']}>Sort by:</span>
-                <div role="button" 
-                  className={styles['sort-btn']}
+
+              <div className={styles['custom-dropdown-container']}>
+                <span className={styles['sort-label']}>SORT:</span>
+                <div 
+                  className={styles['custom-dropdown-toggle']} 
                   onClick={() => setIsSortOpen(!isSortOpen)}
                 >
-                  {SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured'} <ChevronDown size={14} />
+                  <span>{SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured'}</span>
+                  <ChevronDown size={14} className={isSortOpen ? styles['open'] : ''} />
                 </div>
                 {isSortOpen && (
-                  <div className={styles['sort-menu']}>
+                  <div className={styles['custom-dropdown-menu']}>
                     {SORT_OPTIONS.map((option) => (
                       <div 
                         key={option.value}
-                        role="button"
+                        className={`${styles['dropdown-item']} ${selectedSort === option.value ? styles['active-item'] : ''}`}
                         onClick={() => {
                           setSelectedSort(option.value);
                           setIsSortOpen(false);
@@ -229,22 +309,24 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                   </div>
                 )}
               </div>
+
               <div className={styles['view-toggles']}>
-                <span className={styles['sort-label']}>View</span>
-                <div 
-                  role="button" 
-                  className={`${styles['view-icon-btn']} ${viewMode === 'grid' ? styles['active-view'] : ''}`}
+                <button 
+                  className={`${styles['icon-btn']} ${viewMode === 'grid' ? styles['active'] : ''}`}
                   onClick={() => setViewMode('grid')}
+                  title="Grid View"
+                  type="button"
                 >
-                  <Grid size={16} />
-                </div>
-                <div 
-                  role="button" 
-                  className={`${styles['view-icon-btn']} ${viewMode === 'list' ? styles['active-view'] : ''}`}
+                  <Grid size={15} />
+                </button>
+                <button 
+                  className={`${styles['icon-btn']} ${viewMode === 'list' ? styles['active'] : ''}`}
                   onClick={() => setViewMode('list')}
+                  title="List View"
+                  type="button"
                 >
-                  <List size={16} />
-                </div>
+                  <List size={15} />
+                </button>
               </div>
             </div>
           </div>
@@ -266,15 +348,48 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                   <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
                     <div className={styles['discount-badge']}>Save {product.discount || '10%'}</div>
                     <img src={product.image} alt={product.name} className={styles['product-image']} />
+                    
+                    <button 
+                      className={styles['card-wishlist-btn']} 
+                      onClick={(e) => { e.stopPropagation(); }}
+                      title="Save to Wishlist"
+                      type="button"
+                    >
+                      <Heart size={14} />
+                    </button>
+                    <button 
+                      className={styles['card-share-btn']} 
+                      onClick={(e) => { e.stopPropagation(); }}
+                      title="Share"
+                      type="button"
+                    >
+                      <Share2 size={14} />
+                    </button>
                   </div>
+
                   <div className={styles['product-info']}>
-                    <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
-                      {product.name} | PRE BOOKING
-                    </h3>
+                    <div className={styles['title-row']}>
+                      <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)} title={product.name}>
+                        {product.name}
+                      </h3>
+                      <div className={styles['rating-badge']}>
+                        <Star size={10} fill="#B38A4A" stroke="#B38A4A" />
+                        <span>4.8</span>
+                      </div>
+                    </div>
+
+                    <p className={styles['product-desc']}>
+                      {product.description || "Midnight charcoal black handwoven pure silk saree with rich heritage zari."}
+                    </p>
+
                     <div className={styles['product-price-row']}>
                       <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                      <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                      {product.oldPrice && (
+                        <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                      )}
+                      <span className={styles['discount-tag']}>{product.discount || '10% OFF'}</span>
                     </div>
+
                     <div 
                       role="button" 
                       className={styles['prebook-btn']} 
@@ -284,9 +399,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                       }}
                     >
                       PRE BOOK NOW
-                    </div>
-                    <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); }}>
-                      Quick view
                     </div>
                   </div>
                 </div>

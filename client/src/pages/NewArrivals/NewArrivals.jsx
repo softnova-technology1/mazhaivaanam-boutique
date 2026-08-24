@@ -130,73 +130,52 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
 
 
 
-      {/* 3. Filter & Search Controls */}
-      <section className="container" id="new-arrivals-explore" style={{ padding: '40px 0 20px 0' }}>
-        <div className="flex flex-col gap-6 mb-4 sm:mb-10">
-          
-          {/* Top row: Search and Mobile Categories */}
-          <div className="flex flex-row justify-between items-center gap-3 border-b border-[#E9DDC7] pb-4">
-            {/* Search Bar */}
-            <div className={`${styles['search-bar-box']} flex-1`}>
-              <Search size={16} className={styles['search-icon']} />
-              <input
-                type="text"
-                placeholder="Search new arrivals..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles['search-input']}
-              />
-              {searchQuery && (
-                <div
-                  className={styles['search-clear-icon']}
-                  onClick={() => setSearchQuery('')}
-                  role="button"
-                >
-                  ✕
-                </div>
-              )}
-            </div>
-
-            {/* Mobile View: Dropdown */}
-            <div className="sm:hidden w-[40%] relative">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className={styles['category-dropdown']}
-              >
-                {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Bottom row: Desktop Categories */}
-          <div className="hidden sm:block w-full">
-            {/* Desktop View: Horizontal Links */}
-            <div className="flex gap-8 overflow-x-auto no-scrollbar pb-2">
-              {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
+      {/* 3. Filter & Search Controls (Flexed in Single Row) */}
+      <section className={styles['controls-section']} id="new-arrivals-explore">
+        <div className={styles['controls-toolbar']}>
+          {/* Categories Tabs */}
+          <div className={styles['category-tabs']}>
+            {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => {
+              const isSelected = selectedCategory === cat;
+              return (
                 <button
                   key={cat}
-                  className={`filter-link whitespace-nowrap font-inter text-[11px] font-semibold tracking-[1.5px] uppercase pb-1 transition-all duration-300 border-b-2 ${
-                    selectedCategory === cat 
-                      ? 'text-primary border-primary' 
-                      : 'text-text-muted border-transparent hover:text-primary hover:border-primary/50'
-                  }`}
+                  className={`${styles['category-tab-btn']} ${isSelected ? styles['active-tab'] : ''}`}
                   onClick={() => setSelectedCategory(cat)}
+                  type="button"
                 >
-                  {cat}
+                  {cat === 'All' ? 'All Pieces' : cat}
                 </button>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+
+          {/* Search Bar */}
+          <div className={styles['search-bar-box']}>
+            <Search size={15} className={styles['search-icon']} />
+            <input
+              type="text"
+              placeholder="Search new arrivals..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles['search-input']}
+            />
+            {searchQuery && (
+              <div
+                className={styles['search-clear-icon']}
+                onClick={() => setSearchQuery('')}
+                role="button"
+                title="Clear search"
+              >
+                ✕
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* 4. Product Grid Section */}
-      <section className="container" style={{ paddingBottom: '100px' }}>
+      <section className={styles['products-section']}>
         {newArrivals.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 0', fontFamily: 'Inter, sans-serif' }}>
             <h3 style={{ color: 'var(--primary)', fontFamily: 'Playfair Display, Georgia, serif', fontSize: '20px' }}>No new arrivals match your filters.</h3>

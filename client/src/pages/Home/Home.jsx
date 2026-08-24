@@ -322,10 +322,20 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
 
       {/* 4. The Best Sellers */}
       <section className={`${styles['bestsellers-section']} container`}>
-        <div className={styles['section-header-center']}>
-          <span className={styles['section-label-small']}>EXCLUSIVES</span>
-          <h2>The Best Sellers</h2>
+        <div className={styles['bestsellers-header-row']}>
+          <div className={styles['bestsellers-title-box']}>
+            <span className={styles['section-label-small']}>EXCLUSIVES</span>
+            <h2 className={styles['bestsellers-title']}>The Best Sellers</h2>
+          </div>
+          <button 
+            onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
+            className={styles['view-all-btn']}
+            type="button"
+          >
+            VIEW ALL <span>→</span>
+          </button>
         </div>
+
         <div className="product-grid">
           {bestSellers.map((product) => (
             <ProductCard 
@@ -335,14 +345,6 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
               setCurrentTab={setCurrentTab}
             />
           ))}
-        </div>
-        <div className="flex justify-center mt-10 mb-4">
-          <button 
-            onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
-            className="px-8 py-3 border border-[#D4AF37] text-[#1a1a1a] rounded-[10px] hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-300 font-inter text-[11px] tracking-[2px] font-semibold uppercase flex items-center gap-2"
-          >
-            VIEW ALL <span className="text-[14px]">→</span>
-          </button>
         </div>
       </section>
 

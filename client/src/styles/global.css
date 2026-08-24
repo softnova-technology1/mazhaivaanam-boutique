@@ -236,6 +236,23 @@ a {
   width: 100%;
 }
 
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-content {
+  width: 100%;
+  flex-grow: 1;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 /* Cloud Button Shape Utility */
 .btn-cloud {
   position: relative !important;

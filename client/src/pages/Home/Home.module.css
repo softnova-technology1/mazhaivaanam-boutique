@@ -500,20 +500,81 @@
   padding-bottom: 0;
 }
 
-.section-header-center {
-  text-align: center;
-  margin-bottom: 32px;
+.bestsellers-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 36px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.bestsellers-title-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bestsellers-title {
+  font-family: var(--font-heading);
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .section-label-small {
   font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.4em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.35em;
   color: var(--accent);
   text-transform: uppercase;
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+}
+
+.view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  border: 1.5px solid #D4AF37;
+  background: transparent;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(79, 78, 34, 0.2);
+}
+
+.view-all-btn span {
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.view-all-btn:hover span {
+  transform: translateX(3px);
+}
+
+.section-header-center {
+  text-align: center;
+  margin-bottom: 32px;
 }
 
 .section-header-center h2 {
@@ -522,8 +583,8 @@
   font-weight: 400;
   color: var(--text-main);
   margin: 0;
-
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 /* 5. The Bridal Edit */
 .bridal-edit-section {
@@ -1467,6 +1528,24 @@
   .bestsellers-section {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .bestsellers-header-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+    gap: 12px;
+  }
+
+  .bestsellers-title {
+    font-size: 28px;
+  }
+
+  .view-all-btn {
+    padding: 8px 16px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
   }
 
   .bestsellers-section .section-header-center {

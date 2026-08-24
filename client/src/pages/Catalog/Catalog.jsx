@@ -54,7 +54,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeQuickPill, setActiveQuickPill] = useState('all');
   const ITEMS_PER_PAGE = 20;
 
   // Initial fetch from MongoDB API
@@ -285,17 +284,22 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
         <aside className={`${styles['filters-sidebar']} ${isMobileFilterOpen ? styles['mobile-filter-open'] : ''}`}>
           <div className={styles['sticky-sidebar-content']}>
-            <div className={styles['sidebar-header-mobile']}>
-              <h2 className={styles['sidebar-title']}>Filters</h2>
+            <div className={styles['sidebar-header']}>
+              <div className={styles['sidebar-title-group']}>
+                <Filter size={18} className={styles['filter-header-icon']} />
+                <h2 className={styles['sidebar-title']}>Filters</h2>
+              </div>
               <button 
                 className={styles['close-filter-btn']}
                 onClick={() => setIsMobileFilterOpen(false)}
+                type="button"
+                aria-label="Close Filters"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
 
-            <div className={styles['space-y-6']}>
+            <div className={styles['sidebar-widgets-list']}>
 
               {/* Collection Filter Widget */}
               <div className={styles['filter-widget']}>
@@ -305,16 +309,21 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     <h4>Collection</h4>
                   </div>
                 </div>
-                <div className={styles['fabric-tags']}>
-                  {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => (
-                    <button 
-                      key={cat} 
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`${styles['tag-btn']} ${selectedCategory === cat ? styles['active-tag'] : ''}`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                <div className={styles['collection-options-list']}>
+                  {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => {
+                    const isSelected = selectedCategory === cat;
+                    return (
+                      <button 
+                        key={cat} 
+                        onClick={() => setSelectedCategory(cat)}
+                        className={`${styles['collection-option-item']} ${isSelected ? styles['active-collection'] : ''}`}
+                        type="button"
+                      >
+                        <span className={styles['collection-indicator']}></span>
+                        <span className={styles['collection-name']}>{cat === 'All' ? 'All Collections' : cat}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -326,16 +335,20 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     <h4>Fabric</h4>
                   </div>
                 </div>
-                <div className={styles['fabric-tags']}>
-                  {['All', 'Pure Silk', 'Cotton', 'Tussar', 'Organza', 'Linen', 'Georgette', 'Chiffon', 'Chanderi'].map(fab => (
-                    <button 
-                      key={fab} 
-                      onClick={() => setSelectedFabric(fab)}
-                      className={`${styles['tag-btn']} ${selectedFabric === fab ? styles['active-tag'] : ''}`}
-                    >
-                      {fab}
-                    </button>
-                  ))}
+                <div className={styles['fabric-grid']}>
+                  {['All', 'Pure Silk', 'Cotton', 'Tussar', 'Organza', 'Linen', 'Georgette', 'Chiffon', 'Chanderi'].map(fab => {
+                    const isSelected = selectedFabric === fab;
+                    return (
+                      <button 
+                        key={fab} 
+                        onClick={() => setSelectedFabric(fab)}
+                        className={`${styles['fabric-chip']} ${isSelected ? styles['active-chip'] : ''}`}
+                        type="button"
+                      >
+                        {fab}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -347,48 +360,24 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     <h4>Availability</h4>
                   </div>
                 </div>
-                <div style={{ padding: '8px 0', position: 'relative' }}>
-                  <button
-                    className={styles['dropdown-trigger-btn']}
-                    style={{ width: '100%', justifyContent: 'space-between', padding: '10px 14px', border: '1px solid var(--border-color)', backgroundColor: 'transparent' }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsAvailabilityOpen(!isAvailabilityOpen);
-                    }}
-                    type="button"
-                  >
-                    <span>
-                      {selectedAvailability === 'All' && 'All Status'}
-                      {selectedAvailability === 'In Stock' && 'In Stock'}
-                      {selectedAvailability === 'Out of Stock' && 'Out of Stock'}
-                    </span>
-                    <ChevronDown size={14} className={`${styles['chevron-icon']} ${isAvailabilityOpen ? styles['open'] : ''}`} />
-                  </button>
-                  {isAvailabilityOpen && (
-                    <div className={styles['dropdown-options-menu']} style={{ width: '100%', top: '100%', marginTop: '4px', left: 0 }}>
+                <div className={styles['availability-options']}>
+                  {[
+                    { id: 'All', label: 'All Status' },
+                    { id: 'In Stock', label: 'In Stock' },
+                    { id: 'Out of Stock', label: 'Out of Stock' }
+                  ].map(status => {
+                    const isSelected = selectedAvailability === status.id;
+                    return (
                       <button
-                        className={`${styles['dropdown-option-item']} ${selectedAvailability === 'All' ? styles['active'] : ''}`}
-                        onClick={() => setSelectedAvailability('All')}
+                        key={status.id}
                         type="button"
+                        className={`${styles['availability-chip']} ${isSelected ? styles['active-availability'] : ''}`}
+                        onClick={() => setSelectedAvailability(status.id)}
                       >
-                        All Status
+                        {status.label}
                       </button>
-                      <button
-                        className={`${styles['dropdown-option-item']} ${selectedAvailability === 'In Stock' ? styles['active'] : ''}`}
-                        onClick={() => setSelectedAvailability('In Stock')}
-                        type="button"
-                      >
-                        In Stock
-                      </button>
-                      <button
-                        className={`${styles['dropdown-option-item']} ${selectedAvailability === 'Out of Stock' ? styles['active'] : ''}`}
-                        onClick={() => setSelectedAvailability('Out of Stock')}
-                        type="button"
-                      >
-                        Out of Stock
-                      </button>
-                    </div>
-                  )}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -400,34 +389,54 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     <h4>Price Range</h4>
                   </div>
                 </div>
-                <div style={{ padding: '16px 0 8px 0' }}>
+                
+                <div className={styles['price-slider-container']}>
+                  <div className={styles['price-display-row']}>
+                    <div className={styles['price-val-box']}>
+                      <span className={styles['price-val-label']}>Min</span>
+                      <span className={styles['price-val-amount']}>₹0</span>
+                    </div>
+                    <span className={styles['price-val-divider']}>—</span>
+                    <div className={styles['price-val-box']}>
+                      <span className={styles['price-val-label']}>Max</span>
+                      <span className={styles['price-val-amount']}>₹{maxPrice.toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+
                   <input 
                     type="range" 
-                    min="0" 
+                    min="1000" 
                     max="50000" 
                     step="1000" 
                     value={maxPrice} 
                     onChange={(e) => setMaxPrice(Number(e.target.value))}
-                    style={{ width: '100%', accentColor: 'var(--primary)' }}
+                    className={styles['price-range-input']}
                   />
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    marginTop: '12px', 
-                    fontSize: '13px', 
-                    color: 'var(--text-muted)',
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    fontWeight: '500'
-                  }}>
-                    <span>₹0</span>
-                    <span style={{ color: 'var(--primary)', fontWeight: '700' }}>Up to ₹{maxPrice}</span>
+
+                  {/* Quick price presets */}
+                  <div className={styles['price-presets-grid']}>
+                    {[
+                      { label: 'Under ₹10k', val: 10000 },
+                      { label: 'Under ₹20k', val: 20000 },
+                      { label: 'Under ₹35k', val: 35000 },
+                      { label: 'All (₹50k)', val: 50000 }
+                    ].map((preset) => (
+                      <button
+                        key={preset.val}
+                        type="button"
+                        className={`${styles['price-preset-btn']} ${maxPrice === preset.val ? styles['active-preset'] : ''}`}
+                        onClick={() => setMaxPrice(preset.val)}
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
 
-            <button className={styles['reset-all-btn']} onClick={handleResetFilters}>
-              RESET ALL
+            <button className={styles['reset-all-btn']} onClick={handleResetFilters} type="button">
+              RESET ALL FILTERS
             </button>
           </div>
         </aside>
@@ -436,6 +445,29 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
         <section className={styles['products-panel']}>
           {/* Dynamic Category Content Banner */}
           <div className={styles['category-content-banner']}>
+            <div className={styles['catalog-breadcrumbs']}>
+              <span onClick={() => setCurrentTab && setCurrentTab('shop')} className={styles['crumb-link']}>Home</span>
+              <span className={styles['crumb-sep']}>/</span>
+              <span 
+                onClick={() => {
+                  setSelectedCategory('All');
+                  setSelectedFabric('All');
+                  setSelectedAvailability('All');
+                  setMaxPrice(50000);
+                  setSearchQuery('');
+                }} 
+                className={selectedCategory === 'All' ? styles['crumb-active'] : styles['crumb-link']}
+              >
+                Shop
+              </span>
+              {selectedCategory && selectedCategory !== 'All' && (
+                <>
+                  <span className={styles['crumb-sep']}>/</span>
+                  <span className={styles['crumb-active']}>{selectedCategory}</span>
+                </>
+              )}
+            </div>
+
             <h2 className={styles['category-content-title']}>
               {CATEGORY_CONTENT[selectedCategory]?.title || selectedCategory}
             </h2>
@@ -445,124 +477,66 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
             </p>
           </div>
 
-          {/* Interactive Visual Fabric & Occasion Filter Ribbon */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            overflowX: 'auto',
-            padding: '12px 4px 16px 4px',
-            marginBottom: 16,
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
-          }}>
-            {[
-              { id: 'all', label: '✨ All Weaves', apply: () => { setSelectedCategory('All'); setSelectedFabric('All'); setMaxPrice(50000); setSearchQuery(''); } },
-              { id: 'kanjeevaram', label: '🥻 Pure Kanjeevaram', apply: () => { setSelectedFabric('Pure Silk'); setSearchQuery(''); } },
-              { id: 'banarasi', label: '👑 Banarasi Brocade', apply: () => { setSelectedFabric('All'); setSearchQuery('Banarasi'); } },
-              { id: 'bridal', label: '🔴 Bridal Red', apply: () => { setSearchQuery('Red'); } },
-              { id: 'temple', label: '🏛️ Temple Border', apply: () => { setSearchQuery('Temple'); } },
-              { id: 'budget', label: '💰 Under ₹15,000', apply: () => { setMaxPrice(15000); } },
-              { id: 'festive', label: '🌟 Festive Glow', apply: () => { setSelectedCategory('Festive Glow'); } },
-              { id: 'tussar', label: '🍂 Pure Tussar', apply: () => { setSelectedFabric('Tussar'); } },
-            ].map((pill) => {
-              const isActive = activeQuickPill === pill.id;
-              return (
-                <button
-                  key={pill.id}
-                  type="button"
-                  onClick={() => {
-                    if (isActive && pill.id !== 'all') {
-                      setActiveQuickPill('all');
-                      setSelectedCategory('All');
-                      setSelectedFabric('All');
-                      setMaxPrice(50000);
-                      setSearchQuery('');
-                    } else {
-                      setActiveQuickPill(pill.id);
-                      pill.apply();
-                    }
-                  }}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    padding: '8px 16px',
-                    borderRadius: 30,
-                    fontSize: '0.82rem',
-                    fontWeight: 600,
-                    whiteSpace: 'nowrap',
-                    cursor: 'pointer',
-                    transition: 'all 0.25s ease',
-                    border: isActive ? '1px solid var(--primary)' : '1px solid var(--border-color)',
-                    background: isActive ? 'rgba(200, 163, 77, 0.18)' : 'var(--bg-surface)',
-                    color: isActive ? 'var(--primary-dark)' : 'var(--text-main)',
-                    boxShadow: isActive ? '0 4px 12px rgba(200, 163, 77, 0.15)' : 'none',
-                    transform: isActive ? 'scale(1.02)' : 'scale(1)'
-                  }}
-                >
-                  {pill.label}
-                  {isActive && pill.id !== 'all' && (
-                    <span style={{ fontSize: '0.75rem', opacity: 0.7, marginLeft: 2 }}>✕</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
           <div className={styles['products-header']}>
             <div className={styles['products-header-left']}>
-              <p>Showing {products.length} of {masterProducts.length} Masterpieces</p>
+              <p className={styles['products-count-text']}>
+                Showing <strong>{products.length}</strong> of <strong>{masterProducts.length}</strong>
+              </p>
               <button 
                 className={styles['mobile-filter-toggle']} 
                 onClick={() => setIsMobileFilterOpen(true)}
+                type="button"
               >
-                <Filter size={16} /> Filter & Sort
+                <Filter size={13} /> Filter & Sort
               </button>
             </div>
             
-            <div className={styles['header-search-box']}>
-              <Search size={16} className={styles['search-icon']} />
-              <input 
-                type="text" 
-                placeholder="Search masterpieces..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles['search-input']}
-              />
-              {searchQuery && (
-                <div 
-                  onClick={() => setSearchQuery('')}
-                  className={styles['search-clear-icon']}
-                  role="button"
-                >
-                  ✕
-                </div>
-              )}
-            </div>
+            <div className={styles['products-header-right']}>
+              <div className={styles['header-search-box']}>
+                <Search size={15} className={styles['search-icon']} />
+                <input 
+                  type="text" 
+                  placeholder="Search masterpieces..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles['search-input']}
+                />
+                {searchQuery && (
+                  <div 
+                    onClick={() => setSearchQuery('')}
+                    className={styles['search-clear-icon']}
+                    role="button"
+                    title="Clear search"
+                  >
+                    ✕
+                  </div>
+                )}
+              </div>
 
-            <div className={styles['sort-selector']}>
-              <span>SORT BY:</span>
-              <div className={styles['custom-dropdown-container']}>
-                <button 
-                  className={styles['dropdown-trigger-btn']} 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsSortOpen(!isSortOpen);
-                  }}
-                  type="button"
-                >
-                  {selectedSort === 'featured' && 'Featured'}
-                  {selectedSort === 'relevant' && 'Most relevant'}
-                  {selectedSort === 'best-selling' && 'Best selling'}
-                  {selectedSort === 'alpha-asc' && 'Alphabetically, A-Z'}
-                  {selectedSort === 'alpha-desc' && 'Alphabetically, Z-A'}
-                  {selectedSort === 'price-low' && 'Price, low to high'}
-                  {selectedSort === 'price-high' && 'Price, high to low'}
-                  {selectedSort === 'date-old' && 'Date, old to new'}
-                  {selectedSort === 'date-new' && 'Date, new to old'}
-                  <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
-                </button>
+              <div className={styles['sort-selector']}>
+                <span className={styles['sort-label']}>SORT:</span>
+                <div className={styles['custom-dropdown-container']}>
+                  <button 
+                    className={styles['dropdown-trigger-btn']} 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsSortOpen(!isSortOpen);
+                    }}
+                    type="button"
+                  >
+                    <span>
+                      {selectedSort === 'featured' && 'Featured'}
+                      {selectedSort === 'relevant' && 'Most relevant'}
+                      {selectedSort === 'best-selling' && 'Best selling'}
+                      {selectedSort === 'alpha-asc' && 'Alphabetically, A-Z'}
+                      {selectedSort === 'alpha-desc' && 'Alphabetically, Z-A'}
+                      {selectedSort === 'price-low' && 'Price, low to high'}
+                      {selectedSort === 'price-high' && 'Price, high to low'}
+                      {selectedSort === 'date-old' && 'Date, old to new'}
+                      {selectedSort === 'date-new' && 'Date, new to old'}
+                    </span>
+                    <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
+                  </button>
                 {isSortOpen && (
                   <div className={styles['dropdown-options-menu']}>
                     <button
@@ -660,6 +634,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
               </div>
             </div>
           </div>
+        </div>
 
           {loading ? (
             <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--primary)' }}>

@@ -327,11 +327,13 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
         {/* Left Column: Image Gallery */}
         <div className={styles['gallery-column']}>
           <div className={styles['main-image-viewport']}>
-            <img
-              src={selectedImage}
-              alt={activeProduct.name}
-              className={styles['main-img']}
-            />
+            {(selectedImage || activeProduct.image) && (
+              <img
+                src={selectedImage || activeProduct.image}
+                alt={activeProduct.name || 'Handcrafted Saree'}
+                className={styles['main-img']}
+              />
+            )}
             {activeProduct.tag && (
               <span className={`${styles['image-badge-tag']} ${getBadgeClass(activeProduct.tag)}`}>{activeProduct.tag}</span>
             )}

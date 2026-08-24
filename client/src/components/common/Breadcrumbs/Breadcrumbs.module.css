@@ -1,14 +1,16 @@
 .breadcrumb-outer {
   width: 100%;
-  background-color: var(--bg-main); /* Soft luxury cream background */
-  margin-top: 0; /* Align directly under fixed/sticky navbar wrapper (no gap) */
+  background-color: var(--bg-main);
+  border-bottom: 1px solid rgba(233, 221, 199, 0.7);
   box-sizing: border-box;
 }
 
 .breadcrumb-container {
-  padding: 16px 80px; /* Reduced vertical padding to keep it tightly aligned */
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 14px 48px;
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 12.5px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -16,70 +18,77 @@
 }
 
 .breadcrumb-link {
-  color:white; /* Bronze Gold from user's screenshot */
+  color: var(--text-muted) !important;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
 .breadcrumb-link:hover {
-  color: var(--primary-dark); /* Olive Green */
+  color: var(--primary-dark) !important;
+  text-decoration: underline;
 }
 
 .breadcrumb-separator {
-  color: #C4BC9E; /* Muted sand separator color */
+  color: var(--text-muted) !important;
   font-size: 11px;
-  opacity: 0.85;
+  opacity: 0.6;
 }
 
 .breadcrumb-current {
-  color: white; /* Bronze Gold */
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  color: var(--primary-dark) !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 /* Overlay Breadcrumbs for Hero/Image Banner Pages (Overlaying the Hero Image directly) */
 .breadcrumb-outer.overlay {
   position: absolute;
-  top: 0; /* Aligns to top of hero wrapper (right below navbar wrapper) */
+  top: 0;
   left: 0;
   width: 100%;
   background-color: transparent;
   z-index: 10;
   pointer-events: none;
   border-bottom: none;
-  margin-top: 0; /* No offset margin since it overlays */
+  margin-top: 0;
 }
 
 .breadcrumb-outer.overlay .breadcrumb-container {
   pointer-events: auto;
-  padding: 24px 80px 0; /* Aligned nicely on top edge of hero image */
+  padding: 24px 48px 0;
 }
 
-
-
-.breadcrumb-outer.overlay .breadcrumb-link:hover {
+.breadcrumb-outer.overlay .breadcrumb-link {
   color: #ffffff !important;
 }
 
+.breadcrumb-outer.overlay .breadcrumb-link:hover {
+  color: var(--accent) !important;
+}
 
+.breadcrumb-outer.overlay .breadcrumb-separator {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
 
-
+.breadcrumb-outer.overlay .breadcrumb-current {
+  color: var(--accent) !important;
+}
 
 @media (max-width: 1024px) {
   .breadcrumb-container {
-    padding: 14px 40px;
+    padding: 16px 32px 0;
   }
   
   .breadcrumb-outer.overlay .breadcrumb-container {
-    padding: 20px 40px 0;
+    padding: 20px 32px 0;
   }
 }
 
 @media (max-width: 768px) {
   .breadcrumb-container {
-    padding: 12px 20px;
+    padding: 12px 20px 0;
     font-size: 12px;
     gap: 6px;
   }
@@ -91,21 +100,21 @@
 
 /* Shop Page Specific Breadcrumbs (Green Theme) */
 .breadcrumb-outer.shop-breadcrumb .breadcrumb-link {
-  color: var(--primary-dark) !important; /* Deep Olive Green */
+  color: var(--primary-dark) !important;
   text-shadow: none !important;
 }
 
 .breadcrumb-outer.shop-breadcrumb .breadcrumb-link:hover {
-  color: var(--primary) !important; /* Sage Green */
+  color: var(--primary) !important;
 }
 
 .breadcrumb-outer.shop-breadcrumb .breadcrumb-separator {
-  color: var(--primary) !important; /* Sage Green */
+  color: var(--primary) !important;
   text-shadow: none !important;
   opacity: 0.8;
 }
 
 .breadcrumb-outer.shop-breadcrumb .breadcrumb-current {
-  color: var(--primary-dark) !important; /* Deep Olive Green */
+  color: var(--primary-dark) !important;
   text-shadow: none !important;
 }

@@ -48,7 +48,7 @@ export const Breadcrumbs = ({
   setCatalogFilter, 
   selectedProduct 
 }) => {
-  if (currentTab === 'shop' || currentTab === 'product-detail') return null;
+  if (currentTab === 'shop' || currentTab === 'product-detail' || currentTab === 'catalog') return null;
 
   const handleHomeClick = () => {
     if (setCurrentTab) {
@@ -161,7 +161,7 @@ export const Breadcrumbs = ({
 
   return (
     <div className={`${styles['breadcrumb-outer']} ${isOverlay ? styles.overlay : ''} ${isGreenTheme ? styles['shop-breadcrumb'] : ''}`}>
-      <div className={`container ${styles['breadcrumb-container']}`}>
+      <div className={styles['breadcrumb-container']}>
         {renderBreadcrumbs()}
       </div>
     </div>

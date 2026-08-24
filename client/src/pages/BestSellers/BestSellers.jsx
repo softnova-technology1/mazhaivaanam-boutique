@@ -133,10 +133,8 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
       
       {/* HEADER SECTION */}
       <div className={styles['page-header']}>
-        <div className={`${styles['breadcrumbs']} hidden sm:block`}>
-          <span>Home</span> / <span>Collections</span> / <span className={styles['active-crumb']}>Best Sellers</span>
-        </div>
         <h1 className={styles['page-title']}>Best Sellers</h1>
+        <div className={styles['header-divider']} />
         <p className={styles['page-subtitle']}>
           Our most coveted handloom sarees, chosen and loved by discerning women across the world.
         </p>
@@ -147,7 +145,8 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
         <aside className={styles['sidebar']}>
           <div className={styles['sidebar-card']}>
             <div className={styles['sidebar-heading']}>
-              <h3>Premium Collections</h3>
+              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--primary)' }}>auto_awesome</span>
+              <h3>Top Picks</h3>
             </div>
             
             <div className={styles['sidebar-product-list']}>
@@ -156,18 +155,18 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                   <img src={prod.image} alt={prod.name} loading="lazy" />
                   <div className={styles['sidebar-product-info']}>
                     <h5>{prod.name}</h5>
-                    <span className={styles['sidebar-price']}>Rs. {prod.price.toLocaleString('en-IN')}.00</span>
+                    <span className={styles['sidebar-price']}>₹{prod.price.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               ))}
-              <div className={styles['sidebar-divider']}></div>
             </div>
 
-            {/* The promo image shown in the screenshot */}
-            <div className={styles['promo-banner']}>
+            {/* Promo banner */}
+            <div className={styles['promo-banner']} onClick={() => setCurrentTab && setCurrentTab('catalog')}>
               <img src="/Images/saree1.png" alt="Premium Collections" />
               <div className={styles['promo-overlay']}>
-                <span>PREMIUM<br/>COLLECTIONS</span>
+                <span>PREMIUM WEAVES</span>
+                <p>Handloom Masterpieces</p>
               </div>
             </div>
           </div>
@@ -179,24 +178,37 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
           {/* TOOLBAR */}
           <div className={styles['toolbar']}>
             <div className={styles['result-count']}>
-              Showing {Math.min(visibleCount, liveBestSellers.length)} of {liveBestSellers.length} masterpieces
+              Showing <strong>{Math.min(visibleCount, liveBestSellers.length)}</strong> of <strong>{liveBestSellers.length}</strong> masterpieces
             </div>
             
             <div className={styles['toolbar-right']}>
               <div className={styles['view-toggles']}>
-                <button className={`${styles['icon-btn']} ${styles['hide-on-mobile']} ${gridView === 3 ? styles.active : ''}`} onClick={() => setGridView(3)}><Grid3X3 size={16} /></button>
-                <button className={`${styles['icon-btn']} ${gridView === 4 ? styles.active : ''}`} onClick={() => setGridView(4)}><LayoutGrid size={16} /></button>
-                <button className={`${styles['icon-btn']} ${gridView === 'list' ? styles.active : ''}`} onClick={() => setGridView('list')}><List size={16} /></button>
+                <button 
+                  className={`${styles['icon-btn']} ${gridView === 2 || gridView === 3 || gridView === 4 ? styles.active : ''}`} 
+                  onClick={() => setGridView(3)}
+                  title="Grid View"
+                  type="button"
+                >
+                  <LayoutGrid size={15} />
+                </button>
+                <button 
+                  className={`${styles['icon-btn']} ${gridView === 'list' ? styles.active : ''}`} 
+                  onClick={() => setGridView('list')}
+                  title="List View"
+                  type="button"
+                >
+                  <List size={15} />
+                </button>
               </div>
 
               <div className={styles['custom-dropdown-container']}>
-                <span>Sort by:</span>
+                <span className={styles['sort-label']}>SORT:</span>
                 <div 
                   className={styles['custom-dropdown-toggle']} 
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                  {SORT_OPTIONS.find(o => o.value === sortOption)?.label}
-                  {isDropdownOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  <span>{SORT_OPTIONS.find(o => o.value === sortOption)?.label}</span>
+                  {isDropdownOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </div>
 
                 {isDropdownOpen && (
@@ -228,7 +240,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
               return (
                 <div 
                   key={product.id} 
-                  className={styles['product-card']}
+                  className={`${styles['product-card']} ${gridView === 'list' ? styles['list-card'] : ''}`}
                   onClick={() => handleProductClick(product)}
                 >
                   <div className={styles['product-image-container']}>
@@ -243,7 +255,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                       title="Share Product"
                     >
                       <Share2 
-                        size={16} 
+                        size={15} 
                         stroke="var(--primary-dark, #4F4E22)" 
                       />
                     </div>

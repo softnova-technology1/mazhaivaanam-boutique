@@ -10,10 +10,13 @@
 
 @media (max-width: 768px) {
   .trackOrderPageContainer {
-    padding-top: 60px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 80px;
+    padding-top: 20px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 40px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 }
 
@@ -1010,4 +1013,199 @@
   font-size: 40px;
   color: var(--secondary-fixed);
   font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    min-height: auto !important;
+    padding: 16px 0 !important;
+    margin-top: 10px !important;
+    margin-bottom: 24px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .mainDisplayTitle {
+    font-size: 1.6rem !important;
+    margin-bottom: 12px !important;
+  }
+
+  .heroSubText {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .searchCardBox {
+    padding: 18px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 12px !important;
+  }
+
+  .formRow {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+
+  .inputWrapper {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .searchField {
+    font-size: 15px !important;
+    width: 100% !important;
+  }
+
+  .locateBtn {
+    margin-top: 20px !important;
+    padding: 12px 20px !important;
+    width: 100% !important;
+    font-size: 11px !important;
+    border-radius: 9999px !important;
+  }
+
+  .statusDetailsSection {
+    margin-bottom: 32px !important;
+    width: 100% !important;
+  }
+
+  .detailsLayoutGrid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .detailsLeftCol,
+  .detailsRightCol {
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  .statusLiveCard {
+    padding: 16px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
+  }
+
+  .statusLiveHeader {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .statusLiveOrderId {
+    font-size: 1.25rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .arrivalScheduleText {
+    font-size: 12px !important;
+  }
+
+  .statusOverviewRow {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  .headlineDetailsText {
+    font-size: 15px !important;
+  }
+
+  .timelineVisualBox {
+    padding: 16px 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
+  }
+
+  .timelineLabelTitle {
+    margin-bottom: 24px !important;
+  }
+
+  .horizontalTimelineWrapper {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .timelineStepBlockNode {
+    padding: 0 2px !important;
+  }
+
+  .timelineCircleNode {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .timelineCircleNode svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .timelineNodeText {
+    font-size: 8px !important;
+    margin-top: 8px !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+
+  .deliveryMapCard {
+    height: 220px !important;
+    width: 100% !important;
+    border-radius: 14px !important;
+  }
+
+  .mapLocationBadge {
+    top: 8px !important;
+    left: 8px !important;
+    padding: 8px 10px !important;
+  }
+
+  .mapLocationValue {
+    font-size: 14px !important;
+  }
+
+  .mapCountdownBadge {
+    bottom: 8px !important;
+    right: 8px !important;
+    padding: 10px 12px !important;
+  }
+
+  .countdownDaysValue {
+    font-size: 24px !important;
+  }
+
+  .packagingExperienceBox {
+    padding: 16px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
+  }
+
+  .btsArtisanSection {
+    margin: 24px -12px !important;
+    padding: 24px 12px !important;
+  }
+
+  .burgundyPaidCard {
+    padding: 18px 14px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
+  }
+
+  .footerPaidAmount {
+    font-size: 24px !important;
+  }
 }

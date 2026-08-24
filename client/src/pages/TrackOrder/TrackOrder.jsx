@@ -74,7 +74,51 @@ export const TrackOrder = ({ setCurrentTab }) => {
       return;
     }
 
-    // 1. Try Live MongoDB API
+    // 1. Check default mock order
+    if (id === 'MV-98214-X') {
+      setTrackedOrder(defaultMockOrder);
+      setIsSearched(true);
+      return;
+    }
+
+    // 2. Check localStorage (Instant local match, prevents unnecessary 404 network noise)
+    const saved = localStorage.getItem('boutique_orders');
+    const list = saved ? JSON.parse(saved) : [];
+    const found = list.find(o => o.orderId && o.orderId.toUpperCase() === id);
+
+    if (found) {
+      const orderPlacedDate = new Date(found.placedOnDate || Date.now());
+      const deliveryDate = new Date(orderPlacedDate);
+      deliveryDate.setDate(deliveryDate.getDate() + 7);
+      
+      const diffTime = deliveryDate - new Date();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      const dynamicOrder = {
+        orderId: found.orderId,
+        email: found.email,
+        placedOnDate: found.placedOnDate,
+        arrivalRange: found.arrivalRange || deliveryDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+        status: found.status || 'IN TRANSIT',
+        courier: found.courier || 'BlueDart Express',
+        trackingNumber: found.trackingNumber || 'BD890214589',
+        lastLocation: found.city ? `${found.city} Distribution Center` : 'Atelier Sorting Hub',
+        lastLocationTime: 'Transit Stage: Inbound sorting',
+        countdownDays: diffDays > 0 ? diffDays : 0,
+        mrpTotal: found.mrpTotal,
+        subtotal: found.subtotal,
+        totalSavings: found.totalSavings,
+        finalAmount: found.finalAmount,
+        pointsEarned: Math.round(found.finalAmount * 0.1),
+        items: found.items
+      };
+
+      setTrackedOrder(dynamicOrder);
+      setIsSearched(true);
+      return;
+    }
+
+    // 3. Try Live MongoDB API if not found locally
     try {
       const liveData = await orderAPI.trackOrder(id);
       if (liveData) {
@@ -109,55 +153,12 @@ export const TrackOrder = ({ setCurrentTab }) => {
         setIsSearched(true);
         return;
       }
-    } catch (apiErr) {
-      console.log('Order not found in MongoDB via API, checking localStorage backup...', apiErr);
+    } catch {
+      // Gracefully handle not found without throwing red console logs
     }
 
-    // 2. Check default mock order
-    if (id === 'MV-98214-X') {
-      setTrackedOrder(defaultMockOrder);
-      setIsSearched(true);
-      return;
-    }
-
-    // 3. Check localStorage
-    const saved = localStorage.getItem('boutique_orders');
-    const list = saved ? JSON.parse(saved) : [];
-    const found = list.find(o => o.orderId.toUpperCase() === id);
-
-    if (found) {
-      const orderPlacedDate = new Date(found.placedOnDate || Date.now());
-      const deliveryDate = new Date(orderPlacedDate);
-      deliveryDate.setDate(deliveryDate.getDate() + 7);
-      
-      const diffTime = deliveryDate - new Date();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      const dynamicOrder = {
-        orderId: found.orderId,
-        email: found.email,
-        placedOnDate: found.placedOnDate,
-        arrivalRange: found.arrivalRange || deliveryDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-        status: found.status || 'IN TRANSIT',
-        courier: found.courier || 'BlueDart Express',
-        trackingNumber: found.trackingNumber || 'BD890214589',
-        lastLocation: found.city ? `${found.city} Distribution Center` : 'Atelier Sorting Hub',
-        lastLocationTime: 'Transit Stage: Inbound sorting',
-        countdownDays: diffDays > 0 ? diffDays : 0,
-        mrpTotal: found.mrpTotal,
-        subtotal: found.subtotal,
-        totalSavings: found.totalSavings,
-        finalAmount: found.finalAmount,
-        pointsEarned: Math.round(found.finalAmount * 0.1),
-        items: found.items
-      };
-
-      setTrackedOrder(dynamicOrder);
-      setIsSearched(true);
-    } else {
-      setErrorText(`No active shipment found for "${id}". Check your Order ID from your confirmation or try "MV-98214-X".`);
-      setIsSearched(false);
-    }
+    setErrorText(`No active shipment found for "${id}". Check your Order ID from your confirmation or try "MV-98214-X".`);
+    setIsSearched(false);
   };
 
   const handleFormSubmit = (e) => {

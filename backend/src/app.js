@@ -27,6 +27,7 @@ app.use(helmet());
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
   process.env.ADMIN_URL || 'http://localhost:5174',
+  'https://mazhaivaanam-boutique-seven.vercel.app',
 ].filter(Boolean);
 
 app.use(

@@ -38,7 +38,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dbCategories, setDbCategories] = useState([]);
-  
+
   // States matching filters
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedFabric, setSelectedFabric] = useState('All');
@@ -54,7 +54,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 20;
+  const ITEMS_PER_PAGE = 24;
 
   // Initial fetch from MongoDB API
   useEffect(() => {
@@ -120,8 +120,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     // Filter by Search Query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(p => 
-        (p.name && p.name.toLowerCase().includes(query)) || 
+      filtered = filtered.filter(p =>
+        (p.name && p.name.toLowerCase().includes(query)) ||
         (p.category && p.category.toLowerCase().includes(query)) ||
         (p.fabric && p.fabric.toLowerCase().includes(query)) ||
         (p.description && p.description.toLowerCase().includes(query))
@@ -194,19 +194,19 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const handleShareClick = (e, product) => {
     e.stopPropagation();
     const productUrl = `${window.location.origin}/product/${product.id}`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: product.name,
         text: product.description || `Check out ${product.name} at Mazhai Vaanam!`,
         url: productUrl,
       })
-      .catch((error) => console.log('Error sharing:', error));
+        .catch((error) => console.log('Error sharing:', error));
     } else {
       navigator.clipboard.writeText(productUrl)
         .then(() => {
-          window.dispatchEvent(new CustomEvent('show-toast', { 
-            detail: { message: `Link to "${product.name}" copied to clipboard!` } 
+          window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: `Link to "${product.name}" copied to clipboard!` }
           }));
         })
         .catch((err) => {
@@ -219,7 +219,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     const saved = localStorage.getItem('boutique_wishlist');
     let wishlistItems = saved ? JSON.parse(saved) : [];
     const isWishlisted = wishlistItems.some(w => w.id === product.id);
-    
+
     if (isWishlisted) {
       // Toggle off
       wishlistItems = wishlistItems.filter(w => w.id !== product.id);
@@ -258,7 +258,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     } else {
       setSelectedCategory(cat);
     }
-    
+
     setTimeout(() => {
       document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
     }, 50);
@@ -266,19 +266,31 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
   return (
     <div className={styles['catalog-page-container']}>
-      
 
 
 
 
+      {/* Breadcrumb Section */}
+      <div style={{ maxWidth: '1440px', margin: '0' }}>
+        <div className={styles['breadcrumb-container']}>
+          <span 
+            onClick={() => setCurrentTab && setCurrentTab('home')} 
+            className={styles['breadcrumb-link']}
+          >
+            Home
+          </span>
+          <span className={styles['breadcrumb-separator']}>/</span>
+          <span className={styles['breadcrumb-current']}>Shop</span>
+        </div>
+      </div>
 
       {/* 3. Sidebar Filters + Product Grid Layout */}
       <main id="catalog-products-section" className={styles['main-layout']}>
         {/* Mobile Filter Overlay */}
         {isMobileFilterOpen && (
-          <div 
-            className={styles['mobile-filter-overlay']} 
-            onClick={() => setIsMobileFilterOpen(false)} 
+          <div
+            className={styles['mobile-filter-overlay']}
+            onClick={() => setIsMobileFilterOpen(false)}
           />
         )}
 
@@ -289,7 +301,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 <Filter size={18} className={styles['filter-header-icon']} />
                 <h2 className={styles['sidebar-title']}>Filters</h2>
               </div>
-              <button 
+              <button
                 className={styles['close-filter-btn']}
                 onClick={() => setIsMobileFilterOpen(false)}
                 type="button"
@@ -306,21 +318,20 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 <div className={styles['filter-widget-header']}>
                   <div className={styles['widget-title-box']}>
                     <span className="material-symbols-outlined">texture</span>
-                    <h4>Collection</h4>
+                    <h4>COLLECTION</h4>
                   </div>
                 </div>
-                <div className={styles['collection-options-list']}>
+                <div className={styles['fabric-tags']}>
                   {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => {
                     const isSelected = selectedCategory === cat;
                     return (
-                      <button 
-                        key={cat} 
+                      <button
+                        key={cat}
                         onClick={() => setSelectedCategory(cat)}
-                        className={`${styles['collection-option-item']} ${isSelected ? styles['active-collection'] : ''}`}
+                        className={`${styles['tag-btn']} ${isSelected ? styles['active-tag'] : ''}`}
                         type="button"
                       >
-                        <span className={styles['collection-indicator']}></span>
-                        <span className={styles['collection-name']}>{cat === 'All' ? 'All Collections' : cat}</span>
+                        {cat === 'All' ? 'All' : cat}
                       </button>
                     );
                   })}
@@ -339,8 +350,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   {['All', 'Pure Silk', 'Cotton', 'Tussar', 'Organza', 'Linen', 'Georgette', 'Chiffon', 'Chanderi'].map(fab => {
                     const isSelected = selectedFabric === fab;
                     return (
-                      <button 
-                        key={fab} 
+                      <button
+                        key={fab}
                         onClick={() => setSelectedFabric(fab)}
                         className={`${styles['fabric-chip']} ${isSelected ? styles['active-chip'] : ''}`}
                         type="button"
@@ -360,24 +371,17 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     <h4>Availability</h4>
                   </div>
                 </div>
-                <div className={styles['availability-options']}>
-                  {[
-                    { id: 'All', label: 'All Status' },
-                    { id: 'In Stock', label: 'In Stock' },
-                    { id: 'Out of Stock', label: 'Out of Stock' }
-                  ].map(status => {
-                    const isSelected = selectedAvailability === status.id;
-                    return (
-                      <button
-                        key={status.id}
-                        type="button"
-                        className={`${styles['availability-chip']} ${isSelected ? styles['active-availability'] : ''}`}
-                        onClick={() => setSelectedAvailability(status.id)}
-                      >
-                        {status.label}
-                      </button>
-                    );
-                  })}
+                <div style={{ padding: '8px 12px', border: '1px solid var(--border-color)', borderRadius: '4px', display: 'flex', alignItems: 'center', backgroundColor: 'transparent' }}>
+                  <select
+                    value={selectedAvailability}
+                    onChange={(e) => setSelectedAvailability(e.target.value)}
+                    style={{ width: '100%', border: 'none', background: 'transparent', outline: 'none', fontSize: '11px', fontFamily: 'Inter, sans-serif', color: 'var(--text-main)', cursor: 'pointer', appearance: 'none', fontWeight: 500 }}
+                  >
+                    <option value="All">All Status</option>
+                    <option value="In Stock">In Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                  </select>
+                  <ChevronDown size={14} color="var(--text-muted)" style={{ pointerEvents: 'none' }} />
                 </div>
               </div>
 
@@ -389,7 +393,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     <h4>Price Range</h4>
                   </div>
                 </div>
-                
+
                 <div className={styles['price-slider-container']}>
                   <div className={styles['price-display-row']}>
                     <div className={styles['price-val-box']}>
@@ -403,34 +407,17 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     </div>
                   </div>
 
-                  <input 
-                    type="range" 
-                    min="1000" 
-                    max="50000" 
-                    step="1000" 
-                    value={maxPrice} 
+                  <input
+                    type="range"
+                    min="1000"
+                    max="50000"
+                    step="1000"
+                    value={maxPrice}
                     onChange={(e) => setMaxPrice(Number(e.target.value))}
                     className={styles['price-range-input']}
                   />
 
-                  {/* Quick price presets */}
-                  <div className={styles['price-presets-grid']}>
-                    {[
-                      { label: 'Under ₹10k', val: 10000 },
-                      { label: 'Under ₹20k', val: 20000 },
-                      { label: 'Under ₹35k', val: 35000 },
-                      { label: 'All (₹50k)', val: 50000 }
-                    ].map((preset) => (
-                      <button
-                        key={preset.val}
-                        type="button"
-                        className={`${styles['price-preset-btn']} ${maxPrice === preset.val ? styles['active-preset'] : ''}`}
-                        onClick={() => setMaxPrice(preset.val)}
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -445,28 +432,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
         <section className={styles['products-panel']}>
           {/* Dynamic Category Content Banner */}
           <div className={styles['category-content-banner']}>
-            <div className={styles['catalog-breadcrumbs']}>
-              <span onClick={() => setCurrentTab && setCurrentTab('shop')} className={styles['crumb-link']}>Home</span>
-              <span className={styles['crumb-sep']}>/</span>
-              <span 
-                onClick={() => {
-                  setSelectedCategory('All');
-                  setSelectedFabric('All');
-                  setSelectedAvailability('All');
-                  setMaxPrice(50000);
-                  setSearchQuery('');
-                }} 
-                className={selectedCategory === 'All' ? styles['crumb-active'] : styles['crumb-link']}
-              >
-                Shop
-              </span>
-              {selectedCategory && selectedCategory !== 'All' && (
-                <>
-                  <span className={styles['crumb-sep']}>/</span>
-                  <span className={styles['crumb-active']}>{selectedCategory}</span>
-                </>
-              )}
-            </div>
 
             <h2 className={styles['category-content-title']}>
               {CATEGORY_CONTENT[selectedCategory]?.title || selectedCategory}
@@ -479,30 +444,30 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
           <div className={styles['products-header']}>
             <div className={styles['products-header-left']}>
-              <p className={styles['products-count-text']}>
-                Showing <strong>{products.length}</strong> of <strong>{masterProducts.length}</strong>
+              <p className={styles['products-count-text']} style={{ fontStyle: 'italic', fontFamily: 'Inter, sans-serif' }}>
+                Showing {products.length} of {masterProducts.length} Masterpieces
               </p>
-              <button 
-                className={styles['mobile-filter-toggle']} 
+              <button
+                className={styles['mobile-filter-toggle']}
                 onClick={() => setIsMobileFilterOpen(true)}
                 type="button"
               >
                 <Filter size={13} /> Filter & Sort
               </button>
             </div>
-            
+
             <div className={styles['products-header-right']}>
               <div className={styles['header-search-box']}>
                 <Search size={15} className={styles['search-icon']} />
-                <input 
-                  type="text" 
-                  placeholder="Search masterpieces..." 
+                <input
+                  type="text"
+                  placeholder="Search masterpieces..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={styles['search-input']}
                 />
                 {searchQuery && (
-                  <div 
+                  <div
                     onClick={() => setSearchQuery('')}
                     className={styles['search-clear-icon']}
                     role="button"
@@ -516,8 +481,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
               <div className={styles['sort-selector']}>
                 <span className={styles['sort-label']}>SORT:</span>
                 <div className={styles['custom-dropdown-container']}>
-                  <button 
-                    className={styles['dropdown-trigger-btn']} 
+                  <button
+                    className={styles['dropdown-trigger-btn']}
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsSortOpen(!isSortOpen);
@@ -537,104 +502,104 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     </span>
                     <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
                   </button>
-                {isSortOpen && (
-                  <div className={styles['dropdown-options-menu']}>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'featured' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('featured');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Featured
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'relevant' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('relevant');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Most relevant
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'best-selling' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('best-selling');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Best selling
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-asc' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('alpha-asc');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Alphabetically, A-Z
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-desc' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('alpha-desc');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Alphabetically, Z-A
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('price-low');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Price, low to high
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'price-high' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('price-high');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Price, high to low
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'date-old' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('date-old');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Date, old to new
-                    </button>
-                    <button
-                      className={`${styles['dropdown-option-item']} ${selectedSort === 'date-new' ? styles['active'] : ''}`}
-                      onClick={() => {
-                        setSelectedSort('date-new');
-                        setIsSortOpen(false);
-                      }}
-                      type="button"
-                    >
-                      Date, new to old
-                    </button>
-                  </div>
-                )}
+                  {isSortOpen && (
+                    <div className={styles['dropdown-options-menu']}>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'featured' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('featured');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Featured
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'relevant' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('relevant');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Most relevant
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'best-selling' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('best-selling');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Best selling
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-asc' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('alpha-asc');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Alphabetically, A-Z
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-desc' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('alpha-desc');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Alphabetically, Z-A
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('price-low');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Price, low to high
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'price-high' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('price-high');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Price, high to low
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'date-old' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('date-old');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Date, old to new
+                      </button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedSort === 'date-new' ? styles['active'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort('date-new');
+                          setIsSortOpen(false);
+                        }}
+                        type="button"
+                      >
+                        Date, new to old
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
           {loading ? (
             <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--primary)' }}>
@@ -662,8 +627,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                           <span className={styles['offer-text']}>OFF</span>
                         </span>
                       )}
-                      <div 
-                        className={styles['image-container']} 
+                      <div
+                        className={styles['image-container']}
                         style={{ cursor: 'pointer' }}
                         onClick={() => handleProductClick(product)}
                       >
@@ -671,20 +636,20 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         {product.tag && (
                           <span className={`${styles['badge-tag']} ${getBadgeClass(product.tag)}`}>{product.tag}</span>
                         )}
-                        <div 
+                        <div
                           className={styles['share-btn']}
                           onClick={(e) => handleShareClick(e, product)}
                           role="button"
                           title="Share Product"
                         >
-                          <Share2 
-                            size={16} 
-                            stroke="var(--primary-dark)" 
+                          <Share2
+                            size={16}
+                            stroke="var(--primary-dark)"
                           />
                         </div>
 
-                        <div 
-                          className={styles['wishlist-btn']} 
+                        <div
+                          className={styles['wishlist-btn']}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleAddToWishlist(product);
@@ -692,17 +657,17 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                           role="button"
                           title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                         >
-                          <Heart 
-                            size={16} 
-                            fill={isWishlisted ? "#e63946" : "none"} 
-                            stroke={isWishlisted ? "#e63946" : "var(--primary-dark)"} 
+                          <Heart
+                            size={16}
+                            fill={isWishlisted ? "#e63946" : "none"}
+                            stroke={isWishlisted ? "#e63946" : "var(--primary-dark)"}
                           />
                         </div>
                       </div>
                       <div className={styles['card-details']}>
                         <div className={styles['title-row']}>
-                          <h4 
-                            style={{ cursor: 'pointer' }} 
+                          <h4
+                            style={{ cursor: 'pointer' }}
                             onClick={() => handleProductClick(product)}
                           >
                             {product.name}
@@ -728,7 +693,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                             <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
                           )}
                         </div>
-                        <button 
+                        <button
                           className={styles['add-cart-btn']}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -746,8 +711,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className={styles['pagination']}>
-                  <button 
-                    className={styles['pagination-arrow']} 
+                  <button
+                    className={styles['pagination-arrow']}
                     disabled={currentPage === 1}
                     onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   >
@@ -755,8 +720,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   </button>
                   <div className={styles['pagination-pages']}>
                     {Array.from({ length: totalPages }).map((_, idx) => (
-                      <span 
-                        key={idx} 
+                      <span
+                        key={idx}
                         className={`${styles['page-num']} ${currentPage === idx + 1 ? styles['active-page'] : ''}`}
                         onClick={() => handlePageChange(idx + 1)}
                         style={{ cursor: 'pointer' }}
@@ -765,8 +730,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                       </span>
                     ))}
                   </div>
-                  <button 
-                    className={styles['pagination-arrow']} 
+                  <button
+                    className={styles['pagination-arrow']}
                     disabled={currentPage === totalPages}
                     onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   >

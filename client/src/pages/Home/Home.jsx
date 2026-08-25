@@ -323,9 +323,9 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
       {/* 4. The Best Sellers */}
       <section className={`${styles['bestsellers-section']} container`}>
         <div className={styles['bestsellers-header-row']}>
-          <div className={styles['bestsellers-title-box']}>
-            <span className={styles['section-label-small']}>EXCLUSIVES</span>
-            <h2 className={styles['bestsellers-title']}>The Best Sellers</h2>
+          <div className="relative pl-4 border-l-2 border-[#D4AF37]">
+            <span className="font-label-caps text-[#D4AF37] tracking-[0.3em] text-[10px] uppercase mb-3 block">EXCLUSIVES</span>
+            <h2 className="font-display-lg text-3xl md:text-5xl text-[#2D3326] m-0">The Best Sellers</h2>
           </div>
           <button 
             onClick={() => setCurrentTab && setCurrentTab('best-sellers')}
@@ -357,7 +357,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
         <div className={styles['bridal-text-pane']}>
           <div className={styles['bridal-text-content']}>
             <span className={styles['bridal-label']}>THE CEREMONY</span>
-            <h2>The Bridal Edit</h2>
+            <h2 className="font-display-lg text-4xl md:text-6xl text-white m-0 py-2">The Bridal Edit</h2>
             <p className={styles['bridal-quote']}>
               "For the most sacred moments, we weave dreams into silk. Discover our exclusive bridal collection, where every thread is a testament to tradition and every weave is a blessing."
             </p>

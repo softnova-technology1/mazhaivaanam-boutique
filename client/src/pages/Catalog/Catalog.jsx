@@ -321,14 +321,14 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     <h4>COLLECTION</h4>
                   </div>
                 </div>
-                <div className={styles['fabric-tags']}>
+                <div className={styles['fabric-grid']}>
                   {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => {
                     const isSelected = selectedCategory === cat;
                     return (
                       <button
                         key={cat}
                         onClick={() => setSelectedCategory(cat)}
-                        className={`${styles['tag-btn']} ${isSelected ? styles['active-tag'] : ''}`}
+                        className={`${styles['fabric-chip']} ${isSelected ? styles['active-chip'] : ''}`}
                         type="button"
                       >
                         {cat === 'All' ? 'All' : cat}

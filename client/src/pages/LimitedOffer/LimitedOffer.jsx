@@ -532,7 +532,7 @@ void main() {
           
           <div ref={galleryRef} className="flex overflow-x-auto gap-3 sm:gap-4 md:gap-6 lg:gap-8 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {[...galleryItems, ...galleryItems].map((item, index) => (
-              <div key={index} className="w-[140px] sm:w-[180px] md:w-[340px] shrink-0 group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => setCurrentTab('catalog')}>
+              <div key={index} className="w-[120px] sm:w-[160px] md:w-[240px] shrink-0 group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => setCurrentTab('catalog')}>
                 <div className="relative w-full aspect-[3/4] overflow-hidden bg-surface-container-high">
                   <img 
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
@@ -545,12 +545,12 @@ void main() {
                     </div>
                   )}
                 </div>
-                <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-4 w-full">
-                  <h4 className="font-display-lg text-[12px] sm:text-[14px] md:text-[21px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
-                  <div className="flex items-center justify-center gap-1.5 md:gap-3 mt-0.5">
-                    <div className="w-2 md:w-4 h-[1px] bg-[#D4AF37]/40"></div>
-                    <p className="text-[#5F6652] font-label-caps text-[9.5px] md:text-[11px] tracking-wide font-bold">{item.price}</p>
-                    <div className="w-2 md:w-4 h-[1px] bg-[#D4AF37]/40"></div>
+                <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-3 w-full">
+                  <h4 className="font-display-lg text-[12px] sm:text-[13px] md:text-[17px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
+                  <div className="flex items-center justify-center gap-1.5 md:gap-2 mt-0.5">
+                    <div className="w-2 md:w-3 h-[1px] bg-[#D4AF37]/40"></div>
+                    <p className="text-[#5F6652] font-label-caps text-[9.5px] md:text-[10px] tracking-wide font-bold">{item.price}</p>
+                    <div className="w-2 md:w-3 h-[1px] bg-[#D4AF37]/40"></div>
                   </div>
                 </div>
               </div>

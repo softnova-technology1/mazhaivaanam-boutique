@@ -36,7 +36,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
     return () => { isMounted = false; };
   }, []);
 
-  const [gridView, setGridView] = useState(3);
+  const [gridView, setGridView] = useState(4);
   const [sortOption, setSortOption] = useState('best-selling');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -98,7 +98,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
   const getInitialRows = () => {
     if (typeof window === 'undefined') return 3;
-    if (window.innerWidth <= 768) return 4;
+    if (window.innerWidth <= 768) return 4; // rows
     return 3;
   };
 
@@ -200,7 +200,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
               <div className={styles['view-toggles']}>
                 <button 
                   className={`${styles['icon-btn']} ${gridView === 2 || gridView === 3 || gridView === 4 ? styles.active : ''}`} 
-                  onClick={() => setGridView(3)}
+                  onClick={() => setGridView(4)}
                   title="Grid View"
                   type="button"
                 >

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './PreBooking.module.css';
-import { ChevronDown, ArrowRight, Grid, List, Filter, X } from 'lucide-react';
+import { ChevronDown, ArrowRight, Grid, List, Filter, X, Star } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
 
@@ -369,13 +369,21 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
             {sortedProducts.map((product) => (
               <div key={product.id} className={styles['product-card']}>
                 <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
-                  <div className={styles['discount-badge']}>Save {product.discount}</div>
+                  <div className={styles['discount-badge']}>{product.discount} OFF</div>
                   <img src={product.image} alt={product.name} className={styles['product-image']} />
                 </div>
                 <div className={styles['product-info']}>
                   <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
                     {product.name} | {product.id.toUpperCase()} | PRE BOOKING
                   </h3>
+                  <p className={styles['product-desc']}>{product.description}</p>
+                  
+                  <div className={styles['product-rating']}>
+                    <Star size={12} fill="#d32f2f" stroke="#d32f2f" />
+                    <span>{product.rating || '4.8'}</span>
+                    <span className={styles['review-count']}>({product.reviews || '24'})</span>
+                  </div>
+
                   <div className={styles['product-price-row']}>
                     <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
                     <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>

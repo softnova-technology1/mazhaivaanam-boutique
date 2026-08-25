@@ -20,6 +20,69 @@ import {
 } from 'lucide-react';
 import styles from './MyOrders.module.css';
 
+const DUMMY_ORDERS = [
+  {
+    orderId: 'MV-9001',
+    placedOnDate: 'August 15, 2026',
+    status: 'DELIVERED',
+    mrpTotal: 25000,
+    subtotal: 22500,
+    totalSavings: 2500,
+    finalAmount: 22500,
+    items: [
+      { id: 'mock-1', name: 'Emerald Forest Silk Saree', price: 22500, image: '/Images/saree11.png', quantity: 1 }
+    ]
+  },
+  {
+    orderId: 'MV-9002',
+    placedOnDate: 'August 10, 2026',
+    status: 'SHIPPED',
+    mrpTotal: 18000,
+    subtotal: 16000,
+    totalSavings: 2000,
+    finalAmount: 16000,
+    items: [
+      { id: 'mock-2', name: 'Ruby Red Kanjeevaram Saree', price: 16000, image: '/Images/saree13.png', quantity: 1 }
+    ]
+  },
+  {
+    orderId: 'MV-9003',
+    placedOnDate: 'July 25, 2026',
+    status: 'DELIVERED',
+    mrpTotal: 14000,
+    subtotal: 12500,
+    totalSavings: 1500,
+    finalAmount: 12500,
+    items: [
+      { id: 'mock-3', name: 'Midnight Blue Linen Saree', price: 12500, image: '/Images/saree14.png', quantity: 1 }
+    ]
+  },
+  {
+    orderId: 'MV-9004',
+    placedOnDate: 'June 12, 2026',
+    status: 'DELIVERED',
+    mrpTotal: 32000,
+    subtotal: 28000,
+    totalSavings: 4000,
+    finalAmount: 28000,
+    items: [
+      { id: 'mock-4', name: 'Golden Banarasi Silk Saree', price: 28000, image: '/Images/saree2.png', quantity: 1 }
+    ]
+  },
+  {
+    orderId: 'MV-9005',
+    placedOnDate: 'May 05, 2026',
+    status: 'DELIVERED',
+    mrpTotal: 21000,
+    subtotal: 19000,
+    totalSavings: 2000,
+    finalAmount: 19000,
+    items: [
+      { id: 'mock-5', name: 'Pastel Pink Chanderi Saree', price: 19000, image: '/Images/saree8.png', quantity: 1 }
+    ]
+  }
+];
+
 export const MyOrders = ({ setCurrentTab }) => {
   const { addToCart } = useCart();
   const [orders, setOrders] = useState([]);
@@ -62,14 +125,14 @@ export const MyOrders = ({ setCurrentTab }) => {
                 quantity: i.quantity,
               }))
             }));
-            setOrders([...normalized, ...localOrders]);
+            setOrders([...DUMMY_ORDERS, ...normalized, ...localOrders]);
           } else {
-            setOrders(localOrders);
+            setOrders([...DUMMY_ORDERS, ...localOrders]);
           }
         })
-        .catch(() => setOrders(localOrders));
+        .catch(() => setOrders([...DUMMY_ORDERS, ...localOrders]));
     } else {
-      setOrders(localOrders);
+      setOrders([...DUMMY_ORDERS, ...localOrders]);
     }
   }, []);
 

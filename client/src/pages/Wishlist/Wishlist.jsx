@@ -231,10 +231,10 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
               const savings = hasDrop ? item.oldPrice - item.price : 0;
               
               return (
-                <div key={item.id} className={styles['wishlist-item-card']}>
+                <div key={item.id} className={styles['product-card']}>
                   {/* Remove Close Button - Top Right */}
                   <button 
-                    className={`${styles['remove-card-btn']} close-btn`} 
+                    className={styles['remove-card-btn']} 
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRemoveFromWishlist(item.id, item.name);
@@ -244,39 +244,33 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                     <X size={15} />
                   </button>
 
-                  <div className={styles['card-image-box']}>
-                    <img 
-                      src={item.image} 
-                      alt={item.name} 
-                      className={styles['card-img']}
-                      onClick={() => handleProductClick(item)}
-                    />
-                    
-                    {/* Corner Tag - Top Left */}
-                    <div className={styles['card-badge-container']}>
-                      {hasDrop ? (
-                        <span className={styles['price-drop-badge']}>Price Drop</span>
-                      ) : item.tag ? (
-                        <span className={`${styles['tag-badge']} ${getBadgeClass(item.tag)}`}>{item.tag}</span>
-                      ) : (
-                        <span className={`${styles['limited-badge']} ${getBadgeClass('Limited Edition')}`}>Limited Edition</span>
-                      )}
-                    </div>
-
-                    {/* Savings Badge - Opposite side (Bottom Right) */}
-                    {hasDrop && (
-                      <div className={styles['card-savings-badge']}>
-                        YOU SAVE {formatCurrency(savings)}
-                      </div>
-                    )}
+                  <div className={styles['product-image-container']} onClick={() => handleProductClick(item)}>
+                    {hasDrop && <div className={styles['discount-badge']}>{Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)}% OFF</div>}
+                    <img src={item.image} alt={item.name} className={styles['product-image']} />
                   </div>
-
-                  <div className={styles['card-description-box']}>
-                    <span className={styles['card-category']}>{item.fabric || item.category || 'Mulberry Silk'}</span>
-                    <h4 onClick={() => handleProductClick(item)} style={{ cursor: 'pointer' }}>{item.name} Saree</h4>
-                    <div className={styles['card-prices-row']}>
-                      {hasDrop && <span className={styles['card-price-old']}>{formatCurrency(item.oldPrice)}</span>}
-                      <span className={styles['card-price-current']}>{formatCurrency(item.price)}</span>
+                  <div className={styles['product-info']}>
+                    <h3 className={styles['product-name']} onClick={() => handleProductClick(item)}>
+                      {item.name} | {item.id.toUpperCase()}
+                    </h3>
+                    <p className={styles['product-desc']}>{item.description || 'Elegant handcrafted saree perfect for special occasions.'}</p>
+                    <div className={styles['product-rating']}>
+                      <Star size={12} fill="#d32f2f" stroke="#d32f2f" />
+                      <span>{item.rating || '4.8'}</span>
+                      <span className={styles['review-count']}>({item.reviews || '24'})</span>
+                    </div>
+                    <div className={styles['product-price-row']}>
+                      <span className={styles['current-price']}>{formatCurrency(item.price)}</span>
+                      {hasDrop && <span className={styles['old-price']}>{formatCurrency(item.oldPrice)}</span>}
+                    </div>
+                    <div 
+                      role="button" 
+                      className={styles['prebook-btn']} 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(item);
+                      }}
+                    >
+                      ADD TO BAG
                     </div>
                   </div>
                 </div>

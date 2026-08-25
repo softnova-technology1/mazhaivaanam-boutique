@@ -6,7 +6,7 @@
   padding-left: 80px;
   padding-right: 80px;
   background-color: var(--bg-main);
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
   box-sizing: border-box;
 }
@@ -44,6 +44,7 @@
     transform: translateY(100px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -95,7 +96,8 @@
   margin: 0;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 @media (max-width: 768px) {
   .displayHeading {
@@ -147,13 +149,16 @@
     font-size: 10px;
     margin-bottom: 8px;
   }
+
   .displayHeading {
     font-size: 32px;
   }
+
   .statLabel {
     font-size: 8.5px;
     letter-spacing: 0.1em;
   }
+
   .statValue {
     font-size: 18px;
   }
@@ -181,6 +186,9 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
+  position: sticky;
+  top: 100px;
+  height: max-content;
 }
 
 @media (max-width: 1024px) {
@@ -188,9 +196,11 @@
     grid-template-columns: 1fr;
     gap: 40px;
   }
+
   .leftColumn {
     grid-column: span 1;
   }
+
   .rightColumn {
     grid-column: span 1;
   }
@@ -244,6 +254,7 @@
     margin: 0 auto;
     align-self: center;
   }
+
   .productNameTitle {
     min-height: 48px;
   }
@@ -318,7 +329,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-width: 0; /* allows text wrapping inside flex */
+  min-width: 0;
+  /* allows text wrapping inside flex */
 }
 
 .orderCardHeaderRow {
@@ -336,7 +348,8 @@
   margin: 0;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .statusBadge {
   padding: 6px 16px;
@@ -423,28 +436,34 @@
     white-space: normal;
     word-wrap: break-word;
   }
+
   .orderCardHeaderRow {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
   }
+
   .orderMetaText {
     font-size: 8px;
     white-space: normal;
     word-wrap: break-word;
     line-height: 1.4;
   }
+
   .timelineNodeLabel {
     display: none;
   }
+
   .priceSummaryBox {
     margin-top: 16px;
     padding-top: 12px;
     gap: 4px;
   }
+
   .priceRowItem {
     font-size: 11px;
   }
+
   .payableRowItem {
     font-size: 14px;
   }
@@ -561,7 +580,9 @@
     gap: 8px;
     padding-top: 16px;
   }
-  .actionPrimaryBtn, .actionSecondaryBtn {
+
+  .actionPrimaryBtn,
+  .actionSecondaryBtn {
     padding: 12px 8px;
     font-size: 9px;
     letter-spacing: 0.05em;
@@ -573,7 +594,8 @@
   color: white;
 }
 
-.reviewTextBtn, .reorderTextLink {
+.reviewTextBtn,
+.reorderTextLink {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 600;
@@ -588,7 +610,8 @@
   transition: transform 0.3s, color 0.3s;
 }
 
-.reviewTextBtn:hover, .reorderTextLink:hover {
+.reviewTextBtn:hover,
+.reorderTextLink:hover {
   transform: translateX(3px);
   color: var(--primary);
 }
@@ -618,7 +641,8 @@
   color: var(--primary);
   margin: 0 0 32px 0;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .insightsList {
   display: flex;
@@ -663,7 +687,8 @@
   color: var(--text-main);
   margin: 0 0 2px 0;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .insightSubtitleText {
   font-family: var(--font-heading);
@@ -699,7 +724,8 @@
   color: white;
   margin: 0 0 16px 0;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .tierBarContainer {
   width: 100%;
@@ -752,7 +778,8 @@
   color: var(--primary);
   margin: 0 0 8px 0;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .supportDesc {
   font-family: var(--font-body);
@@ -792,6 +819,7 @@
     color: var(--text-muted);
     transition: transform 0.3s ease;
   }
+
   .chevronOpen {
     transform: rotate(90deg);
   }

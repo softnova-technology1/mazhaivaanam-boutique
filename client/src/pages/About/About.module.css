@@ -55,7 +55,8 @@
   font-weight: 400;
   animation: fadeIn 1s ease-out;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 @media (max-width: 768px) {
   .heroTitle {
@@ -89,11 +90,13 @@
   .heroSection {
     height: 450px;
   }
+
   .heroTitle {
     font-size: 32px;
     margin-bottom: 16px;
     text-align: center;
   }
+
   .heroSubtext {
     font-size: 14px;
     margin-bottom: 24px;
@@ -158,6 +161,7 @@
 }
 
 @media (min-width: 320px) and (max-width: 425px) {
+
   .primaryActionBtn,
   .secondaryActionBtn {
     padding: 10px 20px;
@@ -287,7 +291,8 @@
   font-weight: 400;
   line-height: 1.2;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .storyBodyParagraphs {
   display: flex;
@@ -311,6 +316,7 @@
     font-size: 24px;
     white-space: nowrap;
   }
+
   .storyBodyParagraphs p {
     font-size: 12px;
     text-align: justify;
@@ -351,9 +357,11 @@
   .storyTaglineBox {
     gap: 8px;
   }
+
   .taglineLine {
     width: 24px;
   }
+
   .storyTagline {
     font-size: 13px !important;
     white-space: nowrap !important;
@@ -391,16 +399,19 @@
   margin: 0;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 @media (min-width: 320px) and (max-width: 425px) {
   .principlesSection {
     padding: 20px 20px 40px 20px;
     margin-bottom: 40px;
   }
+
   .principlesHeader {
     margin-bottom: 20px;
   }
+
   .principlesMainTitle {
     font-size: 22px;
     white-space: nowrap;
@@ -471,7 +482,8 @@
   padding: 0 32px;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .principleCardDesc {
   font-family: var(--font-body);
@@ -624,7 +636,7 @@
   background: linear-gradient(135deg, #182216 0%, #2A3827 50%, #121A11 100%);
   color: white;
   padding-top: 64px;
-  padding-bottom: 0;
+  padding-bottom: 40px;
   padding-left: 80px;
   padding-right: 80px;
   overflow: hidden;
@@ -738,6 +750,7 @@
   position: relative;
   min-width: 1250px;
   padding: 10px 10px;
+  align-items: center;
 }
 
 .timelineProgressLine {
@@ -782,6 +795,7 @@
   .horizontalScrollWrapper {
     overflow-x: hidden;
   }
+
   .timelineHorizontalTrack {
     flex-direction: column;
     min-width: 100%;
@@ -789,6 +803,7 @@
     gap: 30px;
     padding: 20px 0;
   }
+
   .timelineProgressLine {
     top: 20px;
     bottom: 20px;
@@ -799,6 +814,7 @@
     height: auto;
     background: linear-gradient(180deg, rgba(230, 198, 135, 0.15) 0%, rgba(230, 198, 135, 0.7) 50%, rgba(230, 198, 135, 0.15) 100%);
   }
+
   .timelineNodeBlock {
     width: 90%;
     max-width: 300px;
@@ -918,7 +934,8 @@
   width: 100%;
   display: block;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 @media (max-width: 768px) {
   .whyBrandTitle {
@@ -968,7 +985,8 @@
   margin: 0 0 12px 0;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .whyCard p {
   font-family: var(--font-body);
@@ -980,7 +998,7 @@
 
 /* Metrics Section */
 .metricsSection {
- 
+
   color: rgb(0, 0, 0);
   padding: 80px 80px;
 }

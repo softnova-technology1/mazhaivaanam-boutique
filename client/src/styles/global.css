@@ -248,10 +248,7 @@ a {
   flex-grow: 1;
 }
 
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-}
+
 
 /* Cloud Button Shape Utility */
 .btn-cloud {

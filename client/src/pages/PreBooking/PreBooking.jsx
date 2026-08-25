@@ -1,11 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './PreBooking.module.css';
-import { ChevronDown, ArrowRight, Grid, List, Filter, X, Loader2, Heart, Share2, Star } from 'lucide-react';
+import { ChevronDown, ArrowRight, Grid, List, Filter, X } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
-import { getPreorderProducts } from '../../services/api';
 
-export const PREORDER_PRODUCTS = [];
+export const PREORDER_PRODUCTS = [
+  {
+    id: 'pre-1',
+    name: "Sona Roopa Kanjeevaram",
+    category: "Blended South Cotton",
+    fabric: "Pure Silk",
+    color: "#6B102A",
+    occasion: "Wedding",
+    price: 30600,
+    oldPrice: 34000,
+    progress: 75,
+    weaver: "Master Weaver Ramalingam",
+    image: "/Images/saree11.png",
+    description: "Exquisite gold and silver zari Kanjeevaram, meticulously hand-woven with traditional wedding temple motifs.",
+    isPreorder: true,
+    estimatedDays: 12,
+    discount: "10%"
+  },
+  {
+    id: 'pre-2',
+    name: "Shahi Shikargah Banarasi",
+    category: "Handloom Sarees",
+    fabric: "Pure Silk",
+    color: "#C8A34D",
+    occasion: "Wedding",
+    price: 41400,
+    oldPrice: 46000,
+    progress: 50,
+    weaver: "Master Weaver Kabir",
+    image: "/Images/saree13.png",
+    description: "Featuring complex hunting scenes woven in 24k gold zari, this Katan silk Banarasi is an imperial masterwork.",
+    isPreorder: true,
+    estimatedDays: 22,
+    discount: "10%"
+  },
+  {
+    id: 'pre-3',
+    name: "Chanderi Indigo Bloom",
+    category: "Linen Cotton",
+    fabric: "Pure Silk",
+    color: "#1A237E",
+    occasion: "Party Wear",
+    price: 18900,
+    oldPrice: 21000,
+    progress: 90,
+    weaver: "Artisan Meenakshi",
+    image: "/Images/saree14.png",
+    description: "Delicate Chanderi silk with hand-woven indigo floral butis, golden borders, and tissue pallu.",
+    isPreorder: true,
+    estimatedDays: 5,
+    discount: "10%"
+  },
+  {
+    id: 'pre-4',
+    name: "Organic Sage Cotton",
+    category: "Chanderi Cotton",
+    fabric: "Cotton",
+    color: "#004D40",
+    occasion: "Festival",
+    price: 11250,
+    oldPrice: 12500,
+    progress: 40,
+    weaver: "Weaver Kumar",
+    image: "/Images/saree2.png",
+    description: "Loom-woven pure organic cotton tinted with natural plant dyes, showcasing structural elegance and breathable weight.",
+    isPreorder: true,
+    estimatedDays: 28,
+    discount: "10%"
+  }
+];
 
 export const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
@@ -19,9 +87,53 @@ export const SORT_OPTIONS = [
   { value: 'date-desc', label: 'Date, new to old' },
 ];
 
+const getProductDetails = (productId) => {
+  const detailsMap = {
+    'pre-1': {
+      headline: "Exquisite Pure Silk Saree with Traditional Motifs",
+      p1: "Elevate your ethnic wardrobe with the timeless elegance of Pure Silk. Known for its rich texture and natural sheen, this collection combines heritage with traditional temple borders to create a look that is both grounded and sophisticated.",
+      p2: "Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic Kanjeevaram handloom. Finished with a refined gold and silver Zari border, these sarees are designed for the woman who appreciates understated luxury.",
+      fabric: "100% Pure Silk - breathable, lightweight, and durable.",
+      design: "Exquisite ruby red handwoven Kanjeevaram adorned with heritage gold & silver zari and wedding temple motifs.",
+      border: "Elegant metallic Zari border that adds a touch of festive shimmer.",
+      texture: "Naturally rich, uneven silk texture that lends an organic, high-end feel.",
+      occasion: "Perfect for weddings, traditional ceremonies, and festive celebrations."
+    },
+    'pre-2': {
+      headline: "Imperial Katan Silk Banarasi Saree",
+      p1: "Elevate your ethnic wardrobe with the timeless elegance of Pure Silk. Known for its rich texture and natural sheen, this collection combines heritage with imperial hunting motifs to create a look that is both grounded and sophisticated.",
+      p2: "Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic Banarasi handloom. Finished with a refined 24k gold Zari border, these sarees are designed for the woman who appreciates understated luxury.",
+      fabric: "100% Katan Pure Silk - breathable, lightweight, and durable.",
+      design: "Complex hunting scenes (Shikargah) woven in 24k gold zari, representing imperial masterwork.",
+      border: "Elaborate 24k gold zari border.",
+      texture: "Rich, heavy silk texture that drapes beautifully.",
+      occasion: "Perfect for grand weddings, receptions, and premium festive gatherings."
+    },
+    'pre-3': {
+      headline: "Delicate Chanderi Silk Saree with Indigo Floral Butis",
+      p1: "Elevate your ethnic wardrobe with the timeless elegance of Chanderi Silk. Known for its sheer texture and lightweight drape, this collection combines indigo floral dyes with golden zari border to create a look that is both grounded and sophisticated.",
+      p2: "Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic Chanderi handloom. Finished with a golden border and tissue pallu, these sarees are designed for the woman who appreciates understated luxury.",
+      fabric: "Pure Chanderi Silk-Cotton blend - breathable, lightweight, and sheer.",
+      design: "Delicate hand-woven indigo floral butis with rich tissue pallu.",
+      border: "Golden zari border adding subtle elegance.",
+      texture: "Lightweight, translucent, and fine texture.",
+      occasion: "Perfect for semi-formal gatherings, day events, and festive celebrations."
+    },
+    'pre-4': {
+      headline: "Organic Sage Cotton Saree with Natural Dyes",
+      p1: "Elevate your ethnic wardrobe with the timeless elegance of Organic Cotton. Known for its soft texture and breathable weight, this collection combines natural plant dyes with artisan weaving to create a look that is both grounded and sophisticated.",
+      p2: "Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic organic handloom. Finished with structural borders, these sarees are designed for the woman who appreciates eco-friendly luxury.",
+      fabric: "100% Organic Cotton - breathable, eco-friendly, and soft.",
+      design: "Loom-woven pure cotton tinted with natural plant dyes for a sustainable, elegant look.",
+      border: "Minimalist structural borders.",
+      texture: "Highly breathable, lightweight, and soft hand-feel.",
+      occasion: "Perfect for summer events, office wear, and casual festive celebrations."
+    }
+  };
+  return detailsMap[productId] || detailsMap['pre-1'];
+};
+
 export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckoutItem }) => {
-  const [preorderList, setPreorderList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedSort, setSelectedSort] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
   
@@ -37,22 +149,21 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-    getPreorderProducts()
-      .then(items => {
-        if (isMounted) {
-          setPreorderList(items || []);
-          setLoading(false);
-        }
-      })
-      .catch(err => {
-        console.error('Failed to load preorder products:', err);
-        if (isMounted) setLoading(false);
-      });
-    return () => { isMounted = false; };
-  }, []);
+  const details = quickViewProduct ? getProductDetails(quickViewProduct.id) : null;
+
+  React.useEffect(() => {
+    if (quickViewProduct || isMobileFilterOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [quickViewProduct, isMobileFilterOpen]);
 
   const handleFilterToggle = (setState, filterId) => {
     setState(prev => 
@@ -73,7 +184,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
   };
 
   const sortedProducts = React.useMemo(() => {
-    let filtered = [...preorderList];
+    let filtered = [...PREORDER_PRODUCTS];
     
     // Apply Price Filters
     if (selectedPriceFilters.length > 0) {
@@ -91,9 +202,9 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
     if (selectedTimes.length > 0) {
       filtered = filtered.filter(product => {
         return selectedTimes.some(filter => {
-          if (filter === 'under-15') return (product.estimatedDays || 14) < 15;
-          if (filter === '15-30') return (product.estimatedDays || 14) >= 15 && (product.estimatedDays || 14) <= 30;
-          if (filter === 'over-30') return (product.estimatedDays || 14) > 30;
+          if (filter === 'under-15') return product.estimatedDays < 15;
+          if (filter === '15-30') return product.estimatedDays >= 15 && product.estimatedDays <= 30;
+          if (filter === 'over-30') return product.estimatedDays > 30;
           return false;
         });
       });
@@ -101,10 +212,10 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
 
     switch (selectedSort) {
       case 'alpha-asc':
-        filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case 'alpha-desc':
-        filtered.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case 'price-asc':
         filtered.sort((a, b) => a.price - b.price);
@@ -118,13 +229,17 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
       case 'relevance':
       case 'featured':
       default:
+        // Use default order for these as we don't have real data fields for them yet
         break;
     }
     return filtered;
-  }, [preorderList, selectedSort, selectedPriceFilters, selectedTimes]);
+  }, [selectedSort, selectedPriceFilters, selectedTimes]);
 
   return (
     <div className={styles['prebooking-page-container']}>
+      
+
+
       <main className={styles['main-layout']}>
         {/* Mobile Filter Overlay */}
         {isMobileFilterOpen && (
@@ -134,94 +249,41 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
         {/* Left Sidebar */}
         <aside className={`${styles['filters-sidebar']} ${isMobileFilterOpen ? styles['open'] : ''}`}>
           <div className={styles['sticky-sidebar-content']}>
-            <div className={styles['sidebar-header']}>
-              <div className={styles['sidebar-title-group']}>
-                <Filter size={18} className={styles['filter-header-icon']} />
-                <h2 className={styles['sidebar-title']}>Filters</h2>
-              </div>
-              <button className={styles['close-filter-btn']} onClick={() => setIsMobileFilterOpen(false)} type="button">
+            <div className={styles['mobile-sidebar-header']}>
+              <h2 className={styles['sidebar-title']}>Filters</h2>
+              <button className={styles['close-filter-btn']} onClick={() => setIsMobileFilterOpen(false)}>
                 <X size={20} />
               </button>
             </div>
 
-            <div className={styles['sidebar-widgets-list']}>
-              {/* Estimated Delivery Widget */}
-              <div className={styles['filter-widget']}>
-                <div className={styles['widget-title-box']}>
-                  <span className="material-symbols-outlined">schedule</span>
-                  <h4>Delivery Timeline</h4>
-                </div>
-                <div className={styles['filter-chips-list']}>
-                  {[
-                    { id: 'under-15', label: 'Under 20 Days' },
-                    { id: '15-30', label: '25 - 30 Days' },
-                    { id: 'over-30', label: '35 - 40 Days' }
-                  ].map((time) => {
-                    const isSelected = selectedTimes.includes(time.id);
-                    return (
-                      <button
-                        key={time.id}
-                        type="button"
-                        className={`${styles['filter-chip']} ${isSelected ? styles['active-chip'] : ''}`}
-                        onClick={() => handleFilterToggle(setSelectedTimes, time.id)}
-                      >
-                        <span>{time.label}</span>
-                        {isSelected && <span className={styles['chip-check']}>✓</span>}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Price Range Filter Widget */}
-              <div className={styles['filter-widget']}>
-                <div className={styles['widget-title-box']}>
-                  <span className="material-symbols-outlined">payments</span>
-                  <h4>Price Range</h4>
-                </div>
-                <div className={styles['filter-chips-list']}>
-                  {[
-                    { id: 'under-15k', label: 'Under ₹15,000' },
-                    { id: '15k-25k', label: '₹15,000 - ₹25,000' },
-                    { id: 'over-25k', label: 'Over ₹25,000' }
-                  ].map((price) => {
-                    const isSelected = selectedPriceFilters.includes(price.id);
-                    return (
-                      <button
-                        key={price.id}
-                        type="button"
-                        className={`${styles['filter-chip']} ${isSelected ? styles['active-chip'] : ''}`}
-                        onClick={() => handleFilterToggle(setSelectedPriceFilters, price.id)}
-                      >
-                        <span>{price.label}</span>
-                        {isSelected && <span className={styles['chip-check']}>✓</span>}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <div className={styles['sidebar-footer-actions']}>
-              {(selectedTimes.length > 0 || selectedPriceFilters.length > 0) && (
-                <button 
-                  className={styles['reset-all-btn']} 
-                  onClick={() => {
-                    setSelectedTimes([]);
-                    setSelectedPriceFilters([]);
-                  }} 
-                  type="button"
-                >
-                  RESET ALL FILTERS
-                </button>
-              )}
-              <button 
-                className={styles['mobile-apply-btn']} 
-                onClick={() => setIsMobileFilterOpen(false)} 
-                type="button"
+            {/* Estimated Delivery Widget */}
+            <div className={styles['filter-widget']}>
+              <div role="button" 
+                className={styles['widget-header-btn']} 
+                onClick={() => setIsTimeOpen(!isTimeOpen)}
               >
-                APPLY FILTERS ({sortedProducts.length})
-              </button>
+                <span>Delivery Time</span>
+                <ChevronDown size={14} className={`${styles['chevron-icon']} ${isTimeOpen ? styles['open'] : ''}`} />
+              </div>
+              {isTimeOpen && (
+                <div className={styles['widget-content']}>
+                  <label className={styles['checkbox-label']}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedTimes.includes('under-15')}
+                      onChange={() => handleFilterToggle(setSelectedTimes, 'under-15')}
+                    /> Under 20 Days
+                  </label>
+                  <label className={styles['checkbox-label']}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedTimes.includes('15-30')}
+                      onChange={() => handleFilterToggle(setSelectedTimes, '15-30')}
+                    /> 25 - 30 Days
+                  </label>
+                  
+                </div>
+              )}
             </div>
           </div>
         </aside>
@@ -231,73 +293,46 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
           {/* Header Description */}
           <div className={styles['collection-header']}>
             <h1 className={styles['collection-title']}>Pre Booking Collections</h1>
-            <div className={styles['collection-divider']} />
-            <p className={styles['collection-subtitle']}>
-              Reserve Your Favourite Saree Before It's Gone! Our exclusive handloom sarees are crafted in limited quantities.
-            </p>
-
-            {/* Pre-Booking Guarantees / Highlights */}
-            <div className={styles['prebooking-highlights-grid']}>
-              <div className={styles['highlight-card']}>
-                <span className="material-symbols-outlined">auto_awesome</span>
-                <div>
-                  <h5>Exclusive Weaves</h5>
-                  <p>Handpicked limited-batch sarees</p>
-                </div>
-              </div>
-              <div className={styles['highlight-card']}>
-                <span className="material-symbols-outlined">event_available</span>
-                <div>
-                  <h5>Priority Reservation</h5>
-                  <p>Guaranteed loom allotment</p>
-                </div>
-              </div>
-              <div className={styles['highlight-card']}>
-                <span className="material-symbols-outlined">local_shipping</span>
-                <div>
-                  <h5>35–40 Days Delivery</h5>
-                  <p>Carefully woven and finished</p>
-                </div>
-              </div>
-              <div className={styles['highlight-card']}>
-                <span className="material-symbols-outlined">sync_saved_locally</span>
-                <div>
-                  <h5>Flexible Exchange</h5>
-                  <p>Modify booking prior to dispatch</p>
-                </div>
-              </div>
+            <div className={styles['collection-description']}>
+              <p><strong>Reserve Your Favourite Saree Before It's Gone!</strong></p>
+              <p>Our exclusive handloom sarees are crafted in limited quantities. Pre-book now to secure your preferred design before it sells out.</p>
+              <p>💫 <strong>Exclusive Collection</strong> – Handpicked premium sarees woven with timeless elegance and traditional craftsmanship.</p>
+              <p>🛍️ <strong>Priority Reservation</strong> – Confirm your booking today and we'll reserve your selected saree exclusively for you.</p>
+              <p>🚚 <strong>Delivery Timeline</strong> – Your saree will be carefully prepared and delivered within 35–40 days.</p>
+              <p>❤️ <strong>Flexible Booking</strong> – Need to make a change? You can modify or exchange your booking before dispatch. (Refunds are not available.)</p>
+              <p>🌸 <strong>Own a Piece of Heritage</strong> – Experience authentic craftsmanship with every weave, designed to make every occasion memorable.</p>
             </div>
           </div>
 
           {/* Toolbar */}
           <div className={styles['toolbar']}>
             <div className={styles['toolbar-left']}>
-              <span>Showing <strong>{sortedProducts.length}</strong> of <strong>{preorderList.length}</strong> Masterpieces</span>
+              <span>Showing 1 - {sortedProducts.length} of {sortedProducts.length} products</span>
             </div>
             <div className={styles['toolbar-right']}>
               <button 
                 className={styles['mobile-filter-btn']}
                 onClick={() => setIsMobileFilterOpen(true)}
-                type="button"
               >
                 <Filter size={14} /> Filters
               </button>
-
-              <div className={styles['custom-dropdown-container']}>
-                <span className={styles['sort-label']}>SORT:</span>
-                <div 
-                  className={styles['custom-dropdown-toggle']} 
+              <div className={styles['sort-dropdown']}>
+                <span className={styles['sort-label']}>Sort by:</span>
+                <div role="button" 
+                  className={styles['sort-btn']}
                   onClick={() => setIsSortOpen(!isSortOpen)}
                 >
-                  <span>{SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured'}</span>
-                  <ChevronDown size={14} className={isSortOpen ? styles['open'] : ''} />
+                  <span className={styles['sort-btn-text']}>
+                    {SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured'}
+                  </span>
+                  <ChevronDown size={14} />
                 </div>
                 {isSortOpen && (
-                  <div className={styles['custom-dropdown-menu']}>
+                  <div className={styles['sort-menu']}>
                     {SORT_OPTIONS.map((option) => (
                       <div 
                         key={option.value}
-                        className={`${styles['dropdown-item']} ${selectedSort === option.value ? styles['active-item'] : ''}`}
+                        role="button"
                         onClick={() => {
                           setSelectedSort(option.value);
                           setIsSortOpen(false);
@@ -309,102 +344,59 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                   </div>
                 )}
               </div>
-
               <div className={styles['view-toggles']}>
-                <button 
-                  className={`${styles['icon-btn']} ${viewMode === 'grid' ? styles['active'] : ''}`}
+                <span className={styles['sort-label']}>View</span>
+                <div 
+                  role="button" 
+                  className={`${styles['view-icon-btn']} ${viewMode === 'grid' ? styles['active-view'] : ''}`}
                   onClick={() => setViewMode('grid')}
-                  title="Grid View"
-                  type="button"
                 >
-                  <Grid size={15} />
-                </button>
-                <button 
-                  className={`${styles['icon-btn']} ${viewMode === 'list' ? styles['active'] : ''}`}
+                  <Grid size={16} />
+                </div>
+                <div 
+                  role="button" 
+                  className={`${styles['view-icon-btn']} ${viewMode === 'list' ? styles['active-view'] : ''}`}
                   onClick={() => setViewMode('list')}
-                  title="List View"
-                  type="button"
                 >
-                  <List size={15} />
-                </button>
+                  <List size={16} />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Product Grid */}
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--primary)' }}>
-              <Loader2 size={36} style={{ animation: 'spin 1s linear infinite' }} />
-              <p style={{ marginTop: 16, color: '#7D756D', fontSize: '14px' }}>Loading pre-order sarees from database...</p>
-            </div>
-          ) : sortedProducts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 0' }}>
-              <h3 style={{ color: 'var(--primary)', fontSize: '20px' }}>No pre-order sarees available at the moment.</h3>
-            </div>
-          ) : (
-            <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
-              {sortedProducts.map((product) => (
-                <div key={product.id} className={styles['product-card']}>
-                  <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
-                    <div className={styles['discount-badge']}>Save {product.discount || '10%'}</div>
-                    <img src={product.image} alt={product.name} className={styles['product-image']} />
-                    
-                    <button 
-                      className={styles['card-wishlist-btn']} 
-                      onClick={(e) => { e.stopPropagation(); }}
-                      title="Save to Wishlist"
-                      type="button"
-                    >
-                      <Heart size={14} />
-                    </button>
-                    <button 
-                      className={styles['card-share-btn']} 
-                      onClick={(e) => { e.stopPropagation(); }}
-                      title="Share"
-                      type="button"
-                    >
-                      <Share2 size={14} />
-                    </button>
+          <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
+            {sortedProducts.map((product) => (
+              <div key={product.id} className={styles['product-card']}>
+                <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
+                  <div className={styles['discount-badge']}>Save {product.discount}</div>
+                  <img src={product.image} alt={product.name} className={styles['product-image']} />
+                </div>
+                <div className={styles['product-info']}>
+                  <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
+                    {product.name} | {product.id.toUpperCase()} | PRE BOOKING
+                  </h3>
+                  <div className={styles['product-price-row']}>
+                    <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
+                    <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
                   </div>
-
-                  <div className={styles['product-info']}>
-                    <div className={styles['title-row']}>
-                      <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)} title={product.name}>
-                        {product.name}
-                      </h3>
-                      <div className={styles['rating-badge']}>
-                        <Star size={10} fill="#B38A4A" stroke="#B38A4A" />
-                        <span>4.8</span>
-                      </div>
-                    </div>
-
-                    <p className={styles['product-desc']}>
-                      {product.description || "Midnight charcoal black handwoven pure silk saree with rich heritage zari."}
-                    </p>
-
-                    <div className={styles['product-price-row']}>
-                      <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                      {product.oldPrice && (
-                        <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
-                      )}
-                      <span className={styles['discount-tag']}>{product.discount || '10% OFF'}</span>
-                    </div>
-
-                    <div 
-                      role="button" 
-                      className={styles['prebook-btn']} 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePreorderClick(product);
-                      }}
-                    >
-                      PRE BOOK NOW
-                    </div>
+                  <div 
+                    role="button" 
+                    className={styles['prebook-btn']} 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePreorderClick(product);
+                    }}
+                  >
+                    PRE BOOK NOW
+                  </div>
+                  <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); }}>
+                    Quick view
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
         </section>
       </main>
 
@@ -427,24 +419,46 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
               </div>
               
               <div className={styles['quick-view-details']}>
-                <h2 className={styles['qv-title']}>{quickViewProduct.name} | {quickViewProduct.id.toUpperCase()} | PRE BOOKING</h2>
-                <div className={styles['qv-badge']}>Save {quickViewProduct.discount}</div>
-                
-                <div className={styles['qv-vendor']}>MAZHAI VAANAM</div>
-                
-                <div className={styles['qv-price-row']}>
-                  <span className={styles['qv-label']}>Price:</span>
-                  <span className={styles['qv-current-price']}>{formatCurrency(quickViewProduct.price)}</span>
-                  <span className={styles['qv-old-price']}>{formatCurrency(quickViewProduct.oldPrice)}</span>
-                </div>
-                
-                <div className={styles['qv-quantity-row']}>
-                  <span className={styles['qv-label']}>Quantity:</span>
-                  <div className={styles['quantity-selector']}>
-                    <div role="button" className={styles['qty-btn']} onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</div>
-                    <span>{quantity}</span>
-                    <div role="button" className={styles['qty-btn']} onClick={() => setQuantity(quantity + 1)}>+</div>
+                <div className={styles['qv-scrollable-content']}>
+                  <h2 className={styles['qv-title']}>{quickViewProduct.name} | {quickViewProduct.id.toUpperCase()} | PRE BOOKING</h2>
+                  <div className={styles['qv-badge']}>Save {quickViewProduct.discount}</div>
+                  
+                  <div className={styles['qv-vendor']}>MAZHAI VAANAM</div>
+                  
+                  <div className={styles['qv-price-row']}>
+                    <span className={styles['qv-label']}>Price:</span>
+                    <span className={styles['qv-current-price']}>{formatCurrency(quickViewProduct.price)}</span>
+                    <span className={styles['qv-old-price']}>{formatCurrency(quickViewProduct.oldPrice)}</span>
                   </div>
+                  
+                  <div className={styles['qv-quantity-row']}>
+                    <span className={styles['qv-label']}>Quantity:</span>
+                    <div className={styles['quantity-selector']}>
+                      <div role="button" className={styles['qty-btn']} onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</div>
+                      <span>{quantity}</span>
+                      <div role="button" className={styles['qty-btn']} onClick={() => setQuantity(quantity + 1)}>+</div>
+                    </div>
+                  </div>
+
+                  {details && (
+                    <div className={styles['qv-description-section']}>
+                      <h4 className={styles['qv-desc-title']}>{details.headline}</h4>
+                      <p className={styles['qv-desc-p']}>{details.p1}</p>
+                      <p className={styles['qv-desc-p']}>{details.p2}</p>
+                      
+                      <h5 className={styles['qv-highlights-title']}>Product Highlights:</h5>
+                      <ul className={styles['qv-highlights-list']}>
+                        <li><strong>Fabric:</strong> {details.fabric}</li>
+                        <li><strong>Design:</strong> {details.design}</li>
+                        <li><strong>Border:</strong> {details.border}</li>
+                        <li><strong>Texture:</strong> {details.texture}</li>
+                        <li><strong>Occasion:</strong> {details.occasion}</li>
+                      </ul>
+                      <p className={styles['qv-desc-note']}>
+                        <strong>Note:</strong> Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.
+                      </p>
+                    </div>
+                  )}
                 </div>
                 
                 <div className={styles['qv-actions']}>

@@ -96,7 +96,17 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
     { value: 'date-desc', label: 'Date, new to old' },
   ];
 
-  const [visibleRows, setVisibleRows] = useState(3);
+  const getInitialRows = () => {
+    if (typeof window === 'undefined') return 3;
+    if (window.innerWidth <= 768) return 4;
+    return 3;
+  };
+
+  const [visibleRows, setVisibleRows] = useState(getInitialRows);
+
+  useEffect(() => {
+    setVisibleRows(getInitialRows());
+  }, [sortOption]);
 
   const bestSellers = useMemo(() => {
     let products = [...liveBestSellers];
@@ -114,12 +124,17 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
     return products;
   }, [liveBestSellers, sortOption]);
 
-  const itemsPerRow = gridView === 'list' ? 1 : gridView;
+  const getItemsPerRow = () => {
+    if (gridView === 'list') return 1;
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) return 2;
+    return gridView;
+  };
+  const itemsPerRow = getItemsPerRow();
   const visibleCount = visibleRows * itemsPerRow;
   const visibleProducts = bestSellers.slice(0, visibleCount);
 
   const handleLoadMore = () => {
-    setVisibleRows(prev => prev + 3);
+    setVisibleRows(Math.ceil(bestSellers.length / itemsPerRow));
   };
 
   const handleProductClick = (product) => {

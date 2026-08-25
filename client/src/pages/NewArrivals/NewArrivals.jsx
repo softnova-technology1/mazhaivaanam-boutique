@@ -6,11 +6,20 @@ import { SORT_OPTIONS } from '../PreBooking/PreBooking';
 import styles from './NewArrivals.module.css';
 
 export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
+  const getInitialCount = () => {
+    if (typeof window === 'undefined') return 12;
+    const w = window.innerWidth;
+    if (w >= 1440) return 15;
+    if (w > 1024) return 12;
+    if (w > 768) return 9;
+    return 8;
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedSort, setSelectedSort] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [visibleCount, setVisibleCount] = useState(getInitialCount);
   const [liveArrivals, setLiveArrivals] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +42,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
 
   // Reset visibleCount when filters change
   useEffect(() => {
-    setVisibleCount(8);
+    setVisibleCount(getInitialCount());
   }, [selectedCategory, searchQuery, selectedSort]);
 
   // Click listener to automatically close dropdown on outside clicks
@@ -150,26 +159,63 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
             })}
           </div>
 
-          {/* Search Bar */}
-          <div className={styles['search-bar-box']}>
-            <Search size={15} className={styles['search-icon']} />
-            <input
-              type="text"
-              placeholder="Search new arrivals..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles['search-input']}
-            />
-            {searchQuery && (
-              <div
-                className={styles['search-clear-icon']}
-                onClick={() => setSearchQuery('')}
-                role="button"
-                title="Clear search"
-              >
-                ✕
+          <div className={styles['actions-group']}>
+            {/* Search Bar */}
+            <div className={styles['search-bar-box']}>
+              <Search size={15} className={styles['search-icon']} />
+              <input
+                type="text"
+                placeholder="Search new arrivals..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles['search-input']}
+              />
+              {searchQuery && (
+                <div
+                  className={styles['search-clear-icon']}
+                  onClick={() => setSearchQuery('')}
+                  role="button"
+                  title="Clear search"
+                >
+                  ✕
+                </div>
+              )}
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className={styles['sort-selector']}>
+              <span>SORT BY:</span>
+              <div className={styles['custom-dropdown-container']}>
+                <button 
+                  className={styles['dropdown-trigger-btn']}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsSortOpen(!isSortOpen);
+                  }}
+                >
+                  <span className={styles['dropdown-text-truncate']}>
+                    {SORT_OPTIONS.find(opt => opt.value === selectedSort)?.label || 'Featured'}
+                  </span>
+                  <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
+                </button>
+                {isSortOpen && (
+                  <div className={styles['dropdown-options-menu']}>
+                    {SORT_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        className={`${styles['dropdown-option-item']} ${selectedSort === option.value ? styles['selected'] : ''}`}
+                        onClick={() => {
+                          setSelectedSort(option.value);
+                          setIsSortOpen(false);
+                        }}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </section>
@@ -210,7 +256,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
               <div className={styles['load-more-container']}>
                 <button 
                   className={styles['load-more-btn']}
-                  onClick={() => setVisibleCount(prev => prev + 8)}
+                  onClick={() => setVisibleCount(newArrivals.length)}
                 >
                   LOAD MORE
                 </button>

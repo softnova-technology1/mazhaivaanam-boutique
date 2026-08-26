@@ -1241,3 +1241,32 @@
     padding: 10px 0;
   }
 }
+
+@media (max-width: 360px) {
+  .main-layout {
+    padding: 12px 10px 40px !important;
+  }
+
+  .toolbar-left {
+    font-size: 9.5px !important;
+  }
+
+  .toolbar-right {
+    gap: 6px !important;
+  }
+
+  .mobile-filter-btn {
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .sort-btn {
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+    max-width: 90px !important;
+  }
+
+  .sort-btn-text {
+    max-width: 55px !important;
+  }
+}

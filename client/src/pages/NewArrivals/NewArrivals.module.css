@@ -668,7 +668,7 @@
     padding: 20px 14px 10px 14px;
   }
   .products-section {
-    padding: 0 14px 60px 14px;
+    padding: 0 14px 15px 14px;
   }
   .controls-toolbar {
     flex-direction: column;
@@ -718,7 +718,7 @@
     padding: 16px 10px 8px 10px;
   }
   .products-section {
-    padding: 0 10px 60px 10px;
+    padding: 0 10px 15px 10px;
   }
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

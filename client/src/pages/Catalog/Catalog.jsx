@@ -56,6 +56,21 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 24;
 
+  // Lock body scroll when mobile filter drawer is open
+  useEffect(() => {
+    if (isMobileFilterOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [isMobileFilterOpen]);
+
   // Initial fetch from MongoDB API
   useEffect(() => {
     let isMounted = true;
@@ -313,6 +328,34 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
             <div className={styles['sidebar-widgets-list']}>
 
+              {/* Sort By Filter Widget (Mobile Only) */}
+              <div className={`${styles['filter-widget']} ${styles['mobile-only-widget']}`}>
+                <div className={styles['filter-widget-header']}>
+                  <div className={styles['widget-title-box']}>
+                    <span className="material-symbols-outlined">sort</span>
+                    <h4>Sort By</h4>
+                  </div>
+                </div>
+                <div style={{ padding: '8px 12px', border: '1px solid var(--border-color)', borderRadius: '4px', display: 'flex', alignItems: 'center', backgroundColor: 'transparent' }}>
+                  <select
+                    value={selectedSort}
+                    onChange={(e) => setSelectedSort(e.target.value)}
+                    style={{ width: '100%', border: 'none', background: 'transparent', outline: 'none', fontSize: '11px', fontFamily: 'Inter, sans-serif', color: 'var(--text-main)', cursor: 'pointer', appearance: 'none', fontWeight: 500 }}
+                  >
+                    <option value="featured">Featured</option>
+                    <option value="relevant">Most relevant</option>
+                    <option value="best-selling">Best selling</option>
+                    <option value="alpha-asc">Alphabetically, A-Z</option>
+                    <option value="alpha-desc">Alphabetically, Z-A</option>
+                    <option value="price-low">Price, low to high</option>
+                    <option value="price-high">Price, high to low</option>
+                    <option value="date-old">Date, old to new</option>
+                    <option value="date-new">Date, new to old</option>
+                  </select>
+                  <ChevronDown size={14} color="var(--text-muted)" style={{ pointerEvents: 'none', marginLeft: '-20px' }} />
+                </div>
+              </div>
+
               {/* Collection Filter Widget */}
               <div className={styles['filter-widget']}>
                 <div className={styles['filter-widget-header']}>
@@ -448,7 +491,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 Showing {products.length} of {masterProducts.length} Masterpieces
               </p>
               <button
-                className={styles['mobile-filter-toggle']}
+                className={`${styles['mobile-filter-toggle']} ${styles['desktop-filter-btn-hidden']}`}
                 onClick={() => setIsMobileFilterOpen(true)}
                 type="button"
               >
@@ -478,8 +521,16 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 )}
               </div>
 
+              <button
+                className={`${styles['mobile-filter-toggle']} ${styles['mobile-only-filter-btn']}`}
+                onClick={() => setIsMobileFilterOpen(true)}
+                type="button"
+              >
+                <Filter size={13} /> Filter & Sort
+              </button>
+
               <div className={styles['sort-selector']}>
-                <span className={styles['sort-label']}>SORT:</span>
+                <span className={styles['sort-label']}>SORT BY:</span>
                 <div className={styles['custom-dropdown-container']}>
                   <button
                     className={styles['dropdown-trigger-btn']}

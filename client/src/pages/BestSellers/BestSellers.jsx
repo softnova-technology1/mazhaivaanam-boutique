@@ -338,7 +338,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
           {/* LOAD MORE BUTTON */}
           {bestSellers.length > visibleCount && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '48px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '24px', marginBottom: '8px' }}>
               <button 
                 onClick={handleLoadMore} 
                 style={{ 

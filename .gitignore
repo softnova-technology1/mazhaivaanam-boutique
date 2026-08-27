@@ -1,29 +1,35 @@
-# Root Level Dependencies & Build Folders
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Production build
 dist/
+dist-ssr/
 build/
 
-# Environment Variables
+# Local Environment Variables
 .env
-*.env
-*.env.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Logs
-logs/
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
+*.log
 
-# OS & Editor Metadata
-.DS_Store
-Thumbs.db
-.vscode/*
-!.vscode/extensions.json
+# Editor & IDE
+.vscode/
 .idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+.DS_Store
+Thumbs.db

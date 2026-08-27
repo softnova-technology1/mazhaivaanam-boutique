@@ -258,14 +258,14 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
                         <button onClick={() => { handleTabChange('my-profile'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
                           <User size={14} className={styles.dropdownIcon} /> My Profile
                         </button>
+                        <button onClick={() => { handleTabChange('saved-address'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
+                          <MapPin size={14} className={styles.dropdownIcon} /> Saved Address
+                        </button>
                         <button onClick={() => { handleTabChange('my-orders'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
                           <ShoppingBag size={14} className={styles.dropdownIcon} /> My Orders
                         </button>
                         <button onClick={() => { handleTabChange('track-order'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
                           <Truck size={14} className={styles.dropdownIcon} /> Track Order
-                        </button>
-                        <button onClick={() => { handleTabChange('saved-address'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
-                          <MapPin size={14} className={styles.dropdownIcon} /> Saved Address
                         </button>
                         <button onClick={() => { handleTabChange('wishlist'); setIsAccountOpen(false); }} className={styles.dropdownLink}>
                           <Heart size={14} className={styles.dropdownIcon} /> Wishlist

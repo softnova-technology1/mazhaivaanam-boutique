@@ -13,7 +13,7 @@ export default function Inventory() {
   const [restockModal, setRestockModal] = useState(null);
   const [restockQty, setRestockQty] = useState('');
   const [restockNote, setRestockNote] = useState('');
-  
+
   // Create Product Modal State
   const [modal, setModal] = useState({ open: false });
   const [form, setForm] = useState({});
@@ -22,9 +22,9 @@ export default function Inventory() {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 15;
 
-  useEffect(() => { 
+  useEffect(() => {
     loadInventory();
-    categoryAPI.getAll().then(res => setCategories(res.data)).catch(() => {});
+    categoryAPI.getAll().then(res => setCategories(res.data)).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -159,8 +159,8 @@ export default function Inventory() {
           <p className="page-subtitle">{totalCount} products tracked</p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button 
-            className="btn btn-outline" 
+          <button
+            className="btn btn-outline"
             onClick={handleExportCSV}
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
@@ -208,96 +208,96 @@ export default function Inventory() {
         <div className="loader"><div className="spinner" /></div>
       ) : (
         <>
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th style={{ width: 50, textAlign: 'center' }}>#</th>
-                <th>Product</th>
-                <th>Total Stock</th>
-                <th>Reserved</th>
-                <th>Sold</th>
-                <th>Available</th>
-                <th>Stock Level</th>
-                <th>Status</th>
-                <th style={{ textAlign: 'right' }}>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedInventory.map((inv, idx) => {
-                const avail = inv.availableStock;
-                const total = inv.totalStock || 1;
-                const pct = Math.min(100, (avail / total) * 100);
-                const barColor = inv.isOutOfStock ? 'var(--danger)' : inv.isLowStock ? 'var(--warning)' : 'var(--success)';
-                return (
-                  <tr key={inv._id}>
-                    <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
-                      {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div style={{ width: 38, height: 38, borderRadius: 6, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
-                          {inv.product?.images?.[0]?.url && <img src={inv.product.images[0].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+          <div className="table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th style={{ width: 50, textAlign: 'center' }}>#</th>
+                  <th>Product</th>
+                  <th>Total Stock</th>
+                  <th>Reserved</th>
+                  <th>Sold</th>
+                  <th>Available</th>
+                  <th>Stock Level</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: 'right' }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedInventory.map((inv, idx) => {
+                  const avail = inv.availableStock;
+                  const total = inv.totalStock || 1;
+                  const pct = Math.min(100, (avail / total) * 100);
+                  const barColor = inv.isOutOfStock ? 'var(--danger)' : inv.isLowStock ? 'var(--warning)' : 'var(--success)';
+                  return (
+                    <tr key={inv._id}>
+                      <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
+                        {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <div style={{ width: 38, height: 38, borderRadius: 6, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
+                            {inv.product?.images?.[0]?.url && <img src={inv.product.images[0].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                          </div>
+                          <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{inv.product?.name || 'Unknown'}</span>
                         </div>
-                        <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{inv.product?.name || 'Unknown'}</span>
-                      </div>
-                    </td>
-                    <td>{inv.totalStock}</td>
-                    <td>{inv.reserved}</td>
-                    <td>{inv.sold}</td>
-                    <td style={{ fontWeight: 600, color: barColor }}>{avail}</td>
-                    <td>
-                      <div className="stock-bar-wrap">
-                        <div className="stock-bar-bg">
-                          <div className="stock-bar-fill" style={{ width: `${pct}%`, background: barColor }} />
+                      </td>
+                      <td>{inv.totalStock}</td>
+                      <td>{inv.reserved}</td>
+                      <td>{inv.sold}</td>
+                      <td style={{ fontWeight: 600, color: barColor }}>{avail}</td>
+                      <td>
+                        <div className="stock-bar-wrap">
+                          <div className="stock-bar-bg">
+                            <div className="stock-bar-fill" style={{ width: `${pct}%`, background: barColor }} />
+                          </div>
+                          <div className="stock-bar-label">{Math.round(pct)}%</div>
                         </div>
-                        <div className="stock-bar-label">{Math.round(pct)}%</div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`badge ${inv.isOutOfStock ? 'badge-danger' : inv.isLowStock ? 'badge-warning' : 'badge-success'}`}>
-                        {inv.isOutOfStock ? 'Out of Stock' : inv.isLowStock ? 'Low Stock' : 'In Stock'}
-                      </span>
-                    </td>
-                    <td style={{ textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                      <button className="btn btn-outline btn-sm" onClick={() => setRestockModal(inv)}><RotateCcw size={14} /> Restock</button>
-                      <button className="btn btn-outline btn-sm" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => handleHardDelete(inv.product)}><Trash2 size={14} /></button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 24 }}>
-            <button
-              className="btn btn-sm btn-outline"
-              disabled={currentPage <= 1}
-              onClick={() => setCurrentPage(p => p - 1)}
-            >
-              Previous
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-            <button
-              className="btn btn-sm btn-outline"
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage(p => p + 1)}
-            >
-              Next
-            </button>
+                      </td>
+                      <td>
+                        <span className={`badge ${inv.isOutOfStock ? 'badge-danger' : inv.isLowStock ? 'badge-warning' : 'badge-success'}`}>
+                          {inv.isOutOfStock ? 'Out of Stock' : inv.isLowStock ? 'Low Stock' : 'In Stock'}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                        <button className="btn btn-outline btn-sm" onClick={() => setRestockModal(inv)}><RotateCcw size={14} /> Restock</button>
+                        <button className="btn btn-outline btn-sm" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => handleHardDelete(inv.product)}><Trash2 size={14} /></button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 24 }}>
+              <button
+                className="btn btn-sm btn-outline"
+                disabled={currentPage <= 1}
+                onClick={() => setCurrentPage(p => p - 1)}
+              >
+                Previous
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                className="btn btn-sm btn-outline"
+                disabled={currentPage >= totalPages}
+                onClick={() => setCurrentPage(p => p + 1)}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </>
       )}
 
@@ -340,11 +340,11 @@ export default function Inventory() {
             </div>
             <form onSubmit={handleSaveProduct}>
               <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
-                
+
                 {/* Left Column: Image Upload */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label className="form-label">Product Image</label>
-                  <div 
+                  <div
                     style={{
                       border: '2px dashed var(--border-color)',
                       borderRadius: 12,
@@ -367,13 +367,13 @@ export default function Inventory() {
                     {form.imagePreview ? (
                       <>
                         <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        <div 
-                          style={{ 
-                            position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', 
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                            opacity: 0, transition: 'opacity 0.2s' 
-                          }} 
-                          onMouseEnter={e => e.currentTarget.style.opacity = 1} 
+                        <div
+                          style={{
+                            position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            opacity: 0, transition: 'opacity 0.2s'
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
                           onMouseLeave={e => e.currentTarget.style.opacity = 0}
                         >
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
@@ -389,10 +389,10 @@ export default function Inventory() {
                         <div style={{ fontSize: '0.8rem', marginTop: 8 }}>Supports PNG, JPG, WEBP</div>
                       </div>
                     )}
-                    <input 
-                      id="inventory-product-image-upload" 
-                      type="file" 
-                      accept="image/*" 
+                    <input
+                      id="inventory-product-image-upload"
+                      type="file"
+                      accept="image/*"
                       style={{ display: 'none' }}
                       onChange={e => {
                         const file = e.target.files[0];
@@ -404,11 +404,11 @@ export default function Inventory() {
                   </div>
                   <div style={{ marginTop: 12 }}>
                     <label className="form-label" style={{ fontSize: '0.75rem' }}>Or Direct Image Path / URL</label>
-                    <input 
-                      className="form-input" 
-                      placeholder="/Images/saree1.png or https://..." 
-                      value={form.imageUrl || ''} 
-                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))} 
+                    <input
+                      className="form-input"
+                      placeholder="/Images/saree1.png or https://..."
+                      value={form.imageUrl || ''}
+                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))}
                     />
                   </div>
                 </div>
@@ -471,11 +471,11 @@ export default function Inventory() {
                   </div>
                   <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} /> 
+                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
                       Featured Product
                     </label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} /> 
+                      <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
                       Active Status
                     </label>
                   </div>

@@ -60,7 +60,23 @@ async function request(endpoint, options = {}) {
   const data = await res.json().catch(() => ({ success: false, message: 'Invalid response from server' }));
 
   if (!res.ok) {
-    throw new Error(data.message || 'Request failed');
+    if (res.status === 401) {
+      localStorage.removeItem('boutique_token');
+      localStorage.removeItem('boutique_user');
+    }
+
+    let errorMsg = data.message || 'Request failed';
+    if (data.errors && typeof data.errors === 'object') {
+      const details = Object.values(data.errors).filter(Boolean).join('. ');
+      if (details) {
+        errorMsg = `${data.message ? data.message + ': ' : ''}${details}`;
+      }
+    }
+
+    const err = new Error(errorMsg);
+    err.status = res.status;
+    err.errors = data.errors;
+    throw err;
   }
 
   return data;

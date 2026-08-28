@@ -9,7 +9,8 @@ import {
   Sparkles, 
   ShieldCheck, 
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  X
 } from 'lucide-react';
 import styles from './Login.module.css';
 
@@ -76,6 +77,9 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
   return (
     <div className={styles['auth-page-container']}>
       <div className={styles['auth-card']}>
+        <button className={styles['close-btn']} onClick={() => { if (setCurrentTab) setCurrentTab('shop'); }} aria-label="Close">
+          <X size={24} />
+        </button>
         
         {/* Luxury Top Badge */}
         <div className={styles['brand-badge-pill']}>

@@ -1089,3 +1089,30 @@
     font-size: 0.65rem;
   }
 }
+
+/* Password Toggle CSS */
+.passwordInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.passwordToggleBtn {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #A09A93;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color 0.2s ease;
+  z-index: 2;
+}
+
+.passwordToggleBtn:hover {
+  color: var(--primary-dark, #4A4E2B);
+}

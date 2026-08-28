@@ -63,9 +63,11 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponMsg, setCouponMsg] = useState({ type: '', text: '' });
 
-  // Order Confirmation State
+  // Order Confirmation & Submission States
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // Order Details Cache for Success Screen
   const [orderCache, setOrderCache] = useState(null);
@@ -119,9 +121,10 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     setCouponMsg({ type: '', text: '' });
   };
 
-  const handleCompleteOrder = (e) => {
-    e.preventDefault();
-
+  const handleCompleteOrder = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setSubmitError('');
+    
     // Validate fields and record inline error text
     const newErrors = {};
     if (!fullName.trim()) newErrors.fullName = 'Full Name is required';
@@ -145,12 +148,6 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       if (!stateName.trim()) newErrors.stateName = 'State is required';
     }
 
-    if (paymentMethod === 'card') {
-      if (!cardNumber.trim()) newErrors.cardNumber = 'Card Number is required';
-      if (!expiry.trim()) newErrors.expiry = 'Expiry is required';
-      if (!cvv.trim()) newErrors.cvv = 'CVV is required';
-    }
-
     setErrors(newErrors);
 
     // If there are errors, stop and scroll to first error field
@@ -165,8 +162,9 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       return;
     }
 
-    // Cache the order information before clearing the cart
-    const orderDetails = {
+    setIsSubmitting(true);
+
+    const localOrderDetails = {
       orderId,
       fullName,
       email,
@@ -193,26 +191,106 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       arrivalRange: `${getFormattedDate(6)} — ${getFormattedDate(9)}`
     };
 
-    setOrderCache(orderDetails);
+    const finalizeSuccessOrder = (finalOrderId) => {
+      const finalDetails = { ...localOrderDetails, orderId: finalOrderId || orderId };
+      setOrderCache(finalDetails);
 
-    // Save to local storage for My Orders page
-    const saved = localStorage.getItem('boutique_orders');
-    const list = saved ? JSON.parse(saved) : [];
-    list.unshift({ ...orderDetails, status: 'IN TRANSIT' });
-    localStorage.setItem('boutique_orders', JSON.stringify(list));
+      const saved = localStorage.getItem('boutique_orders');
+      const list = saved ? JSON.parse(saved) : [];
+      list.unshift({ ...finalDetails, status: 'IN TRANSIT' });
+      localStorage.setItem('boutique_orders', JSON.stringify(list));
 
-    // Clear the cart reactive context or direct checkout item
-    if (directCheckoutItem) {
-      if (setDirectCheckoutItem) setDirectCheckoutItem(null);
-    } else {
-      clearCart();
+      if (directCheckoutItem) {
+        if (setDirectCheckoutItem) setDirectCheckoutItem(null);
+      } else {
+        clearCart();
+      }
+
+      setOrderConfirmed(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const orderPayload = {
+      items: checkoutItems.map((item) => ({
+        product: item._id || item.id,
+        quantity: item.quantity || 1,
+      })),
+      shippingAddress: {
+        fullName,
+        addressLine,
+        city,
+        state: stateName,
+        pinCode,
+        phone,
+      },
+      deliveryMode: deliveryMode === 'pickup' ? 'standard' : deliveryMode,
+      giftPackaging: Boolean(giftPackaging),
+      giftMessage: giftMessage || '',
+      paymentMethod: paymentMethod === 'card' ? 'card' : paymentMethod === 'upi' ? 'upi' : paymentMethod === 'netbanking' ? 'netbanking' : 'card',
+      couponCode: appliedCoupon?.code || '',
+    };
+
+    try {
+      // Call backend API to create order & Razorpay order
+      const res = await orderAPI.createOrder(orderPayload);
+      const { razorpayOrderId, razorpayKeyId, amount, orderId: backendOrderId } = res;
+
+      if (!razorpayKeyId || !razorpayOrderId) {
+        throw new Error('Razorpay keys or order ID not received from backend server');
+      }
+
+      if (!window.Razorpay) {
+        throw new Error('Razorpay SDK failed to load. Please check your internet connection and refresh.');
+      }
+
+      const options = {
+        key: razorpayKeyId,
+        amount: Math.round(amount * 100), // paise
+        currency: 'INR',
+        name: 'MAZHAI VAANAM BOUTIQUE',
+        description: `Order #${backendOrderId}`,
+        order_id: razorpayOrderId,
+        prefill: {
+          name: fullName,
+          email: email,
+          contact: phone,
+        },
+        theme: {
+          color: '#6B102A',
+        },
+        handler: async function (response) {
+          try {
+            await orderAPI.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            finalizeSuccessOrder(backendOrderId);
+          } catch (verr) {
+            setSubmitError(verr.message || 'Payment verification failed. Please try again.');
+          } finally {
+            setIsSubmitting(false);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsSubmitting(false);
+            setSubmitError('Payment process was cancelled.');
+          },
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (resp) {
+        setSubmitError(resp.error?.description || 'Payment failed. Please try again.');
+        setIsSubmitting(false);
+      });
+      rzp.open();
+    } catch (err) {
+      console.error('Order/Razorpay Error:', err);
+      setSubmitError(err.message || 'Failed to initialize payment');
+      setIsSubmitting(false);
     }
-
-    // Set visual confirmation status
-    setOrderConfirmed(true);
-
-    // Scroll page to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Helper date formatter
@@ -972,12 +1050,20 @@ Thank you for choosing handloom heritage.
                   </div>
                 </div>
 
+                {submitError && (
+                  <div style={{ padding: '10px 14px', borderRadius: 8, background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', color: '#ef4444', fontSize: '0.85rem', marginBottom: 12, fontWeight: 500 }}>
+                    {submitError}
+                  </div>
+                )}
+
                 {/* Action button */}
                 <button
                   className={styles.shimmerBtn}
                   onClick={handleCompleteOrder}
+                  disabled={isSubmitting}
+                  style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
                 >
-                  COMPLETE ORDER
+                  {isSubmitting ? 'PROCESSING PAYMENT...' : 'COMPLETE ORDER'}
                   <Lock className={styles.checkoutIcon} size={18} />
                 </button>
 

@@ -87,10 +87,20 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
     }
   };
 
+  const displayImage = (typeof image === 'string' && !image.startsWith('blob:')) ? image : '/Images/saree1.png';
+
   return (
     <div className={styles['product-card']} onClick={handleCardClick}>
       <div className={styles['image-container']}>
-        <img src={image} alt={name} loading="lazy" />
+        <img 
+          src={displayImage} 
+          alt={name} 
+          loading="lazy" 
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = '/Images/saree1.png';
+          }}
+        />
 
         {/* Status badges */}
         {isNew && <span className={`${styles['badge-tag']} ${getBadgeClass('NEW ARRIVAL')}`}>NEW ARRIVAL</span>}

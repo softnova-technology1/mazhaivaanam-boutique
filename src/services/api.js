@@ -6,7 +6,10 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 export function normalizeProduct(p) {
   if (!p) return null;
   const id = p._id || p.id;
-  const image = p.images?.[0]?.url || p.image || '/Images/saree1.png';
+  let image = p.images?.[0]?.url || p.image || '/Images/saree1.png';
+  if (typeof image === 'string' && image.startsWith('blob:')) {
+    image = '/Images/saree1.png';
+  }
   const categoryName = typeof p.category === 'object' ? p.category?.name : (p.category || 'Handloom Sarees');
   const categorySlug = typeof p.category === 'object' ? p.category?.slug : (p.categorySlug || '');
 
@@ -57,7 +60,23 @@ async function request(endpoint, options = {}) {
   const data = await res.json().catch(() => ({ success: false, message: 'Invalid response from server' }));
 
   if (!res.ok) {
-    throw new Error(data.message || 'Request failed');
+    if (res.status === 401) {
+      localStorage.removeItem('boutique_token');
+      localStorage.removeItem('boutique_user');
+    }
+
+    let errorMsg = data.message || 'Request failed';
+    if (data.errors && typeof data.errors === 'object') {
+      const details = Object.values(data.errors).filter(Boolean).join('. ');
+      if (details) {
+        errorMsg = `${data.message ? data.message + ': ' : ''}${details}`;
+      }
+    }
+
+    const err = new Error(errorMsg);
+    err.status = res.status;
+    err.errors = data.errors;
+    throw err;
   }
 
   return data;
@@ -164,6 +183,13 @@ export const orderAPI = {
     const res = await request('/orders', {
       method: 'POST',
       body: orderData,
+    });
+    return res.data;
+  },
+  verifyPayment: async (paymentData) => {
+    const res = await request('/orders/payments/verify', {
+      method: 'POST',
+      body: paymentData,
     });
     return res.data;
   },

@@ -554,9 +554,7 @@
   transform: translateX(4px);
 }
 
-.megaMenuHeadingBtn:hover h4 {
-  /* No color change on hover */
-}
+
 
 /* Image banners inside collections */
 .megaMenuBanners {

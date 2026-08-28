@@ -13,7 +13,7 @@ export default function Inventory() {
   const [restockModal, setRestockModal] = useState(null);
   const [restockQty, setRestockQty] = useState('');
   const [restockNote, setRestockNote] = useState('');
-  
+
   // Create Product Modal State
   const [modal, setModal] = useState({ open: false });
   const [form, setForm] = useState({});
@@ -25,9 +25,9 @@ export default function Inventory() {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 15;
 
-  useEffect(() => { 
+  useEffect(() => {
     loadInventory();
-    categoryAPI.getAll().then(res => setCategories(res.data)).catch(() => {});
+    categoryAPI.getAll().then(res => setCategories(res.data)).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -133,18 +133,24 @@ export default function Inventory() {
         isFeatured: Boolean(form.isFeatured), isActive: Boolean(form.isActive),
       };
 
+      const safeFallback = (form.imageUrl && !form.imageUrl.startsWith('blob:')) 
+        ? form.imageUrl.trim() 
+        : (form.imagePreview && !form.imagePreview.startsWith('blob:')) 
+          ? form.imagePreview 
+          : '/Images/saree1.png';
+
       if (form.imageFile) {
         try {
           const res = await uploadAPI.upload(form.imageFile);
-          body.images = [{ url: res.data.url, publicId: res.data.publicId }];
+          body.images = [{ url: res.data.url, publicId: res.data.publicId || '' }];
         } catch (uploadErr) {
           console.warn('Upload API fallback:', uploadErr);
-          body.images = [{ url: form.imagePreview || '/Images/saree1.png', publicId: '' }];
+          body.images = [{ url: safeFallback, publicId: '' }];
         }
-      } else if (form.imageUrl && form.imageUrl.trim()) {
+      } else if (form.imageUrl && form.imageUrl.trim() && !form.imageUrl.startsWith('blob:')) {
         body.images = [{ url: form.imageUrl.trim(), publicId: '' }];
       } else {
-        body.images = [{ url: form.imagePreview || '/Images/saree1.png', publicId: '' }];
+        body.images = [{ url: safeFallback, publicId: '' }];
       }
 
       await productAPI.create(body);
@@ -324,18 +330,18 @@ export default function Inventory() {
                         <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{inv.product?.name || 'Unknown'}</span>
                       </div>
                     </td>
-                    <td>{inv.totalStock}</td>
-                    <td>{inv.reserved}</td>
-                    <td>{inv.sold}</td>
-                    <td style={{ fontWeight: 600, color: barColor }}>{avail}</td>
-                    <td>
-                      <div className="stock-bar-wrap">
-                        <div className="stock-bar-bg">
-                          <div className="stock-bar-fill" style={{ width: `${pct}%`, background: barColor }} />
+                      <td>{inv.totalStock}</td>
+                      <td>{inv.reserved}</td>
+                      <td>{inv.sold}</td>
+                      <td style={{ fontWeight: 600, color: barColor }}>{avail}</td>
+                      <td>
+                        <div className="stock-bar-wrap">
+                          <div className="stock-bar-bg">
+                            <div className="stock-bar-fill" style={{ width: `${pct}%`, background: barColor }} />
+                          </div>
+                          <div className="stock-bar-label">{Math.round(pct)}%</div>
                         </div>
-                        <div className="stock-bar-label">{Math.round(pct)}%</div>
-                      </div>
-                    </td>
+                      </td>
                     <td>
                       <span className={`badge ${inv.product?.isActive === false ? 'badge-secondary' : inv.isOutOfStock ? 'badge-danger' : inv.isLowStock ? 'badge-warning' : 'badge-success'}`}>
                         {inv.product?.isActive === false ? 'Deactivated' : inv.isOutOfStock ? 'Out of Stock' : inv.isLowStock ? 'Low Stock' : 'In Stock'}
@@ -378,8 +384,8 @@ export default function Inventory() {
             >
               Next
             </button>
-          </div>
-        )}
+            </div>
+          )}
         </>
       )}
 
@@ -422,11 +428,11 @@ export default function Inventory() {
             </div>
             <form onSubmit={handleSaveProduct}>
               <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
-                
+
                 {/* Left Column: Image Upload */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label className="form-label">Product Image</label>
-                  <div 
+                  <div
                     style={{
                       border: '2px dashed var(--border-color)',
                       borderRadius: 12,
@@ -449,13 +455,13 @@ export default function Inventory() {
                     {form.imagePreview ? (
                       <>
                         <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        <div 
-                          style={{ 
-                            position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', 
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                            opacity: 0, transition: 'opacity 0.2s' 
-                          }} 
-                          onMouseEnter={e => e.currentTarget.style.opacity = 1} 
+                        <div
+                          style={{
+                            position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            opacity: 0, transition: 'opacity 0.2s'
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
                           onMouseLeave={e => e.currentTarget.style.opacity = 0}
                         >
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
@@ -471,10 +477,10 @@ export default function Inventory() {
                         <div style={{ fontSize: '0.8rem', marginTop: 8 }}>Supports PNG, JPG, WEBP</div>
                       </div>
                     )}
-                    <input 
-                      id="inventory-product-image-upload" 
-                      type="file" 
-                      accept="image/*" 
+                    <input
+                      id="inventory-product-image-upload"
+                      type="file"
+                      accept="image/*"
                       style={{ display: 'none' }}
                       onChange={e => {
                         const file = e.target.files[0];
@@ -486,11 +492,11 @@ export default function Inventory() {
                   </div>
                   <div style={{ marginTop: 12 }}>
                     <label className="form-label" style={{ fontSize: '0.75rem' }}>Or Direct Image Path / URL</label>
-                    <input 
-                      className="form-input" 
-                      placeholder="/Images/saree1.png or https://..." 
-                      value={form.imageUrl || ''} 
-                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))} 
+                    <input
+                      className="form-input"
+                      placeholder="/Images/saree1.png or https://..."
+                      value={form.imageUrl || ''}
+                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))}
                     />
                   </div>
                 </div>
@@ -553,11 +559,11 @@ export default function Inventory() {
                   </div>
                   <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} /> 
+                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
                       Featured Product
                     </label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} /> 
+                      <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
                       Active Status
                     </label>
                   </div>

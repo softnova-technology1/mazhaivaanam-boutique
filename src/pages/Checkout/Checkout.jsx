@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
 import { orderAPI } from '../../services/api';
-import { 
-  Lock, 
-  ShieldCheck, 
-  Gift, 
-  Truck, 
-  Award, 
-  RotateCcw, 
-  CreditCard, 
-  Landmark, 
+import {
+  Lock,
+  ShieldCheck,
+  Gift,
+  Truck,
+  Award,
+  RotateCcw,
+  CreditCard,
+  Landmark,
   ChevronRight,
   ArrowRight,
   ShoppingBag,
@@ -30,8 +30,8 @@ import styles from './Checkout.module.css';
 
 export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutItem }) => {
   const { cart, cartTotal, clearCart } = useCart();
-  const checkoutItems = directCheckoutItem 
-    ? [{ ...directCheckoutItem, quantity: directCheckoutItem.quantity || 1 }] 
+  const checkoutItems = directCheckoutItem
+    ? [{ ...directCheckoutItem, quantity: directCheckoutItem.quantity || 1 }]
     : cart;
 
   // Address Form States
@@ -47,11 +47,11 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const [errors, setErrors] = useState({});
 
   // UI Interactive States
-  const [deliveryMode, setDeliveryMode] = useState('pickup'); // 'pickup' | 'standard'
+  const [deliveryMode, setDeliveryMode] = useState('standard'); // 'pickup' | 'standard'
   const [giftPackaging, setGiftPackaging] = useState(false);
   const [giftMessage, setGiftMessage] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' | 'upi' | 'netbanking'
-  
+
   // Card Payment States
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
@@ -63,9 +63,11 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponMsg, setCouponMsg] = useState({ type: '', text: '' });
 
-  // Order Confirmation State
+  // Order Confirmation & Submission States
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // Order Details Cache for Success Screen
   const [orderCache, setOrderCache] = useState(null);
@@ -79,7 +81,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   // Price calculations
   const GIFT_WRAP_PRICE = 499;
   const mrpTotal = checkoutItems.reduce((sum, item) => sum + (item.oldPrice || Math.round(item.price * 1.15)) * item.quantity, 0);
-  const subtotal = directCheckoutItem 
+  const subtotal = directCheckoutItem
     ? (directCheckoutItem.price * (directCheckoutItem.quantity || 1))
     : cartTotal;
   const exclusivePricingSavings = mrpTotal - subtotal;
@@ -88,7 +90,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
   const convenienceFee = checkoutItems.length > 0 ? 2 : 0;
   const shippingFee = checkoutItems.length > 0 ? (deliveryMode === 'standard' ? 100 : 0) : 0;
-  
+
   const finalAmount = Math.max(0, subtotal - festivalDiscount - couponDiscount + giftPackAddon + convenienceFee + shippingFee);
   const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
 
@@ -119,34 +121,31 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     setCouponMsg({ type: '', text: '' });
   };
 
-  const handleCompleteOrder = (e) => {
-    e.preventDefault();
+  const handleCompleteOrder = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setSubmitError('');
     
     // Validate fields and record inline error text
     const newErrors = {};
     if (!fullName.trim()) newErrors.fullName = 'Full Name is required';
-    
+
     if (!email.trim()) {
       newErrors.email = 'Email Address is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Enter a valid email address';
     }
-    
+
     if (!phone.trim()) {
       newErrors.phone = 'Phone Number is required';
     } else if (!/^\d{10,15}$/.test(phone.replace(/\D/g, ''))) {
       newErrors.phone = 'Enter a valid phone number';
     }
-    
-    if (!pinCode.trim()) newErrors.pinCode = 'Pin Code is required';
-    if (!addressLine.trim()) newErrors.addressLine = 'Address is required';
-    if (!city.trim()) newErrors.city = 'City / Town is required';
-    if (!stateName.trim()) newErrors.stateName = 'State is required';
 
-    if (paymentMethod === 'card') {
-      if (!cardNumber.trim()) newErrors.cardNumber = 'Card Number is required';
-      if (!expiry.trim()) newErrors.expiry = 'Expiry is required';
-      if (!cvv.trim()) newErrors.cvv = 'CVV is required';
+    if (deliveryMode === 'standard') {
+      if (!pinCode.trim()) newErrors.pinCode = 'Pin Code is required';
+      if (!addressLine.trim()) newErrors.addressLine = 'Address is required';
+      if (!city.trim()) newErrors.city = 'City / Town is required';
+      if (!stateName.trim()) newErrors.stateName = 'State is required';
     }
 
     setErrors(newErrors);
@@ -163,8 +162,9 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       return;
     }
 
-    // Cache the order information before clearing the cart
-    const orderDetails = {
+    setIsSubmitting(true);
+
+    const localOrderDetails = {
       orderId,
       fullName,
       email,
@@ -191,26 +191,106 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       arrivalRange: `${getFormattedDate(6)} — ${getFormattedDate(9)}`
     };
 
-    setOrderCache(orderDetails);
+    const finalizeSuccessOrder = (finalOrderId) => {
+      const finalDetails = { ...localOrderDetails, orderId: finalOrderId || orderId };
+      setOrderCache(finalDetails);
 
-    // Save to local storage for My Orders page
-    const saved = localStorage.getItem('boutique_orders');
-    const list = saved ? JSON.parse(saved) : [];
-    list.unshift({ ...orderDetails, status: 'IN TRANSIT' });
-    localStorage.setItem('boutique_orders', JSON.stringify(list));
-    
-    // Clear the cart reactive context or direct checkout item
-    if (directCheckoutItem) {
-      if (setDirectCheckoutItem) setDirectCheckoutItem(null);
-    } else {
-      clearCart();
+      const saved = localStorage.getItem('boutique_orders');
+      const list = saved ? JSON.parse(saved) : [];
+      list.unshift({ ...finalDetails, status: 'IN TRANSIT' });
+      localStorage.setItem('boutique_orders', JSON.stringify(list));
+
+      if (directCheckoutItem) {
+        if (setDirectCheckoutItem) setDirectCheckoutItem(null);
+      } else {
+        clearCart();
+      }
+
+      setOrderConfirmed(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const orderPayload = {
+      items: checkoutItems.map((item) => ({
+        product: item._id || item.id,
+        quantity: item.quantity || 1,
+      })),
+      shippingAddress: {
+        fullName,
+        addressLine,
+        city,
+        state: stateName,
+        pinCode,
+        phone,
+      },
+      deliveryMode: deliveryMode === 'pickup' ? 'standard' : deliveryMode,
+      giftPackaging: Boolean(giftPackaging),
+      giftMessage: giftMessage || '',
+      paymentMethod: paymentMethod === 'card' ? 'card' : paymentMethod === 'upi' ? 'upi' : paymentMethod === 'netbanking' ? 'netbanking' : 'card',
+      couponCode: appliedCoupon?.code || '',
+    };
+
+    try {
+      // Call backend API to create order & Razorpay order
+      const res = await orderAPI.createOrder(orderPayload);
+      const { razorpayOrderId, razorpayKeyId, amount, orderId: backendOrderId } = res;
+
+      if (!razorpayKeyId || !razorpayOrderId) {
+        throw new Error('Razorpay keys or order ID not received from backend server');
+      }
+
+      if (!window.Razorpay) {
+        throw new Error('Razorpay SDK failed to load. Please check your internet connection and refresh.');
+      }
+
+      const options = {
+        key: razorpayKeyId,
+        amount: Math.round(amount * 100), // paise
+        currency: 'INR',
+        name: 'MAZHAI VAANAM BOUTIQUE',
+        description: `Order #${backendOrderId}`,
+        order_id: razorpayOrderId,
+        prefill: {
+          name: fullName,
+          email: email,
+          contact: phone,
+        },
+        theme: {
+          color: '#6B102A',
+        },
+        handler: async function (response) {
+          try {
+            await orderAPI.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            finalizeSuccessOrder(backendOrderId);
+          } catch (verr) {
+            setSubmitError(verr.message || 'Payment verification failed. Please try again.');
+          } finally {
+            setIsSubmitting(false);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsSubmitting(false);
+            setSubmitError('Payment process was cancelled.');
+          },
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (resp) {
+        setSubmitError(resp.error?.description || 'Payment failed. Please try again.');
+        setIsSubmitting(false);
+      });
+      rzp.open();
+    } catch (err) {
+      console.error('Order/Razorpay Error:', err);
+      setSubmitError(err.message || 'Failed to initialize payment');
+      setIsSubmitting(false);
     }
-    
-    // Set visual confirmation status
-    setOrderConfirmed(true);
-    
-    // Scroll page to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Helper date formatter
@@ -271,7 +351,7 @@ Thank you for choosing handloom heritage.
           <ShoppingBag size={48} strokeWidth={1} className={styles.emptyIcon} />
           <h2>Your Bag is Empty</h2>
           <p>You cannot proceed to checkout without items in your shopping bag.</p>
-          <button 
+          <button
             className={styles.backBtn}
             onClick={() => setCurrentTab('shop')}
           >
@@ -287,7 +367,7 @@ Thank you for choosing handloom heritage.
       {orderConfirmed && orderCache ? (
         /* Dynamic High-Fidelity Success Screen */
         <div className={styles.successWrapper}>
-          
+
           {/* Hero Section */}
           <section className={styles.successHero}>
             <div className={styles.sareePattern}></div>
@@ -300,11 +380,11 @@ Thank you for choosing handloom heritage.
                 "Your order has been successfully placed and our artisans are preparing your handcrafted saree with the utmost care."
               </p>
             </div>
-            
+
             <div className={`${styles.boxImageContainer} ${styles.animateFloat}`}>
-              <img 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4sMpwiwx1EbTL9YRHowuTbzYHd4nPLLNWsfQ3yn38V-xsgWDzL4Y8uNWlNhEoD84RoQBCi9C31jEFVAieMc4rjMIKSwmFLg1SqnifPTf7s7Ah7FZF609JKMnrG4rQQU3j_jkEZX1PGkHeOnL6VcPPwIIjsn3f2eM8pcnm1x5mn1ndcT1J5edOwxZErXoZqj8HHwprUE9abOnHTl7aK3sZh_J9rnsQL0EfsEhVzWdXN9dU7ZlW3tsZ" 
-                alt="Premium Gift Box Wrap" 
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4sMpwiwx1EbTL9YRHowuTbzYHd4nPLLNWsfQ3yn38V-xsgWDzL4Y8uNWlNhEoD84RoQBCi9C31jEFVAieMc4rjMIKSwmFLg1SqnifPTf7s7Ah7FZF609JKMnrG4rQQU3j_jkEZX1PGkHeOnL6VcPPwIIjsn3f2eM8pcnm1x5mn1ndcT1J5edOwxZErXoZqj8HHwprUE9abOnHTl7aK3sZh_J9rnsQL0EfsEhVzWdXN9dU7ZlW3tsZ"
+                alt="Premium Gift Box Wrap"
                 className={styles.boxImage}
               />
             </div>
@@ -312,10 +392,10 @@ Thank you for choosing handloom heritage.
 
           {/* Details & Summaries Columns */}
           <div className={styles.successDetailsGrid}>
-            
+
             {/* Left Column: Summary and Timeline */}
             <div className={styles.successLeftColumn}>
-              
+
               <div className={`${styles.invoiceCard} ${styles.luxuryShadow}`}>
                 <div className={styles.invoiceHeader}>
                   <div>
@@ -336,17 +416,17 @@ Thank you for choosing handloom heritage.
                       <p>{orderCache.arrivalRange}</p>
                     </div>
                   </div>
-                  
+
                   <div className={styles.invoiceActionsRow}>
                     <button onClick={handleInvoiceDownload} className={styles.downloadInvoiceBtn}>
                       <Download size={14} />
                       Invoice
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         window.history.pushState(null, '', `/track-order?orderId=${orderCache.orderId}`);
                         setCurrentTab('track-order');
-                      }} 
+                      }}
                       className={styles.trackOrderBtn}
                     >
                       <Truck size={14} />
@@ -361,7 +441,7 @@ Thank you for choosing handloom heritage.
                   <div className={styles.timelineVisual}>
                     <div className={styles.timelineRowLine}></div>
                     <div className={styles.timelineStepsRow}>
-                      
+
                       {/* Step 1 */}
                       <div className={styles.timelineStepBlock}>
                         <div className={`${styles.timelineStepDot} ${styles.activeStep}`}>
@@ -369,7 +449,7 @@ Thank you for choosing handloom heritage.
                         </div>
                         <span className={`${styles.timelineStepLabel} ${styles.activeLabel}`}>Confirmed</span>
                       </div>
-                      
+
 
 
                       {/* Step 4 */}
@@ -395,7 +475,7 @@ Thank you for choosing handloom heritage.
 
               {/* Points Box & Quote */}
               <div className={styles.rewardsQuoteBlock}>
-                
+
                 {/* Rewards Card */}
                 <div className={styles.rewardsCard}>
                   <div className={styles.rewardsHeader}>
@@ -405,8 +485,8 @@ Thank you for choosing handloom heritage.
                   <p>
                     Congratulations! You've earned <span className={styles.rewardsPointsText}>{Math.round(orderCache.finalAmount * 0.1)} Silk Points</span> from this purchase. Use them on your next heirloom piece.
                   </p>
-                  <span 
-                    onClick={() => alert("Rewards portal: points active!")} 
+                  <span
+                    onClick={() => alert("Rewards portal: points active!")}
                     className={styles.rewardsPortalLink}
                     role="button"
                     tabIndex={0}
@@ -440,7 +520,7 @@ Thank you for choosing handloom heritage.
             <aside className={styles.successRightColumn}>
               <div className={styles.bagSummaryBox}>
                 <h2 className={styles.bagSummaryTitle}>Bag Summary</h2>
-                
+
                 {/* Items List */}
                 <div className={styles.orderedItemsWrapper}>
                   {orderCache.items.map((item) => (
@@ -510,7 +590,7 @@ Thank you for choosing handloom heritage.
                 </div>
               </div>
             </aside>
-            
+
           </div>
         </div>
       ) : (
@@ -519,7 +599,7 @@ Thank you for choosing handloom heritage.
           <div className={styles.layoutGrid}>
             {/* Left Column: Form Flow */}
             <div className={styles.leftColumn}>
-              
+
               {/* Progress Indicator */}
               <div className={styles.progressSection}>
                 <div className={styles.progressBar}>
@@ -543,134 +623,140 @@ Thank you for choosing handloom heritage.
                 </div>
               </div>
 
-              {/* Shipping Details */}
+              {/* Shipping / Contact Details */}
               <section className={styles.sectionBlock}>
-                <h2 className={styles.sectionTitle}>Shipping Details</h2>
+                <h2 className={styles.sectionTitle}>{deliveryMode === 'standard' ? 'Shipping Details' : 'Contact Details'}</h2>
                 <form className={styles.formContainer} onSubmit={handleCompleteOrder}>
                   <div className={styles.gridRow}>
                     <div className={`${styles.floatingLabelContainer} ${errors.fullName ? styles.inputErrorBorder : ''}`}>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder=" " 
+                      <input
+                        type="text"
+                        required
+                        placeholder=" "
                         value={fullName}
                         onChange={(e) => {
                           setFullName(e.target.value);
                           if (errors.fullName) setErrors(prev => ({ ...prev, fullName: '' }));
                         }}
-                        className={styles.formInput} 
+                        className={styles.formInput}
                         id="fullName"
                       />
-                      <label className={styles.formLabel}>Full Name</label>
+                      <label className={styles.formLabel}>Full Name *</label>
                       {errors.fullName && <span className={styles.errorText}>{errors.fullName}</span>}
                     </div>
-                    
+
                     <div className={`${styles.floatingLabelContainer} ${errors.email ? styles.inputErrorBorder : ''}`}>
-                      <input 
-                        type="email" 
-                        required 
-                        placeholder=" " 
+                      <input
+                        type="email"
+                        required
+                        placeholder=" "
                         value={email}
                         onChange={(e) => {
                           setEmail(e.target.value);
                           if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
                         }}
-                        className={styles.formInput} 
+                        className={styles.formInput}
                         id="email"
                       />
-                      <label className={styles.formLabel}>Email Address</label>
+                      <label className={styles.formLabel}>Email Address *</label>
                       {errors.email && <span className={styles.errorText}>{errors.email}</span>}
                     </div>
                   </div>
 
                   <div className={styles.gridRow}>
                     <div className={`${styles.floatingLabelContainer} ${errors.phone ? styles.inputErrorBorder : ''}`}>
-                      <input 
-                        type="tel" 
-                        required 
-                        placeholder=" " 
+                      <input
+                        type="tel"
+                        required
+                        placeholder=" "
                         value={phone}
                         onChange={(e) => {
                           setPhone(e.target.value);
                           if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
                         }}
-                        className={styles.formInput} 
+                        className={styles.formInput}
                         id="phone"
                       />
-                      <label className={styles.formLabel}>Phone Number</label>
+                      <label className={styles.formLabel}>Phone Number *</label>
                       {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
                     </div>
-                    
-                    <div className={`${styles.floatingLabelContainer} ${errors.pinCode ? styles.inputErrorBorder : ''}`}>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder=" " 
-                        value={pinCode}
-                        onChange={(e) => {
-                          setPinCode(e.target.value);
-                          if (errors.pinCode) setErrors(prev => ({ ...prev, pinCode: '' }));
-                        }}
-                        className={styles.formInput} 
-                        id="pinCode"
-                      />
-                      <label className={styles.formLabel}>Pin Code</label>
-                      {errors.pinCode && <span className={styles.errorText}>{errors.pinCode}</span>}
-                    </div>
+
+                    {deliveryMode === 'standard' && (
+                      <div className={`${styles.floatingLabelContainer} ${errors.pinCode ? styles.inputErrorBorder : ''}`}>
+                        <input
+                          type="text"
+                          required={deliveryMode === 'standard'}
+                          placeholder=" "
+                          value={pinCode}
+                          onChange={(e) => {
+                            setPinCode(e.target.value);
+                            if (errors.pinCode) setErrors(prev => ({ ...prev, pinCode: '' }));
+                          }}
+                          className={styles.formInput}
+                          id="pinCode"
+                        />
+                        <label className={styles.formLabel}>Pin Code *</label>
+                        {errors.pinCode && <span className={styles.errorText}>{errors.pinCode}</span>}
+                      </div>
+                    )}
                   </div>
 
-                  <div className={`${styles.floatingLabelContainer} ${errors.addressLine ? styles.inputErrorBorder : ''}`} style={{ width: '100%' }}>
-                    <input 
-                      type="text" 
-                      required 
-                      placeholder=" " 
-                      value={addressLine}
-                      onChange={(e) => {
-                        setAddressLine(e.target.value);
-                        if (errors.addressLine) setErrors(prev => ({ ...prev, addressLine: '' }));
-                      }}
-                      className={styles.formInput} 
-                      id="addressLine"
-                    />
-                    <label className={styles.formLabel}>Flat, House no., Apartment</label>
-                    {errors.addressLine && <span className={styles.errorText}>{errors.addressLine}</span>}
-                  </div>
+                  {deliveryMode === 'standard' && (
+                    <>
+                      <div className={`${styles.floatingLabelContainer} ${errors.addressLine ? styles.inputErrorBorder : ''}`} style={{ width: '100%' }}>
+                        <input
+                          type="text"
+                          required={deliveryMode === 'standard'}
+                          placeholder=" "
+                          value={addressLine}
+                          onChange={(e) => {
+                            setAddressLine(e.target.value);
+                            if (errors.addressLine) setErrors(prev => ({ ...prev, addressLine: '' }));
+                          }}
+                          className={styles.formInput}
+                          id="addressLine"
+                        />
+                        <label className={styles.formLabel}>Flat, House no., Apartment *</label>
+                        {errors.addressLine && <span className={styles.errorText}>{errors.addressLine}</span>}
+                      </div>
 
-                  <div className={styles.gridRow}>
-                    <div className={`${styles.floatingLabelContainer} ${errors.city ? styles.inputErrorBorder : ''}`}>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder=" " 
-                        value={city}
-                        onChange={(e) => {
-                          setCity(e.target.value);
-                          if (errors.city) setErrors(prev => ({ ...prev, city: '' }));
-                        }}
-                        className={styles.formInput} 
-                        id="city"
-                      />
-                      <label className={styles.formLabel}>City / Town</label>
-                      {errors.city && <span className={styles.errorText}>{errors.city}</span>}
-                    </div>
-                    
-                    <div className={`${styles.floatingLabelContainer} ${errors.stateName ? styles.inputErrorBorder : ''}`}>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder=" " 
-                        value={stateName}
-                        onChange={(e) => {
-                          setStateName(e.target.value);
-                          if (errors.stateName) setErrors(prev => ({ ...prev, stateName: '' }));
-                        }}
-                        className={styles.formInput} 
-                        id="stateName"
-                      />
-                      <label className={styles.formLabel}>State</label>
-                      {errors.stateName && <span className={styles.errorText}>{errors.stateName}</span>}
-                    </div>
-                  </div>
+                      <div className={styles.gridRow}>
+                        <div className={`${styles.floatingLabelContainer} ${errors.city ? styles.inputErrorBorder : ''}`}>
+                          <input
+                            type="text"
+                            required={deliveryMode === 'standard'}
+                            placeholder=" "
+                            value={city}
+                            onChange={(e) => {
+                              setCity(e.target.value);
+                              if (errors.city) setErrors(prev => ({ ...prev, city: '' }));
+                            }}
+                            className={styles.formInput}
+                            id="city"
+                          />
+                          <label className={styles.formLabel}>City / Town *</label>
+                          {errors.city && <span className={styles.errorText}>{errors.city}</span>}
+                        </div>
+
+                        <div className={`${styles.floatingLabelContainer} ${errors.stateName ? styles.inputErrorBorder : ''}`}>
+                          <input
+                            type="text"
+                            required={deliveryMode === 'standard'}
+                            placeholder=" "
+                            value={stateName}
+                            onChange={(e) => {
+                              setStateName(e.target.value);
+                              if (errors.stateName) setErrors(prev => ({ ...prev, stateName: '' }));
+                            }}
+                            className={styles.formInput}
+                            id="stateName"
+                          />
+                          <label className={styles.formLabel}>State *</label>
+                          {errors.stateName && <span className={styles.errorText}>{errors.stateName}</span>}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </form>
               </section>
 
@@ -678,32 +764,14 @@ Thank you for choosing handloom heritage.
               <section className={styles.sectionBlock}>
                 <h2 className={styles.sectionTitle}>Delivery Mode</h2>
                 <div className={styles.deliveryModeGrid}>
-                  <label 
-                    className={`${styles.deliveryLabelCard} ${deliveryMode === 'pickup' ? styles.selectedDelivery : ''}`}
-                    onClick={() => setDeliveryMode('pickup')}
-                  >
-                    <input 
-                      type="radio" 
-                      name="delivery" 
-                      checked={deliveryMode === 'pickup'} 
-                      onChange={() => setDeliveryMode('pickup')}
-                      className={styles.hiddenRadio}
-                    />
-                    <div className={styles.deliveryInfo}>
-                      <span className={styles.deliveryOptionTitle}>Self Pickup</span>
-                      <p className={styles.deliveryOptionSubtitle}>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
-                    </div>
-                    <span className={styles.deliveryCost}>FREE</span>
-                  </label>
-
-                  <label 
+                  <label
                     className={`${styles.deliveryLabelCard} ${deliveryMode === 'standard' ? styles.selectedDelivery : ''}`}
                     onClick={() => setDeliveryMode('standard')}
                   >
-                    <input 
-                      type="radio" 
-                      name="delivery" 
-                      checked={deliveryMode === 'standard'} 
+                    <input
+                      type="radio"
+                      name="delivery"
+                      checked={deliveryMode === 'standard'}
                       onChange={() => setDeliveryMode('standard')}
                       className={styles.hiddenRadio}
                     />
@@ -713,6 +781,24 @@ Thank you for choosing handloom heritage.
                     </div>
                     <span className={styles.deliveryCost}>{formatCurrency(100)}</span>
                   </label>
+
+                  <label
+                    className={`${styles.deliveryLabelCard} ${deliveryMode === 'pickup' ? styles.selectedDelivery : ''}`}
+                    onClick={() => setDeliveryMode('pickup')}
+                  >
+                    <input
+                      type="radio"
+                      name="delivery"
+                      checked={deliveryMode === 'pickup'}
+                      onChange={() => setDeliveryMode('pickup')}
+                      className={styles.hiddenRadio}
+                    />
+                    <div className={styles.deliveryInfo}>
+                      <span className={styles.deliveryOptionTitle}>Self Pickup</span>
+                      <p className={styles.deliveryOptionSubtitle}>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
+                    </div>
+                    <span className={styles.deliveryCost}>FREE</span>
+                  </label>
                 </div>
               </section>
 
@@ -721,7 +807,7 @@ Thank you for choosing handloom heritage.
                 <h2 className={styles.sectionTitle}>Payment Method</h2>
                 <div className={styles.paymentMethodsStack}>
                   {/* Card Expanded */}
-                  <div 
+                  <div
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'card' ? styles.activePaymentCard : ''}`}
                     onClick={() => setPaymentMethod('card')}
                   >
@@ -736,49 +822,49 @@ Thank you for choosing handloom heritage.
                     {paymentMethod === 'card' && (
                       <div className={styles.cardInputWrapper} onClick={(e) => e.stopPropagation()}>
                         <div className={`${styles.floatingLabelContainer} ${errors.cardNumber ? styles.inputErrorBorder : ''}`} style={{ width: '100%', marginBottom: '16px' }}>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             placeholder=" "
                             value={cardNumber}
                             onChange={(e) => {
                               setCardNumber(e.target.value);
                               if (errors.cardNumber) setErrors(prev => ({ ...prev, cardNumber: '' }));
                             }}
-                            className={styles.formInput} 
+                            className={styles.formInput}
                             id="cardNumber"
                           />
-                          <label className={styles.formLabel}>Card Number</label>
+                          <label className={styles.formLabel}>Card Number *</label>
                           {errors.cardNumber && <span className={styles.errorText}>{errors.cardNumber}</span>}
                         </div>
                         <div className={styles.gridRow}>
                           <div className={`${styles.floatingLabelContainer} ${errors.expiry ? styles.inputErrorBorder : ''}`}>
-                            <input 
-                              type="text" 
+                            <input
+                              type="text"
                               placeholder=" "
                               value={expiry}
                               onChange={(e) => {
                                 setExpiry(e.target.value);
                                 if (errors.expiry) setErrors(prev => ({ ...prev, expiry: '' }));
                               }}
-                              className={styles.formInput} 
+                              className={styles.formInput}
                               id="expiry"
                             />
-                            <label className={styles.formLabel}>Expiry (MM/YY)</label>
+                            <label className={styles.formLabel}>Expiry (MM/YY) *</label>
                             {errors.expiry && <span className={styles.errorText}>{errors.expiry}</span>}
                           </div>
                           <div className={`${styles.floatingLabelContainer} ${errors.cvv ? styles.inputErrorBorder : ''}`}>
-                            <input 
-                              type="password" 
+                            <input
+                              type="password"
                               placeholder=" "
                               value={cvv}
                               onChange={(e) => {
                                 setCvv(e.target.value);
                                 if (errors.cvv) setErrors(prev => ({ ...prev, cvv: '' }));
                               }}
-                              className={styles.formInput} 
+                              className={styles.formInput}
                               id="cvv"
                             />
-                            <label className={styles.formLabel}>CVV</label>
+                            <label className={styles.formLabel}>CVV *</label>
                             {errors.cvv && <span className={styles.errorText}>{errors.cvv}</span>}
                           </div>
                         </div>
@@ -787,7 +873,7 @@ Thank you for choosing handloom heritage.
                   </div>
 
                   {/* UPI */}
-                  <div 
+                  <div
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'upi' ? styles.activePaymentCard : ''}`}
                     onClick={() => setPaymentMethod('upi')}
                   >
@@ -800,7 +886,7 @@ Thank you for choosing handloom heritage.
                   </div>
 
                   {/* Net Banking */}
-                  <div 
+                  <div
                     className={`${styles.paymentMethodCard} ${paymentMethod === 'netbanking' ? styles.activePaymentCard : ''}`}
                     onClick={() => setPaymentMethod('netbanking')}
                   >
@@ -964,12 +1050,20 @@ Thank you for choosing handloom heritage.
                   </div>
                 </div>
 
+                {submitError && (
+                  <div style={{ padding: '10px 14px', borderRadius: 8, background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', color: '#ef4444', fontSize: '0.85rem', marginBottom: 12, fontWeight: 500 }}>
+                    {submitError}
+                  </div>
+                )}
+
                 {/* Action button */}
-                <button 
-                  className={styles.shimmerBtn} 
+                <button
+                  className={styles.shimmerBtn}
                   onClick={handleCompleteOrder}
+                  disabled={isSubmitting}
+                  style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
                 >
-                  COMPLETE ORDER
+                  {isSubmitting ? 'PROCESSING PAYMENT...' : 'COMPLETE ORDER'}
                   <Lock className={styles.checkoutIcon} size={18} />
                 </button>
 

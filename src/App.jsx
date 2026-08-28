@@ -186,7 +186,7 @@ function AppContent() {
           />
         );
       case 'product-detail':
-        return <ProductDetail product={selectedProduct} setCurrentTab={setCurrentTab} />;
+        return <ProductDetail product={selectedProduct} setCurrentTab={setCurrentTab} setDirectCheckoutItem={setDirectCheckoutItem} setSelectedProduct={setSelectedProduct} />;
       case 'wishlist':
         return <Wishlist setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
 

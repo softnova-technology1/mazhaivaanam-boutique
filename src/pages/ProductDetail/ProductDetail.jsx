@@ -5,7 +5,7 @@ import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, 
 import { getProducts, reviewAPI } from '../../services/api';
 import styles from './ProductDetail.module.css';
 
-export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) => {
+export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setDirectCheckoutItem }) => {
   const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedHue, setSelectedHue] = useState('');
@@ -254,9 +254,17 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
         price: activeProduct.price,
         isPreorder: true
       };
-      addToCart(preorderItem, quantity);
+      if (setDirectCheckoutItem) {
+        setDirectCheckoutItem({ ...preorderItem, quantity });
+      } else {
+        addToCart(preorderItem, quantity);
+      }
     } else {
-      addToCart(activeProduct, quantity);
+      if (setDirectCheckoutItem) {
+        setDirectCheckoutItem({ ...activeProduct, quantity });
+      } else {
+        addToCart(activeProduct, quantity);
+      }
     }
     setCurrentTab('checkout');
   };

@@ -291,7 +291,7 @@
   top: 12px;
   transition: all 0.2s ease-out;
   pointer-events: none;
-  color: var(--outline);
+  color: var(--text-muted);
   font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;

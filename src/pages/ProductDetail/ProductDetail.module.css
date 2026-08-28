@@ -3,7 +3,8 @@
 .details-wrapper {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 80px;
+  padding: 40px 80px 80px 80px;
+  /* Reduced top padding to 40px */
   font-family: var(--font-body);
   color: var(--text-main);
   background-color: var(--bg-main);
@@ -113,7 +114,7 @@
 /* Gallery Column */
 .gallery-column {
   position: sticky;
-  top: 120px;
+  top: 150px;
   max-width: 465px;
   min-width: 450px;
   width: 100%;
@@ -123,6 +124,7 @@
   0% {
     left: -110%;
   }
+
   100% {
     left: 110%;
   }
@@ -147,12 +149,10 @@
   left: -110%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.25) 50%,
+      rgba(255, 255, 255, 0) 100%);
   transform: skewX(-25deg);
   z-index: 2;
   pointer-events: none;
@@ -321,11 +321,13 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-height: 270px;
 }
 
 .header-badges {
   display: flex;
   gap: 8px;
+  min-height: 24px;
 }
 
 .detail-badge {
@@ -352,8 +354,15 @@
   color: var(--primary);
   margin: 0;
   font-weight: 400;
+  letter-spacing: 0px;
 
-  letter-spacing: 0px;}
+  /* Force exact 2-line height so layout is ALWAYS even */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 5.5rem;
+}
 
 .product-one-liner {
   font-family: var(--font-body);
@@ -362,9 +371,13 @@
   color: var(--text-muted);
   line-height: 1.45;
   margin-top: 8px;
-  white-space: nowrap;
+
+  /* Wrap text to the next line instead of cutting it off */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+
   border-left: 2px solid var(--accent);
   padding-left: 12px;
 }
@@ -641,7 +654,7 @@
   cursor: pointer !important;
   color: #ffffff !important;
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, #a8b38f 100%) !important;
-  box-shadow: 0 4px 18px rgba(79, 78, 34, 0.25), 0 1px 0 rgba(255,255,255,0.08) inset !important;
+  box-shadow: 0 4px 18px rgba(79, 78, 34, 0.25), 0 1px 0 rgba(255, 255, 255, 0.08) inset !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -655,24 +668,31 @@
   content: '' !important;
   position: absolute !important;
   inset: 0 !important;
-  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%) !important;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.18) 50%, transparent 70%) !important;
   background-size: 200% 100% !important;
   border-radius: inherit !important;
   animation: btnShimmer 2.8s infinite linear !important;
   z-index: -1 !important;
   border-radius: 0 !important;
-  top: 0 !important; left: 0 !important;
-  width: 100% !important; height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 @keyframes btnShimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .add-trousseau-btn:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 28px rgba(79, 78, 34, 0.35), 0 1px 0 rgba(255,255,255,0.08) inset !important;
+  box-shadow: 0 8px 28px rgba(79, 78, 34, 0.35), 0 1px 0 rgba(255, 255, 255, 0.08) inset !important;
 }
 
 .add-trousseau-btn svg {
@@ -718,8 +738,10 @@
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
   z-index: -1 !important;
   border-radius: 0 !important;
-  top: 0 !important; left: 0 !important;
-  width: 100% !important; height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 :global(#root) .concierge-btn:hover::before {
@@ -855,7 +877,8 @@
   gap: 48px;
 }
 
-.specs-card, .reviews-summary-card {
+.specs-card,
+.reviews-summary-card {
   background-color: var(--surface-container-low);
   border: 1px solid var(--border-color);
   padding: 40px;
@@ -886,7 +909,8 @@
   margin: 0;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .specs-intro {
   font-size: 13.5px;
@@ -957,7 +981,8 @@
   font-weight: 400;
   line-height: 1.1;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .stars-row-small {
   display: flex;
@@ -1065,7 +1090,8 @@
   font-weight: 400;
   color: var(--text-main);
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .craft-content-grid {
   display: grid;
@@ -1182,7 +1208,8 @@
   margin: 0 0 6px 0;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .timeline-step p {
   font-size: 13.5px;
@@ -1220,7 +1247,8 @@
   margin: 0 0 10px 0;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .spec-table-row {
   display: flex;
@@ -1295,7 +1323,8 @@
   margin: 0;
   font-weight: 400;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .packaging-text-block p {
   font-size: 14.5px;
@@ -1370,7 +1399,8 @@
   font-weight: 400;
   color: var(--primary);
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .reviews-section-header p {
   font-size: 14px;
@@ -1521,17 +1551,24 @@
 
 /* ── Review form panel ── */
 .write-review-panel {
-  background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(248,245,238,0.97) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 245, 238, 0.97) 100%);
   border: 1px solid rgba(181, 137, 61, 0.25);
   border-radius: 8px;
   margin-bottom: 40px;
   overflow: hidden;
-  animation: panelSlideDown 0.35s cubic-bezier(0.4,0,0.2,1);
+  animation: panelSlideDown 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes panelSlideDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .review-panel-inner {
@@ -1545,7 +1582,8 @@
   color: var(--primary-dark);
   margin: 0 0 6px 0;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .review-form-sub {
   font-size: 12.5px;
@@ -1615,7 +1653,7 @@
 
 .review-field-input::placeholder,
 .review-field-textarea::placeholder {
-  color: rgba(79,78,34,0.3);
+  color: rgba(79, 78, 34, 0.3);
   font-size: 13px;
 }
 
@@ -1645,13 +1683,13 @@
   cursor: pointer !important;
   color: #fff !important;
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%) !important;
-  box-shadow: 0 4px 16px rgba(79,78,34,0.22) !important;
+  box-shadow: 0 4px 16px rgba(79, 78, 34, 0.22) !important;
   transition: transform 0.25s ease, box-shadow 0.25s ease !important;
 }
 
 .submit-review-btn:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(79,78,34,0.3) !important;
+  box-shadow: 0 8px 24px rgba(79, 78, 34, 0.3) !important;
 }
 
 .submit-review-btn::after {
@@ -1661,7 +1699,7 @@
 /* ── User review card (new) ── */
 .user-review-card {
   border: 1px solid rgba(181, 137, 61, 0.3) !important;
-  background: linear-gradient(160deg, rgba(255,255,255,1) 0%, rgba(248,245,230,0.5) 100%) !important;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 1) 0%, rgba(248, 245, 230, 0.5) 100%) !important;
   position: relative;
 }
 
@@ -1699,7 +1737,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(90deg, rgba(181,137,61,0.12) 0%, rgba(181,137,61,0.04) 100%);
+  background: linear-gradient(90deg, rgba(181, 137, 61, 0.12) 0%, rgba(181, 137, 61, 0.04) 100%);
   border-left: 3px solid var(--accent);
   padding: 14px 22px;
   border-radius: 4px;
@@ -1812,7 +1850,8 @@
   margin-bottom: 4px;
 
   font-weight: 400;
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .related-title-block p {
   font-size: 13px;
@@ -1866,9 +1905,12 @@
   gap: 24px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding-bottom: 24px; /* Space for scrollbar or shadow */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  padding-bottom: 24px;
+  /* Space for scrollbar or shadow */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .related-grid::-webkit-scrollbar {
@@ -1876,7 +1918,8 @@
 }
 
 .related-card {
-  flex: 0 0 calc(25% - 18px); /* 4 items visible by default */
+  flex: 0 0 calc(25% - 18px);
+  /* 4 items visible by default */
   min-width: 260px;
   scroll-snap-align: start;
   cursor: pointer;
@@ -1931,7 +1974,8 @@
   color: var(--text-main);
   margin-bottom: 4px;
 
-  letter-spacing: 0px;}
+  letter-spacing: 0px;
+}
 
 .related-price {
   font-size: 13px;
@@ -1950,8 +1994,14 @@
   .details-wrapper {
     padding: 60px 40px;
   }
-  .related-products-section { margin-top: 60px; }
-  .reviews-section { margin-top: 60px; }
+
+  .related-products-section {
+    margin-top: 60px;
+  }
+
+  .reviews-section {
+    margin-top: 60px;
+  }
 
   .product-columns-grid {
     grid-template-columns: 1fr;
@@ -1970,7 +2020,8 @@
     gap: 32px;
   }
 
-  .specs-card, .reviews-summary-card {
+  .specs-card,
+  .reviews-summary-card {
     padding: 24px;
   }
 
@@ -2003,8 +2054,14 @@
   .details-wrapper {
     padding: 40px 24px;
   }
-  .related-products-section { margin-top: 40px; }
-  .reviews-section { margin-top: 40px; }
+
+  .related-products-section {
+    margin-top: 40px;
+  }
+
+  .reviews-section {
+    margin-top: 40px;
+  }
 
   .actions-wrapper {
     flex-direction: column;
@@ -2041,8 +2098,14 @@
   .details-wrapper {
     padding: 32px 10px;
   }
-  .related-products-section { margin-top: 32px; }
-  .reviews-section { margin-top: 32px; }
+
+  .related-products-section {
+    margin-top: 32px;
+  }
+
+  .reviews-section {
+    margin-top: 32px;
+  }
 
   .gallery-column {
     min-width: 100%;
@@ -2073,30 +2136,33 @@
     margin: 0;
     border-radius: 0 !important;
   }
-  
+
   /* Remove hover effects on mobile touch */
   .main-image-viewport:hover {
     transform: none;
     border-color: rgb(122, 120, 2);
     box-shadow: 0 20px 40px -15px rgba(48, 47, 11, 0.336), 0 4px 12px -2px rgba(79, 78, 34, 0.04);
   }
+
   .main-image-viewport:hover .main-img {
     transform: none;
   }
+
   .main-image-viewport:hover::after {
     inset: 10px;
     border-color: rgba(200, 163, 77, 0.35);
   }
+
   .main-image-viewport:hover::before {
     animation: none;
   }
-  
+
   .viewport-controls {
     flex-direction: column;
     bottom: 12px;
     right: 12px;
   }
-  
+
   .mobile-variant-text {
     display: block;
     font-size: 14px;
@@ -2107,36 +2173,37 @@
   .info-header h1 {
     font-size: 1.6rem;
   }
-  
+
   .price-row {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
-  
-  .btn-add, .btn-buy {
+
+  .btn-add,
+  .btn-buy {
     width: 100%;
     margin-bottom: 10px;
   }
-  
+
   .quantity-wrapper {
     width: 100%;
     justify-content: center;
     margin-bottom: 20px;
   }
-  
+
   .actions-wrapper {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   /* Apply recommendations from analysis report */
   .trust-box {
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .thumbnails-strip {
     display: flex;
     justify-content: flex-start;
@@ -2144,57 +2211,62 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     padding: 0 16px 15px 16px;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
+    /* Firefox */
   }
+
   .thumbnails-strip::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    display: none;
+    /* Chrome, Safari */
   }
-  
+
   .thumb-box {
     width: 70px !important;
     height: 70px !important;
     flex-shrink: 0;
     border-radius: 8px;
   }
+
   .active-thumb {
     border: 2px solid #000 !important;
   }
-  
+
   .breadcrumb-nav {
     flex-wrap: wrap;
     row-gap: 8px;
   }
-  
-  .breadcrumb-link, .breadcrumb-active {
+
+  .breadcrumb-link,
+  .breadcrumb-active {
     font-size: 9px;
     padding: 4px 8px;
   }
-  
+
   .related-grid {
     scroll-snap-type: x mandatory;
   }
-  
+
   .related-card {
     min-width: 100%;
     scroll-snap-align: start;
   }
-  
+
   .related-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
-  
+
   .reviews-section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
-  
+
   .review-panel-inner {
     padding: 24px 20px;
   }
-  
+
   .review-form-grid {
     grid-template-columns: 1fr;
   }

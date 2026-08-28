@@ -29,10 +29,10 @@ import { formatCurrency } from '../../utils/formatters';
 import InvoiceModal from '../../admin/components/InvoiceModal';
 import styles from './MyProfile.module.css';
 
-export const MyProfile = ({ setCurrentTab }) => {
+export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   const { user, logout } = useAuth();
   const { addToCart } = useCart();
-  const [activeSection, setActiveSection] = useState('personal');
+  const [activeSection, setActiveSection] = useState(initialSection);
 
   // Orders State
   const [orders, setOrders] = useState([]);
@@ -281,9 +281,7 @@ export const MyProfile = ({ setCurrentTab }) => {
 
       const menuItems = [
     { id: 'personal', label: 'Personal Info', icon: <User size={18} /> },
-    { id: 'orders', label: 'My Orders', icon: <ShoppingBag size={18} /> },
     { id: 'addresses', label: 'Saved Addresses', icon: <MapPin size={18} /> },
-    { id: 'wishlist', label: 'My Wishlist', icon: <Heart size={18} /> },
     { id: 'security', label: 'Security Settings', icon: <Lock size={18} /> },
     { id: 'help', label: 'Help & Support', icon: <HelpCircle size={18} /> }
   ];

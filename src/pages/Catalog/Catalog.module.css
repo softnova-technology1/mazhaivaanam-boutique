@@ -281,7 +281,7 @@
 .filters-sidebar {
   width: 100%;
   position: sticky;
-  top: 100px;
+  top: 130px;
   align-self: flex-start;
   max-height: calc(100vh - 120px);
   overflow-y: auto;

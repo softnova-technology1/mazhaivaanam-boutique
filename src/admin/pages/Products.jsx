@@ -16,7 +16,7 @@ export default function Products() {
   const [bulkLoading, setBulkLoading] = useState(false);
 
   useEffect(() => {
-    categoryAPI.getAll().then(r => setCategories(r.data)).catch(() => {});
+    categoryAPI.getAll().then(r => setCategories(r.data)).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -219,8 +219,8 @@ export default function Products() {
           <p className="page-subtitle">{pagination.total || 0} products in catalog</p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button 
-            className="btn btn-outline" 
+          <button
+            className="btn btn-outline"
             onClick={() => handleExportCSV(false)}
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
@@ -270,7 +270,7 @@ export default function Products() {
             <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>
               {selectedProducts.length} selected
             </span>
-            <button 
+            <button
               className="btn btn-sm btn-outline"
               disabled={bulkLoading}
               onClick={handleBulkDelete}
@@ -278,7 +278,7 @@ export default function Products() {
             >
               <Trash2 size={14} /> Delete Selected
             </button>
-            <button 
+            <button
               className="btn btn-sm btn-outline"
               onClick={() => handleExportCSV(true)}
             >
@@ -412,11 +412,11 @@ export default function Products() {
             </div>
             <form onSubmit={handleSave}>
               <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
-                
+
                 {/* Left Column: Image Upload */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label className="form-label">Product Image</label>
-                  <div 
+                  <div
                     style={{
                       border: '2px dashed var(--border-color)',
                       borderRadius: 12,
@@ -439,18 +439,18 @@ export default function Products() {
                     {form.imagePreview ? (
                       <>
                         <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        <div 
-                          style={{ 
-                            position: 'absolute', 
-                            inset: 0, 
-                            background: 'rgba(0,0,0,0.5)', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            opacity: 0, 
-                            transition: 'opacity 0.2s' 
-                          }} 
-                          onMouseEnter={e => e.currentTarget.style.opacity = 1} 
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'rgba(0,0,0,0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            opacity: 0,
+                            transition: 'opacity 0.2s'
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
                           onMouseLeave={e => e.currentTarget.style.opacity = 0}
                         >
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
@@ -466,10 +466,10 @@ export default function Products() {
                         <div style={{ fontSize: '0.8rem', marginTop: 8 }}>Supports PNG, JPG, WEBP</div>
                       </div>
                     )}
-                    <input 
-                      id="product-image-upload" 
-                      type="file" 
-                      accept="image/*" 
+                    <input
+                      id="product-image-upload"
+                      type="file"
+                      accept="image/*"
                       style={{ display: 'none' }}
                       onChange={e => {
                         const file = e.target.files[0];
@@ -481,11 +481,11 @@ export default function Products() {
                   </div>
                   <div style={{ marginTop: 12 }}>
                     <label className="form-label" style={{ fontSize: '0.75rem' }}>Or Direct Image Path / URL</label>
-                    <input 
-                      className="form-input" 
-                      placeholder="/Images/saree1.png or https://..." 
-                      value={form.imageUrl || ''} 
-                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))} 
+                    <input
+                      className="form-input"
+                      placeholder="/Images/saree1.png or https://..."
+                      value={form.imageUrl || ''}
+                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))}
                     />
                   </div>
                 </div>
@@ -548,11 +548,11 @@ export default function Products() {
                   </div>
                   <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} /> 
+                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
                       Featured Product
                     </label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} /> 
+                      <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
                       Active Status
                     </label>
                   </div>

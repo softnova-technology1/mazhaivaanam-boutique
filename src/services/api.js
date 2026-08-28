@@ -171,6 +171,13 @@ export const authAPI = {
     const res = await request('/auth/me');
     return res.data?.user || res.data;
   },
+  changePassword: async (passwordData) => {
+    const res = await request('/auth/change-password', {
+      method: 'PUT',
+      body: passwordData,
+    });
+    return res.data;
+  },
   logout: () => {
     localStorage.removeItem('boutique_token');
     localStorage.removeItem('boutique_user');
@@ -202,7 +209,7 @@ export const orderAPI = {
   },
   getMyOrders: async (params = {}) => {
     const query = new URLSearchParams(params).toString();
-    const res = await request(`/orders/my-orders${query ? '?' + query : ''}`);
+    const res = await request(`/orders${query ? '?' + query : ''}`);
     return res.data || [];
   },
   getOrderById: async (id) => {

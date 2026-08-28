@@ -1,12 +1,48 @@
 .auth-page-container {
-  min-height: 80vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 16px 64px 16px;
-  background-color: var(--bg-main, #FAF8F5);
   font-family: var(--font-body);
   box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+}
+
+.auth-page-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #FAF8F5;
+  background-image: url('/Images/login-pattern.png');
+  background-size: cover;
+  background-position: center;
+  filter: contrast(1.15) brightness(0.95); /* Makes the line-art subjects slightly darker and more distinct */
+  z-index: -1;
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #7D756D);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10001;
+}
+
+.close-btn:hover {
+  background: rgba(0,0,0,0.05);
+  color: var(--text-main, #2D2926);
 }
 
 .auth-card {
@@ -48,6 +84,7 @@
 .badge-sparkle-icon {
   color: var(--accent, #C8A34D);
 }
+
 
 /* Segmented Tab Switcher */
 .tab-switch-container {
@@ -328,15 +365,21 @@
   color: #2e7d32;
 }
 
-/* Responsive Rules for Mobile Screens (320px - 480px) */
-@media (max-width: 480px) {
+/* Responsive Rules for Mobile Screens (320px - 768px) */
+@media (min-width: 320px) and (max-width: 768px) {
   .auth-page-container {
     padding: 16px 12px 48px 12px;
   }
 
   .auth-card {
-    padding: 24px 16px 20px 16px;
+    padding: 36px 16px 24px 16px; /* Increased top padding to avoid close-btn overlap */
     border-radius: 20px;
+  }
+
+  .close-btn {
+    top: 12px;
+    right: 12px;
+    padding: 4px;
   }
 
   .auth-title {

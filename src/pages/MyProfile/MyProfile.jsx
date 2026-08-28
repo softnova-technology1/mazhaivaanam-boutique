@@ -20,11 +20,13 @@ import {
   ExternalLink,
   Package,
   Clock,
-  ArrowRight
+  ArrowRight,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
-import { orderAPI } from '../../services/api';
+import { orderAPI, authAPI } from '../../services/api';
 import { formatCurrency } from '../../utils/formatters';
 import InvoiceModal from '../../admin/components/InvoiceModal';
 import styles from './MyProfile.module.css';
@@ -88,6 +90,12 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
+  });
+
+  const [showPasswords, setShowPasswords] = useState({
+    current: false,
+    new: false,
+    confirm: false
   });
 
   // 3. Saved Addresses State
@@ -167,7 +175,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     triggerToast('Profile updated successfully! ✨');
   };
 
-  const handlePasswordSave = (e) => {
+  const handlePasswordSave = async (e) => {
     e.preventDefault();
     if (!security.currentPassword || !security.newPassword || !security.confirmPassword) {
       triggerToast('Please fill all password fields.');
@@ -181,8 +189,18 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
       triggerToast('New password must be at least 6 characters.');
       return;
     }
-    triggerToast('Password updated securely! 🔒');
-    setSecurity({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    
+    try {
+      await authAPI.changePassword({
+        currentPassword: security.currentPassword,
+        newPassword: security.newPassword,
+        confirmPassword: security.confirmPassword
+      });
+      triggerToast('Password updated securely! 🔒');
+      setSecurity({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (err) {
+      triggerToast(err.message || 'Failed to update password. Please check your current password.');
+    }
   };
 
   const handleSetDefaultAddress = (id) => {
@@ -603,32 +621,50 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                 <form onSubmit={handlePasswordSave} className={styles.formGrid}>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Current Password</label>
-                    <input 
-                      type="password" 
-                      placeholder="••••••••" 
-                      value={security.currentPassword}
-                      onChange={(e) => setSecurity({ ...security, currentPassword: e.target.value })}
-                      className={styles.formInput} 
-                      required
-                    />
+                    <div className={styles.passwordInputContainer}>
+                      <input 
+                        type={showPasswords.current ? "text" : "password"}
+                        placeholder="••••••••" 
+                        value={security.currentPassword}
+                        onChange={(e) => setSecurity({ ...security, currentPassword: e.target.value })}
+                        className={styles.formInput} 
+                        required
+                      />
+                      <button 
+                        type="button" 
+                        className={styles.passwordToggleBtn}
+                        onClick={() => setShowPasswords({...showPasswords, current: !showPasswords.current})}
+                      >
+                        {showPasswords.current ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
                   
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>New Password</label>
-                    <input 
-                      type="password" 
-                      placeholder="Minimum 6 characters" 
-                      value={security.newPassword}
-                      onChange={(e) => setSecurity({ ...security, newPassword: e.target.value })}
-                      className={styles.formInput} 
-                      required
-                    />
+                    <div className={styles.passwordInputContainer}>
+                      <input 
+                        type={showPasswords.new ? "text" : "password"}
+                        placeholder="Minimum 6 characters" 
+                        value={security.newPassword}
+                        onChange={(e) => setSecurity({ ...security, newPassword: e.target.value })}
+                        className={styles.formInput} 
+                        required
+                      />
+                      <button 
+                        type="button" 
+                        className={styles.passwordToggleBtn}
+                        onClick={() => setShowPasswords({...showPasswords, new: !showPasswords.new})}
+                      >
+                        {showPasswords.new ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Confirm New Password</label>
                     <input 
-                      type="password" 
+                      type="password"
                       placeholder="Confirm new password" 
                       value={security.confirmPassword}
                       onChange={(e) => setSecurity({ ...security, confirmPassword: e.target.value })}

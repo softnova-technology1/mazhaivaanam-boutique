@@ -5,14 +5,21 @@ import { Star, Check, Trash2 } from 'lucide-react';
 export default function Reviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('pending'); // 'pending' or 'approved'
 
-  useEffect(() => { loadReviews(); }, []);
+  useEffect(() => { loadReviews(); }, [activeTab]);
 
   const loadReviews = async () => {
     setLoading(true);
     try {
-      const res = await reviewAPI.getPending();
-      setReviews(res.data);
+      if (activeTab === 'pending') {
+        const res = await reviewAPI.getPending();
+        setReviews(res.data);
+      } else {
+        const res = await reviewAPI.getAll();
+        // filter out only approved reviews for the approved tab
+        setReviews(res.data.filter(r => r.isApproved === true));
+      }
     } catch (err) { console.error(err); }
     setLoading(false);
   };
@@ -34,11 +41,31 @@ export default function Reviews() {
 
   return (
     <div className="page-container">
-      <div className="page-header">
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <h1 className="page-title">Reviews</h1>
-          <p className="page-subtitle">{reviews.length} pending reviews awaiting moderation</p>
+          <p className="page-subtitle">
+            {activeTab === 'pending' ? `${reviews.length} pending reviews awaiting moderation` : `${reviews.length} approved reviews on client site`}
+          </p>
         </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="tabs" style={{ marginBottom: 24, borderBottom: '1px solid var(--border-color)', display: 'flex', gap: 24 }}>
+        <button 
+          className={`tab ${activeTab === 'pending' ? 'active' : ''}`}
+          onClick={() => setActiveTab('pending')}
+          style={{ padding: '12px 4px', borderBottom: activeTab === 'pending' ? '2px solid var(--primary)' : '2px solid transparent', color: activeTab === 'pending' ? 'var(--primary)' : 'var(--text-muted)', fontWeight: 600, background: 'none', cursor: 'pointer' }}
+        >
+          Pending
+        </button>
+        <button 
+          className={`tab ${activeTab === 'approved' ? 'active' : ''}`}
+          onClick={() => setActiveTab('approved')}
+          style={{ padding: '12px 4px', borderBottom: activeTab === 'approved' ? '2px solid var(--primary)' : '2px solid transparent', color: activeTab === 'approved' ? 'var(--primary)' : 'var(--text-muted)', fontWeight: 600, background: 'none', cursor: 'pointer' }}
+        >
+          Approved (Client Site)
+        </button>
       </div>
 
       {loading ? (
@@ -46,7 +73,7 @@ export default function Reviews() {
       ) : reviews.length === 0 ? (
         <div className="card empty-state">
           <Star size={40} />
-          <p>No pending reviews — all caught up!</p>
+          <p>{activeTab === 'pending' ? 'No pending reviews — all caught up!' : 'No approved reviews yet.'}</p>
         </div>
       ) : (
         <div style={{ display: 'grid', gap: 16 }}>
@@ -70,11 +97,13 @@ export default function Reviews() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                <button className="btn btn-primary btn-sm" onClick={() => handleApprove(review._id)} title="Approve">
-                  <Check size={16} /> Approve
-                </button>
+                {activeTab === 'pending' && (
+                  <button className="btn btn-primary btn-sm" onClick={() => handleApprove(review._id)} title="Approve">
+                    <Check size={16} /> Approve
+                  </button>
+                )}
                 <button className="btn btn-danger btn-sm" onClick={() => handleDelete(review._id)} title="Delete">
-                  <Trash2 size={16} />
+                  <Trash2 size={16} /> {activeTab === 'approved' ? 'Remove' : ''}
                 </button>
               </div>
             </div>

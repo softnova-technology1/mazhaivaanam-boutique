@@ -58,7 +58,7 @@ export const productAPI = {
 
 // ====== CATEGORIES ======
 export const categoryAPI = {
-  getAll: () => request('/categories'),
+  getAll: () => request('/admin/categories'),
   create: (body) => request('/admin/categories', { method: 'POST', body }),
   update: (id, body) => request(`/admin/categories/${id}`, { method: 'PUT', body }),
   delete: (id) => request(`/admin/categories/${id}`, { method: 'DELETE' }),
@@ -66,7 +66,7 @@ export const categoryAPI = {
 
 // ====== COLLECTIONS ======
 export const collectionAPI = {
-  getAll: () => request('/collections'),
+  getAll: () => request('/admin/collections'),
   create: (body) => request('/admin/collections', { method: 'POST', body }),
   update: (id, body) => request(`/admin/collections/${id}`, { method: 'PUT', body }),
   delete: (id) => request(`/admin/collections/${id}`, { method: 'DELETE' }),
@@ -93,11 +93,14 @@ export const inventoryAPI = {
 export const userAPI = {
   getAll: () => request('/admin/users'),
   updateRole: (id, role) => request(`/admin/users/${id}/role`, { method: 'PUT', body: { role } }),
+  updateStatus: (id) => request(`/admin/users/${id}/status`, { method: 'PUT' }),
+  delete: (id) => request(`/admin/users/${id}`, { method: 'DELETE' }),
 };
 
 // ====== REVIEWS ======
 export const reviewAPI = {
   getPending: () => request('/admin/reviews'),
+  getAll: () => request('/admin/reviews/all'),
   approve: (id) => request(`/admin/reviews/${id}/approve`, { method: 'PUT' }),
   delete: (id) => request(`/admin/reviews/${id}`, { method: 'DELETE' }),
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { inventoryAPI, productAPI, categoryAPI, uploadAPI } from '../api/api.js';
 import { exportToCSV } from '../utils/exportCSV.js';
-import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud, Download } from 'lucide-react';
+import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud, Download, EyeOff, Eye } from 'lucide-react';
 
 export default function Inventory() {
   const [inventory, setInventory] = useState([]);
@@ -19,6 +19,9 @@ export default function Inventory() {
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
 
+  // Multi-select State
+  const [selectedItems, setSelectedItems] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 15;
 
@@ -29,6 +32,7 @@ export default function Inventory() {
 
   useEffect(() => {
     setCurrentPage(1);
+    setSelectedItems([]);
   }, [searchQuery, categoryFilter, filter]);
 
   const loadInventory = async () => {
@@ -40,8 +44,12 @@ export default function Inventory() {
     setLoading(false);
   };
 
-  const handleExportCSV = () => {
-    if (!filtered.length) {
+  const handleExportCSV = (exportSelected = false) => {
+    const listToExport = exportSelected
+      ? filtered.filter(i => selectedItems.includes(i._id))
+      : filtered;
+
+    if (!listToExport.length) {
       alert('No inventory data to export');
       return;
     }
@@ -76,6 +84,29 @@ export default function Inventory() {
     if (window.confirm(`Are you sure you want to PERMANENTLY delete "${product.name}"? This cannot be undone.`)) {
       try {
         await productAPI.hardDelete(product._id);
+        loadInventory();
+      } catch (err) { alert(err.message); }
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (window.confirm(`Are you sure you want to PERMANENTLY delete ${selectedItems.length} selected products?`)) {
+      try {
+        const productsToDelete = filtered.filter(i => selectedItems.includes(i._id)).map(i => i.product._id);
+        await Promise.all(productsToDelete.map(id => productAPI.hardDelete(id)));
+        setSelectedItems([]);
+        loadInventory();
+      } catch (err) { alert(err.message); }
+    }
+  };
+
+  const handleBulkToggleActive = async (isActive) => {
+    const action = isActive ? 'activate' : 'deactivate';
+    if (window.confirm(`Are you sure you want to ${action} ${selectedItems.length} selected products?`)) {
+      try {
+        const productsToToggle = filtered.filter(i => selectedItems.includes(i._id)).map(i => i.product._id);
+        await Promise.all(productsToToggle.map(id => productAPI.update(id, { isActive })));
+        setSelectedItems([]);
         loadInventory();
       } catch (err) { alert(err.message); }
     }
@@ -139,14 +170,16 @@ export default function Inventory() {
 
   // Final filter: applies the Status card filter on top of base
   const filtered = baseFiltered.filter(inv => {
-    if (filter === 'low') return inv.isLowStock && !inv.isOutOfStock;
-    if (filter === 'out') return inv.isOutOfStock;
-    return true;
+    if (filter === 'low') return inv.isLowStock && !inv.isOutOfStock && inv.product?.isActive !== false;
+    if (filter === 'out') return inv.isOutOfStock && inv.product?.isActive !== false;
+    if (filter === 'deactivated') return inv.product?.isActive === false;
+    return inv.product?.isActive !== false;
   });
 
-  const totalCount = baseFiltered.length;
-  const lowCount = baseFiltered.filter(i => i.isLowStock && !i.isOutOfStock).length;
-  const outCount = baseFiltered.filter(i => i.isOutOfStock).length;
+  const totalCount = baseFiltered.filter(i => i.product?.isActive !== false).length;
+  const lowCount = baseFiltered.filter(i => i.isLowStock && !i.isOutOfStock && i.product?.isActive !== false).length;
+  const outCount = baseFiltered.filter(i => i.isOutOfStock && i.product?.isActive !== false).length;
+  const inactiveCount = baseFiltered.filter(i => i.product?.isActive === false).length;
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedInventory = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
@@ -161,10 +194,10 @@ export default function Inventory() {
         <div style={{ display: 'flex', gap: 10 }}>
           <button 
             className="btn btn-outline" 
-            onClick={handleExportCSV}
+            onClick={() => handleExportCSV(false)}
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
-            <Download size={16} /> Export to CSV
+            <Download size={16} /> Export All to CSV
           </button>
           <button className="btn btn-primary" onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <Plus size={18} /> Add New Product
@@ -188,6 +221,31 @@ export default function Inventory() {
         </select>
       </div>
 
+      {/* Selected Action Bar */}
+      {selectedItems.length > 0 && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10, background: 'var(--bg-secondary)',
+          padding: '8px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)',
+          marginBottom: 20
+        }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>
+            {selectedItems.length} selected
+          </span>
+          <button className="btn btn-sm btn-outline" onClick={() => handleExportCSV(true)}>
+            <Download size={14} /> Export Selected
+          </button>
+          <button className="btn btn-sm btn-outline" style={{ color: 'var(--warning)', borderColor: 'var(--warning)' }} onClick={() => handleBulkToggleActive(false)}>
+            <EyeOff size={14} /> Deactivate
+          </button>
+          <button className="btn btn-sm btn-outline" style={{ color: 'var(--success)', borderColor: 'var(--success)' }} onClick={() => handleBulkToggleActive(true)}>
+            <Eye size={14} /> Activate
+          </button>
+          <button className="btn btn-sm btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={handleBulkDelete}>
+            <Trash2 size={14} /> Delete Selected
+          </button>
+        </div>
+      )}
+
       {/* Alert Cards */}
       <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
         <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'all' ? '1px solid var(--primary)' : undefined }} onClick={() => setFilter('all')}>
@@ -202,6 +260,10 @@ export default function Inventory() {
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#EF4444' }}><PackageX size={20} /></div>
           <div><div style={{ fontSize: '1.3rem', fontWeight: 700, color: outCount > 0 ? 'var(--danger)' : undefined }}>{outCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Out of Stock</div></div>
         </div>
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'deactivated' ? '1px solid #6B7280' : undefined }} onClick={() => setFilter('deactivated')}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(107,114,128,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}><EyeOff size={20} /></div>
+          <div><div style={{ fontSize: '1.3rem', fontWeight: 700, color: inactiveCount > 0 ? '#6B7280' : undefined }}>{inactiveCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Deactivated</div></div>
+        </div>
       </div>
 
       {loading ? (
@@ -212,6 +274,17 @@ export default function Inventory() {
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: 40, textAlign: 'center' }}>
+                  <input
+                    type="checkbox"
+                    checked={paginatedInventory.length > 0 && selectedItems.length === paginatedInventory.length}
+                    onChange={(e) => {
+                      if (e.target.checked) setSelectedItems(paginatedInventory.map(i => i._id));
+                      else setSelectedItems([]);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </th>
                 <th style={{ width: 50, textAlign: 'center' }}>#</th>
                 <th>Product</th>
                 <th>Total Stock</th>
@@ -229,8 +302,17 @@ export default function Inventory() {
                 const total = inv.totalStock || 1;
                 const pct = Math.min(100, (avail / total) * 100);
                 const barColor = inv.isOutOfStock ? 'var(--danger)' : inv.isLowStock ? 'var(--warning)' : 'var(--success)';
+                const isSelected = selectedItems.includes(inv._id);
                 return (
-                  <tr key={inv._id}>
+                  <tr key={inv._id} style={{ background: isSelected ? 'rgba(200, 163, 77, 0.08)' : undefined }}>
+                    <td style={{ textAlign: 'center' }}>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => setSelectedItems(prev => prev.includes(inv._id) ? prev.filter(i => i !== inv._id) : [...prev, inv._id])}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </td>
                     <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
                       {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
                     </td>
@@ -255,8 +337,8 @@ export default function Inventory() {
                       </div>
                     </td>
                     <td>
-                      <span className={`badge ${inv.isOutOfStock ? 'badge-danger' : inv.isLowStock ? 'badge-warning' : 'badge-success'}`}>
-                        {inv.isOutOfStock ? 'Out of Stock' : inv.isLowStock ? 'Low Stock' : 'In Stock'}
+                      <span className={`badge ${inv.product?.isActive === false ? 'badge-secondary' : inv.isOutOfStock ? 'badge-danger' : inv.isLowStock ? 'badge-warning' : 'badge-success'}`}>
+                        {inv.product?.isActive === false ? 'Deactivated' : inv.isOutOfStock ? 'Out of Stock' : inv.isLowStock ? 'Low Stock' : 'In Stock'}
                       </span>
                     </td>
                     <td style={{ textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>

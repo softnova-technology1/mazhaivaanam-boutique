@@ -23,6 +23,7 @@ export default function Discounts() {
   const [form, setForm] = useState({ type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' });
   const [bulkForm, setBulkForm] = useState({ category: '', tag: '', type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' });
   const [bulkRemoveForm, setBulkRemoveForm] = useState({ category: '', tag: '' });
+  const [selectedItems, setSelectedItems] = useState([]);
   const [saving, setSaving] = useState(false);
 
   // Stats
@@ -71,6 +72,15 @@ export default function Discounts() {
     setModal({ open: true, product });
   };
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) setSelectedItems(products.map(p => p._id));
+    else setSelectedItems([]);
+  };
+
+  const handleSelect = (id) => {
+    setSelectedItems(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -101,11 +111,14 @@ export default function Discounts() {
     e.preventDefault();
     setSaving(true);
     try {
-      await discountAPI.bulkUpdate({
+      const payload = {
         ...bulkForm,
         value: Number(bulkForm.value),
-      });
+      };
+      if (selectedItems.length > 0) payload.productIds = selectedItems;
+      await discountAPI.bulkUpdate(payload);
       setBulkModal(false);
+      setSelectedItems([]);
       loadProducts();
     } catch (err) {
       alert(err.message);
@@ -117,8 +130,11 @@ export default function Discounts() {
     e.preventDefault();
     setSaving(true);
     try {
-      await discountAPI.bulkRemove(bulkRemoveForm);
+      const payload = { ...bulkRemoveForm };
+      if (selectedItems.length > 0) payload.productIds = selectedItems;
+      await discountAPI.bulkRemove(payload);
       setBulkRemoveModal(false);
+      setSelectedItems([]);
       loadProducts();
     } catch (err) {
       alert(err.message);
@@ -239,10 +255,27 @@ export default function Discounts() {
         </div>
       ) : (
         <>
+        {selectedItems.length > 0 && (
+          <div className="selected-actions" style={{ padding: '12px 20px', background: 'var(--primary-bg)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, border: '1px solid var(--primary-border)' }}>
+            <span style={{ fontWeight: 600, color: 'var(--primary)' }}>{selectedItems.length} product(s) selected</span>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button className="btn btn-sm btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => { setBulkRemoveForm({ category: '', tag: '' }); setBulkRemoveModal(true); }}>
+                <Trash2 size={14} /> Remove Discounts
+              </button>
+              <button className="btn btn-sm btn-primary" onClick={() => { setBulkForm({ category: '', tag: '', type: 'percentage', value: '', startDate: '', endDate: '', isActive: true, label: '' }); setBulkModal(true); }}>
+                <Zap size={14} /> Apply Discount
+              </button>
+            </div>
+          </div>
+        )}
+        
         <div className="table-container">
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: 40, textAlign: 'center' }}>
+                  <input type="checkbox" onChange={handleSelectAll} checked={products.length > 0 && selectedItems.length === products.length} />
+                </th>
                 <th style={{ width: 50, textAlign: 'center' }}>#</th>
                 <th>Product</th>
                 <th>Original Price</th>
@@ -259,7 +292,10 @@ export default function Discounts() {
                 const st = STATUS_STYLES[p.discountStatus] || STATUS_STYLES.none;
                 const hasDiscount = p.discountStatus !== 'none';
                 return (
-                  <tr key={p._id}>
+                  <tr key={p._id} className={selectedItems.includes(p._id) ? 'selected-row' : ''}>
+                    <td style={{ textAlign: 'center' }}>
+                      <input type="checkbox" checked={selectedItems.includes(p._id)} onChange={() => handleSelect(p._id)} />
+                    </td>
                     <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
                       {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
                     </td>
@@ -468,31 +504,39 @@ export default function Discounts() {
             </div>
             <form onSubmit={handleBulkSave}>
               <div className="modal-body">
-                <div style={{ padding: 14, background: 'var(--warning-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, color: 'var(--warning)', fontSize: '0.85rem' }}>
-                  ⚡ This will apply the same discount to all products matching the selected category or tag. Existing discounts will be overwritten.
-                </div>
+                {selectedItems.length > 0 ? (
+                  <div style={{ padding: 14, background: 'var(--primary-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, color: 'var(--primary)', fontSize: '0.85rem' }}>
+                    ⚡ Applying discount to {selectedItems.length} selected product(s).
+                  </div>
+                ) : (
+                  <div style={{ padding: 14, background: 'var(--warning-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, color: 'var(--warning)', fontSize: '0.85rem' }}>
+                    ⚡ This will apply the same discount to all products matching the selected category or tag. Existing discounts will be overwritten.
+                  </div>
+                )}
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Category</label>
-                    <select className="form-select" value={bulkForm.category} onChange={(e) => setBulkForm((f) => ({ ...f, category: e.target.value }))}>
-                      <option value="">All Categories</option>
-                      {categories.map((c) => (
-                        <option key={c._id} value={c.slug}>{c.name}</option>
-                      ))}
-                    </select>
+                {selectedItems.length === 0 && (
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Category</label>
+                      <select className="form-select" value={bulkForm.category} onChange={(e) => setBulkForm((f) => ({ ...f, category: e.target.value }))}>
+                        <option value="">All Categories</option>
+                        {categories.map((c) => (
+                          <option key={c._id} value={c.slug}>{c.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Tag</label>
+                      <select className="form-select" value={bulkForm.tag} onChange={(e) => setBulkForm((f) => ({ ...f, tag: e.target.value }))}>
+                        <option value="">All Tags</option>
+                        <option value="BESTSELLER">Bestseller</option>
+                        <option value="NEW ARRIVAL">New Arrival</option>
+                        <option value="LIMITED EDITION">Limited Edition</option>
+                        <option value="FESTIVAL CHOICE">Festival Choice</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Tag</label>
-                    <select className="form-select" value={bulkForm.tag} onChange={(e) => setBulkForm((f) => ({ ...f, tag: e.target.value }))}>
-                      <option value="">All Tags</option>
-                      <option value="BESTSELLER">Bestseller</option>
-                      <option value="NEW ARRIVAL">New Arrival</option>
-                      <option value="LIMITED EDITION">Limited Edition</option>
-                      <option value="FESTIVAL CHOICE">Festival Choice</option>
-                    </select>
-                  </div>
-                </div>
+                )}
 
                 <div className="form-row">
                   <div className="form-group">
@@ -566,31 +610,39 @@ export default function Discounts() {
             </div>
             <form onSubmit={handleBulkRemoveSave}>
               <div className="modal-body">
-                <div style={{ padding: 14, background: 'var(--danger-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, color: 'var(--danger)', fontSize: '0.85rem' }}>
-                  ⚠️ This will permanently remove discounts from all products matching the selected category or tag.
-                </div>
+                {selectedItems.length > 0 ? (
+                  <div style={{ padding: 14, background: 'var(--danger-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, color: 'var(--danger)', fontSize: '0.85rem' }}>
+                    ⚠️ This will permanently remove discounts from {selectedItems.length} selected product(s).
+                  </div>
+                ) : (
+                  <div style={{ padding: 14, background: 'var(--danger-bg)', borderRadius: 'var(--radius-md)', marginBottom: 20, color: 'var(--danger)', fontSize: '0.85rem' }}>
+                    ⚠️ This will permanently remove discounts from all products matching the selected category or tag.
+                  </div>
+                )}
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Category</label>
-                    <select className="form-select" value={bulkRemoveForm.category} onChange={(e) => setBulkRemoveForm((f) => ({ ...f, category: e.target.value }))}>
-                      <option value="">All Categories</option>
-                      {categories.map((c) => (
-                        <option key={c._id} value={c.slug}>{c.name}</option>
-                      ))}
-                    </select>
+                {selectedItems.length === 0 && (
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Category</label>
+                      <select className="form-select" value={bulkRemoveForm.category} onChange={(e) => setBulkRemoveForm((f) => ({ ...f, category: e.target.value }))}>
+                        <option value="">All Categories</option>
+                        {categories.map((c) => (
+                          <option key={c._id} value={c.slug}>{c.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Tag</label>
+                      <select className="form-select" value={bulkRemoveForm.tag} onChange={(e) => setBulkRemoveForm((f) => ({ ...f, tag: e.target.value }))}>
+                        <option value="">All Tags</option>
+                        <option value="BESTSELLER">Bestseller</option>
+                        <option value="NEW ARRIVAL">New Arrival</option>
+                        <option value="LIMITED EDITION">Limited Edition</option>
+                        <option value="FESTIVAL CHOICE">Festival Choice</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Tag</label>
-                    <select className="form-select" value={bulkRemoveForm.tag} onChange={(e) => setBulkRemoveForm((f) => ({ ...f, tag: e.target.value }))}>
-                      <option value="">All Tags</option>
-                      <option value="BESTSELLER">Bestseller</option>
-                      <option value="NEW ARRIVAL">New Arrival</option>
-                      <option value="LIMITED EDITION">Limited Edition</option>
-                      <option value="FESTIVAL CHOICE">Festival Choice</option>
-                    </select>
-                  </div>
-                </div>
+                )}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-outline" onClick={() => setBulkRemoveModal(false)}>Cancel</button>

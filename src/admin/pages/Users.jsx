@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { userAPI } from '../api/api.js';
-import { exportToCSV } from '../utils/exportCSV.js';
-import { Users as UsersIcon, Shield, User, Download } from 'lucide-react';
+import { Users as UsersIcon, Shield, User, Download, Trash2, UserX, UserCheck } from 'lucide-react';
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -32,6 +31,7 @@ export default function UsersPage() {
       { key: 'email', label: 'Email Address' },
       { key: 'phone', label: 'Phone' },
       { key: 'role', label: 'User Role' },
+      { key: 'status', label: 'Status', formatter: (u) => (u.isActive !== false ? 'Active' : 'Suspended') },
       { key: 'createdAt', label: 'Registration Date', formatter: (u) => new Date(u.createdAt).toLocaleDateString('en-IN') },
     ];
 
@@ -43,6 +43,23 @@ export default function UsersPage() {
     if (!confirm(`Change ${user.firstName} to ${newRole}?`)) return;
     try {
       await userAPI.updateRole(user._id, newRole);
+      loadUsers();
+    } catch (err) { alert(err.message); }
+  };
+
+  const toggleStatus = async (user) => {
+    const action = user.isActive !== false ? 'suspend' : 'activate';
+    if (!confirm(`Are you sure you want to ${action} ${user.firstName}?`)) return;
+    try {
+      await userAPI.updateStatus(user._id);
+      loadUsers();
+    } catch (err) { alert(err.message); }
+  };
+
+  const deleteUser = async (user) => {
+    if (!confirm(`Are you sure you want to permanently delete ${user.firstName}? This action cannot be undone.`)) return;
+    try {
+      await userAPI.delete(user._id);
       loadUsers();
     } catch (err) { alert(err.message); }
   };
@@ -77,6 +94,10 @@ export default function UsersPage() {
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(200,163,77,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#C8A34D' }}><Shield size={20} /></div>
           <div><div style={{ fontSize: '1.3rem', fontWeight: 700 }}>{admins.length}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Admins</div></div>
         </div>
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#EF4444' }}><UserX size={20} /></div>
+          <div><div style={{ fontSize: '1.3rem', fontWeight: 700 }}>{users.filter(u => u.isActive === false).length}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Suspended</div></div>
+        </div>
       </div>
 
       {loading ? (
@@ -90,10 +111,11 @@ export default function UsersPage() {
                 <th style={{ width: 50, textAlign: 'center' }}>#</th>
                 <th>User</th>
                 <th>Email</th>
-                <th>Phone</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Phone</th>
                 <th>Role</th>
-                <th>Joined</th>
-                <th style={{ textAlign: 'right' }}>Action</th>
+                <th>Status</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Joined</th>
+                <th style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -107,21 +129,50 @@ export default function UsersPage() {
                       <div style={{ width: 34, height: 34, borderRadius: '50%', background: user.role === 'admin' ? 'var(--accent)' : 'var(--bg-surface-active)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.8rem', fontWeight: 600, flexShrink: 0 }}>
                         {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
                       </div>
-                      <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{user.firstName} {user.lastName}</span>
+                      <span style={{ color: 'var(--text-primary)', fontWeight: 500, wordBreak: 'break-word', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {user.firstName} {user.lastName}
+                      </span>
                     </div>
                   </td>
-                  <td>{user.email}</td>
-                  <td>{user.phone || '—'}</td>
+                  <td style={{ wordBreak: 'break-all' }}>{user.email}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>{user.phone || '—'}</td>
                   <td>
                     <span className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-neutral'}`}>
                       {user.role === 'admin' ? <><Shield size={12} /> Admin</> : <><User size={12} /> Customer</>}
                     </span>
                   </td>
-                  <td style={{ color: 'var(--text-muted)' }}>{new Date(user.createdAt).toLocaleDateString('en-IN')}</td>
+                  <td>
+                    <span className={`badge ${user.isActive !== false ? 'badge-success' : 'badge-danger'}`} style={{ whiteSpace: 'nowrap' }}>
+                      {user.isActive !== false ? 'Active' : 'Suspended'}
+                    </span>
+                  </td>
+                  <td style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{new Date(user.createdAt).toLocaleDateString('en-IN')}</td>
                   <td style={{ textAlign: 'right' }}>
-                    <button className="btn btn-outline btn-sm" onClick={() => toggleRole(user)}>
-                      {user.role === 'admin' ? 'Make Customer' : 'Make Admin'}
-                    </button>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                      <button 
+                        className="btn btn-outline btn-sm" 
+                        onClick={() => toggleRole(user)}
+                        title={user.role === 'admin' ? 'Make Customer' : 'Make Admin'}
+                      >
+                        {user.role === 'admin' ? <User size={14} /> : <Shield size={14} />}
+                      </button>
+                      <button 
+                        className="btn btn-outline btn-sm" 
+                        onClick={() => toggleStatus(user)}
+                        style={{ color: user.isActive !== false ? 'var(--warning)' : 'var(--success)' }}
+                        title={user.isActive !== false ? 'Suspend User' : 'Activate User'}
+                      >
+                        {user.isActive !== false ? <UserX size={14} /> : <UserCheck size={14} />}
+                      </button>
+                      <button 
+                        className="btn btn-outline btn-sm" 
+                        onClick={() => deleteUser(user)}
+                        style={{ color: 'var(--danger)', borderColor: 'var(--danger-border)' }}
+                        title="Delete User"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

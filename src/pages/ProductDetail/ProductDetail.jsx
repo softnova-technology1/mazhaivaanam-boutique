@@ -21,42 +21,33 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3);
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     if (!reviewForm.name.trim() || !reviewForm.text.trim()) return;
 
     const newReview = {
-      id: Date.now(),
       name: reviewForm.name.trim(),
       location: reviewForm.location.trim() || 'Verified Patron',
       text: reviewForm.text.trim(),
       rating: reviewForm.rating,
       photo: reviewForm.photo || '',
-      date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
     };
 
-    // Optimistic UI update
-    setUserReviews(prev => [newReview, ...prev]);
     setReviewForm({ name: '', location: '', text: '', rating: 5, photo: '' });
     setReviewSubmitted(true);
     setShowReviewForm(false);
-    setTimeout(() => setReviewSubmitted(false), 4000);
+    setTimeout(() => setReviewSubmitted(false), 5000);
 
-    // Save directly to MongoDB Atlas
+    // Save directly to MongoDB Atlas (Pending Admin Approval)
     try {
       const prodId = activeProduct._id || activeProduct.id;
       if (prodId) {
-        await reviewAPI.createReview(prodId, {
-          name: newReview.name,
-          location: newReview.location,
-          text: newReview.text,
-          rating: newReview.rating,
-          photo: newReview.photo,
-        });
+        await reviewAPI.createReview(prodId, newReview);
       }
     } catch (err) {
-      console.log('Saved review locally:', err);
+      console.log('Error saving review to DB:', err);
     }
   };
 
@@ -131,26 +122,32 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
           setRelatedProducts(res.products.filter(p => p.id !== activeProduct.id));
         }
       })
-      .catch(err => console.error('Failed to load related products:', err));
-
-    // Load Live Reviews from MongoDB Atlas
+    // Load Live Reviews for THIS specific product from MongoDB Atlas
+    setUserReviews([]);
+    setVisibleCount(3);
     const prodId = activeProduct._id || activeProduct.id;
     if (prodId) {
       reviewAPI.getByProduct(prodId)
         .then(dbReviews => {
-          if (isMounted && dbReviews && dbReviews.length > 0) {
-            setUserReviews(dbReviews.map(r => ({
-              id: r._id,
-              name: r.name,
-              location: r.location || 'Verified Patron',
-              text: r.text,
-              rating: r.rating,
-              photo: r.photo || '',
-              date: new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-            })));
+          if (isMounted) {
+            if (dbReviews && dbReviews.length > 0) {
+              setUserReviews(dbReviews.map(r => ({
+                id: r._id,
+                name: r.name,
+                location: r.location || 'Verified Patron',
+                text: r.text,
+                rating: r.rating,
+                photo: r.photo || '',
+                date: new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+              })));
+            } else {
+              setUserReviews([]);
+            }
           }
         })
-        .catch(() => { });
+        .catch(() => {
+          if (isMounted) setUserReviews([]);
+        });
     }
 
     return () => { isMounted = false; };
@@ -425,15 +422,43 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
               </p>
             )}
 
-            <div className={styles['ratings-row']}>
-              <div className={styles['stars-group']}>
-                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
-                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
-                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
-                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
-                <Star size={14} fill="#B38A4A" stroke="#B38A4A" />
-              </div>
-            </div>
+            {(() => {
+              const productRatingScore = userReviews.length > 0
+                ? (userReviews.reduce((sum, r) => sum + r.rating, 0) / userReviews.length).toFixed(1)
+                : (activeProduct.averageRating || activeProduct.rating || 5.0).toFixed(1);
+              const productReviewCount = userReviews.length;
+
+              return (
+                <div
+                  className={styles['ratings-row-clickable']}
+                  onClick={() => {
+                    const reviewsElem = document.getElementById('voices-of-grace-reviews');
+                    if (reviewsElem) {
+                      reviewsElem.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  title="Click to view customer reviews"
+                >
+                  <div className={styles['stars-group']}>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Star
+                        key={n}
+                        size={14}
+                        fill={Number(productRatingScore) >= n ? "#B38A4A" : "transparent"}
+                        stroke={Number(productRatingScore) >= n ? "#B38A4A" : "#B38A4A"}
+                      />
+                    ))}
+                  </div>
+                  <span className={styles['rating-score']}>{productRatingScore}</span>
+                  <span className={styles['rating-divider']}>•</span>
+                  <span className={styles['reviews-count-badge']}>
+                    {productReviewCount > 0
+                      ? `${productReviewCount} ${productReviewCount === 1 ? 'Customer Review' : 'Customer Reviews'}`
+                      : 'No reviews yet (Be the first!)'}
+                  </span>
+                </div>
+              );
+            })()}
           </header>
 
           {/* Luxury Price Breakdown Card */}
@@ -622,227 +647,206 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         </div>
       </section>
 
-      {/* Customer Love Reviews section */}
-      <section className={styles['reviews-section']}>
-        <div className={styles['reviews-section-header']}>
-          <div>
-            <h2>Voices of Grace</h2>
-            <p>Real stories shared by our global patrons</p>
-          </div>
-          <span
-            role="button"
-            tabIndex={0}
-            className={styles['write-review-trigger']}
-            onClick={() => setShowReviewForm(v => !v)}
-            onKeyDown={e => e.key === 'Enter' && setShowReviewForm(v => !v)}
-          >
-            {showReviewForm ? '\u2715 Cancel' : '\u2726 Write a Review'}
-          </span>
-        </div>
+      {/* Product-Specific Reviews section */}
+      {(() => {
+        return (
+          <section id="voices-of-grace-reviews" className={styles['reviews-section']}>
+            <div className={styles['reviews-section-header']}>
+              <div>
+                <h2>Voices of Grace</h2>
+                <p>
+                  {userReviews.length > 0
+                    ? `Verified Patron Reviews for ${activeProduct.name} • ${userReviews.length} ${userReviews.length === 1 ? 'Approved Appraisal' : 'Approved Appraisals'}`
+                    : `Authentic Patron Appraisals for ${activeProduct.name}`}
+                </p>
+              </div>
+              <span
+                role="button"
+                tabIndex={0}
+                className={styles['write-review-trigger']}
+                onClick={() => setShowReviewForm(v => !v)}
+                onKeyDown={e => e.key === 'Enter' && setShowReviewForm(v => !v)}
+              >
+                {showReviewForm ? '✕ Cancel' : '✦ Write a Review'}
+              </span>
+            </div>
 
-        {/* Write Review Form */}
-        {showReviewForm && (
-          <div className={styles['write-review-panel']}>
-            <div className={styles['review-panel-inner']}>
-              <h4 className={styles['review-form-title']}>Share Your Experience</h4>
-              <p className={styles['review-form-sub']}>Your honest appraisal helps fellow patrons choose their heirloom wisely.</p>
+            {/* Write Review Form */}
+            {showReviewForm && (
+              <div className={styles['write-review-panel']}>
+                <div className={styles['review-panel-inner']}>
+                  <h4 className={styles['review-form-title']}>Share Your Experience for {activeProduct.name}</h4>
+                  <p className={styles['review-form-sub']}>Your honest appraisal helps fellow patrons choose their heirloom wisely.</p>
 
-              {/* Star Picker */}
-              <div className={styles['star-picker']}>
-                <span className={styles['star-picker-label']}>Your Rating</span>
-                <div className={styles['star-picker-stars']}>
-                  {[1, 2, 3, 4, 5].map(n => (
-                    <Star
-                      key={n}
-                      size={22}
-                      fill={(hoverRating || reviewForm.rating) >= n ? '#B38A4A' : 'transparent'}
-                      stroke={(hoverRating || reviewForm.rating) >= n ? '#B38A4A' : 'rgba(79,78,34,0.3)'}
-                      style={{ cursor: 'pointer', transition: 'transform 0.15s ease' }}
-                      onMouseEnter={() => setHoverRating(n)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      onClick={() => setReviewForm(f => ({ ...f, rating: n }))}
-                    />
+                  {/* Star Picker */}
+                  <div className={styles['star-picker']}>
+                    <span className={styles['star-picker-label']}>Your Rating</span>
+                    <div className={styles['star-picker-stars']}>
+                      {[1, 2, 3, 4, 5].map(n => (
+                        <Star
+                          key={n}
+                          size={22}
+                          fill={(hoverRating || reviewForm.rating) >= n ? '#B38A4A' : 'transparent'}
+                          stroke={(hoverRating || reviewForm.rating) >= n ? '#B38A4A' : 'rgba(79,78,34,0.3)'}
+                          style={{ cursor: 'pointer', transition: 'transform 0.15s ease' }}
+                          onMouseEnter={() => setHoverRating(n)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          onClick={() => setReviewForm(f => ({ ...f, rating: n }))}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleSubmitReview} className={styles['review-form-grid']}>
+                    <div className={styles['review-field-group']}>
+                      <label className={styles['review-field-label']}>Your Name *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Priya Sharma"
+                        className={styles['review-field-input']}
+                        value={reviewForm.name}
+                        onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
+                        required
+                      />
+                    </div>
+                    <div className={styles['review-field-group']}>
+                      <label className={styles['review-field-label']}>City / Location</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Chennai"
+                        className={styles['review-field-input']}
+                        value={reviewForm.location}
+                        onChange={e => setReviewForm(f => ({ ...f, location: e.target.value }))}
+                      />
+                    </div>
+                    <div className={styles['review-field-group']} style={{ gridColumn: '1 / -1' }}>
+                      <label className={styles['review-field-label']}>Photo of Your Draped Look (Optional)</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setReviewForm(f => ({ ...f, photo: reader.result }));
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginTop: 4 }}
+                      />
+                      {reviewForm.photo && (
+                        <div style={{ marginTop: 8, width: 64, height: 64, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--primary)' }}>
+                          <img src={reviewForm.photo} alt="Draped look preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className={styles['review-field-group']} style={{ gridColumn: '1 / -1' }}>
+                      <label className={styles['review-field-label']}>Your Review *</label>
+                      <textarea
+                        rows={4}
+                        placeholder="Describe how this saree draped, the quality of the zari, the weight — anything you'd want a fellow patron to know."
+                        className={styles['review-field-textarea']}
+                        value={reviewForm.text}
+                        onChange={e => setReviewForm(f => ({ ...f, text: e.target.value }))}
+                        required
+                      />
+                    </div>
+                    <div className={styles['submit-review-wrapper']}>
+                      <button type="submit" className={styles['submit-review-btn']}>
+                        Submit Review
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* Success toast */}
+            {reviewSubmitted && (
+              <div className={styles['review-success-banner']}>
+                ✓ &nbsp;Your review for {activeProduct.name} has been submitted to MongoDB and is pending Admin approval! It will appear once approved by the Admin team. ✨
+              </div>
+            )}
+
+            {/* Product-Specific DB Reviews Grid or Luxury Empty State */}
+            {userReviews.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '48px 24px', background: '#faf8f5', borderRadius: 12, border: '1px dashed var(--accent)', margin: '24px 0' }}>
+                <h4 style={{ fontFamily: 'var(--font-heading)', color: 'var(--primary)', marginBottom: 8, fontSize: '1.25rem' }}>
+                  Be the First to Appraise {activeProduct.name}
+                </h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: 520, margin: '0 auto 20px auto', lineHeight: 1.6 }}>
+                  No patron appraisals have been published for this masterpiece yet. Have you worn this saree? Share your draped look and feedback!
+                </p>
+                <button
+                  className={styles['write-review-btn']}
+                  onClick={() => setShowReviewForm(true)}
+                  style={{ background: 'var(--primary)', color: '#fff', padding: '12px 28px', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600, letterSpacing: '1px' }}
+                >
+                  ✦ Write the First Review
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className={styles['reviews-grid']}>
+                  {userReviews.slice(0, visibleCount).map((r, idx) => (
+                    <div key={r.id || r._id || idx} className={`${styles['review-card']} ${styles['user-review-card']}`}>
+                      <div className={styles['review-stars']}>
+                        {[1, 2, 3, 4, 5].map(n => (
+                          <Star key={n} size={12}
+                            fill={r.rating >= n ? '#B38A4A' : 'transparent'}
+                            stroke={r.rating >= n ? '#B38A4A' : 'rgba(79,78,34,0.3)'}
+                          />
+                        ))}
+                      </div>
+                      <p className={styles['review-quote']}>"{r.text}"</p>
+
+                      {r.photo && (
+                        <div style={{ width: 68, height: 68, borderRadius: 8, overflow: 'hidden', margin: '10px 0', border: '1px solid var(--primary)', background: '#111' }}>
+                          <img src={r.photo} alt="Patron draped saree" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
+
+                      <div className={styles['reviewer-profile']}>
+                        <div className={styles['reviewer-avatar-initial']}>
+                          {r.name ? r.name[0].toUpperCase() : 'P'}
+                        </div>
+                        <div>
+                          <h6>{r.name}</h6>
+                          <p>{r.location || 'Verified Patron'} {r.date ? `• ${r.date}` : ''}</p>
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
-              </div>
 
-              <form onSubmit={handleSubmitReview} className={styles['review-form-grid']}>
-                <div className={styles['review-field-group']}>
-                  <label className={styles['review-field-label']}>Your Name *</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Priya Sharma"
-                    className={styles['review-field-input']}
-                    value={reviewForm.name}
-                    onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
-                    required
-                  />
-                </div>
-                <div className={styles['review-field-group']}>
-                  <label className={styles['review-field-label']}>City / Location</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Chennai"
-                    className={styles['review-field-input']}
-                    value={reviewForm.location}
-                    onChange={e => setReviewForm(f => ({ ...f, location: e.target.value }))}
-                  />
-                </div>
-                <div className={styles['review-field-group']} style={{ gridColumn: '1 / -1' }}>
-                  <label className={styles['review-field-label']}>Photo of Your Draped Look (Optional)</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setReviewForm(f => ({ ...f, photo: reader.result }));
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                    style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginTop: 4 }}
-                  />
-                  {reviewForm.photo && (
-                    <div style={{ marginTop: 8, width: 64, height: 64, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--primary)' }}>
-                      <img src={reviewForm.photo} alt="Draped look preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
-                  )}
-                </div>
-
-                <div className={styles['review-field-group']} style={{ gridColumn: '1 / -1' }}>
-                  <label className={styles['review-field-label']}>Your Review *</label>
-                  <textarea
-                    rows={4}
-                    placeholder="Describe how this saree draped, the quality of the zari, the weight — anything you'd want a fellow patron to know."
-                    className={styles['review-field-textarea']}
-                    value={reviewForm.text}
-                    onChange={e => setReviewForm(f => ({ ...f, text: e.target.value }))}
-                    required
-                  />
-                </div>
-                <div className={styles['submit-review-wrapper']}>
-                  <button type="submit" className={styles['submit-review-btn']}>
-                    Submit Review
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Success toast */}
-        {reviewSubmitted && (
-          <div className={styles['review-success-banner']}>
-            &#x2713; &nbsp;Your appraisal has been added. Thank you!
-          </div>
-        )}
-
-        <div className={styles['reviews-grid']}>
-          {/* User submitted reviews */}
-          {userReviews.map(r => (
-            <div key={r.id} className={`${styles['review-card']} ${styles['user-review-card']}`}>
-              <div className={styles['review-stars']}>
-                {[1, 2, 3, 4, 5].map(n => (
-                  <Star key={n} size={12}
-                    fill={r.rating >= n ? 'var(--accent)' : 'transparent'}
-                    stroke={r.rating >= n ? 'var(--accent)' : 'rgba(79,78,34,0.3)'}
-                  />
-                ))}
-              </div>
-              <p className={styles['review-quote']}>&#x201C;{r.text}&#x201D;</p>
-
-              {r.photo && (
-                <div style={{ width: 68, height: 68, borderRadius: 8, overflow: 'hidden', margin: '10px 0', border: '1px solid var(--primary)', background: '#111' }}>
-                  <img src={r.photo} alt="Patron draped saree" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              )}
-
-              <div className={styles['reviewer-profile']}>
-                <div className={styles['reviewer-avatar-initial']}>
-                  {r.name[0]?.toUpperCase()}
-                </div>
-                <div>
-                  <h6>{r.name}</h6>
-                  <p>Verified Patron &bull; {r.location} &nbsp;&middot;&nbsp; {r.date}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Static curated reviews */}
-          <div className={styles['review-card']}>
-            <div className={styles['review-stars']}>
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-            </div>
-            <p className={styles['review-quote']}>
-              "The gold zari work is absolutely breathtaking. It sits lighter than expected and drapes like a dream. Truly an heirloom masterpiece."
-            </p>
-            <div className={styles['reviewer-profile']}>
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwGYgKGfLt0I5ir4KaYDuyebEgspSKAgBAYwY8l2gD16JLr7ersoFQTb1G9SaNQW4vP2DweEV3bj8hRccX3iM1o-KThEhxDCv7iup32Ju4TzXuI_IfVZS2MJnfP9kt1-Uyc8F0zY4omWra5AEAY2tXm6mwlOZNekBzOSzyMh4nQ50nOIAc1zGeS9JmxpAu3wSyo_wD1-VYVCIsPkdO8FV6XP6YOiZ11gKh2twG8xCu1wOuwicqSrvi"
-                alt="Collector profile 1"
-              />
-              <div>
-                <h6>Ananya R.</h6>
-                <p>Verified Saree Collector &bull; Mumbai</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles['review-card']}>
-            <div className={styles['review-stars']}>
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-            </div>
-            <p className={styles['review-quote']}>
-              "Wore this for my daughter's wedding reception. The colors are incredibly rich. Everyone asked about the provenance of the fabric."
-            </p>
-            <div className={styles['reviewer-profile']}>
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnqP1XyRmq2K3_Vm9XzgBLP4aCPsdRiRoYk--9bp6-jB3Iy7wHTG9PBqrh-KftWFSpMvZkdgNej2nP5ax3ZsgiuOx6V2SHYm8ze7xSe1DBDqYOMe6Fa3CRCejUIN12W0-4nzb6hd2sN43MG1XIYzyDOYI2oM95GkcfjSq3pg5TeGss7qKJ2Rp0MlH-aBVoRcLN2VhhFQWzBOqGH8428Ul4wj4u_0M7GeRpQ16jxVr8cmQP22Jj2FRg"
-                alt="Collector profile 2"
-              />
-              <div>
-                <h6>Dr. Meera S.</h6>
-                <p>Verified Saree Collector &bull; London</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles['review-card']}>
-            <div className={styles['review-stars']}>
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-              <Star size={12} fill="#B38A4A" stroke="#B38A4A" />
-            </div>
-            <p className={styles['review-quote']}>
-              "The custom teak wooden box packaging itself is worth 5 stars. It felt like receiving a heritage heirloom from another era."
-            </p>
-            <div className={styles['reviewer-profile']}>
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdhFNhEQiiOCeRIklQUI8DA_0cKcj17bFhkqMwiBgLfq66QEjiCVvcbUmvltVCTRo2qYZoq0KmxsUjPtzbnmZUWwBpc3tSjmrz0UEQK3exVC_3GlR0qjgz5jz8d3utxw8gHmfpZz-sC5Tbt9sL3WMUQo8kIbmBnfxlEejN-pqiNq7BbhbaEKn_BWlDbMQB0KW8Z5y8BhiXWoh0jM8pfZW5MebNPJV5uBoJDdMaxaIQ7s9QMFnZ3jQt"
-                alt="Collector profile 3"
-              />
-              <div>
-                <h6>Kavita M.</h6>
-                <p>Verified Saree Collector &bull; Bangalore</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                {/* Show More / Show Less Toggle Button */}
+                {userReviews.length > 3 && (
+                  <div className={styles['load-more-container']}>
+                    {visibleCount < userReviews.length ? (
+                      <button
+                        className={styles['load-more-reviews-btn']}
+                        onClick={() => setVisibleCount(userReviews.length)}
+                      >
+                        ✦ Show More Reviews ({userReviews.length - visibleCount} Remaining)
+                      </button>
+                    ) : (
+                      <button
+                        className={styles['load-more-reviews-btn']}
+                        onClick={() => setVisibleCount(3)}
+                      >
+                        ▲ Show Less
+                      </button>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+        );
+      })()}
 
       {/* 4. Similar Weaves You May Love Section */}
       {relatedProducts.length > 0 && (

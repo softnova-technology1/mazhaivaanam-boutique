@@ -41,6 +41,8 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem('mv_admin_token');
     localStorage.removeItem('mv_admin_refresh');
+    localStorage.removeItem('boutique_token');
+    localStorage.removeItem('boutique_user');
     setUser(null);
   };
 

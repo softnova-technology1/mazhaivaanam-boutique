@@ -302,7 +302,21 @@ export default function Discounts() {
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={{ width: 44, height: 44, borderRadius: 8, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
-                          {p.images?.[0]?.url && <img src={p.images[0].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                          {(() => {
+                            const rawUrl = p.images?.[0]?.url;
+                            const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/saree1.png';
+                            return (
+                              <img 
+                                src={safeUrl} 
+                                alt={p.name || ''} 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = '/Images/saree1.png';
+                                }}
+                              />
+                            );
+                          })()}
                         </div>
                         <div>
                           <div style={{ color: 'var(--text-primary)', fontWeight: 500, fontSize: '0.9rem' }}>{p.name}</div>

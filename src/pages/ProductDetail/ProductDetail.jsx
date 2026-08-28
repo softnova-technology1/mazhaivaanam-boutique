@@ -25,7 +25,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     if (!reviewForm.name.trim() || !reviewForm.text.trim()) return;
-    
+
     const newReview = {
       id: Date.now(),
       name: reviewForm.name.trim(),
@@ -87,7 +87,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
     if (activeProduct.color) {
       setSelectedHue(activeProduct.color);
     }
-    
+
     // Check if wishlisted
     if (activeProduct.id) {
       const saved = localStorage.getItem('boutique_wishlist');
@@ -119,7 +119,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
       localStorage.setItem('boutique_recently_viewed', JSON.stringify(viewedList));
       setRecentlyViewed(viewedList.filter(item => item.id !== activeProduct.id));
     }
-    
+
     // Scroll to top on mount
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -150,7 +150,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
             })));
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
 
     return () => { isMounted = false; };
@@ -277,10 +277,10 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
       setIsWishlisted(true);
       setWishlistMessage(`Added ${activeProduct.name} Saree to Wishlist!`);
     }
-    
+
     localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
     window.dispatchEvent(new Event('wishlistUpdated'));
-    
+
     setTimeout(() => setWishlistMessage(''), 3000);
   };
 
@@ -339,8 +339,8 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
             )}
 
             <div className={styles['viewport-controls']}>
-              <button 
-                className={`${styles['gallery-control-btn']} ${styles['share-control-btn']}`} 
+              <button
+                className={`${styles['gallery-control-btn']} ${styles['share-control-btn']}`}
                 onClick={() => {
                   if (navigator.share) {
                     navigator.share({
@@ -367,17 +367,17 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
                   }
                 }}
               >
-                <Heart 
-                  size={18} 
-                  fill={isWishlisted ? "#e63946" : "none"} 
-                  stroke={isWishlisted ? "#e63946" : "currentColor"} 
+                <Heart
+                  size={18}
+                  fill={isWishlisted ? "#e63946" : "none"}
+                  stroke={isWishlisted ? "#e63946" : "currentColor"}
                 />
               </span>
             </div>
           </div>
 
           <div className={styles['mobile-variant-text']}>
-             <strong>Selected Color:</strong> {activeProduct.name.split(' ')[0]}
+            <strong>Selected Color:</strong> {activeProduct.name.split(' ')[0]}
           </div>
 
           <div className={styles['thumbnails-strip']}>
@@ -401,12 +401,12 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
         <div className={styles['info-column']}>
           <header className={styles['info-header']}>
             <div className={styles['header-badges']}>
-              {(activeProduct.category === "Limited Offer" || 
-                activeProduct.isLimited || 
-                (activeProduct.id && (activeProduct.id.startsWith('wish-') || activeProduct.id.startsWith('offer-')))) && 
-               !(activeProduct.tag && activeProduct.tag.toUpperCase().includes('LIMIT')) && (
-                <span className={`${styles['detail-badge']} ${getBadgeClass('Limited Edition')}`}>Limited Edition</span>
-              )}
+              {(activeProduct.category === "Limited Offer" ||
+                activeProduct.isLimited ||
+                (activeProduct.id && (activeProduct.id.startsWith('wish-') || activeProduct.id.startsWith('offer-')))) &&
+                !(activeProduct.tag && activeProduct.tag.toUpperCase().includes('LIMIT')) && (
+                  <span className={`${styles['detail-badge']} ${getBadgeClass('Limited Edition')}`}>Limited Edition</span>
+                )}
               {activeProduct.tag && <span className={`${styles['detail-badge']} ${getBadgeClass(activeProduct.tag)}`}>{activeProduct.tag}</span>}
             </div>
             <p className={styles['collection-sub']}>MAZHAI VAANAM SIGNATURE COLLECTION</p>
@@ -489,15 +489,15 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
             <div className={styles['quantity-wrapper']}>
               <span className={styles['quantity-label']}>Qty</span>
               <div className={styles['quantity-controls']}>
-                <button 
-                  className={styles['qty-btn']} 
+                <button
+                  className={styles['qty-btn']}
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}
                 >
                   -
                 </button>
                 <span className={styles['qty-value']}>{quantity}</span>
-                <button 
-                  className={styles['qty-btn']} 
+                <button
+                  className={styles['qty-btn']}
                   onClick={() => setQuantity(q => q + 1)}
                 >
                   +
@@ -535,7 +535,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
             <p>
               Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic handloom. Finished with a refined <strong>Zari border</strong>, these sarees are designed for the woman who appreciates understated luxury.
             </p>
-            
+
             <p className={styles['highlights-title']}><strong>Product Highlights:</strong></p>
             <ul className={styles['highlights-list']}>
               <li><strong>Fabric:</strong> 100% {activeProduct.fabric || 'Pure Silk'} – breathable, lightweight, and durable.</li>
@@ -563,22 +563,22 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
             <p>Curated selections based on your exquisite taste</p>
           </div>
           <div className={styles['carousel-arrows']}>
-            <button 
-              className={styles['arrow-btn']} 
+            <button
+              className={styles['arrow-btn']}
               onClick={() => {
                 const container = document.getElementById('related-carousel');
                 if (container) container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
-              }} 
+              }}
               aria-label="Scroll left"
             >
               <ChevronLeft size={18} />
             </button>
-            <button 
-              className={styles['arrow-btn']} 
+            <button
+              className={styles['arrow-btn']}
               onClick={() => {
                 const container = document.getElementById('related-carousel');
                 if (container) container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
-              }} 
+              }}
               aria-label="Scroll right"
             >
               <ChevronRight size={18} />
@@ -587,9 +587,9 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
         </div>
         <div id="related-carousel" className={styles['related-grid']}>
           {(relatedProducts || []).slice(0, 12).map(prod => (
-            <div 
-              key={prod.id} 
-              className={styles['related-card']} 
+            <div
+              key={prod.id}
+              className={styles['related-card']}
               onClick={() => {
                 if (setSelectedProduct) {
                   setSelectedProduct(prod);
@@ -643,7 +643,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
               <div className={styles['star-picker']}>
                 <span className={styles['star-picker-label']}>Your Rating</span>
                 <div className={styles['star-picker-stars']}>
-                  {[1,2,3,4,5].map(n => (
+                  {[1, 2, 3, 4, 5].map(n => (
                     <Star
                       key={n}
                       size={22}
@@ -737,7 +737,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
           {userReviews.map(r => (
             <div key={r.id} className={`${styles['review-card']} ${styles['user-review-card']}`}>
               <div className={styles['review-stars']}>
-                {[1,2,3,4,5].map(n => (
+                {[1, 2, 3, 4, 5].map(n => (
                   <Star key={n} size={12}
                     fill={r.rating >= n ? 'var(--accent)' : 'transparent'}
                     stroke={r.rating >= n ? 'var(--accent)' : 'rgba(79,78,34,0.3)'}
@@ -745,7 +745,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
                 ))}
               </div>
               <p className={styles['review-quote']}>&#x201C;{r.text}&#x201D;</p>
-              
+
               {r.photo && (
                 <div style={{ width: 68, height: 68, borderRadius: 8, overflow: 'hidden', margin: '10px 0', border: '1px solid var(--primary)', background: '#111' }}>
                   <img src={r.photo} alt="Patron draped saree" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -848,8 +848,8 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
                 Similar Weaves You May Love
               </h2>
             </div>
-            <button 
-              onClick={() => setCurrentTab('catalog')} 
+            <button
+              onClick={() => setCurrentTab('catalog')}
               style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6 }}
             >
               Explore Full Atelier <ArrowRight size={16} />
@@ -858,7 +858,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
             {relatedProducts.slice(0, 4).map((item) => (
-              <div 
+              <div
                 key={item.id}
                 onClick={() => {
                   setSelectedProduct(item);
@@ -886,10 +886,10 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
                 }}
               >
                 <div style={{ width: '100%', height: 320, position: 'relative', overflow: 'hidden', background: '#111' }}>
-                  <img 
-                    src={item.image} 
-                    alt={item.name} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }} 
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
                   />
                   {item.tag && (
                     <span style={{
@@ -931,7 +931,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
                         </span>
                       )}
                     </div>
-                    <button 
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         addToCart(item, 1);
@@ -971,7 +971,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct }) =>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 18 }}>
             {recentlyViewed.map((item) => (
-              <div 
+              <div
                 key={item.id}
                 onClick={() => {
                   setSelectedProduct(item);

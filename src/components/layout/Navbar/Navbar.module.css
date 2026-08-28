@@ -53,14 +53,8 @@
 
 /* Sticky Navbar Styling */
 .sticky {
-  background-color: rgba(248, 244, 238, 0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background-color: var(--bg-main);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
-}
-
-.sticky .bottomSection {
-  background-color: transparent;
 }
 
 /* Top Section Styles */

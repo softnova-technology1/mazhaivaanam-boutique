@@ -17,6 +17,8 @@ export default function Orders() {
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
+  const [sortOrder, setSortOrder] = useState('newest');
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(null);
   const [updateForm, setUpdateForm] = useState({ status: '', trackingNumber: '', courier: '', note: '' });
@@ -29,7 +31,7 @@ export default function Orders() {
   const [invoiceOrder, setInvoiceOrder] = useState(null);
 
   useEffect(() => { loadStats(); }, []);
-  useEffect(() => { loadOrders(); }, [page, statusFilter]);
+  useEffect(() => { loadOrders(); }, [page, statusFilter, dateFilter, sortOrder]);
 
   const loadStats = async () => {
     try {
@@ -41,7 +43,9 @@ export default function Orders() {
   const loadOrders = async () => {
     setLoading(true);
     try {
-      const params = `page=${page}&limit=15${statusFilter ? '&status=' + statusFilter : ''}`;
+      let params = `page=${page}&limit=15&sort=${sortOrder}`;
+      if (statusFilter) params += `&status=${statusFilter}`;
+      if (dateFilter) params += `&dateRange=${dateFilter}`;
       const res = await orderAPI.getAll(params);
       setOrders(res.data);
       setPagination(res.pagination);
@@ -176,10 +180,29 @@ export default function Orders() {
 
       {/* Filter and Bulk Action Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-        <div className="filter-bar" style={{ margin: 0 }}>
+        <div className="filter-bar" style={{ margin: 0, display: 'flex', gap: 10 }}>
           <select className="form-select" value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}>
             <option value="">All Statuses</option>
             {STATUSES.filter(Boolean).map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <input 
+              type="date" 
+              className="form-input" 
+              value={dateFilter} 
+              onChange={e => { setDateFilter(e.target.value); setPage(1); }} 
+              style={{ width: 'auto', padding: '6px 12px' }}
+              title="Filter by specific date"
+            />
+            {dateFilter && (
+              <button className="btn btn-sm btn-outline" onClick={() => { setDateFilter(''); setPage(1); }} title="Clear Date Filter">
+                Clear
+              </button>
+            )}
+          </div>
+          <select className="form-select" value={sortOrder} onChange={e => { setSortOrder(e.target.value); setPage(1); }}>
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
           </select>
         </div>
 

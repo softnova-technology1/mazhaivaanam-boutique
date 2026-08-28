@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCategories } from '../../services/api';
+import { getCollections } from '../../services/api';
 import styles from './Collections.module.css';
 
 const DEFAULT_COLLECTIONS = [
@@ -14,7 +14,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
 
   useEffect(() => {
     let isMounted = true;
-    getCategories()
+    getCollections()
       .then(dbCats => {
         if (isMounted && dbCats && dbCats.length > 0) {
           const gridClasses = ['card-wide', 'card-tall', 'card-half', 'card-half'];

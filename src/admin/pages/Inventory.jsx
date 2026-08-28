@@ -102,18 +102,24 @@ export default function Inventory() {
         isFeatured: Boolean(form.isFeatured), isActive: Boolean(form.isActive),
       };
 
+      const safeFallback = (form.imageUrl && !form.imageUrl.startsWith('blob:')) 
+        ? form.imageUrl.trim() 
+        : (form.imagePreview && !form.imagePreview.startsWith('blob:')) 
+          ? form.imagePreview 
+          : '/Images/saree1.png';
+
       if (form.imageFile) {
         try {
           const res = await uploadAPI.upload(form.imageFile);
-          body.images = [{ url: res.data.url, publicId: res.data.publicId }];
+          body.images = [{ url: res.data.url, publicId: res.data.publicId || '' }];
         } catch (uploadErr) {
           console.warn('Upload API fallback:', uploadErr);
-          body.images = [{ url: form.imagePreview || '/Images/saree1.png', publicId: '' }];
+          body.images = [{ url: safeFallback, publicId: '' }];
         }
-      } else if (form.imageUrl && form.imageUrl.trim()) {
+      } else if (form.imageUrl && form.imageUrl.trim() && !form.imageUrl.startsWith('blob:')) {
         body.images = [{ url: form.imageUrl.trim(), publicId: '' }];
       } else {
-        body.images = [{ url: form.imagePreview || '/Images/saree1.png', publicId: '' }];
+        body.images = [{ url: safeFallback, publicId: '' }];
       }
 
       await productAPI.create(body);

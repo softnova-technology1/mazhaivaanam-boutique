@@ -130,7 +130,7 @@ export default function Orders() {
       { key: 'trackingNumber', label: 'Tracking Number' },
       { key: 'city', label: 'Delivery City', formatter: (o) => o.shippingAddress?.city || '' },
       { key: 'state', label: 'Delivery State', formatter: (o) => o.shippingAddress?.state || '' },
-      { key: 'pincode', label: 'Delivery Pincode', formatter: (o) => o.shippingAddress?.postalCode || o.shippingAddress?.pinCode || '' },
+      { key: 'pincode', label: 'Delivery Pincode', formatter: (o) => o.shippingAddress?.pinCode || o.shippingAddress?.postalCode || '' },
     ];
 
     exportToCSV(listToExport, columns, `MazhaiVaanam_Orders${statusFilter ? '_' + statusFilter : ''}`);
@@ -381,7 +381,7 @@ export default function Orders() {
                                 <input className="form-input" placeholder="Tracking number (e.g. BD98765432)" style={{ marginBottom: 8 }} value={updateForm.trackingNumber} onChange={e => setUpdateForm(f => ({ ...f, trackingNumber: e.target.value }))} />
                                 <input className="form-input" placeholder="Courier partner (e.g. BlueDart)" style={{ marginBottom: 8 }} value={updateForm.courier} onChange={e => setUpdateForm(f => ({ ...f, courier: e.target.value }))} />
                                 <input className="form-input" placeholder="Status note (optional)" style={{ marginBottom: 10 }} value={updateForm.note} onChange={e => setUpdateForm(f => ({ ...f, note: e.target.value }))} />
-                                <button className="btn btn-primary btn-sm" onClick={() => handleStatusUpdate(order._id || order.orderId)}>Save Updates</button>
+                                <button className="btn btn-primary btn-sm" onClick={() => handleStatusUpdate(order.orderId || order._id)}>Save Updates</button>
                               </div>
                             </div>
 

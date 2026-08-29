@@ -2,92 +2,49 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
 import { orderAPI } from '../../services/api';
+import InvoiceModal from '../../components/common/InvoiceModal/InvoiceModal';
+import OrderDetailsModal from '../../components/orders/OrderDetailsModal';
 import { 
   ShoppingBag, 
-  User, 
-  MapPin, 
-  Tag, 
   Cpu, 
-  Activity, 
   Download, 
   RotateCw, 
   PhoneCall, 
-  ArrowRight,
-  Award,
   Palette,
-  CheckCircle,
-  MessageSquare
+  MessageSquare,
+  FileText
 } from 'lucide-react';
 import styles from './MyOrders.module.css';
 
-const DUMMY_ORDERS = [
-  {
-    orderId: 'MV-9001',
-    placedOnDate: 'August 15, 2026',
-    status: 'DELIVERED',
-    mrpTotal: 25000,
-    subtotal: 22500,
-    totalSavings: 2500,
-    finalAmount: 22500,
-    items: [
-      { id: 'mock-1', name: 'Emerald Forest Silk Saree', price: 22500, image: '/Images/saree11.png', quantity: 1 }
-    ]
-  },
-  {
-    orderId: 'MV-9002',
-    placedOnDate: 'August 10, 2026',
-    status: 'SHIPPED',
-    mrpTotal: 18000,
-    subtotal: 16000,
-    totalSavings: 2000,
-    finalAmount: 16000,
-    items: [
-      { id: 'mock-2', name: 'Ruby Red Kanjeevaram Saree', price: 16000, image: '/Images/saree13.png', quantity: 1 }
-    ]
-  },
-  {
-    orderId: 'MV-9003',
-    placedOnDate: 'July 25, 2026',
-    status: 'DELIVERED',
-    mrpTotal: 14000,
-    subtotal: 12500,
-    totalSavings: 1500,
-    finalAmount: 12500,
-    items: [
-      { id: 'mock-3', name: 'Midnight Blue Linen Saree', price: 12500, image: '/Images/saree14.png', quantity: 1 }
-    ]
-  },
-  {
-    orderId: 'MV-9004',
-    placedOnDate: 'June 12, 2026',
-    status: 'DELIVERED',
-    mrpTotal: 32000,
-    subtotal: 28000,
-    totalSavings: 4000,
-    finalAmount: 28000,
-    items: [
-      { id: 'mock-4', name: 'Golden Banarasi Silk Saree', price: 28000, image: '/Images/saree2.png', quantity: 1 }
-    ]
-  },
-  {
-    orderId: 'MV-9005',
-    placedOnDate: 'May 05, 2026',
-    status: 'DELIVERED',
-    mrpTotal: 21000,
-    subtotal: 19000,
-    totalSavings: 2000,
-    finalAmount: 19000,
-    items: [
-      { id: 'mock-5', name: 'Pastel Pink Chanderi Saree', price: 19000, image: '/Images/saree8.png', quantity: 1 }
-    ]
+const getStatusStepIndex = (status) => {
+  const s = (status || '').toUpperCase();
+  switch (s) {
+    case 'PROCESSING':
+      return 1;
+    case 'CONFIRMED':
+      return 2;
+    case 'SHIPPED':
+      return 3;
+    case 'IN TRANSIT':
+    case 'OUT FOR DELIVERY':
+      return 4;
+    case 'DELIVERED':
+      return 5;
+    default:
+      return 1;
   }
-];
+};
 
 export const MyOrders = ({ setCurrentTab }) => {
   const { addToCart } = useCart();
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState('');
   const [expandedOrderIds, setExpandedOrderIds] = useState([]);
+  
+  // Modals state
+  const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState(null);
+  const [selectedDetailOrder, setSelectedDetailOrder] = useState(null);
 
   const toggleOrderExpansion = (orderId) => {
     setExpandedOrderIds(prev => 
@@ -101,6 +58,7 @@ export const MyOrders = ({ setCurrentTab }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     const saved = localStorage.getItem('boutique_orders');
     const localOrders = saved ? JSON.parse(saved) : [];
 
@@ -112,99 +70,42 @@ export const MyOrders = ({ setCurrentTab }) => {
             const normalized = dbOrders.map(o => ({
               orderId: o.orderId,
               placedOnDate: new Date(o.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-              status: o.status?.toUpperCase() || 'PLACED',
-              mrpTotal: o.totalAmount,
+              createdAt: o.createdAt,
+              status: o.status?.toUpperCase() || 'PROCESSING',
+              paymentStatus: o.paymentStatus || 'paid',
+              paymentMethod: o.paymentMethod || 'online',
+              shippingAddress: o.shippingAddress,
+              courier: o.courier || '',
+              trackingNumber: o.trackingNumber || '',
+              mrpTotal: o.mrpTotal || o.totalAmount,
               subtotal: o.subtotal || o.totalAmount,
-              totalSavings: o.discountAmount || 0,
+              totalSavings: o.totalSavings || o.discountAmount || 0,
               finalAmount: o.totalAmount,
               items: (o.items || []).map(i => ({
                 id: i.product?._id || i.product,
                 name: i.name,
                 price: i.price,
+                fabric: i.fabric || 'Pure Silk',
                 image: i.image || '/Images/saree1.png',
-                quantity: i.quantity,
+                quantity: i.quantity || 1,
               }))
             }));
-            setOrders([...DUMMY_ORDERS, ...normalized, ...localOrders]);
+            
+            // Combine normalized DB orders with local fallback orders (without duplicates)
+            const dbIds = new Set(normalized.map(o => o.orderId));
+            const filteredLocal = localOrders.filter(o => !dbIds.has(o.orderId));
+            setOrders([...normalized, ...filteredLocal]);
           } else {
-            setOrders([...DUMMY_ORDERS, ...localOrders]);
+            setOrders(localOrders);
           }
         })
-        .catch(() => setOrders([...DUMMY_ORDERS, ...localOrders]));
+        .catch(() => setOrders(localOrders))
+        .finally(() => setLoading(false));
     } else {
-      setOrders([...DUMMY_ORDERS, ...localOrders]);
+      setOrders(localOrders);
+      setLoading(false);
     }
   }, []);
-
-  // Invoice Download Helper (Generates text receipt locally)
-  const handleInvoiceDownload = (order) => {
-    const isCustom = order.items && order.items[0]?.id && !order.items[0].id.startsWith('mock-');
-    let txtContent = '';
-
-    if (isCustom) {
-      txtContent = `
-=========================================
-      MAZHAI VAANAM - INVOICE
-=========================================
-Order ID: ${order.orderId}
-Date: ${order.placedOnDate}
-Customer Name: ${order.fullName || 'Connoisseur Client'}
-Email: ${order.email || ''}
-Phone: ${order.phone || ''}
-Shipping Address: 
-  ${order.addressLine || ''},
-  ${order.city || ''}, ${order.stateName || ''} - ${order.pinCode || ''}
-
------------------------------------------
-ITEMS ORDERED:
-${order.items.map(item => `- ${item.name} (Qty: ${item.quantity || 1}) - ${formatCurrency(item.price * (item.quantity || 1))}`).join('\n')}
-
------------------------------------------
-BILLING DETAILS:
-Subtotal (MRP): ${formatCurrency(order.mrpTotal)}
-Exclusive Member Price: ${formatCurrency(order.subtotal)}
-Festival Discount: -${formatCurrency(order.festivalDiscount || 0)}
-Gift Wrap Packaging: +${formatCurrency(order.giftPackAddon || 0)}
-White Glove Shipping: FREE
-FINAL AMOUNT PAID: ${formatCurrency(order.finalAmount)}
------------------------------------------
-Thank you for choosing handloom heritage.
-=========================================
-      `;
-    } else {
-      txtContent = `
-=========================================
-      MAZHAI VAANAM - INVOICE
-=========================================
-Order ID: ${order.orderId}
-Date: ${order.placedOnDate}
-Customer: Walk-in Atelier Connoisseur
-
------------------------------------------
-ITEMS ORDERED:
-${order.items.map(item => `- ${item.name} (Qty: 1) - ${formatCurrency(item.price)}`).join('\n')}
-
------------------------------------------
-BILLING DETAILS:
-Subtotal (MRP): ${formatCurrency(order.mrpTotal)}
-Exclusive Member Price: ${formatCurrency(order.subtotal)}
-White Glove Shipping: FREE
-FINAL AMOUNT PAID: ${formatCurrency(order.finalAmount)}
------------------------------------------
-Thank you for choosing handloom heritage.
-=========================================
-      `;
-    }
-
-    const element = document.createElement("a");
-    const file = new Blob([txtContent], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = `Invoice-${order.orderId}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    triggerToast(`Invoice for Order #${order.orderId} downloaded!`);
-  };
 
   // Reorder Item: add items of that order back to cart and direct to Cart tab
   const handleReorder = (order) => {
@@ -222,25 +123,20 @@ Thank you for choosing handloom heritage.
     });
     triggerToast("Items added back to your bag!");
     setTimeout(() => {
-      setCurrentTab('cart');
+      if (setCurrentTab) setCurrentTab('cart');
     }, 800);
   };
 
   // Tracking navigate details
   const handleTrackOrder = (order) => {
     window.history.pushState(null, '', `/track-order?orderId=${order.orderId}`);
-    setCurrentTab('track-order');
+    if (setCurrentTab) setCurrentTab('track-order');
   };
 
   // Dynamic statistics calculations
   const totalOrders = orders.length;
-  // Custom orders sums
-  const customOrders = orders.filter(o => o.orderId && !o.orderId.startsWith('MV-829') && !o.orderId.startsWith('MV-815'));
-  const extraSavings = customOrders.reduce((sum, o) => sum + (o.totalSavings || 0), 0);
-  const extraRewards = customOrders.reduce((sum, o) => sum + Math.round((o.finalAmount || 0) * 0.1), 0);
-
-  const finalMoneySaved = 24500 + extraSavings;
-  const finalRewardPoints = 4820 + extraRewards;
+  const totalSavingsSum = orders.reduce((sum, o) => sum + (o.totalSavings || 0), 0);
+  const rewardPointsSum = orders.reduce((sum, o) => sum + Math.round((o.finalAmount || 0) * 0.05), 0);
 
   return (
     <div className={styles.myOrdersPageContainer}>
@@ -264,11 +160,11 @@ Thank you for choosing handloom heritage.
             </div>
             <div className={styles.statBox}>
               <p className={styles.statLabel}>MONEY SAVED</p>
-              <p className={styles.statValue}>{formatCurrency(finalMoneySaved)}</p>
+              <p className={styles.statValue}>{formatCurrency(totalSavingsSum)}</p>
             </div>
             <div className={styles.statBox}>
               <p className={styles.statLabel}>REWARD POINTS</p>
-              <p className={styles.statValue}>{finalRewardPoints.toLocaleString('en-IN')}</p>
+              <p className={styles.statValue}>{rewardPointsSum.toLocaleString('en-IN')}</p>
             </div>
           </div>
         </div>
@@ -282,165 +178,188 @@ Thank you for choosing handloom heritage.
         <div className={styles.leftColumn}>
           <h2 className={styles.sectionHeaderTitle}>Recent Orders</h2>
           
-          <div className={styles.ordersStack}>
-            {orders.map((order) => {
-              const isDelivered = order.status === 'DELIVERED';
-              const isExpanded = expandedOrderIds.includes(order.orderId);
-              
-              return (
-                <article key={order.orderId} className={`${styles.orderCard} ${isExpanded ? styles.expandedCard : ''}`}>
-                  {/* Shimmer element */}
-                  <div className={styles.shimmerGold}></div>
-                  
-                  <div 
-                    className={styles.orderCardLayout} 
-                    onClick={() => {
-                      if (window.innerWidth <= 425) {
-                        toggleOrderExpansion(order.orderId);
-                      }
-                    }}
-                  >
-                    {/* Saree Thumbnail Image */}
-                    <div className={styles.productThumbBox}>
-                      <img 
-                        src={order.items[0]?.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80'} 
-                        alt={order.items[0]?.name || 'Saree thumbnail'} 
-                        className={styles.productThumbImage}
-                      />
-                    </div>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+              <div className="spinner" style={{ margin: '0 auto 12px auto' }} />
+              <p>Loading your atelier orders...</p>
+            </div>
+          ) : orders.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '48px 24px',
+              background: '#ffffff',
+              borderRadius: '12px',
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+            }}>
+              <ShoppingBag size={48} color="#C8A34D" style={{ marginBottom: 16 }} />
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', color: '#490017', margin: '0 0 8px 0' }}>
+                No Orders Yet
+              </h3>
+              <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: 24, maxWidth: 360, margin: '0 auto 24px auto' }}>
+                You haven't placed any orders yet. Explore our handcrafted luxury saree collections!
+              </p>
+              <button 
+                onClick={() => setCurrentTab && setCurrentTab('shop')} 
+                className={styles.actionPrimaryBtn} 
+                style={{ padding: '12px 28px', fontSize: '0.85rem' }}
+              >
+                EXPLORE ATELIER COLLECTION
+              </button>
+            </div>
+          ) : (
+            <div className={styles.ordersStack}>
+              {orders.map((order) => {
+                const isDelivered = order.status === 'DELIVERED';
+                const isCancelled = order.status === 'CANCELLED';
+                const isExpanded = expandedOrderIds.includes(order.orderId);
+                const currentStepIndex = getStatusStepIndex(order.status);
 
-                    {/* Saree Description Details */}
-                    <div className={styles.orderCardDetails}>
-                      <div>
-                        <div className={styles.orderCardHeaderRow}>
-                          <h3 className={styles.productNameTitle}>
-                            {order.items[0]?.name || 'Luxury Saree'}
-                            {order.items.length > 1 && ` & ${order.items.length - 1} other item(s)`}
-                          </h3>
-                          <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                            <span className={`${styles.statusBadge} ${isDelivered ? styles.deliveredBadge : styles.transitBadge}`}>
-                              {order.status}
-                            </span>
-                            <svg 
-                              xmlns="http://www.w3.org/2000/svg" 
-                              width="16" height="16" 
-                              viewBox="0 0 24 24" 
-                              fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" 
-                              className={`${styles.chevronIcon} ${isExpanded ? styles.chevronOpen : ''}`}
-                            >
-                              <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
+                return (
+                  <article key={order.orderId} className={`${styles.orderCard} ${isExpanded ? styles.expandedCard : ''}`}>
+                    {/* Shimmer element */}
+                    <div className={styles.shimmerGold}></div>
+                    
+                    <div 
+                      className={styles.orderCardLayout} 
+                      onClick={() => toggleOrderExpansion(order.orderId)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {/* Saree Thumbnail Image */}
+                      <div className={styles.productThumbBox}>
+                        <img 
+                          src={order.items[0]?.image || '/Images/saree1.png'} 
+                          alt={order.items[0]?.name || 'Saree thumbnail'} 
+                          className={styles.productThumbImage}
+                        />
+                      </div>
+
+                      {/* Saree Description Details */}
+                      <div className={styles.orderCardDetails}>
+                        <div>
+                          <div className={styles.orderCardHeaderRow}>
+                            <h3 className={styles.productNameTitle}>
+                              {order.items[0]?.name || 'Luxury Handloom Saree'}
+                              {order.items.length > 1 && ` & ${order.items.length - 1} other item(s)`}
+                            </h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span className={`${styles.statusBadge} ${isDelivered ? styles.deliveredBadge : isCancelled ? styles.cancelledBadge : styles.transitBadge}`}>
+                                {order.status}
+                              </span>
+                              <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                width="16" height="16" 
+                                viewBox="0 0 24 24" 
+                                fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" 
+                                className={`${styles.chevronIcon} ${isExpanded ? styles.chevronOpen : ''}`}
+                              >
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                              </svg>
+                            </div>
+                          </div>
+                          <p className={styles.orderMetaText}>
+                            ORDER #{order.orderId} • PLACED ON {order.placedOnDate ? order.placedOnDate.toUpperCase() : 'RECENTLY'}
+                          </p>
+                        </div>
+
+                        {/* Pricing breakdowns */}
+                        <div className={styles.priceSummaryBox}>
+                          <div className={styles.priceRowItem}>
+                            <span className={styles.priceRowLabel}>MRP</span>
+                            <span className={styles.priceRowOldVal}>{formatCurrency(order.mrpTotal)}</span>
+                          </div>
+                          <div className={styles.priceRowItem}>
+                            <span className={styles.priceRowLabel}>Exclusive Price</span>
+                            <span className={styles.priceRowVal}>{formatCurrency(order.subtotal)}</span>
+                          </div>
+                          <div className={styles.priceRowItem}>
+                            <span className={styles.savingsLabelLabel}>Savings</span>
+                            <span className={styles.savingsLabelValue}>- {formatCurrency(order.totalSavings)}</span>
+                          </div>
+                          <div className={styles.payableRowItem}>
+                            <span>Final Paid</span>
+                            <span>{formatCurrency(order.finalAmount)}</span>
                           </div>
                         </div>
-                        <p className={styles.orderMetaText}>
-                          ORDER #{order.orderId} • PLACED ON {order.placedOnDate.toUpperCase()}
-                        </p>
-                      </div>
-
-                      {/* Pricing breakdowns */}
-                      <div className={styles.priceSummaryBox}>
-                        <div className={styles.priceRowItem}>
-                          <span className={styles.priceRowLabel}>MRP</span>
-                          <span className={styles.priceRowOldVal}>{formatCurrency(order.mrpTotal)}</span>
-                        </div>
-                        <div className={styles.priceRowItem}>
-                          <span className={styles.priceRowLabel}>Exclusive Price</span>
-                          <span className={styles.priceRowVal}>{formatCurrency(order.subtotal)}</span>
-                        </div>
-                        <div className={styles.priceRowItem}>
-                          <span className={styles.savingsLabelLabel}>Savings</span>
-                          <span className={styles.savingsLabelValue}>- {formatCurrency(order.totalSavings)}</span>
-                        </div>
-                        <div className={styles.payableRowItem}>
-                          <span>Final Paid</span>
-                          <span>{formatCurrency(order.finalAmount)}</span>
-                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Visual Process Timeline (Only render if in transit) */}
-                  {!isDelivered && (
-                    <div className={styles.timelineWrapper}>
-                      <div className={styles.timelineLine}></div>
-                      <div className={styles.timelineNodesRow}>
-                        
-                        <div className={styles.timelineStepBlock}>
-                          <div className={`${styles.timelineDot} ${styles.activeDot}`}></div>
-                          <span className={styles.timelineNodeLabel}>ORDER PLACED</span>
-                        </div>
-                        
-                        <div className={styles.timelineStepBlock}>
-                          <div className={`${styles.timelineDot} ${styles.activeDot}`}></div>
-                          <span className={styles.timelineNodeLabel}>QUALITY CHECK</span>
-                        </div>
-                        
-                        <div className={styles.timelineStepBlock}>
-                          <div className={`${styles.timelineDot} ${styles.activeDot}`}></div>
-                          <span className={styles.timelineNodeLabel}>PACKAGING</span>
-                        </div>
-                        
-                        <div className={styles.timelineStepBlock}>
-                          <div className={`${styles.timelineDot} ${styles.activeDot} ${styles.timelineRing}`}></div>
-                          <span className={styles.timelineNodeLabel}>SHIPPED</span>
-                        </div>
-                        
-                        <div className={styles.timelineStepBlock}>
-                          <div className={styles.timelineDot}></div>
-                          <span className={`${styles.timelineNodeLabel} ${styles.timelineMutedLabel}`}>DELIVERED</span>
-                        </div>
+                    {/* Dynamic Process Stepper Timeline (Only render if not delivered & not cancelled) */}
+                    {!isDelivered && !isCancelled && (
+                      <div className={styles.timelineWrapper}>
+                        <div className={styles.timelineLine}></div>
+                        <div className={styles.timelineNodesRow}>
+                          {[
+                            { label: 'ORDER PLACED', step: 1 },
+                            { label: 'QUALITY CHECK', step: 2 },
+                            { label: 'PACKAGING', step: 3 },
+                            { label: 'SHIPPED', step: 4 },
+                            { label: 'DELIVERED', step: 5 }
+                          ].map((stepObj) => {
+                            const isActive = stepObj.step <= currentStepIndex;
+                            const isCurrent = stepObj.step === currentStepIndex;
 
+                            return (
+                              <div key={stepObj.label} className={styles.timelineStepBlock}>
+                                <div className={`${styles.timelineDot} ${isActive ? styles.activeDot : ''} ${isCurrent ? styles.timelineRing : ''}`}></div>
+                                <span className={`${styles.timelineNodeLabel} ${!isActive ? styles.timelineMutedLabel : ''}`}>
+                                  {stepObj.label}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  {/* Actions buttons */}
-                  <div className={styles.cardActionsFooter}>
-                    {isDelivered ? (
-                      <>
-                        <button 
-                          onClick={() => alert(`Review portal for Order ${order.orderId} coming soon!`)}
-                          className={styles.reviewTextBtn}
-                        >
-                          <MessageSquare size={14} style={{ marginRight: '4px' }} />
-                          Write Review
-                        </button>
-                        <button 
-                          onClick={() => handleInvoiceDownload(order)}
-                          className={styles.reviewTextBtn}
-                        >
-                          <Download size={14} style={{ marginRight: '4px' }} />
-                          Download Invoice
-                        </button>
-                        <button 
-                          onClick={() => handleReorder(order)}
-                          className={styles.reorderTextLink}
-                        >
-                          <RotateCw size={14} style={{ marginRight: '4px' }} />
-                          Reorder
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button 
-                          onClick={() => handleTrackOrder(order)}
-                          className={styles.actionPrimaryBtn}
-                        >
-                          TRACK ORDER
-                        </button>
-                        <button 
-                          onClick={() => handleInvoiceDownload(order)}
-                          className={styles.actionSecondaryBtn}
-                        >
-                          VIEW DETAILS
-                        </button>
-                      </>
                     )}
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+
+                    {/* Actions buttons */}
+                    <div className={styles.cardActionsFooter}>
+                      {isDelivered ? (
+                        <>
+                          <button 
+                            onClick={() => alert(`Review portal for Order ${order.orderId} coming soon!`)}
+                            className={styles.reviewTextBtn}
+                          >
+                            <MessageSquare size={14} style={{ marginRight: '4px' }} />
+                            Write Review
+                          </button>
+                          <button 
+                            onClick={() => setSelectedInvoiceOrder(order)}
+                            className={styles.reviewTextBtn}
+                          >
+                            <FileText size={14} style={{ marginRight: '4px' }} />
+                            Tax Invoice
+                          </button>
+                          <button 
+                            onClick={() => handleReorder(order)}
+                            className={styles.reorderTextLink}
+                          >
+                            <RotateCw size={14} style={{ marginRight: '4px' }} />
+                            Reorder
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button 
+                            onClick={() => handleTrackOrder(order)}
+                            className={styles.actionPrimaryBtn}
+                          >
+                            TRACK ORDER
+                          </button>
+                          <button 
+                            onClick={() => setSelectedDetailOrder(order)}
+                            className={styles.actionSecondaryBtn}
+                          >
+                            VIEW DETAILS
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Right Column: Wardrobe Insights & Concierge */}
@@ -503,7 +422,7 @@ Thank you for choosing handloom heritage.
               Our Concierge is available 24/7 for order inquiries and styling advice.
             </p>
             <button 
-              onClick={() => setCurrentTab('contact')}
+              onClick={() => setCurrentTab && setCurrentTab('contact')}
               className={styles.supportActionBtn}
             >
               CONTACT CONCIERGE
@@ -513,6 +432,27 @@ Thank you for choosing handloom heritage.
         </aside>
 
       </div>
+
+      {/* Tax Invoice Modal */}
+      {selectedInvoiceOrder && (
+        <InvoiceModal 
+          order={selectedInvoiceOrder}
+          onClose={() => setSelectedInvoiceOrder(null)}
+        />
+      )}
+
+      {/* Order Details Modal */}
+      {selectedDetailOrder && (
+        <OrderDetailsModal
+          order={selectedDetailOrder}
+          onClose={() => setSelectedDetailOrder(null)}
+          onOpenInvoice={(ord) => {
+            setSelectedDetailOrder(null);
+            setSelectedInvoiceOrder(ord);
+          }}
+          onTrackOrder={handleTrackOrder}
+        />
+      )}
     </div>
   );
 };

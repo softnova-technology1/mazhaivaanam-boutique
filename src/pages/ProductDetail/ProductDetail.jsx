@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
+import { useAuth } from '../../hooks/useAuth';
+import { useWishlist } from '../../hooks/useWishlist';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
 import { getProducts, reviewAPI } from '../../services/api';
@@ -7,10 +9,11 @@ import styles from './ProductDetail.module.css';
 
 export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setDirectCheckoutItem }) => {
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const { wishlist, toggleWishlist } = useWishlist();
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedHue, setSelectedHue] = useState('');
   const [wishlistMessage, setWishlistMessage] = useState('');
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -67,6 +70,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   };
 
   const activeProduct = product || defaultProduct;
+  const isWishlisted = wishlist.some(w => (w.id || w._id) === (activeProduct.id || activeProduct._id));
 
   const [recentlyViewed, setRecentlyViewed] = useState([]);
 
@@ -77,15 +81,6 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
     }
     if (activeProduct.color) {
       setSelectedHue(activeProduct.color);
-    }
-
-    // Check if wishlisted
-    if (activeProduct.id) {
-      const saved = localStorage.getItem('boutique_wishlist');
-      if (saved) {
-        const wishlistItems = JSON.parse(saved);
-        setIsWishlisted(wishlistItems.some(w => w.id === activeProduct.id));
-      }
     }
 
     // Save to Recently Viewed in localStorage
@@ -244,47 +239,41 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   };
 
   const handleBuyNowClick = () => {
+    let itemToCheckout;
     if (activeProduct.isPreorder) {
-      const preorderItem = {
+      itemToCheckout = {
         ...activeProduct,
         name: `[Pre-Order] ${activeProduct.name}`,
         price: activeProduct.price,
         isPreorder: true
       };
-      if (setDirectCheckoutItem) {
-        setDirectCheckoutItem({ ...preorderItem, quantity });
-      } else {
-        addToCart(preorderItem, quantity);
-      }
     } else {
-      if (setDirectCheckoutItem) {
-        setDirectCheckoutItem({ ...activeProduct, quantity });
-      } else {
-        addToCart(activeProduct, quantity);
-      }
+      itemToCheckout = activeProduct;
     }
+
+    if (setDirectCheckoutItem) {
+      setDirectCheckoutItem({ ...itemToCheckout, quantity });
+    } else {
+      addToCart(itemToCheckout, quantity);
+    }
+
+    if (!isAuthenticated) {
+      localStorage.setItem('post_login_redirect', 'checkout');
+      setCurrentTab('login');
+      return;
+    }
+
     setCurrentTab('checkout');
   };
 
   const handleWishlistClick = () => {
-    const saved = localStorage.getItem('boutique_wishlist');
-    let wishlistItems = saved ? JSON.parse(saved) : [];
-
+    toggleWishlist(activeProduct);
+    
     if (isWishlisted) {
-      wishlistItems = wishlistItems.filter(w => w.id !== activeProduct.id);
-      setIsWishlisted(false);
       setWishlistMessage(`Removed ${activeProduct.name} from Wishlist!`);
     } else {
-      wishlistItems.push({
-        ...activeProduct,
-        wishlistDate: new Date().toISOString()
-      });
-      setIsWishlisted(true);
       setWishlistMessage(`Added ${activeProduct.name} Saree to Wishlist!`);
     }
-
-    localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
-    window.dispatchEvent(new Event('wishlistUpdated'));
 
     setTimeout(() => setWishlistMessage(''), 3000);
   };

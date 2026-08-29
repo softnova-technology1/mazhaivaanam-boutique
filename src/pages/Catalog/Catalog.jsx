@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
+import { useWishlist } from '../../hooks/useWishlist';
 import { formatCurrency } from '../../utils/formatters';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X, Loader2 } from 'lucide-react';
@@ -45,10 +46,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [selectedAvailability, setSelectedAvailability] = useState('All');
   const [maxPrice, setMaxPrice] = useState(50000);
   const [selectedSort, setSelectedSort] = useState('featured');
-  const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem('boutique_wishlist');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const { wishlist, toggleWishlist } = useWishlist();
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,15 +89,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       if (isMounted) setLoading(false);
     });
     return () => { isMounted = false; };
-  }, []);
-
-  useEffect(() => {
-    const checkWishlist = () => {
-      const saved = localStorage.getItem('boutique_wishlist');
-      if (saved) setWishlist(JSON.parse(saved));
-    };
-    window.addEventListener('storage', checkWishlist);
-    return () => window.removeEventListener('storage', checkWishlist);
   }, []);
 
   useEffect(() => {
@@ -231,23 +220,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   };
 
   const handleAddToWishlist = (product) => {
-    const saved = localStorage.getItem('boutique_wishlist');
-    let wishlistItems = saved ? JSON.parse(saved) : [];
-    const isWishlisted = wishlistItems.some(w => w.id === product.id);
-
-    if (isWishlisted) {
-      // Toggle off
-      wishlistItems = wishlistItems.filter(w => w.id !== product.id);
-      localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
-      window.dispatchEvent(new Event('storage'));
-      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Removed "${product.name}" from Wishlist` } }));
-    } else {
-      // Toggle on
-      wishlistItems.push(product);
-      localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
-      window.dispatchEvent(new Event('storage'));
-      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Saved "${product.name}" to Wishlist!` } }));
-    }
+    toggleWishlist(product);
   };
 
   const handleResetFilters = () => {
@@ -669,7 +642,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
             <>
               <div className={styles['products-grid']}>
                 {currentProducts.map((product) => {
-                  const isWishlisted = wishlist.some(w => w.id === product.id);
+                  const isWishlisted = wishlist.some(w => (w.id || w._id) === (product.id || product._id));
                   return (
                     <div key={product.id} className={styles['product-card']}>
                       {product.oldPrice && (

@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react';
 import { useCart } from '../../hooks/useCart';
+import { useAuth } from '../../hooks/useAuth';
+import { useWishlist } from '../../hooks/useWishlist';
 import { formatCurrency } from '../../utils/formatters';
 import { 
   Heart, 
@@ -19,6 +21,8 @@ import styles from './Cart.module.css';
 
 export const Cart = ({ setCurrentTab }) => {
   const { cart, updateQuantity, removeFromCart, cartTotal, addToCart, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const { toggleWishlist } = useWishlist();
   const carouselRef = useRef(null);
 
   // Local interactive states
@@ -35,30 +39,10 @@ export const Cart = ({ setCurrentTab }) => {
 
   // Move item to wishlist & remove from cart
   const handleMoveToWishlist = (item) => {
-    const saved = localStorage.getItem('boutique_wishlist');
-    const wishlistItems = saved ? JSON.parse(saved) : [];
-    
-    if (!wishlistItems.find(w => w.id === item.id)) {
-      const wishItem = {
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        image: item.image,
-        category: item.category,
-        fabric: item.fabric || '',
-        color: item.color || '',
-        oldPrice: item.oldPrice || 0,
-        tag: item.tag || ''
-      };
-      wishlistItems.push(wishItem);
-      localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
-    }
-    
-    // Notify Navbar and wishlist listener
-    window.dispatchEvent(new Event('storage'));
+    toggleWishlist(item);
     
     removeFromCart(item.id);
-    triggerToast(`"${item.name}" moved to your Wishlist.`);
+    triggerToast(`Moved "${item.name}" to Wishlist.`);
   };
 
   // Handlers for Coupon Code
@@ -159,7 +143,12 @@ export const Cart = ({ setCurrentTab }) => {
   const finalAmount = Math.max(0, mrpTotal - totalSavings) + (cart.length > 0 ? 2 : 0) + shippingFee;
 
   const handleCheckout = () => {
-    setCurrentTab('checkout');
+    if (isAuthenticated) {
+      setCurrentTab('checkout');
+    } else {
+      localStorage.setItem('post_login_redirect', 'checkout');
+      setCurrentTab('login');
+    }
   };
 
   return (

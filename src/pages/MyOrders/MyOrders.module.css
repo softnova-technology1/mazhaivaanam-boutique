@@ -373,6 +373,12 @@
   border: 1px solid rgba(108, 93, 53, 0.2);
 }
 
+.cancelledBadge {
+  background-color: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
 .orderMetaText {
   font-family: var(--font-body);
   font-size: 10px;

@@ -1,54 +1,156 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
+import { cartAPI } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 
 export const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
-  // Initialize cart from localStorage if available
+  const { isAuthenticated } = useAuth();
+  
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem('boutique_cart');
+    const expiry = localStorage.getItem('boutique_cart_expiry');
+    
+    // Check 1-hour expiry
+    if (expiry && Date.now() > Number(expiry)) {
+      localStorage.removeItem('boutique_cart');
+      localStorage.removeItem('boutique_cart_expiry');
+      return [];
+    }
+    
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  // Sync cart to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('boutique_cart', JSON.stringify(cart));
-  }, [cart]);
+  const fetchDbCart = useCallback(async () => {
+    if (isAuthenticated) {
+      try {
+        const data = await cartAPI.getCart();
+        if (data && data.items) {
+          const formatted = data.items.map(item => ({
+            ...item.product,
+            id: item.product._id || item.product.id,
+            image: (item.product.images && item.product.images.length > 0) ? item.product.images[0].url : (item.product.image || '/Images/saree1.png'),
+            quantity: item.quantity
+          }));
+          setCart(formatted);
+        }
+      } catch (e) {
+        console.error('Failed to fetch DB cart', e);
+      }
+    }
+  }, [isAuthenticated]);
 
-  const addToCart = (product, quantity = 1) => {
+  // Fetch DB cart on mount and auth changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchDbCart();
+    }
+  }, [isAuthenticated, fetchDbCart]);
+
+  // Sync to local storage ONLY for unauthenticated guests
+  useEffect(() => {
+    if (!isAuthenticated) {
+      localStorage.setItem('boutique_cart', JSON.stringify(cart));
+      if (cart.length > 0) {
+        localStorage.setItem('boutique_cart_expiry', String(Date.now() + 60 * 60 * 1000));
+      } else {
+        localStorage.removeItem('boutique_cart_expiry');
+      }
+    }
+  }, [cart, isAuthenticated]);
+
+  useEffect(() => {
+    const handleClearCart = () => setCart([]);
+    const handleSyncCartEvent = () => fetchDbCart();
+    
+    window.addEventListener('clear-cart', handleClearCart);
+    window.addEventListener('sync-cart-complete', handleSyncCartEvent);
+    
+    return () => {
+      window.removeEventListener('clear-cart', handleClearCart);
+      window.removeEventListener('sync-cart-complete', handleSyncCartEvent);
+    };
+  }, [fetchDbCart]);
+
+  const addToCart = async (product, quantity = 1) => {
+    const prodId = product.id || product._id;
+    
+    // Optimistic update for UI responsiveness
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
+      const existingItem = prevCart.find((item) => (item.id || item._id) === prodId);
       if (existingItem) {
         return prevCart.map((item) =>
-          item.id === product.id
+          (item.id || item._id) === prodId
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prevCart, { ...product, quantity }];
+      return [...prevCart, { ...product, id: prodId, quantity }];
     });
+
+    if (isAuthenticated) {
+      try {
+        await cartAPI.addToCart(prodId, quantity);
+        // Optionally fetch DbCart to ensure sync, but optimistic is enough for instant UI
+      } catch (e) {
+        console.error('Failed to add to DB cart', e);
+        fetchDbCart(); // Rollback on error
+      }
+    }
+    
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('show-cart-toast', { detail: { product, quantity } }));
     }, 0);
   };
 
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  const removeFromCart = async (productId) => {
+    // Optimistic update
+    setCart((prevCart) => prevCart.filter((item) => (item.id || item._id) !== productId));
+
+    if (isAuthenticated) {
+      try {
+        await cartAPI.removeFromCart(productId);
+      } catch (e) {
+        console.error('Failed to remove from DB cart', e);
+        fetchDbCart(); // Rollback on error
+      }
+    }
   };
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = async (productId, quantity) => {
     if (quantity <= 0) {
       removeFromCart(productId);
       return;
     }
+    
+    // Optimistic update
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
+        (item.id || item._id) === productId ? { ...item, quantity } : item
       )
     );
+
+    if (isAuthenticated) {
+      try {
+        await cartAPI.updateCartItem(productId, quantity);
+      } catch (e) {
+        console.error('Failed to update DB cart', e);
+        fetchDbCart(); // Rollback on error
+      }
+    }
   };
 
-  const clearCart = () => {
-    setCart([]);
+  const clearCart = async () => {
+    if (isAuthenticated) {
+      try {
+        await cartAPI.clearCart();
+        fetchDbCart();
+      } catch (e) {
+        console.error('Failed to clear DB cart', e);
+      }
+    } else {
+      setCart([]);
+    }
   };
 
   const getCartTotal = () => {

@@ -129,3 +129,9 @@ export const discountAPI = {
   bulkUpdate: (body) => request('/admin/discounts/bulk', { method: 'PUT', body }),
   bulkRemove: (body) => request('/admin/discounts/bulk-remove', { method: 'POST', body }),
 };
+
+// ====== LIMITED OFFER ======
+export const offerAPI = {
+  getConfig: () => request('/admin/limited-offer/config'),
+  updateConfig: (body) => request('/admin/limited-offer', { method: 'PUT', body }),
+};

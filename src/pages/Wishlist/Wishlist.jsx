@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useWishlist } from '../../hooks/useWishlist';
 import { useCart } from '../../hooks/useCart';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, TrendingDown, ChevronLeft, ChevronRight, Trash2, ArrowRight, Sparkles, X } from 'lucide-react';
@@ -6,33 +7,11 @@ import styles from './Wishlist.module.css';
 
 export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
-  const [wishlistItems, setWishlistItems] = useState([]);
+  const { wishlist: wishlistItems, removeFromWishlist } = useWishlist();
   const [toastMessage, setToastMessage] = useState('');
 
-  // Load wishlist from local storage on mount
-  useEffect(() => {
-    const loadWishlist = () => {
-      const saved = localStorage.getItem('boutique_wishlist');
-      if (saved) {
-        setWishlistItems(JSON.parse(saved));
-      } else {
-        setWishlistItems([]);
-      }
-    };
-    loadWishlist();
-
-    // Listen to storage events to sync changes across tabs/components
-    window.addEventListener('storage', loadWishlist);
-    return () => window.removeEventListener('storage', loadWishlist);
-  }, []);
-
   const handleRemoveFromWishlist = (productId, productName) => {
-    const updated = wishlistItems.filter(item => item.id !== productId);
-    localStorage.setItem('boutique_wishlist', JSON.stringify(updated));
-    setWishlistItems(updated);
-    // Notify Navbar and other listeners
-    window.dispatchEvent(new Event('storage'));
-
+    removeFromWishlist(productId);
     setToastMessage(`Removed "${productName}" Saree from Wishlist.`);
     setTimeout(() => setToastMessage(''), 3000);
   };

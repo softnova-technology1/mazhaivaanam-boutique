@@ -11,6 +11,9 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shimmer 4s linear infinite;
+    padding-right: 0.35em;
+    padding-left: 0.05em;
+    display: inline-block;
 }
 
 @keyframes shimmer {

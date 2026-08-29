@@ -10,14 +10,18 @@ import {
   ShieldCheck, 
   ArrowRight,
   CheckCircle2,
-  X
+  X,
+  Phone
 } from 'lucide-react';
 import styles from './Login.module.css';
 
 export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
   const { login, register } = useAuth();
-  const [username, setUsername] = useState('');
+  const [loginId, setLoginId] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -34,12 +38,20 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
     setError('');
 
     if (isRegistering) {
-      if (!username.trim()) {
-        setError('Please enter your full name.');
+      if (!firstName.trim()) {
+        setError('Please enter your first name.');
+        return;
+      }
+      if (!lastName.trim()) {
+        setError('Please enter your last name.');
         return;
       }
       if (!email.trim()) {
         setError('Please enter a valid email address.');
+        return;
+      }
+      if (!phone.trim()) {
+        setError('Please enter a valid mobile number.');
         return;
       }
       if (password.length < 6) {
@@ -54,17 +66,20 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
       let result;
       if (isRegistering) {
         result = await register({
-          firstName: username.trim(),
-          lastName: 'Patron',
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           email: email.trim(),
+          phone: phone.trim(),
           password: password.trim()
         });
       } else {
-        result = await login(email.trim() || username.trim(), password.trim());
+        result = await login(loginId.trim(), password.trim());
       }
       setLoading(false);
       if (result.success) {
-        setCurrentTab('shop');
+        const nextTab = localStorage.getItem('post_login_redirect') || 'shop';
+        localStorage.removeItem('post_login_redirect');
+        setCurrentTab(nextTab);
       } else {
         setError(result.message || 'Authentication failed. Please check your credentials.');
       }
@@ -133,24 +148,60 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
         {/* Auth Form */}
         <form onSubmit={handleSubmit} className={styles['auth-form']}>
           
-          {/* Username Input */}
-          <div className={styles['input-group-container']}>
-            <label className={styles['input-label']}>
-              {isRegistering ? 'FULL NAME' : 'USERNAME OR EMAIL'}
-            </label>
-            <div className={styles['input-with-icon']}>
-              <User size={16} className={styles['field-icon']} />
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder={isRegistering ? "e.g. Radhika Sundaram" : "Enter username or email"}
-                className={styles['auth-input']}
-                required
-                autoComplete="username"
-              />
+          {/* Name Inputs for Registration */}
+          {isRegistering && (
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <div className={styles['input-group-container']} style={{ flex: 1, marginBottom: 0 }}>
+                <label className={styles['input-label']}>FIRST NAME</label>
+                <div className={styles['input-with-icon']}>
+                  <User size={16} className={styles['field-icon']} />
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="e.g. Radhika"
+                    className={styles['auth-input']}
+                    required
+                    autoComplete="given-name"
+                  />
+                </div>
+              </div>
+              <div className={styles['input-group-container']} style={{ flex: 1, marginBottom: 0 }}>
+                <label className={styles['input-label']}>LAST NAME</label>
+                <div className={styles['input-with-icon']}>
+                  <User size={16} className={styles['field-icon']} />
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="e.g. Sundaram"
+                    className={styles['auth-input']}
+                    required
+                    autoComplete="family-name"
+                  />
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Username/Email Input for Login */}
+          {!isRegistering && (
+            <div className={styles['input-group-container']}>
+              <label className={styles['input-label']}>USERNAME OR EMAIL</label>
+              <div className={styles['input-with-icon']}>
+                <User size={16} className={styles['field-icon']} />
+                <input
+                  type="text"
+                  value={loginId}
+                  onChange={(e) => setLoginId(e.target.value)}
+                  placeholder="Enter username or email"
+                  className={styles['auth-input']}
+                  required
+                  autoComplete="username"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Email Input for Registration */}
           {isRegistering && (
@@ -166,6 +217,25 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
                   className={styles['auth-input']}
                   required
                   autoComplete="email"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Mobile Number Input for Registration */}
+          {isRegistering && (
+            <div className={styles['input-group-container']}>
+              <label className={styles['input-label']}>MOBILE NUMBER</label>
+              <div className={styles['input-with-icon']}>
+                <Phone size={16} className={styles['field-icon']} />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="e.g. +91 98765 43210"
+                  className={styles['auth-input']}
+                  required
+                  autoComplete="tel"
                 />
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
+import { useAuth } from '../../hooks/useAuth';
 import { formatCurrency } from '../../utils/formatters';
 import { orderAPI } from '../../services/api';
 import {
@@ -33,6 +34,11 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const checkoutItems = directCheckoutItem
     ? [{ ...directCheckoutItem, quantity: directCheckoutItem.quantity || 1 }]
     : cart;
+
+  const { user } = useAuth();
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [showAddressForm, setShowAddressForm] = useState(true);
 
   // Address Form States
   const [fullName, setFullName] = useState('');
@@ -76,7 +82,45 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     // Generate a random order ID on mount
     const num = Math.floor(100000 + Math.random() * 900000);
     setOrderId(`MV-${num}`);
+
+    // Load saved addresses
+    try {
+      const addresses = JSON.parse(localStorage.getItem('boutique_addresses') || '[]');
+      setSavedAddresses(addresses);
+      if (addresses.length > 0) {
+        setShowAddressForm(false);
+        const defaultAddr = addresses.find(a => a.isDefault);
+        if (defaultAddr) {
+          setSelectedAddressId(defaultAddr.id);
+        } else {
+          setSelectedAddressId(addresses[0].id);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setEmail(prev => prev || user.email || '');
+      setFullName(prev => prev || user.name || (user.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (selectedAddressId && !showAddressForm) {
+      const addr = savedAddresses.find(a => a.id === selectedAddressId);
+      if (addr) {
+        setFullName(addr.name || user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+        setPhone(addr.phone || '');
+        setAddressLine(addr.addressLine || '');
+        setCity(addr.city || '');
+        setStateName(addr.state || '');
+        setPinCode(addr.pinCode || '');
+      }
+    }
+  }, [selectedAddressId, showAddressForm, savedAddresses, user]);
 
   // Price calculations
   const GIFT_WRAP_PRICE = 499;
@@ -204,6 +248,26 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
         if (setDirectCheckoutItem) setDirectCheckoutItem(null);
       } else {
         clearCart();
+      }
+
+      // Save new address to profile if it was entered
+      if (showAddressForm && deliveryMode === 'standard') {
+        const savedAddrs = JSON.parse(localStorage.getItem('boutique_addresses') || '[]');
+        const newAddressObj = {
+          id: `addr-${Date.now()}`,
+          name: fullName,
+          fullName: fullName,
+          addressLine: addressLine,
+          city: city,
+          stateName: stateName,
+          state: stateName,
+          pinCode: pinCode,
+          country: 'India',
+          phone: phone,
+          isDefault: savedAddrs.length === 0
+        };
+        savedAddrs.push(newAddressObj);
+        localStorage.setItem('boutique_addresses', JSON.stringify(savedAddrs));
       }
 
       setOrderConfirmed(true);
@@ -626,7 +690,68 @@ Thank you for choosing handloom heritage.
               {/* Shipping / Contact Details */}
               <section className={styles.sectionBlock}>
                 <h2 className={styles.sectionTitle}>{deliveryMode === 'standard' ? 'Shipping Details' : 'Contact Details'}</h2>
-                <form className={styles.formContainer} onSubmit={handleCompleteOrder}>
+                
+                {deliveryMode === 'standard' && savedAddresses.length > 0 && !showAddressForm ? (
+                  <div className={styles.addressGrid}>
+                    {savedAddresses.map(addr => (
+                      <div 
+                        key={addr.id}
+                        className={`${styles.addressCard} ${selectedAddressId === addr.id ? styles.addressCardDefault : ''}`}
+                        onClick={() => setSelectedAddressId(addr.id)}
+                      >
+                        {selectedAddressId === addr.id && <div className={styles.defaultBadge}>SELECTED</div>}
+                        <h3 className={styles.addressName}>{addr.name}</h3>
+                        <div className={styles.addressDetails}>
+                          <p>{addr.addressLine}</p>
+                          <p>{addr.city}, {addr.state} - {addr.pinCode}</p>
+                          <p>{addr.country || 'India'}</p>
+                          <p>Phone: {addr.phone}</p>
+                        </div>
+                        <div className={styles.addressActions}>
+                          <button type="button" className={`${styles.addressLinkBtn} ${selectedAddressId === addr.id ? '' : styles.deleteBtn}`}>
+                            {selectedAddressId === addr.id ? 'SELECTED' : 'SELECT'}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    <div className={styles.addAddressBtn} onClick={() => {
+                        setShowAddressForm(true);
+                        setFullName(user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+                        setPhone('');
+                        setAddressLine('');
+                        setCity('');
+                        setStateName('');
+                        setPinCode('');
+                      }}>
+                      <span style={{ fontSize: '24px', color: '#C8A34D' }}>+</span>
+                      <p className={styles.addAddressTitle}>ADD NEW ADDRESS</p>
+                    </div>
+                  </div>
+                ) : (
+                  <form className={styles.formContainer} onSubmit={handleCompleteOrder}>
+                    {savedAddresses.length > 0 && deliveryMode === 'standard' && (
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-16px' }}>
+                        <button 
+                          type="button" 
+                          className={styles.addressLinkBtn} 
+                          onClick={() => {
+                            setShowAddressForm(false);
+                            const addr = savedAddresses.find(a => a.id === selectedAddressId);
+                            if (addr) {
+                              setFullName(addr.name || user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+                              setPhone(addr.phone || '');
+                              setAddressLine(addr.addressLine || '');
+                              setCity(addr.city || '');
+                              setStateName(addr.state || '');
+                              setPinCode(addr.pinCode || '');
+                            }
+                          }}
+                        >
+                          Cancel & Use Saved
+                        </button>
+                      </div>
+                    )}
                   <div className={styles.gridRow}>
                     <div className={`${styles.floatingLabelContainer} ${errors.fullName ? styles.inputErrorBorder : ''}`}>
                       <input
@@ -758,6 +883,7 @@ Thank you for choosing handloom heritage.
                     </>
                   )}
                 </form>
+                )}
               </section>
 
               {/* Delivery Mode */}
@@ -802,103 +928,7 @@ Thank you for choosing handloom heritage.
                 </div>
               </section>
 
-              {/* Payment Methods */}
-              <section className={styles.sectionBlock}>
-                <h2 className={styles.sectionTitle}>Payment Method</h2>
-                <div className={styles.paymentMethodsStack}>
-                  {/* Card Expanded */}
-                  <div
-                    className={`${styles.paymentMethodCard} ${paymentMethod === 'card' ? styles.activePaymentCard : ''}`}
-                    onClick={() => setPaymentMethod('card')}
-                  >
-                    <div className={styles.paymentHeader}>
-                      <div className={styles.paymentTitleBlock}>
-                        <CreditCard className={styles.paymentIcon} size={20} />
-                        <span className={styles.paymentLabelName}>Credit / Debit Card</span>
-                      </div>
-                      <ChevronRight size={16} className={`${styles.expandChevron} ${paymentMethod === 'card' ? styles.chevronRotated : ''}`} />
-                    </div>
 
-                    {paymentMethod === 'card' && (
-                      <div className={styles.cardInputWrapper} onClick={(e) => e.stopPropagation()}>
-                        <div className={`${styles.floatingLabelContainer} ${errors.cardNumber ? styles.inputErrorBorder : ''}`} style={{ width: '100%', marginBottom: '16px' }}>
-                          <input
-                            type="text"
-                            placeholder=" "
-                            value={cardNumber}
-                            onChange={(e) => {
-                              setCardNumber(e.target.value);
-                              if (errors.cardNumber) setErrors(prev => ({ ...prev, cardNumber: '' }));
-                            }}
-                            className={styles.formInput}
-                            id="cardNumber"
-                          />
-                          <label className={styles.formLabel}>Card Number *</label>
-                          {errors.cardNumber && <span className={styles.errorText}>{errors.cardNumber}</span>}
-                        </div>
-                        <div className={styles.gridRow}>
-                          <div className={`${styles.floatingLabelContainer} ${errors.expiry ? styles.inputErrorBorder : ''}`}>
-                            <input
-                              type="text"
-                              placeholder=" "
-                              value={expiry}
-                              onChange={(e) => {
-                                setExpiry(e.target.value);
-                                if (errors.expiry) setErrors(prev => ({ ...prev, expiry: '' }));
-                              }}
-                              className={styles.formInput}
-                              id="expiry"
-                            />
-                            <label className={styles.formLabel}>Expiry (MM/YY) *</label>
-                            {errors.expiry && <span className={styles.errorText}>{errors.expiry}</span>}
-                          </div>
-                          <div className={`${styles.floatingLabelContainer} ${errors.cvv ? styles.inputErrorBorder : ''}`}>
-                            <input
-                              type="password"
-                              placeholder=" "
-                              value={cvv}
-                              onChange={(e) => {
-                                setCvv(e.target.value);
-                                if (errors.cvv) setErrors(prev => ({ ...prev, cvv: '' }));
-                              }}
-                              className={styles.formInput}
-                              id="cvv"
-                            />
-                            <label className={styles.formLabel}>CVV *</label>
-                            {errors.cvv && <span className={styles.errorText}>{errors.cvv}</span>}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* UPI */}
-                  <div
-                    className={`${styles.paymentMethodCard} ${paymentMethod === 'upi' ? styles.activePaymentCard : ''}`}
-                    onClick={() => setPaymentMethod('upi')}
-                  >
-                    <div className={styles.paymentHeader}>
-                      <div className={styles.paymentTitleBlock}>
-                        <Smartphone className={styles.paymentIcon} size={20} />
-                        <span className={styles.paymentLabelName}>UPI (PhonePe, GPay, Paytm)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Net Banking */}
-                  <div
-                    className={`${styles.paymentMethodCard} ${paymentMethod === 'netbanking' ? styles.activePaymentCard : ''}`}
-                    onClick={() => setPaymentMethod('netbanking')}
-                  >
-                    <div className={styles.paymentHeader}>
-                      <div className={styles.paymentTitleBlock}>
-                        <Landmark className={styles.paymentIcon} size={20} />
-                        <span className={styles.paymentLabelName}>Net Banking</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
             </div>
 
             {/* Right Column: Sticky Summary */}

@@ -799,6 +799,139 @@
   align-items: center;
 }
 
+/* Saved Addresses - High End Gallery Cards */
+.addressGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .addressGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.addressCard {
+  border: 1px solid rgba(200, 163, 77, 0.25);
+  border-radius: 12px;
+  padding: 32px;
+  background-color: #FFFDFB;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  cursor: pointer;
+}
+
+.addressCard:hover {
+  border-color: #4F4E22;
+  box-shadow: 0 12px 32px rgba(79, 78, 34, 0.04);
+}
+
+.addressCardDefault {
+  border-color: #C8A34D;
+  background-color: #FFFDF8;
+}
+
+.defaultBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #C8A34D;
+  color: #FFFFFF;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 4px 10px;
+  text-transform: uppercase;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.addressName {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  color: #4F4E22;
+  margin-bottom: 12px;
+  font-weight: 500;
+  margin-top: 0;
+}
+
+.addressDetails {
+  font-size: 0.85rem;
+  color: #5D5D56; /* on-surface-variant */
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.addressDetails p {
+  margin: 0;
+}
+
+.addressActions {
+  display: flex;
+  gap: 20px;
+  border-top: 1px solid rgba(200, 163, 77, 0.1);
+  padding-top: 16px;
+}
+
+.addressLinkBtn {
+  background: transparent;
+  border: none;
+  font-size: 0.7rem;
+  color: #8C886B;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+}
+
+.addressLinkBtn:hover {
+  color: #4F4E22;
+}
+
+.deleteBtn {
+  color: #BA1A1A;
+}
+
+.deleteBtn:hover {
+  color: #93000A;
+}
+
+.addAddressBtn {
+  border: 1px dashed rgba(200, 163, 77, 0.5);
+  border-radius: 12px;
+  padding: 32px;
+  background-color: #FFFDFB;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  min-height: 220px;
+}
+
+.addAddressBtn:hover {
+  border-color: #4F4E22;
+  background-color: #FFFFFF;
+}
+
+.addAddressTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #4F4E22;
+  margin: 0;
+}
+
 .trustBadges {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

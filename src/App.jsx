@@ -4,6 +4,7 @@ import { Heart } from 'lucide-react';
 import AdminApp from './admin/AdminApp';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { WishlistProvider } from './context/WishlistContext';
 import { useCart } from './hooks/useCart';
 import { Navbar } from './components/layout/Navbar/Navbar';
 import { WhatsAppButton } from './components/common/WhatsAppButton/WhatsAppButton';
@@ -75,10 +76,36 @@ function AppContent() {
 
   // Clear directCheckoutItem when navigating away from checkout page
   useEffect(() => {
-    if (currentTab !== 'checkout') {
+    if (currentTab !== 'checkout' && currentTab !== 'login' && currentTab !== 'register') {
       setDirectCheckoutItem(null);
     }
   }, [currentTab]);
+
+  // One-time cleanup for dummy data that got stuck in local storage for existing users
+  useEffect(() => {
+    try {
+      // Clean up dummy addresses
+      const savedAddrs = localStorage.getItem('boutique_addresses');
+      if (savedAddrs) {
+        const addrs = JSON.parse(savedAddrs);
+        if (addrs.some(a => a.id === 'addr-1' || a.id === 'addr-2')) {
+          const filtered = addrs.filter(a => a.id !== 'addr-1' && a.id !== 'addr-2');
+          localStorage.setItem('boutique_addresses', JSON.stringify(filtered));
+        }
+      }
+
+      // Clean up dummy wishlist items
+      const savedWishlist = localStorage.getItem('boutique_wishlist');
+      if (savedWishlist) {
+        const items = JSON.parse(savedWishlist);
+        if (items.some(w => w.id === 'wish-1' || w.id === 'wish-2')) {
+          const filtered = items.filter(w => w.id !== 'wish-1' && w.id !== 'wish-2');
+          localStorage.setItem('boutique_wishlist', JSON.stringify(filtered));
+          window.dispatchEvent(new Event('storage')); // trigger update for Navbar/Wishlist components
+        }
+      }
+    } catch (e) {}
+  }, []);
 
   // Initial loading effect
   useEffect(() => {
@@ -330,7 +357,9 @@ export default function App() {
           element={
             <AuthProvider>
               <CartProvider>
-                <AppContent />
+                <WishlistProvider>
+                  <AppContent />
+                </WishlistProvider>
               </CartProvider>
             </AuthProvider>
           }

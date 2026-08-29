@@ -247,3 +247,77 @@ export const reviewAPI = {
     return res.data;
   },
 };
+
+// ====== CART API ======
+export const cartAPI = {
+  getCart: async () => {
+    const res = await request('/cart');
+    return res.data;
+  },
+  addToCart: async (productId, quantity = 1) => {
+    const res = await request('/cart/add', {
+      method: 'POST',
+      body: { productId, quantity },
+    });
+    return res.data;
+  },
+  updateCartItem: async (productId, quantity) => {
+    const res = await request('/cart/update', {
+      method: 'PUT',
+      body: { productId, quantity },
+    });
+    return res.data;
+  },
+  removeFromCart: async (productId) => {
+    const res = await request(`/cart/remove/${productId}`, {
+      method: 'DELETE',
+    });
+    return res.data;
+  },
+  clearCart: async () => {
+    const res = await request('/cart/clear', {
+      method: 'DELETE',
+    });
+    return res.data;
+  },
+  syncCart: async (items) => {
+    const res = await request('/cart/sync', {
+      method: 'POST',
+      body: { items },
+    });
+    return res.data;
+  },
+};
+
+// ====== WISHLIST API ======
+export const wishlistAPI = {
+  getWishlist: async () => {
+    const res = await request('/wishlist');
+    return res.data;
+  },
+  toggleWishlist: async (productId) => {
+    const res = await request(`/wishlist/toggle/${productId}`, {
+      method: 'POST',
+    });
+    return res.data;
+  },
+  removeFromWishlist: async (productId) => {
+    const res = await request(`/wishlist/remove/${productId}`, {
+      method: 'DELETE',
+    });
+    return res.data;
+  },
+  moveToCart: async (productId) => {
+    const res = await request(`/wishlist/move-to-cart/${productId}`, {
+      method: 'POST',
+    });
+    return res.data;
+  },
+  syncWishlist: async (items) => {
+    const res = await request('/wishlist/sync', {
+      method: 'POST',
+      body: { items },
+    });
+    return res.data;
+  },
+};

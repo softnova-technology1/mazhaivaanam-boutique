@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
+import { useWishlist } from '../../hooks/useWishlist';
 import { orderAPI, authAPI } from '../../services/api';
 import { formatCurrency } from '../../utils/formatters';
 import InvoiceModal from '../../admin/components/InvoiceModal';
@@ -42,10 +43,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   const [invoiceOrder, setInvoiceOrder] = useState(null);
 
   // Wishlist State
-  const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem('boutique_wishlist');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const { wishlist } = useWishlist();
 
   // Load live orders on mount
   useEffect(() => {
@@ -71,19 +69,29 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   }, []);
 
   // 1. Personal Profile State
-  const [profile, setProfile] = useState(() => {
-    const saved = localStorage.getItem('boutique_profile');
-    if (saved) return JSON.parse(saved);
-    
-    return {
-      firstName: user?.fullName?.split(' ')[0] || '',
-      lastName: user?.fullName?.split(' ')[1] || '',
-      email: user?.email || 'jane.doe@example.com',
-      phone: '+91 98765 43210',
-      birthday: '1995-10-15',
-      anniversary: '2022-11-23'
-    };
+  // 1. Personal Profile State
+  const [profile, setProfile] = useState({
+    firstName: user?.firstName || user?.fullName?.split(' ')[0] || '',
+    lastName: user?.lastName || user?.fullName?.split(' ').slice(1).join(' ') || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    birthday: user?.birthday || '',
+    anniversary: user?.anniversary || ''
   });
+
+  useEffect(() => {
+    if (user) {
+      setProfile(prev => ({
+        ...prev,
+        firstName: user.firstName || user.fullName?.split(' ')[0] || prev.firstName,
+        lastName: user.lastName || user.fullName?.split(' ').slice(1).join(' ') || prev.lastName,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone,
+        birthday: user.birthday || prev.birthday,
+        anniversary: user.anniversary || prev.anniversary
+      }));
+    }
+  }, [user]);
 
   // 2. Password Form State
   const [security, setSecurity] = useState({
@@ -102,31 +110,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   const [addresses, setAddresses] = useState(() => {
     const saved = localStorage.getItem('boutique_addresses');
     if (saved) return JSON.parse(saved);
-
-    return [
-      {
-        id: 'addr-1',
-        fullName: 'Jane Doe',
-        addressLine: '108 Silk Loom Enclave, Khader Nawaz Khan   Road',
-        city: 'Chennai',
-        stateName: 'Tamil Nadu',
-        pinCode: '600006',
-        country: 'India',
-        phone: '+91 98765 43210',
-        isDefault: true
-      },
-      {
-        id: 'addr-2',
-        fullName: 'Jane Doe',
-        addressLine: 'Apt 4B, Heritage Heights, Indiranagar 100ft Rd',
-        city: 'Bangalore',
-        stateName: 'Karnataka',
-        pinCode: '560038',
-        country: 'India',
-        phone: '+91 98765 43210',
-        isDefault: false
-      }
-    ];
+    return [];
   });
 
   // Modal State for Address

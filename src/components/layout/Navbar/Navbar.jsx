@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus, MapPin, Gift, LogOut, ArrowRight, Sparkles, Truck, Package } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
 import { useAuth } from '../../../hooks/useAuth';
+import { useWishlist } from '../../../hooks/useWishlist';
 import { getProducts } from '../../../services/api';
 import { formatCurrency } from '../../../utils/formatters';
 import styles from './Navbar.module.css';
@@ -27,44 +28,8 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   
-  // Wishlist state (with mock items fallback)
-  const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem('boutique_wishlist');
-    if (saved) return JSON.parse(saved);
-    return [
-      {
-        id: 'wish-1',
-        name: "Golden Temple Kanjeevaram",
-        price: 18500,
-        image: "https://images.unsplash.com/photo-1596783074918-c84cb06531ca?auto=format&fit=crop&w=300&q=80",
-        category: "Silk Sarees",
-        isLimited: true
-      },
-      {
-        id: 'wish-2',
-        name: "Crimson Banarasi Brocade",
-        price: 24000,
-        image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=300&q=80",
-        category: "Banarasi",
-        isLimited: true
-      }
-    ];
-  });
-
-  // Keep wishlist updated in local storage
-  useEffect(() => {
-    localStorage.setItem('boutique_wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
-
-  // Sync wishlist from global triggers (like product card adds)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const saved = localStorage.getItem('boutique_wishlist');
-      if (saved) setWishlist(JSON.parse(saved));
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  // Wishlist state from context
+  const { wishlist, removeFromWishlist, moveToCart } = useWishlist();
 
   // Monitor scroll to trigger sticky behavior
   useEffect(() => {
@@ -114,21 +79,11 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
 
 
   const handleWishlistToCart = (item) => {
-    addToCart({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      image: item.image,
-      category: item.category,
-      rating: 4.8
-    }, 1);
-    
-    // Remove from wishlist
-    setWishlist(prev => prev.filter(w => w.id !== item.id));
+    moveToCart(item.id || item._id, item, addToCart);
   };
 
   const handleRemoveFromWishlist = (id) => {
-    setWishlist(prev => prev.filter(w => w.id !== id));
+    removeFromWishlist(id);
   };
 
   const handleTabChange = (tabValue) => {

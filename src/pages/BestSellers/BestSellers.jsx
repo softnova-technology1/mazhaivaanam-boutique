@@ -3,22 +3,16 @@ import { getBestSellers } from '../../services/api';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star, Share2, Loader2 } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
+import { useWishlist } from '../../hooks/useWishlist';
 import styles from './BestSellers.module.css';
 
 export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
-  const [wishlist, setWishlist] = useState([]);
   const [liveBestSellers, setLiveBestSellers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // Load wishlist
-    const saved = localStorage.getItem('boutique_wishlist');
-    if (saved) {
-      setWishlist(JSON.parse(saved));
-    }
 
     let isMounted = true;
     setLoading(true);
@@ -40,20 +34,11 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   const [sortOption, setSortOption] = useState('best-selling');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const isWishlisted = (id) => wishlist.some(item => item.id === id);
+  const { wishlist, toggleWishlist } = useWishlist();
+  const isWishlisted = (id) => wishlist.some(item => item.id === id || item._id === id);
 
   const handleWishlistToggle = (product) => {
-    let updated;
-    if (isWishlisted(product.id)) {
-      updated = wishlist.filter(item => item.id !== product.id);
-      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Removed "${product.name}" from Wishlist.` } }));
-    } else {
-      updated = [...wishlist, product];
-      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Added "${product.name}" to Wishlist!` } }));
-    }
-    setWishlist(updated);
-    localStorage.setItem('boutique_wishlist', JSON.stringify(updated));
-    window.dispatchEvent(new Event('storage')); // sync navbar
+    toggleWishlist(product);
   };
 
   const handleAddToCart = (product) => {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Heart, Star, Share2 } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
+import { useWishlist } from '../../../hooks/useWishlist';
 import { formatCurrency } from '../../../utils/formatters';
 import { getBadgeClass } from '../../../utils/badgeHelper';
 import styles from './ProductCard.module.css';
@@ -9,48 +10,12 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
   const { addToCart } = useCart();
   const { name, category, price, image, rating = 5.0, oldPrice, tag, isNew, isLimited, description } = product;
 
-  const [isWishlisted, setIsWishlisted] = useState(false);
-
-  // Sync wishlist state from localStorage
-  useEffect(() => {
-    const checkWishlist = () => {
-      const saved = localStorage.getItem('boutique_wishlist');
-      if (saved) {
-        const items = JSON.parse(saved);
-        setIsWishlisted(items.some(w => w.id === product.id));
-      } else {
-        setIsWishlisted(false);
-      }
-    };
-    checkWishlist();
-    window.addEventListener('storage', checkWishlist);
-    return () => window.removeEventListener('storage', checkWishlist);
-  }, [product.id]);
+  const { wishlist, toggleWishlist } = useWishlist();
+  const isWishlisted = wishlist.some(w => w.id === product.id || w._id === product.id);
 
   const handleAddToWishlist = (e) => {
-    e.stopPropagation(); // Stop product detail card click navigation
-    const saved = localStorage.getItem('boutique_wishlist');
-    let wishlistItems = saved ? JSON.parse(saved) : [];
-
-    if (isWishlisted) {
-      // Remove from wishlist
-      wishlistItems = wishlistItems.filter(w => w.id !== product.id);
-      localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
-      window.dispatchEvent(new Event('storage'));
-      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Removed "${product.name}" from Wishlist` } }));
-    } else {
-      // Add to wishlist
-      wishlistItems.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        category: product.category || category || ''
-      });
-      localStorage.setItem('boutique_wishlist', JSON.stringify(wishlistItems));
-      window.dispatchEvent(new Event('storage'));
-      window.dispatchEvent(new CustomEvent('show-toast', { detail: { message: `Saved "${product.name}" to Wishlist!` } }));
-    }
+    e.stopPropagation();
+    toggleWishlist(product);
   };
 
   const handleShareClick = (e) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
+import { useWishlist } from '../../hooks/useWishlist';
 import { formatCurrency } from '../../utils/formatters';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X, Loader2 } from 'lucide-react';
@@ -45,10 +46,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [selectedAvailability, setSelectedAvailability] = useState('All');
   const [maxPrice, setMaxPrice] = useState(50000);
   const [selectedSort, setSelectedSort] = useState('featured');
-  const [wishlist, setWishlist] = useState(() => {
-    const saved = localStorage.getItem('boutique_wishlist');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const { wishlist } = useWishlist();
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,15 +89,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       if (isMounted) setLoading(false);
     });
     return () => { isMounted = false; };
-  }, []);
-
-  useEffect(() => {
-    const checkWishlist = () => {
-      const saved = localStorage.getItem('boutique_wishlist');
-      if (saved) setWishlist(JSON.parse(saved));
-    };
-    window.addEventListener('storage', checkWishlist);
-    return () => window.removeEventListener('storage', checkWishlist);
   }, []);
 
   useEffect(() => {

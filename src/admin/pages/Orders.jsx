@@ -381,7 +381,7 @@ export default function Orders() {
                                 <input className="form-input" placeholder="Tracking number (e.g. BD98765432)" style={{ marginBottom: 8 }} value={updateForm.trackingNumber} onChange={e => setUpdateForm(f => ({ ...f, trackingNumber: e.target.value }))} />
                                 <input className="form-input" placeholder="Courier partner (e.g. BlueDart)" style={{ marginBottom: 8 }} value={updateForm.courier} onChange={e => setUpdateForm(f => ({ ...f, courier: e.target.value }))} />
                                 <input className="form-input" placeholder="Status note (optional)" style={{ marginBottom: 10 }} value={updateForm.note} onChange={e => setUpdateForm(f => ({ ...f, note: e.target.value }))} />
-                                <button className="btn btn-primary btn-sm" onClick={() => handleStatusUpdate(order._id || order.orderId)}>Save Updates</button>
+                                <button className="btn btn-primary btn-sm" onClick={() => handleStatusUpdate(order.orderId)}>Save Updates</button>
                               </div>
                             </div>
 

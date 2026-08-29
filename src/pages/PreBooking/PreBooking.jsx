@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './PreBooking.module.css';
 import { ChevronDown, ArrowRight, Grid, List, Filter, X, Star } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
+import { getPreorderProducts } from '../../services/api';
 
 export const PREORDER_PRODUCTS = [
   {
@@ -87,7 +88,9 @@ export const SORT_OPTIONS = [
   { value: 'date-desc', label: 'Date, new to old' },
 ];
 
-const getProductDetails = (productId) => {
+const getProductDetails = (product) => {
+  if (!product) return null;
+  const productId = product.id || product._id;
   const detailsMap = {
     'pre-1': {
       headline: "Exquisite Pure Silk Saree with Traditional Motifs",
@@ -130,10 +133,26 @@ const getProductDetails = (productId) => {
       occasion: "Perfect for summer events, office wear, and casual festive celebrations."
     }
   };
-  return detailsMap[productId] || detailsMap['pre-1'];
+
+  if (detailsMap[productId]) {
+    return detailsMap[productId];
+  }
+
+  return {
+    headline: product.name,
+    p1: product.description || 'Welcome to the heritage of handloom. Experience premium comfort, authentic design, and exquisite weave tailored for special occasions.',
+    p2: '',
+    fabric: product.fabric || 'Pure Silk',
+    design: product.specs?.weave || 'Premium Handloom Weave',
+    border: product.specs?.zari || 'Traditional Borders',
+    texture: product.specs?.fabricType || 'Naturally rich texture and luxurious feel',
+    occasion: product.occasion || 'Traditional'
+  };
 };
 
 export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckoutItem }) => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedSort, setSelectedSort] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
   
@@ -149,7 +168,43 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
-  const details = quickViewProduct ? getProductDetails(quickViewProduct.id) : null;
+  const details = quickViewProduct ? getProductDetails(quickViewProduct) : null;
+
+  const getProductDisplayId = (product) => {
+    if (!product) return '';
+    const pid = product.id || product._id;
+    if (pid && typeof pid === 'string' && pid.startsWith('pre-')) {
+      return pid.toUpperCase();
+    }
+    const index = products.findIndex(p => (p.id || p._id) === pid);
+    return index !== -1 ? `PRE-${index + 1}` : 'PRE';
+  };
+
+  useEffect(() => {
+    let active = true;
+    const fetchPreorders = async () => {
+      setLoading(true);
+      try {
+        const fetched = await getPreorderProducts();
+        if (active) {
+          setProducts(fetched.length > 0 ? fetched : PREORDER_PRODUCTS);
+        }
+      } catch (err) {
+        console.error('Error fetching preorder products:', err);
+        if (active) {
+          setProducts(PREORDER_PRODUCTS);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+    fetchPreorders();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   React.useEffect(() => {
     if (quickViewProduct || isMobileFilterOpen) {
@@ -184,7 +239,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
   };
 
   const sortedProducts = React.useMemo(() => {
-    let filtered = [...PREORDER_PRODUCTS];
+    let filtered = [...products];
     
     // Apply Price Filters
     if (selectedPriceFilters.length > 0) {
@@ -215,7 +270,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case 'alpha-desc':
-        sorted.sort((a, b) => b.name.localeCompare(a.name));
+        filtered.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case 'price-asc':
         filtered.sort((a, b) => a.price - b.price);
@@ -233,7 +288,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
         break;
     }
     return filtered;
-  }, [selectedSort, selectedPriceFilters, selectedTimes]);
+  }, [products, selectedSort, selectedPriceFilters, selectedTimes]);
 
   return (
     <div className={styles['prebooking-page-container']}>
@@ -365,46 +420,65 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
           </div>
 
           {/* Product Grid */}
-          <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
-            {sortedProducts.map((product) => (
-              <div key={product.id} className={styles['product-card']}>
-                <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
-                  <div className={styles['discount-badge']}>{product.discount} OFF</div>
-                  <img src={product.image} alt={product.name} className={styles['product-image']} />
-                </div>
-                <div className={styles['product-info']}>
-                  <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
-                    {product.name} | {product.id.toUpperCase()} | PRE BOOKING
-                  </h3>
-                  <p className={styles['product-desc']}>{product.description}</p>
-                  
-                  <div className={styles['product-rating']}>
-                    <Star size={12} fill="#d32f2f" stroke="#d32f2f" />
-                    <span>{product.rating || '4.8'}</span>
-                    <span className={styles['review-count']}>({product.reviews || '24'})</span>
+          {loading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '4rem 0', width: '100%' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                border: '3px solid rgba(200, 163, 77, 0.1)',
+                borderTopColor: '#C8A34D',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite'
+              }}></div>
+              <style>{`
+                @keyframes spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+              `}</style>
+            </div>
+          ) : (
+            <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
+              {sortedProducts.map((product) => (
+                <div key={product.id} className={styles['product-card']}>
+                  <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
+                    <div className={styles['discount-badge']}>{product.discount} OFF</div>
+                    <img src={product.image} alt={product.name} className={styles['product-image']} />
                   </div>
+                  <div className={styles['product-info']}>
+                    <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
+                      {product.name} | {getProductDisplayId(product)} | PRE BOOKING
+                    </h3>
+                    <p className={styles['product-desc']}>{product.description}</p>
+                    
+                    <div className={styles['product-rating']}>
+                      <Star size={12} fill="#d32f2f" stroke="#d32f2f" />
+                      <span>{product.rating || '4.8'}</span>
+                      <span className={styles['review-count']}>({product.reviews || '24'})</span>
+                    </div>
 
-                  <div className={styles['product-price-row']}>
-                    <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                    <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
-                  </div>
-                  <div 
-                    role="button" 
-                    className={styles['prebook-btn']} 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePreorderClick(product);
-                    }}
-                  >
-                    PRE BOOK NOW
-                  </div>
-                  <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); }}>
-                    Quick view
+                    <div className={styles['product-price-row']}>
+                      <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
+                      <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                    </div>
+                    <div 
+                      role="button" 
+                      className={styles['prebook-btn']} 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePreorderClick(product);
+                      }}
+                    >
+                      PRE BOOK NOW
+                    </div>
+                    <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); }}>
+                      Quick view
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
       </main>
 
@@ -428,7 +502,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
               
               <div className={styles['quick-view-details']}>
                 <div className={styles['qv-scrollable-content']}>
-                  <h2 className={styles['qv-title']}>{quickViewProduct.name} | {quickViewProduct.id.toUpperCase()} | PRE BOOKING</h2>
+                  <h2 className={styles['qv-title']}>{quickViewProduct.name} | {getProductDisplayId(quickViewProduct)} | PRE BOOKING</h2>
                   <div className={styles['qv-badge']}>Save {quickViewProduct.discount}</div>
                   
                   <div className={styles['qv-vendor']}>MAZHAI VAANAM</div>

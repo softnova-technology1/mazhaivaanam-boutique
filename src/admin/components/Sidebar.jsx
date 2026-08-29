@@ -1,7 +1,7 @@
 import { NavLink, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
-  LayoutDashboard, ShoppingBag, PackageSearch, Layers3,
+  LayoutDashboard, ShoppingBag, Clock, PackageSearch, Layers3,
   ClipboardList, Users, Star, MessageSquare, Ticket, LogOut, Tags, Percent, Store
 } from 'lucide-react';
 import './Sidebar.css';
@@ -9,6 +9,7 @@ import './Sidebar.css';
 const NAV_ITEMS = [
   { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
   { path: '/admin/products', icon: ShoppingBag, label: 'Products' },
+  { path: '/admin/pre-booking', icon: Clock, label: 'Pre-Booking' },
   { path: '/admin/orders', icon: ClipboardList, label: 'Orders' },
   { path: '/admin/inventory', icon: PackageSearch, label: 'Inventory' },
   { path: '/admin/discounts', icon: Percent, label: 'Discounts' },

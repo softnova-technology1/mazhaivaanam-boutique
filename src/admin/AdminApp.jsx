@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
+import PreBookingAdmin from './pages/PreBooking';
 import Orders from './pages/Orders';
 import Inventory from './pages/Inventory';
 import Categories from './pages/Categories';
@@ -37,6 +38,7 @@ export default function AdminApp() {
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<Products />} />
+            <Route path="pre-booking" element={<PreBookingAdmin />} />
             <Route path="orders" element={<Orders />} />
             <Route path="inventory" element={<Inventory />} />
             <Route path="categories" element={<Categories />} />

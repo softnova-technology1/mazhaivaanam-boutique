@@ -11,7 +11,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
   const { name, category, price, image, rating = 5.0, oldPrice, tag, isNew, isLimited, description } = product;
 
   const { wishlist, toggleWishlist } = useWishlist();
-  const isWishlisted = wishlist.some(w => w.id === product.id || w._id === product.id);
+  const isWishlisted = wishlist.some(w => (w.id || w._id) === (product.id || product._id));
 
   const handleAddToWishlist = (e) => {
     e.stopPropagation();

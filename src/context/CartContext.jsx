@@ -26,9 +26,10 @@ export const CartProvider = ({ children }) => {
       try {
         const data = await cartAPI.getCart();
         if (data && data.items) {
-          // Normalize to frontend expected format
           const formatted = data.items.map(item => ({
             ...item.product,
+            id: item.product._id || item.product.id,
+            image: (item.product.images && item.product.images.length > 0) ? item.product.images[0].url : (item.product.image || '/Images/saree1.png'),
             quantity: item.quantity
           }));
           setCart(formatted);
@@ -39,13 +40,16 @@ export const CartProvider = ({ children }) => {
     }
   }, [isAuthenticated]);
 
-  // Sync logic depending on auth state
+  // Fetch DB cart on mount and auth changes
   useEffect(() => {
     if (isAuthenticated) {
-      // Don't sync to local storage if authed, fetch from DB
       fetchDbCart();
-    } else {
-      // Save to local storage for guests with 1 hr expiry
+    }
+  }, [isAuthenticated, fetchDbCart]);
+
+  // Sync to local storage ONLY for unauthenticated guests
+  useEffect(() => {
+    if (!isAuthenticated) {
       localStorage.setItem('boutique_cart', JSON.stringify(cart));
       if (cart.length > 0) {
         localStorage.setItem('boutique_cart_expiry', String(Date.now() + 60 * 60 * 1000));
@@ -53,7 +57,7 @@ export const CartProvider = ({ children }) => {
         localStorage.removeItem('boutique_cart_expiry');
       }
     }
-  }, [cart, isAuthenticated, fetchDbCart]);
+  }, [cart, isAuthenticated]);
 
   useEffect(() => {
     const handleClearCart = () => setCart([]);
@@ -69,25 +73,29 @@ export const CartProvider = ({ children }) => {
   }, [fetchDbCart]);
 
   const addToCart = async (product, quantity = 1) => {
+    const prodId = product.id || product._id;
+    
+    // Optimistic update for UI responsiveness
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => (item.id || item._id) === prodId);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          (item.id || item._id) === prodId
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      }
+      return [...prevCart, { ...product, id: prodId, quantity }];
+    });
+
     if (isAuthenticated) {
       try {
-        await cartAPI.addToCart(product.id || product._id, quantity);
-        fetchDbCart(); // Refresh from DB
+        await cartAPI.addToCart(prodId, quantity);
+        // Optionally fetch DbCart to ensure sync, but optimistic is enough for instant UI
       } catch (e) {
         console.error('Failed to add to DB cart', e);
+        fetchDbCart(); // Rollback on error
       }
-    } else {
-      setCart((prevCart) => {
-        const existingItem = prevCart.find((item) => item.id === product.id);
-        if (existingItem) {
-          return prevCart.map((item) =>
-            item.id === product.id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item
-          );
-        }
-        return [...prevCart, { ...product, quantity }];
-      });
     }
     
     setTimeout(() => {
@@ -96,15 +104,16 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = async (productId) => {
+    // Optimistic update
+    setCart((prevCart) => prevCart.filter((item) => (item.id || item._id) !== productId));
+
     if (isAuthenticated) {
       try {
         await cartAPI.removeFromCart(productId);
-        fetchDbCart();
       } catch (e) {
         console.error('Failed to remove from DB cart', e);
+        fetchDbCart(); // Rollback on error
       }
-    } else {
-      setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
     }
   };
 
@@ -114,19 +123,20 @@ export const CartProvider = ({ children }) => {
       return;
     }
     
+    // Optimistic update
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        (item.id || item._id) === productId ? { ...item, quantity } : item
+      )
+    );
+
     if (isAuthenticated) {
       try {
         await cartAPI.updateCartItem(productId, quantity);
-        fetchDbCart();
       } catch (e) {
         console.error('Failed to update DB cart', e);
+        fetchDbCart(); // Rollback on error
       }
-    } else {
-      setCart((prevCart) =>
-        prevCart.map((item) =>
-          item.id === productId ? { ...item, quantity } : item
-        )
-      );
     }
   };
 

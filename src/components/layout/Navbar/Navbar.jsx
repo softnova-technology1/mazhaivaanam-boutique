@@ -475,8 +475,8 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
             ) : (
               <>
                 <div className={styles.cartItemsList}>
-                  {cart.map((item) => (
-                    <div key={item.id} className={styles.cartItemRow}>
+                  {cart.map((item, index) => (
+                    <div key={item.id || item._id || index} className={styles.cartItemRow}>
                       <img src={item.image} alt={item.name} className={styles.cartItemImg} />
                       <div className={styles.cartItemInfo}>
                         <h4>{item.name}</h4>
@@ -551,8 +551,8 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
             ) : (
               <div className={styles.cartItemsList}>
                 <span className={styles.wishlistHeaderLabel}>Saved Items</span>
-                {wishlist.map((item) => (
-                  <div key={item.id} className={styles.cartItemRow}>
+                {wishlist.map((item, index) => (
+                  <div key={item.id || item._id || index} className={styles.cartItemRow}>
                     <img src={item.image} alt={item.name} className={styles.cartItemImg} />
                     <div className={styles.cartItemInfo}>
                       <h4>{item.name}</h4>

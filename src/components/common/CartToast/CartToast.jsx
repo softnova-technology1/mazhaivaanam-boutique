@@ -44,7 +44,7 @@ export const CartToast = ({ setCurrentTab }) => {
   if (!toastData) return null;
 
   const { product } = toastData;
-  const cartItem = cart.find(item => item.id === product.id);
+  const cartItem = cart.find(item => (item.id || item._id) === (product.id || product._id));
   const displayQuantity = cartItem ? cartItem.quantity : toastData.quantity;
 
   return (

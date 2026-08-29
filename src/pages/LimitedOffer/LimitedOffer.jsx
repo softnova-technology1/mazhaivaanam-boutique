@@ -3,9 +3,89 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getProducts } from '../../services/api';
 import styles from './LimitedOffer.module.css';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
+  // Live Config State from DB
+  const [config, setConfig] = useState({
+    heroSection: {
+      badgeText: 'Limited Exclusive Offer',
+      title: 'Exclusive Offers,',
+      titleItalic: 'Limited Time',
+      subtitle: 'Enjoy special prices on selected sarees for a limited period. Elevate your wardrobe with premium collections while these exclusive offers last.',
+      bgImage: '/Images/limited.png',
+      primaryCtaText: 'EXPLORE COLLECTION',
+      secondaryCtaText: 'OUR HERITAGE',
+    },
+    timerSection: {
+      badgeText: 'Time is running out',
+      title: 'The Grand Gala Sale',
+      description: 'Our most prestigious annual celebration ends soon. Secure your heritage pieces today before they return to the vault.',
+      endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    featuredDuoSection: {
+      badgeText: 'Curated Festival Duo',
+      heading: 'The Heritage Gift',
+      subHeading: 'Buy 2 Sarees, Get 1 Free',
+      description: 'Embrace the timeless tradition of gifting. Choose from our exquisite hand-woven silk collections and receive a complimentary heritage piece as a symbol of our festive gratitude.',
+      image: '/Images/heritage.png',
+      ctaText: 'Explore Collection',
+    },
+    curationOfJoySection: {
+      badgeText: 'Curation of Joy',
+      heading: 'Bespoke Offer Tiers',
+      cards: [
+        { title: 'Diwali Offers', discountBadge: 'UP TO 40%', image: '/Images/diwali.png', linkTab: 'catalog' },
+        { title: 'Bridal Offers', discountBadge: '20% OFF', image: '/Images/bridal.png', linkTab: 'catalog' },
+        { title: 'Combo Set', discountBadge: 'SAVE 5K', image: '/Images/wedding.png', linkTab: 'catalog' },
+      ],
+    },
+    spinningWheelSection: {
+      title: 'Festival Lucky Draw',
+      description: 'Spin the heritage wheel for a chance to win exclusive gift cards, artisan blouses, or a signature silk saree from our royal vault.',
+      bulletPoints: [
+        'Grand Prize: Royal Banarasi Saree',
+        'Gift Cards worth ₹ 10,000',
+        'Artisan Blouse Customizations',
+      ],
+      prizes: [
+        'Premium Saree',
+        '10% Discount',
+        'Free Styling',
+        'Surprise Box',
+        'Artisan Blouse',
+        'Free Shipping',
+      ],
+    },
+  });
+
   // Countdown Timer State
-  const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, minutes: 45 });
+  const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, minutes: 45, seconds: 0 });
+
+  // 2-Word Text Carousel for Hero Title
+  const italicPhrases = React.useMemo(() => {
+    const raw = config.heroSection?.titleItalic ? config.heroSection.titleItalic.trim() : '';
+    const customList = raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : [];
+    
+    if (customList.length > 0) return customList;
+    return ["Limited Time", "Festive Deals", "Special Savings", "Royal Vault", "Handloom Luxury"];
+  }, [config.heroSection?.titleItalic]);
+
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isFading, setIsFading] = useState(false);
+
+  useEffect(() => {
+    if (!italicPhrases || italicPhrases.length <= 1) return;
+    const timer = setInterval(() => {
+      setIsFading(true);
+      setTimeout(() => {
+        setPhraseIndex(prev => (prev + 1) % italicPhrases.length);
+        setIsFading(false);
+      }, 400);
+    }, 2800);
+
+    return () => clearInterval(timer);
+  }, [italicPhrases]);
   
   // Lucky Draw State
   const [rotation, setRotation] = useState(0);
@@ -13,25 +93,53 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   const [spinText, setSpinText] = useState("SPIN THE WHEEL");
   const [wonPrize, setWonPrize] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-  
-  // Copy Coupons State
-  const [copiedCode, setCopiedCode] = useState(null);
 
   // View All Offers State
   const [showAllOffers, setShowAllOffers] = useState(false);
   const [liveProducts, setLiveProducts] = useState([]);
 
+  // Fetch Live Config from Backend
+  useEffect(() => {
+    fetch(`${API_BASE}/limited-offer/config`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.success && data.data) {
+          const d = data.data;
+          setConfig(prev => ({
+            heroSection: { ...prev.heroSection, ...(d.heroSection || {}) },
+            timerSection: { ...prev.timerSection, ...(d.timerSection || {}) },
+            featuredDuoSection: { ...prev.featuredDuoSection, ...(d.featuredDuoSection || {}) },
+            offerProductsSection: { ...prev.offerProductsSection, ...(d.offerProductsSection || {}) },
+            eligibleGallerySection: { ...prev.eligibleGallerySection, ...(d.eligibleGallerySection || {}) },
+            curationOfJoySection: {
+              ...prev.curationOfJoySection,
+              ...(d.curationOfJoySection || {}),
+              cards: d.curationOfJoySection?.cards?.length ? d.curationOfJoySection.cards : prev.curationOfJoySection.cards
+            },
+            spinningWheelSection: {
+              ...prev.spinningWheelSection,
+              ...(d.spinningWheelSection || {}),
+              bulletPoints: d.spinningWheelSection?.bulletPoints?.length ? d.spinningWheelSection.bulletPoints : prev.spinningWheelSection.bulletPoints,
+              prizes: d.spinningWheelSection?.prizes?.length === 6 ? d.spinningWheelSection.prizes : prev.spinningWheelSection.prizes
+            },
+          }));
+        }
+      })
+      .catch(err => console.log('Using default offer config:', err));
+  }, []);
+
+  // Fetch Offer Products from Backend
   useEffect(() => {
     let isMounted = true;
-    getProducts({ limit: 6 })
+    getProducts({ limit: 8 })
       .then(res => {
         if (isMounted && res.products && res.products.length > 0) {
           const items = res.products.map(p => ({
-            id: p.id,
+            id: p._id || p.id,
             title: p.name,
             price: `₹ ${p.price.toLocaleString('en-IN')}`,
-            image: p.image,
-            tag: p.tag || 'FESTIVAL CHOICE',
+            image: p.images?.[0]?.url || p.image || '/Images/saree1.png',
+            tag: p.tag || 'LIMITED OFFER',
             raw: p
           }));
           setLiveProducts(items);
@@ -42,28 +150,10 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   }, []);
 
   const galleryItems = liveProducts.length > 0 ? liveProducts : [
-    {
-      title: "Banarasi Silk Elegance",
-      price: "₹ 14,500",
-      image: "/Images/silk1.png",
-      tag: "FESTIVAL CHOICE"
-    },
-    {
-      title: "Golden Temple Kanchipuram",
-      price: "₹ 22,800",
-      image: "/Images/saree1.png",
-      tag: "BESTSELLER"
-    },
-    {
-      title: "Handloom Cotton Saree",
-      price: "₹ 4,200",
-      image: "/Images/fancy1.png",
-      tag: "NEW ARRIVAL"
-    }
+    { title: "Banarasi Silk Elegance", price: "₹ 14,500", image: "/Images/silk1.png", tag: "FESTIVAL CHOICE" },
+    { title: "Golden Temple Kanchipuram", price: "₹ 22,800", image: "/Images/saree1.png", tag: "BESTSELLER" },
+    { title: "Handloom Cotton Saree", price: "₹ 4,200", image: "/Images/fancy1.png", tag: "NEW ARRIVAL" }
   ];
-
-  // WebGL Canvas Ref
-  const canvasRef = useRef(null);
 
   // Gallery Carousel Ref
   const galleryRef = useRef(null);
@@ -87,186 +177,32 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
     }
   };
 
-  // Auto-scroll effect (Continuous Marquee)
+  // Dynamic Countdown Timer Logic based on config.timerSection.endDate
   useEffect(() => {
-    let animationId;
-    const scrollNode = galleryRef.current;
+    const targetDateStr = config.timerSection.endDate;
+    const target = targetDateStr ? new Date(targetDateStr).getTime() : new Date().getTime() + (3 * 24 * 60 * 60 * 1000);
     
-    if (!scrollNode) return;
-
-    let isHovered = false;
-
-    const scroll = () => {
-      if (!isHovered && !autoScrollPausedRef.current) {
-        scrollNode.scrollLeft += 1;
-        
-        // When we've scrolled exactly halfway (past the first set), seamlessly reset to start
-        if (scrollNode.scrollLeft >= scrollNode.scrollWidth / 2) {
-          scrollNode.scrollLeft -= scrollNode.scrollWidth / 2;
-        }
-      }
-      animationId = requestAnimationFrame(scroll);
-    };
-
-    animationId = requestAnimationFrame(scroll);
-
-    // Pause on hover
-    const pause = () => { isHovered = true; };
-    const resume = () => { isHovered = false; };
-
-    scrollNode.addEventListener('mouseenter', pause);
-    scrollNode.addEventListener('mouseleave', resume);
-    // Touch support for pausing
-    scrollNode.addEventListener('touchstart', pause, { passive: true });
-    scrollNode.addEventListener('touchend', resume, { passive: true });
-    
-    return () => {
-      cancelAnimationFrame(animationId);
-      if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
-      scrollNode.removeEventListener('mouseenter', pause);
-      scrollNode.removeEventListener('mouseleave', resume);
-      scrollNode.removeEventListener('touchstart', pause);
-      scrollNode.removeEventListener('touchend', resume);
-    };
-  }, []);
-
-  // WebGL Canvas animation setup
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    let animationFrameId;
-
-    function syncSize() {
-      const w = canvas.clientWidth || 1280;
-      const h = canvas.clientHeight || 720;
-      if (canvas.width !== w || canvas.height !== h) {
-        canvas.width = w;
-        canvas.height = h;
-      }
-    }
-
-    let resizeObserver;
-    if (typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver(syncSize);
-      resizeObserver.observe(canvas);
-    }
-    syncSize();
-
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return;
-
-    const vs = `attribute vec2 a_position;
-varying vec2 v_texCoord;
-void main() {
-  v_texCoord = a_position * 0.5 + 0.5;
-  gl_Position = vec4(a_position, 0.0, 1.0);
-}`;
-
-    const fs = `precision highp float;
-varying vec2 v_texCoord;
-uniform float u_time;
-uniform vec2 u_resolution;
-
-void main() {
-    vec2 uv = v_texCoord;
-    vec2 p = (uv - 0.5) * u_resolution.xy / min(u_resolution.x, u_resolution.y);
-    
-    // Background: Deep Sage Green gradient (brand-aligned)
-    vec3 colorSage = vec3(0.482, 0.518, 0.404); // #7B8467
-    vec3 colorOlive = vec3(0.373, 0.400, 0.322); // #5F6652
-    vec3 baseColor = mix(colorSage, colorOlive * 0.5, length(p));
-    
-    // Golden Shimmer / Silk floating effect
-    float shimmer = sin(uv.x * 5.0 + u_time * 0.5) * cos(uv.y * 3.0 - u_time * 0.3);
-    vec3 gold = vec3(0.702, 0.541, 0.290); // #B38A4A
-    
-    vec3 finalColor = mix(baseColor, gold, shimmer * 0.05 * (1.0 - length(p)));
-    
-    gl_FragColor = vec4(finalColor, 1.0);
-}`;
-
-    function cs(type, src) {
-      const s = gl.createShader(type);
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      return s;
-    }
-
-    const prog = gl.createProgram();
-    gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
-    gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
-    gl.linkProgram(prog);
-    gl.useProgram(prog);
-
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-    const pos = gl.getAttribLocation(prog, 'a_position');
-    gl.enableVertexAttribArray(pos);
-    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
-
-    const uTime = gl.getUniformLocation(prog, 'u_time');
-    const uRes = gl.getUniformLocation(prog, 'u_resolution');
-    const uMouse = gl.getUniformLocation(prog, 'u_mouse');
-
-    let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
-    
-    const handleMouseMove = (event) => {
-      const rect = canvas.getBoundingClientRect();
-      if (rect.width && rect.height) {
-        const nx = (event.clientX - rect.left) / rect.width;
-        const ny = 1.0 - (event.clientY - rect.top) / rect.height;
-        mouse.x = nx * canvas.width;
-        mouse.y = ny * canvas.height;
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    function render(t) {
-      if (typeof ResizeObserver === 'undefined') syncSize();
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      if (uTime) gl.uniform1f(uTime, t * 0.001);
-      if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
-      if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      animationFrameId = requestAnimationFrame(render);
-    }
-    
-    render(0);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
-      if (resizeObserver) {
-        resizeObserver.disconnect();
-      }
-    };
-  }, []);
-
-  // Countdown Timer Logic
-  useEffect(() => {
-    const target = new Date().getTime() + (2 * 24 * 60 * 60 * 1000) + (14 * 60 * 60 * 1000);
-    
-    const interval = setInterval(() => {
+    const updateCountdown = () => {
       const now = new Date().getTime();
       const diff = target - now;
       
       if (diff <= 0) {
-        clearInterval(interval);
-        setTimeLeft({ days: 0, hours: 0, minutes: 0 });
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       } else {
         const d = Math.floor(diff / (1000 * 60 * 60 * 24));
         const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
         
-        setTimeLeft({ days: d, hours: h, minutes: m });
+        setTimeLeft({ days: d, hours: h, minutes: m, seconds: s });
       }
-    }, 1000);
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [config.timerSection.endDate]);
 
   // Spinning Wheel Logic
   const handleSpinWheel = () => {
@@ -282,32 +218,14 @@ void main() {
       setIsSpinning(false);
       setSpinText("SPIN AGAIN");
       
-      // Calculate which prize the wheel landed on
-      // 0 deg points to the first slice. Wheel spins clockwise.
       const winningAngle = (360 - (newRotation % 360)) % 360;
       const winningIndex = Math.floor(winningAngle / 60);
-      const prizes = ['Premium Saree', '10% Discount', 'Free Styling', 'Surprise Box', 'Artisan Blouse', 'Free Shipping'];
+      const prizes = config.spinningWheelSection.prizes || ['Premium Saree', '10% Discount', 'Free Styling', 'Surprise Box', 'Artisan Blouse', 'Free Shipping'];
       
-      setWonPrize(prizes[winningIndex]);
+      setWonPrize(prizes[winningIndex] || prizes[0]);
       setShowPopup(true);
     }, 4100);
   };
-
-  // Copy Coupon Code Logic
-  const handleCopyCode = (code) => {
-    navigator.clipboard.writeText(code).then(() => {
-      setCopiedCode(code);
-      setTimeout(() => {
-        setCopiedCode(null);
-      }, 2000);
-    });
-  };
-
-  // Reveal-on-scroll Simulation (CSS-based standard is fine, but we will add direct class triggers)
-  const [isVisible, setIsVisible] = useState(false);
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   return (
     <div className="text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
@@ -316,40 +234,48 @@ void main() {
         <section 
           className="relative min-h-[480px] md:min-h-[600px] md:h-[600px] py-12 md:py-0 flex flex-col items-center justify-center text-center px-4 overflow-hidden"
           style={{ 
-            backgroundImage: "url('/Images/limited.png')",
+            backgroundImage: `url('${config.heroSection.bgImage || '/Images/limited.png'}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             boxShadow: '0 15px 40px rgba(0, 0, 0, 0.6)'
           }}
         >
-          {/* Dark Overlay matching Best Sellers */}
+          {/* Dark Overlay */}
           <div className="absolute inset-0 bg-black/60 z-0"></div>
           
           <div className="relative z-10 hero-content flex flex-col items-center justify-center mt-6 md:mt-0 pb-6 md:pb-0">
             <div className="inline-flex items-center px-5 py-2 mb-4 md:mb-6 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
-              <span className="font-label-caps text-[10px] text-white tracking-[0.2em] uppercase">Limited Exclusive Offer</span>
+              <span className="font-label-caps text-[10px] text-white tracking-[0.2em] uppercase">{config.heroSection.badgeText}</span>
             </div>
             
             <h1 className="font-display-lg text-3xl md:text-[42px] text-white mb-3 md:mb-4 leading-[1.1] drop-shadow-2xl">
-              Exclusive Offers, <span className={`italic serif font-light ${styles['text-shimmer']}`}>Limited Time</span>
+              {config.heroSection.title}{' '}
+              <span 
+                className={`italic serif font-light inline-block pr-2 transition-all duration-500 ease-in-out ${
+                  isFading ? 'opacity-0 transform -translate-y-1 scale-95' : 'opacity-100 transform translate-y-0 scale-100'
+                } ${styles['text-shimmer']}`}
+                style={{ overflow: 'visible' }}
+              >
+                {italicPhrases[phraseIndex]}
+              </span>
             </h1>
             
             <p className="text-white/90 text-sm md:text-lg mb-6 md:mb-10 max-w-4xl mx-auto">
-              Enjoy special prices on selected sarees for a limited period. Elevate your wardrobe with premium collections while these exclusive offers last.
+              {config.heroSection.subtitle}
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full max-w-[280px] sm:max-w-none mx-auto">
               <button 
-                onClick={() => setCurrentTab('catalog')}
+                onClick={() => setCurrentTab('shop')}
                 className="btn-cloud w-full sm:w-auto px-6 py-3 sm:px-10 sm:py-4 bg-secondary text-white hover:bg-white hover:text-secondary transition-all duration-500 font-label-caps text-label-caps tracking-widest shadow-[0_8px_30px_rgb(179,138,74,0.3)] hover:shadow-[0_8px_30px_rgb(255,255,255,0.4)] transform hover:-translate-y-1"
               >
-                EXPLORE COLLECTION
+                {config.heroSection.primaryCtaText}
               </button>
               <button 
                 onClick={() => setCurrentTab('about')}
                 className="pill rounded-full w-full sm:w-auto px-6 py-3 sm:px-10 sm:py-4 border border-white text-white bg-transparent hover:bg-[#FFBEA2] hover:text-[#4F4E22] hover:border-[#FFBEA2] transition-all duration-500 font-label-caps text-label-caps tracking-widest transform hover:-translate-y-1"
               >
-                OUR HERITAGE
+                {config.heroSection.secondaryCtaText}
               </button>
             </div>
           </div>
@@ -358,34 +284,33 @@ void main() {
         {/* Live Offer Countdown */}
         <section className="relative -mt-12 md:-mt-24 z-20 px-4 md:px-margin-desktop">
           <div className="max-w-7xl mx-auto bg-[#FDFBF7] border border-[#D4AF37]/40 py-6 px-4 md:p-14 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 shadow-[0_20px_50px_rgba(179,138,74,0.15)] relative overflow-hidden">
-            {/* Subtle decorative background pattern */}
-            <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "radial-gradient(#D4AF37 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
-            
-            {/* Subtle glow effect */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent"></div>
-            
             <div className="flex-1 text-center md:text-left relative z-10">
-              <span className="font-label-caps text-[10px] text-[#D4AF37] tracking-[0.3em] uppercase block mb-2 md:mb-4">Time is running out</span>
-              <h2 className="font-display-lg font-bold tracking-tight text-2xl sm:text-3xl md:text-5xl mb-3 md:mb-5 text-[#B38A4A]">The Grand Gala Sale</h2>
+              <span className="font-label-caps text-[10px] text-[#D4AF37] tracking-[0.3em] uppercase block mb-2 md:mb-4">{config.timerSection.badgeText}</span>
+              <h2 className="font-display-lg font-bold tracking-tight text-2xl sm:text-3xl md:text-5xl mb-3 md:mb-5 text-[#B38A4A]">{config.timerSection.title}</h2>
               <p className="text-on-surface-variant max-w-md mx-auto md:mx-0 text-xs sm:text-sm md:text-base leading-relaxed">
-                Our most prestigious annual celebration ends soon. Secure your heritage pieces today before they return to the vault.
+                {config.timerSection.description}
               </p>
             </div>
             
-            <div className="flex gap-3 md:gap-5 text-center relative z-10" id="countdown">
-              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-3 min-w-[75px] md:p-4 md:min-w-[90px] shadow-sm">
-                <span className="font-display-lg text-2xl md:text-4xl text-primary">{timeLeft.days.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">DAYS</span>
+            <div className="flex gap-2 sm:gap-3 md:gap-4 text-center relative z-10" id="countdown">
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-2.5 sm:p-3 min-w-[60px] sm:min-w-[72px] md:p-4 md:min-w-[85px] shadow-sm">
+                <span className="font-display-lg text-xl sm:text-2xl md:text-4xl text-primary">{timeLeft.days.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[7px] sm:text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">DAYS</span>
               </div>
-              <div className="font-display-lg text-2xl md:text-4xl text-primary/30 self-center -mt-3 md:-mt-6">:</div>
-              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-3 min-w-[75px] md:p-4 md:min-w-[90px] shadow-sm">
-                <span className="font-display-lg text-2xl md:text-4xl text-primary">{timeLeft.hours.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">HOURS</span>
+              <div className="font-display-lg text-xl sm:text-2xl md:text-4xl text-primary/30 self-center -mt-3 md:-mt-6">:</div>
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-2.5 sm:p-3 min-w-[60px] sm:min-w-[72px] md:p-4 md:min-w-[85px] shadow-sm">
+                <span className="font-display-lg text-xl sm:text-2xl md:text-4xl text-primary">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[7px] sm:text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">HOURS</span>
               </div>
-              <div className="font-display-lg text-2xl md:text-4xl text-primary/30 self-center -mt-3 md:-mt-6">:</div>
-              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-3 min-w-[75px] md:p-4 md:min-w-[90px] shadow-sm">
-                <span className="font-display-lg text-2xl md:text-4xl text-primary">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                <span className="font-label-caps text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">MINS</span>
+              <div className="font-display-lg text-xl sm:text-2xl md:text-4xl text-primary/30 self-center -mt-3 md:-mt-6">:</div>
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-2.5 sm:p-3 min-w-[60px] sm:min-w-[72px] md:p-4 md:min-w-[85px] shadow-sm">
+                <span className="font-display-lg text-xl sm:text-2xl md:text-4xl text-primary">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[7px] sm:text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">MINS</span>
+              </div>
+              <div className="font-display-lg text-xl sm:text-2xl md:text-4xl text-primary/30 self-center -mt-3 md:-mt-6">:</div>
+              <div className="flex flex-col items-center justify-center bg-white border border-[#D4AF37]/20 backdrop-blur-md rounded-xl p-2.5 sm:p-3 min-w-[60px] sm:min-w-[72px] md:p-4 md:min-w-[85px] shadow-sm">
+                <span className="font-display-lg text-xl sm:text-2xl md:text-4xl text-[#B38A4A] font-bold">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                <span className="font-label-caps text-[7px] sm:text-[8px] md:text-[9px] text-[#D4AF37] tracking-[0.2em] mt-1 md:mt-2">SECS</span>
               </div>
             </div>
           </div>
@@ -397,37 +322,36 @@ void main() {
             <div className="hidden md:block relative group h-[600px] overflow-hidden rounded-xl">
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                alt="A multi-generational Indian family dressed in opulent silk attire, celebrating together in a heritage courtyard." 
-                src="/Images/heritage.png"
+                alt="Featured Duo" 
+                src={config.featuredDuoSection.image || '/Images/heritage.png'}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
             </div>
             
-            <div className={`transition-all duration-1000 flex flex-col justify-center ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className="flex flex-col justify-center">
               <div className="flex items-center gap-4 mb-5">
                 <div className="w-12 h-px bg-[#D4AF37]"></div>
-                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Curated Festival Duo</span>
+                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">{config.featuredDuoSection.badgeText}</span>
               </div>
               
               <h2 className="font-display-lg text-4xl md:text-[56px] text-primary mb-3 leading-[1.1]">
-                The Heritage Gift
+                {config.featuredDuoSection.heading}
               </h2>
               
               <div className="font-label-caps text-[12px] md:text-[14px] tracking-[0.2em] text-[#B38A4A] mb-8 uppercase font-medium">
-                Buy 2 Sarees, Get 1 Free
+                {config.featuredDuoSection.subHeading}
               </div>
               
               <p className="text-[#4A4F40] text-base md:text-lg mb-12 leading-[1.8] max-w-lg font-light">
-                Embrace the timeless tradition of gifting. Choose from our exquisite hand-woven silk collections and receive a complimentary heritage piece as a symbol of our festive gratitude.
+                {config.featuredDuoSection.description}
               </p>
               
               <div>
                 <div 
-                  onClick={() => setCurrentTab('catalog')} 
+                  onClick={() => setCurrentTab('shop')} 
                   className="inline-flex items-center justify-center gap-4 px-12 py-4 bg-transparent border-[1.5px] border-primary text-primary font-label-caps text-[11px] tracking-[0.25em] uppercase hover:bg-primary hover:text-white transition-colors duration-500 group cursor-pointer"
                 >
-                  <span>Explore Collection</span>
-                  <span className="material-symbols-outlined text-[16px] group-hover:translate-x-2 transition-transform duration-500">east</span>
+                  <span>{config.featuredDuoSection.ctaText || 'Explore Collection'}</span>
                 </div>
               </div>
             </div>
@@ -439,32 +363,23 @@ void main() {
           <div className="flex flex-col items-center mb-8 md:mb-14 text-center">
             <div className="flex items-center gap-3 mb-2 md:mb-4">
               <div className="w-8 md:w-12 h-px bg-[#D4AF37]"></div>
-              <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">Festive Deals</span>
+              <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">{config?.offerProductsSection?.badgeText || 'Festive Deals'}</span>
               <div className="w-8 md:w-12 h-px bg-[#D4AF37]"></div>
             </div>
-            <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">Exclusive Offers</h3>
+            <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">{config?.offerProductsSection?.heading || 'Exclusive Offers'}</h3>
           </div>
           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-8">
             {(showAllOffers ? [...galleryItems, ...galleryItems.slice(0, 2)] : galleryItems.slice(0, 4)).map((item, index) => {
-              // Calculate a dummy original price for the offer display (40% higher)
               const originalPrice = Math.round(parseInt(item.price.replace(/[^\d]/g, '')) * 1.4);
               return (
                 <div key={`offer-${index}`} className="group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => {
                   if (setSelectedProduct) {
-                    setSelectedProduct({
+                    setSelectedProduct(item.raw || {
                       id: `offer-${index}`,
                       name: item.title,
-                      category: "Limited Offer",
-                      fabric: "Festive Collection",
-                      color: "#6B102A",
                       price: parseInt(item.price.replace(/[^\d]/g, '')),
-                      oldPrice: originalPrice,
-                      rating: 4.8,
-                      tag: item.tag || "LIMITED OFFER",
                       image: item.image,
-                      description: "Exclusive festive collection piece available for a limited time.",
-                      inStock: true
                     });
                   }
                   setCurrentTab('product-detail');
@@ -502,27 +417,25 @@ void main() {
           </div>
         </section>
 
-        {/* Product Grid */}
+        {/* Eligible Gallery Carousel Section */}
         <section className="pt-8 md:pt-16 pb-0 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex justify-between items-end mb-8 md:mb-14">
             <div>
               <div className="flex items-center gap-3 mb-2 md:mb-4">
                 <div className="w-8 h-px bg-[#D4AF37]"></div>
-                <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">Eligible Selection</span>
+                <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">{config?.eligibleGallerySection?.badgeText || 'Eligible Selection'}</span>
               </div>
-              <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">The Buy 2 Get 1 Gallery</h3>
+              <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">{config?.eligibleGallerySection?.heading || 'The Buy 2 Get 1 Gallery'}</h3>
             </div>
             <div className="hidden md:flex gap-3">
               <button 
                 onClick={() => scrollGallery('left')} 
-                aria-label="Previous items"
                 className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-full text-[#4F4E22] bg-[#FAF9F6] hover:bg-[#4F4E22] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
               >
                 <ChevronLeft size={20} strokeWidth={2.2} />
               </button>
               <button 
                 onClick={() => scrollGallery('right')} 
-                aria-label="Next items"
                 className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-full text-[#4F4E22] bg-[#FAF9F6] hover:bg-[#4F4E22] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
               >
                 <ChevronRight size={20} strokeWidth={2.2} />
@@ -532,7 +445,7 @@ void main() {
           
           <div ref={galleryRef} className="flex overflow-x-auto gap-3 sm:gap-4 md:gap-6 lg:gap-8 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {[...galleryItems, ...galleryItems].map((item, index) => (
-              <div key={index} className="w-[120px] sm:w-[160px] md:w-[240px] shrink-0 group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => setCurrentTab('catalog')}>
+              <div key={index} className="w-[120px] sm:w-[160px] md:w-[240px] shrink-0 group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => setCurrentTab('shop')}>
                 <div className="relative w-full aspect-[3/4] overflow-hidden bg-surface-container-high">
                   <img 
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
@@ -558,182 +471,132 @@ void main() {
           </div>
         </section>
 
-        {/* Offer Categories (Bento Grid Style) */}
+        {/* Offer Categories (Bento Grid) */}
         <section 
           className="relative pt-8 md:pt-16 pb-6 md:pb-16 px-3 sm:px-6 md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
           style={{ backgroundImage: "url('/Images/offer.png')" }}
         >
-          {/* Dark Overlay for Readability */}
           <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]"></div>
           
           <div className="relative z-10 max-w-container-max mx-auto">
             <div className="mb-5 md:mb-10 flex flex-col items-center text-center">
               <div className="flex items-center justify-center gap-4 mb-2 md:mb-3">
                 <div className="w-12 h-px bg-[#D4AF37]"></div>
-                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">Curation of Joy</span>
+                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">{config.curationOfJoySection.badgeText}</span>
                 <div className="w-12 h-px bg-[#D4AF37]"></div>
               </div>
-              <h2 className="font-display-lg text-2xl sm:text-3xl md:text-[52px] leading-tight text-[#FDFBF7]">Bespoke Offer Tiers</h2>
+              <h2 className="font-display-lg text-2xl sm:text-3xl md:text-[52px] leading-tight text-[#FDFBF7]">{config.curationOfJoySection.heading}</h2>
             </div>
             
             <div className="flex flex-row justify-center md:grid md:grid-cols-3 gap-3 md:gap-6 h-auto md:h-[360px] pt-2">
-              {/* Card 1 */}
-              <div className="relative group overflow-hidden rounded-full md:rounded-t-full md:rounded-b-md border border-[#D4AF37] md:border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:block bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none" onClick={() => setCurrentTab('catalog')}>
-                <img 
-                  className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                  alt="A vibrant Diwali celebration scene at a luxury estate." 
-                  src="/Images/diwali.png"
-                />
-                <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
-                
-                <div className="md:absolute md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[85%] md:bg-black/40 md:backdrop-blur-md md:border border-[#D4AF37]/30 p-1 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-700 w-full h-full md:h-auto rounded-full md:rounded-none">
-                  <h3 className="font-display-lg text-[12px] md:text-[28px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Diwali Offers</h3>
-                  <div className="flex items-center gap-1 md:gap-2">
-                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
-                    <span className="font-label-caps text-[6px] md:text-[9px] tracking-[0.1em] md:tracking-[0.2em] text-[#D4AF37] whitespace-nowrap">UP TO 40%</span>
-                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
+              {config.curationOfJoySection.cards.map((card, idx) => (
+                <div 
+                  key={idx} 
+                  className="relative group overflow-hidden rounded-full md:rounded-t-full md:rounded-b-md border border-[#D4AF37] md:border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:block bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none" 
+                  onClick={() => setCurrentTab(card.linkTab || 'shop')}
+                >
+                  <img 
+                    className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                    alt={card.title} 
+                    src={card.image || '/Images/diwali.png'}
+                  />
+                  <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
+                  
+                  <div className="md:absolute md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[85%] md:bg-black/40 md:backdrop-blur-md md:border border-[#D4AF37]/30 p-1 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-700 w-full h-full md:h-auto rounded-full md:rounded-none">
+                    <h3 className="font-display-lg text-[12px] md:text-[28px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">{card.title}</h3>
+                    <div className="flex items-center gap-1 md:gap-2">
+                      <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
+                      <span className="font-label-caps text-[6px] md:text-[9px] tracking-[0.1em] md:tracking-[0.2em] text-[#D4AF37] whitespace-nowrap">{card.discountBadge}</span>
+                      <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Card 2 */}
-              <div className="relative group overflow-hidden rounded-full md:rounded-t-full md:rounded-b-md border border-[#D4AF37] md:border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:block bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none" onClick={() => setCurrentTab('catalog')}>
-                <img 
-                  className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                  alt="Bridal silk sarees in shades of crimson and gold." 
-                  src="/Images/bridal.png"
-                />
-                <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
-                
-                <div className="md:absolute md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[85%] md:bg-black/40 md:backdrop-blur-md md:border border-[#D4AF37]/30 p-1 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-700 w-full h-full md:h-auto rounded-full md:rounded-none">
-                  <h3 className="font-display-lg text-[12px] md:text-[28px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Bridal Offers</h3>
-                  <div className="flex items-center gap-1 md:gap-2">
-                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
-                    <span className="font-label-caps text-[6px] md:text-[9px] tracking-[0.1em] md:tracking-[0.2em] text-[#D4AF37] whitespace-nowrap">20% OFF</span>
-                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Card 3 */}
-              <div className="relative group overflow-hidden rounded-full md:rounded-t-full md:rounded-b-md border border-[#D4AF37] md:border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:block bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none" onClick={() => setCurrentTab('catalog')}>
-                <img 
-                  className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                  alt="A collection of vibrant festival sarees in bright colors." 
-                  src="/Images/wedding.png"
-                />
-                <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
-                
-                <div className="md:absolute md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[85%] md:bg-black/40 md:backdrop-blur-md md:border border-[#D4AF37]/30 p-1 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-700 w-full h-full md:h-auto rounded-full md:rounded-none">
-                  <h3 className="font-display-lg text-[12px] md:text-[28px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">Combo Set</h3>
-                  <div className="flex items-center gap-1 md:gap-2">
-                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
-                    <span className="font-label-caps text-[6px] md:text-[9px] tracking-[0.1em] md:tracking-[0.2em] text-[#D4AF37] whitespace-nowrap">SAVE 5K</span>
-                    <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Lucky Draw Spinning Wheel */}
+        {/* Lucky Draw Spinning Wheel Section */}
         <section className="pt-8 md:pt-16 pb-16 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
           <div className="bg-[#FDFBF7] rounded-3xl border border-[#D4AF37]/30 shadow-[0_15px_40px_rgba(0,0,0,0.05)] p-5 sm:p-8 md:p-14 overflow-hidden relative">
             <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center relative z-10">
-            <div className="reveal-on-scroll">
-              <h3 className="font-display-lg text-2xl sm:text-4xl md:text-[48px] text-[#2D3326] mb-3 md:mb-5 leading-tight">Festival Lucky Draw</h3>
-              <p className="text-[#2D3326]/80 text-xs sm:text-base mb-5 md:mb-8 font-normal leading-relaxed max-w-lg">Spin the heritage wheel for a chance to win exclusive gift cards, artisan blouses, or a signature silk saree from our royal vault.</p>
-              
-              <ul className="space-y-2.5 sm:space-y-3.5 mb-6 md:mb-8">
-                <li className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
-                  <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
-                  <span>Grand Prize: Royal Banarasi Saree</span>
-                </li>
-                <li className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
-                  <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
-                  <span>Gift Cards worth ₹ 10,000</span>
-                </li>
-                <li className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
-                  <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
-                  <span>Artisan Blouse Customizations</span>
-                </li>
-              </ul>
-              
-              <button 
-                onClick={handleSpinWheel}
-                disabled={isSpinning}
-                className="w-full sm:w-auto px-8 py-3.5 bg-primary text-on-primary font-label-caps text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-transform active:scale-95 disabled:opacity-50" 
-                id="spin-btn"
-              >
-                {spinText}
-              </button>
-            </div>
-            
-            <div className="relative flex justify-center py-4 md:py-6">
-              <div 
-                className="w-56 h-56 sm:w-72 sm:h-72 md:w-[400px] md:h-[400px] border-4 md:border-8 border-[#D4AF37] relative shadow-[0_10px_30px_rgba(0,0,0,0.1)] overflow-hidden bg-white" 
-                id="wheel"
-                style={{
-                  borderRadius: '50%',
-                  transform: `rotate(${rotation}deg)`,
-                  transition: isSpinning ? 'transform 4s cubic-bezier(0.15, 0, 0.15, 1)' : 'none'
-                }}
-              >
-                {/* Simulated wheel segments with brand design colors */}
-                <div className="absolute inset-0 flex items-center justify-center" style={{ borderRadius: '50%', overflow: 'hidden' }}>
-                  <div 
-                    className="w-full h-full" 
-                    style={{ 
-                      borderRadius: '50%',
-                      background: 'conic-gradient(#490017 0deg 60deg, #fed579 60deg 120deg, #a13b51 120deg 180deg, #ffb2bc 180deg 240deg, #6b102a 240deg 300deg, #775a04 300deg 360deg)' 
-                    }}
-                  ></div>
-                  
-                  {/* Text for each section */}
-                  {[
-                    { text: 'Premium Saree', color: 'text-white' },
-                    { text: '10% Discount', color: 'text-[#490017]' },
-                    { text: 'Free Styling', color: 'text-white' },
-                    { text: 'Surprise Box', color: 'text-[#490017]' },
-                    { text: 'Artisan Blouse', color: 'text-white' },
-                    { text: 'Free Shipping', color: 'text-white' }
-                  ].map((prize, i) => {
-                    // Flip text for the bottom half of the wheel so it's readable
-                    const isBottomHalf = i > 1 && i < 5;
-                    return (
-                      <div 
-                        key={i} 
-                        className="absolute inset-0 flex items-start justify-center"
-                        style={{ transform: `rotate(${i * 60 + 30}deg)` }}
-                      >
-                        <div className={`pt-4 sm:pt-6 md:pt-10 w-20 sm:w-24 text-center font-display-lg text-[9.5px] sm:text-[11px] md:text-sm tracking-wide leading-tight ${prize.color}`}>
-                          <span className="block" style={{ transform: isBottomHalf ? 'rotate(180deg)' : 'none' }}>
-                            {prize.text}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div>
+                <h3 className="font-display-lg text-2xl sm:text-4xl md:text-[48px] text-[#2D3326] mb-3 md:mb-5 leading-tight">{config.spinningWheelSection.title}</h3>
+                <p className="text-[#2D3326]/80 text-xs sm:text-base mb-5 md:mb-8 font-normal leading-relaxed max-w-lg">{config.spinningWheelSection.description}</p>
                 
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div 
-                    className={`w-8 h-8 md:w-10 md:h-10 bg-white rounded-full z-10 shadow-xl border-2 md:border-4 border-[#D4AF37] pointer-events-auto flex items-center justify-center transition-all duration-300 ${isSpinning ? 'opacity-80' : 'cursor-pointer hover:scale-110 hover:shadow-2xl'}`}
-                    onClick={isSpinning ? undefined : handleSpinWheel}
-                    title={isSpinning ? "Spinning..." : "Click to Spin!"}
-                  >
-                    <div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-[#D4AF37] rounded-full"></div>
-                  </div>
-                </div>
+                <ul className="space-y-2.5 sm:space-y-3.5 mb-6 md:mb-8">
+                  {config.spinningWheelSection.bulletPoints.map((bp, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
+                      <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
+                      <span>{bp}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button 
+                  onClick={handleSpinWheel}
+                  disabled={isSpinning}
+                  className="w-full sm:w-auto px-8 py-3.5 bg-primary text-on-primary font-label-caps text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-transform active:scale-95 disabled:opacity-50" 
+                  id="spin-btn"
+                >
+                  {spinText}
+                </button>
               </div>
               
-              {/* Golden Indicator */}
-              <div 
-                className="absolute -top-1 md:-top-2 left-1/2 -translate-x-1/2 w-6 h-9 md:w-8 md:h-12 bg-[#D4AF37] z-20 drop-shadow-md" 
-                style={{ clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)' }}
-              ></div>
-            </div>
+              <div className="relative flex justify-center py-4 md:py-6">
+                <div 
+                  className="w-56 h-56 sm:w-72 sm:h-72 md:w-[400px] md:h-[400px] border-4 md:border-8 border-[#D4AF37] relative shadow-[0_10px_30px_rgba(0,0,0,0.1)] overflow-hidden bg-white" 
+                  id="wheel"
+                  style={{
+                    borderRadius: '50%',
+                    transform: `rotate(${rotation}deg)`,
+                    transition: isSpinning ? 'transform 4s cubic-bezier(0.15, 0, 0.15, 1)' : 'none'
+                  }}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center" style={{ borderRadius: '50%', overflow: 'hidden' }}>
+                    <div 
+                      className="w-full h-full" 
+                      style={{ 
+                        borderRadius: '50%',
+                        background: 'conic-gradient(#490017 0deg 60deg, #fed579 60deg 120deg, #a13b51 120deg 180deg, #ffb2bc 180deg 240deg, #6b102a 240deg 300deg, #775a04 300deg 360deg)' 
+                      }}
+                    ></div>
+                    
+                    {config.spinningWheelSection.prizes.map((prizeText, i) => {
+                      const isBottomHalf = i > 1 && i < 5;
+                      return (
+                        <div 
+                          key={i} 
+                          className="absolute inset-0 flex items-start justify-center"
+                          style={{ transform: `rotate(${i * 60 + 30}deg)` }}
+                        >
+                          <div className={`pt-4 sm:pt-6 md:pt-10 w-20 sm:w-24 text-center font-display-lg text-[9.5px] sm:text-[11px] md:text-sm tracking-wide leading-tight ${i % 2 === 0 ? 'text-white' : 'text-[#490017]'}`}>
+                            <span className="block" style={{ transform: isBottomHalf ? 'rotate(180deg)' : 'none' }}>
+                              {prizeText}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div 
+                      className={`w-8 h-8 md:w-10 md:h-10 bg-white rounded-full z-10 shadow-xl border-2 md:border-4 border-[#D4AF37] pointer-events-auto flex items-center justify-center transition-all duration-300 ${isSpinning ? 'opacity-80' : 'cursor-pointer hover:scale-110 hover:shadow-2xl'}`}
+                      onClick={isSpinning ? undefined : handleSpinWheel}
+                      title={isSpinning ? "Spinning..." : "Click to Spin!"}
+                    >
+                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-[#D4AF37] rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Golden Indicator */}
+                <div 
+                  className="absolute -top-1 md:-top-2 left-1/2 -translate-x-1/2 w-6 h-9 md:w-8 md:h-12 bg-[#D4AF37] z-20 drop-shadow-md" 
+                  style={{ clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)' }}
+                ></div>
+              </div>
             </div>
           </div>
         </section>
@@ -774,3 +637,5 @@ void main() {
     </div>
   );
 };
+
+export default LimitedOffer;

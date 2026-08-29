@@ -12,6 +12,7 @@ import Reviews from './pages/Reviews';
 import Inquiries from './pages/Inquiries';
 import Coupons from './pages/Coupons';
 import Discounts from './pages/Discounts';
+import LimitedOfferAdmin from './pages/LimitedOfferAdmin';
 import './index.css';
 
 function ProtectedRoute({ children }) {
@@ -39,6 +40,7 @@ export default function AdminApp() {
             <Route path="products" element={<Products />} />
             <Route path="orders" element={<Orders />} />
             <Route path="inventory" element={<Inventory />} />
+            <Route path="limited-offer" element={<LimitedOfferAdmin />} />
             <Route path="categories" element={<Categories />} />
             <Route path="discounts" element={<Discounts />} />
             <Route path="users" element={<UsersPage />} />

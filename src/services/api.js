@@ -181,6 +181,8 @@ export const authAPI = {
   logout: () => {
     localStorage.removeItem('boutique_token');
     localStorage.removeItem('boutique_user');
+    localStorage.removeItem('mv_admin_token');
+    localStorage.removeItem('mv_admin_refresh');
   },
 };
 

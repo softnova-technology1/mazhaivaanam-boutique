@@ -27,7 +27,9 @@ export const WishlistProvider = ({ children }) => {
         const data = await wishlistAPI.getWishlist();
         if (data && data.items) {
           const formatted = data.items.map(item => ({
-            ...item.product
+            ...item.product,
+            id: item.product._id || item.product.id,
+            image: (item.product.images && item.product.images.length > 0) ? item.product.images[0].url : (item.product.image || '/Images/saree1.png')
           }));
           setWishlist(formatted);
         }
@@ -40,7 +42,11 @@ export const WishlistProvider = ({ children }) => {
   useEffect(() => {
     if (isAuthenticated) {
       fetchDbWishlist();
-    } else {
+    }
+  }, [isAuthenticated, fetchDbWishlist]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
       localStorage.setItem('boutique_wishlist', JSON.stringify(wishlist));
       if (wishlist.length > 0) {
         localStorage.setItem('boutique_wishlist_expiry', String(Date.now() + 60 * 60 * 1000));
@@ -48,7 +54,7 @@ export const WishlistProvider = ({ children }) => {
         localStorage.removeItem('boutique_wishlist_expiry');
       }
     }
-  }, [wishlist, isAuthenticated, fetchDbWishlist]);
+  }, [wishlist, isAuthenticated]);
 
   useEffect(() => {
     const handleSyncEvent = () => fetchDbWishlist();
@@ -57,46 +63,48 @@ export const WishlistProvider = ({ children }) => {
   }, [fetchDbWishlist]);
 
   const toggleWishlist = async (product) => {
-    const isWishlisted = wishlist.some(w => w.id === product.id || w._id === product.id);
-    
+    const prodId = product.id || product._id;
+    // Optimistic update
+    let wasWishlisted = false;
+    setWishlist(prev => {
+      const currentlyWishlisted = prev.some(w => (w.id || w._id) === prodId);
+      wasWishlisted = currentlyWishlisted;
+      
+      if (currentlyWishlisted) {
+        return prev.filter(w => (w.id || w._id) !== prodId);
+      }
+      return [...prev, {
+        ...product,
+        id: prodId,
+        _id: prodId
+      }];
+    });
+
     if (isAuthenticated) {
       try {
-        await wishlistAPI.toggleWishlist(product.id || product._id);
-        fetchDbWishlist();
+        await wishlistAPI.toggleWishlist(prodId);
       } catch (e) {
         console.error('Failed to toggle DB wishlist', e);
+        fetchDbWishlist(); // Rollback
       }
-    } else {
-      setWishlist(prev => {
-        if (isWishlisted) {
-          return prev.filter(w => w.id !== product.id && w._id !== product.id);
-        }
-        return [...prev, {
-          id: product.id || product._id,
-          _id: product._id || product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          category: product.category
-        }];
-      });
     }
 
     window.dispatchEvent(new CustomEvent('show-toast', { 
-      detail: { message: isWishlisted ? `Removed "${product.name}" from Wishlist` : `Saved "${product.name}" to Wishlist!` } 
+      detail: { message: wasWishlisted ? `Removed "${product.name}" from Wishlist` : `Saved "${product.name}" to Wishlist!` } 
     }));
   };
 
   const removeFromWishlist = async (productId) => {
+    // Optimistic update
+    setWishlist((prev) => prev.filter((item) => (item.id || item._id) !== productId));
+
     if (isAuthenticated) {
       try {
         await wishlistAPI.removeFromWishlist(productId);
-        fetchDbWishlist();
       } catch (e) {
         console.error('Failed to remove from DB wishlist', e);
+        fetchDbWishlist(); // Rollback
       }
-    } else {
-      setWishlist(prev => prev.filter(w => w.id !== productId && w._id !== productId));
     }
   };
 

@@ -325,7 +325,21 @@ export default function Inventory() {
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ width: 38, height: 38, borderRadius: 6, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
-                          {inv.product?.images?.[0]?.url && <img src={inv.product.images[0].url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                          {(() => {
+                            const rawUrl = inv.product?.images?.[0]?.url;
+                            const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/saree1.png';
+                            return (
+                              <img 
+                                src={safeUrl} 
+                                alt={inv.product?.name || ''} 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = '/Images/saree1.png';
+                                }}
+                              />
+                            );
+                          })()}
                         </div>
                         <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{inv.product?.name || 'Unknown'}</span>
                       </div>

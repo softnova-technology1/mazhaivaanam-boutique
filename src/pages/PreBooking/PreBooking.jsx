@@ -187,12 +187,12 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
       try {
         const fetched = await getPreorderProducts();
         if (active) {
-          setProducts(fetched.length > 0 ? fetched : PREORDER_PRODUCTS);
+          setProducts(fetched || []);
         }
       } catch (err) {
         console.error('Error fetching preorder products:', err);
         if (active) {
-          setProducts(PREORDER_PRODUCTS);
+          setProducts([]);
         }
       } finally {
         if (active) {

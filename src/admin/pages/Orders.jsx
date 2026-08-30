@@ -16,6 +16,7 @@ export default function Orders() {
   const [stats, setStats] = useState(null);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState('paid'); // Default: 'paid' for 100% bank verified fulfillment queue
   const [statusFilter, setStatusFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
@@ -31,7 +32,7 @@ export default function Orders() {
   const [invoiceOrder, setInvoiceOrder] = useState(null);
 
   useEffect(() => { loadStats(); }, []);
-  useEffect(() => { loadOrders(); }, [page, statusFilter, dateFilter, sortOrder]);
+  useEffect(() => { loadOrders(); }, [page, statusFilter, paymentStatusFilter, dateFilter, sortOrder]);
 
   const loadStats = async () => {
     try {
@@ -45,6 +46,7 @@ export default function Orders() {
     try {
       let params = `page=${page}&limit=15&sort=${sortOrder}`;
       if (statusFilter) params += `&status=${statusFilter}`;
+      if (paymentStatusFilter) params += `&paymentStatus=${paymentStatusFilter}`;
       if (dateFilter) params += `&dateRange=${dateFilter}`;
       const res = await orderAPI.getAll(params);
       setOrders(res.data);
@@ -136,8 +138,20 @@ export default function Orders() {
     exportToCSV(listToExport, columns, `MazhaiVaanam_Orders${statusFilter ? '_' + statusFilter : ''}`);
   };
 
-  const totalOrders = stats?.overview?.totalOrders || 0;
-  const getCount = (status) => stats?.statusBreakdown?.find(s => s._id === status)?.count || 0;
+  const totalOrdersCount = pagination?.total !== undefined ? pagination.total : (stats?.overview?.totalOrders || 0);
+  
+  // Calculate dynamic status counts based on current loaded filtered orders list
+  const getFilteredCount = (status) => {
+    if (statusFilter && statusFilter !== status) return 0;
+    return orders.filter(o => o.status === status).length;
+  };
+
+  const getQueueLabel = () => {
+    if (paymentStatusFilter === 'paid') return 'Verified Paid Queue';
+    if (paymentStatusFilter === 'pending') return 'Abandoned / Pending Queue';
+    if (paymentStatusFilter === 'failed') return 'Failed Payments Queue';
+    return 'All Total Orders';
+  };
 
   return (
     <div className="page-container">
@@ -145,7 +159,7 @@ export default function Orders() {
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <h1 className="page-title">Orders Management</h1>
-          <p className="page-subtitle">{totalOrders} total orders processed</p>
+          <p className="page-subtitle">{totalOrdersCount} {getQueueLabel().toLowerCase()} listed</p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <button 
@@ -153,7 +167,7 @@ export default function Orders() {
             onClick={() => handleExportCSV(false)}
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
-            <Download size={16} /> Export All to CSV
+            <Download size={16} /> Export Filtered to CSV
           </button>
         </div>
       </div>
@@ -162,27 +176,33 @@ export default function Orders() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === '' ? '1px solid var(--primary)' : undefined }} onClick={() => { setStatusFilter(''); setPage(1); }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3B82F6', flexShrink: 0 }}><ShoppingBag size={20} /></div>
-          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{totalOrders}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Total Orders</div></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{totalOrdersCount}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{getQueueLabel()}</div></div>
         </div>
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'PROCESSING' ? '1px solid var(--warning)' : undefined }} onClick={() => { setStatusFilter('PROCESSING'); setPage(1); }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F59E0B', flexShrink: 0 }}><Clock size={20} /></div>
-          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('PROCESSING')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Processing</div></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('PROCESSING')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Processing</div></div>
         </div>
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'CONFIRMED' ? '1px solid var(--info)' : undefined }} onClick={() => { setStatusFilter('CONFIRMED'); setPage(1); }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(14,165,233,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0EA5E9', flexShrink: 0 }}><Check size={20} /></div>
-          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('CONFIRMED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Confirmed</div></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('CONFIRMED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Confirmed</div></div>
         </div>
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'SHIPPED' ? '1px solid var(--primary)' : undefined }} onClick={() => { setStatusFilter('SHIPPED'); setPage(1); }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B5CF6', flexShrink: 0 }}><Truck size={20} /></div>
-          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getCount('SHIPPED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Shipped</div></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('SHIPPED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Shipped</div></div>
         </div>
       </div>
 
       {/* Filter and Bulk Action Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-        <div className="filter-bar" style={{ margin: 0, display: 'flex', gap: 10 }}>
+        <div className="filter-bar" style={{ margin: 0, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <select className="form-select" value={paymentStatusFilter} onChange={e => { setPaymentStatusFilter(e.target.value); setPage(1); }} style={{ fontWeight: 600, borderColor: paymentStatusFilter === 'paid' ? '#16a34a' : paymentStatusFilter === 'pending' ? '#eab308' : undefined }}>
+            <option value="paid">✅ Verified Paid (Fulfillment Queue)</option>
+            <option value="pending">⏳ Abandoned / Payment Pending</option>
+            <option value="failed">❌ Payment Failed</option>
+            <option value="">All Payment Statuses</option>
+          </select>
           <select className="form-select" value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}>
-            <option value="">All Statuses</option>
+            <option value="">All Fulfillment Statuses</option>
             {STATUSES.filter(Boolean).map(s => <option key={s} value={s}>{s}</option>)}
           </select>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

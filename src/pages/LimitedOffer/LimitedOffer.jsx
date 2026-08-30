@@ -149,11 +149,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
     return () => { isMounted = false; };
   }, []);
 
-  const galleryItems = liveProducts.length > 0 ? liveProducts : [
-    { title: "Banarasi Silk Elegance", price: "₹ 14,500", image: "/Images/silk1.png", tag: "FESTIVAL CHOICE" },
-    { title: "Golden Temple Kanchipuram", price: "₹ 22,800", image: "/Images/saree1.png", tag: "BESTSELLER" },
-    { title: "Handloom Cotton Saree", price: "₹ 4,200", image: "/Images/fancy1.png", tag: "NEW ARRIVAL" }
-  ];
+  const galleryItems = liveProducts;
 
   // Gallery Carousel Ref
   const galleryRef = useRef(null);

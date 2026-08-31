@@ -1,11 +1,18 @@
 .admin-layout {
-  display: flex;
+  display: block;
   min-height: 100vh;
 }
 
 .admin-main {
-  flex: 1;
-  margin-left: var(--sidebar-width);
+  padding-left: var(--sidebar-width);
   min-height: 100vh;
   background: var(--bg-primary);
+  transition: padding-left 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.admin-layout.collapsed .admin-main {
+  padding-left: 80px;
 }

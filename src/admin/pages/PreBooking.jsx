@@ -66,11 +66,11 @@ export default function PreBooking() {
 
   const handleBulkDelete = async () => {
     if (!selectedProducts.length) return;
-    if (!window.confirm(`Are you sure you want to remove ${selectedProducts.length} selected pre-booking products?`)) return;
+    if (!window.confirm(`Are you sure you want to permanently remove ${selectedProducts.length} selected pre-booking products from the database?`)) return;
 
     setBulkLoading(true);
     try {
-      await productAPI.bulkDelete(selectedProducts);
+      await productAPI.bulkHardDelete(selectedProducts);
       setSelectedProducts([]);
       loadProducts();
     } catch (err) {
@@ -228,9 +228,9 @@ export default function PreBooking() {
   };
 
   const handleDelete = async (id, name) => {
-    if (!confirm(`Delete "${name}" from MongoDB database?`)) return;
+    if (!confirm(`Delete "${name}" permanently from MongoDB database?`)) return;
     try {
-      await productAPI.delete(id);
+      await productAPI.hardDelete(id);
       loadProducts();
     } catch (err) { alert(err.message); }
   };

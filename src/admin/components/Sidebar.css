@@ -10,6 +10,11 @@
   flex-direction: column;
   z-index: 100;
   overflow-y: auto;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 80px;
 }
 
 .sidebar-brand {
@@ -18,17 +23,23 @@
   gap: 12px;
   padding: 20px 20px 16px;
   border-bottom: 1px solid var(--border-color);
+  justify-content: space-between;
+}
+
+.sidebar.collapsed .sidebar-brand {
+  padding: 20px 10px 16px;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .sidebar-logo {
-  width: 38px;
-  height: 38px;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  border-radius: var(--radius-md);
+  width: 44px;
+  height: 44px;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   flex-shrink: 0;
 }
 
@@ -37,6 +48,21 @@
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.01em;
+}
+
+.sidebar-toggle {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+}
+
+.sidebar-toggle:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
 }
 
 .sidebar-badge {
@@ -77,6 +103,11 @@
   margin-bottom: 2px;
 }
 
+.sidebar.collapsed .sidebar-link {
+  justify-content: center;
+  padding: 12px;
+}
+
 .sidebar-link:hover {
   background: var(--bg-surface-hover);
   color: var(--text-primary);
@@ -100,16 +131,26 @@
   justify-content: space-between;
 }
 
+.sidebar.collapsed .sidebar-footer {
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 8px;
+}
+
 .sidebar-user {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+.sidebar.collapsed .sidebar-user {
+  justify-content: center;
+}
+
 .sidebar-avatar {
   width: 34px;
   height: 34px;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -118,6 +159,7 @@
   font-size: 0.85rem;
   font-weight: 600;
   flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .sidebar-user-info {

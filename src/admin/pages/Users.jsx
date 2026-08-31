@@ -126,7 +126,7 @@ export default function UsersPage() {
                   </td>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 34, height: 34, borderRadius: '50%', background: user.role === 'admin' ? 'var(--accent)' : 'var(--bg-surface-active)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.8rem', fontWeight: 600, flexShrink: 0 }}>
+                      <div style={{ width: 34, height: 34, borderRadius: '50%', background: user.role === 'admin' ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.8rem', fontWeight: 600, flexShrink: 0, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                         {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
                       </div>
                       <span style={{ color: 'var(--text-primary)', fontWeight: 500, wordBreak: 'break-word', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>

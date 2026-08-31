@@ -13,6 +13,9 @@ export function normalizeProduct(p) {
   const categoryName = typeof p.category === 'object' ? p.category?.name : (p.category || 'Handloom Sarees');
   const categorySlug = typeof p.category === 'object' ? p.category?.slug : (p.categorySlug || '');
 
+  const discountLabel = p.preorderDiscount || (p.discountActive ? `${p.discount?.value}%` : '');
+  const isHundredPercentOff = typeof discountLabel === 'string' && discountLabel.replace(/\s+/g, '').toLowerCase().includes('100%');
+
   return {
     ...p,
     id: String(id),
@@ -21,7 +24,7 @@ export function normalizeProduct(p) {
     category: categoryName,
     categoryName,
     categorySlug,
-    price: Number(p.price || 0),
+    price: isHundredPercentOff ? 0 : Number(p.price || 0),
     oldPrice: Number(p.mrpPrice || p.oldPrice || p.price || 0),
     mrpPrice: Number(p.mrpPrice || p.oldPrice || p.price || 0),
     rating: Number(p.averageRating || p.rating || 4.8),
@@ -35,7 +38,7 @@ export function normalizeProduct(p) {
     progress: p.preorderProgress || 70,
     weaver: p.preorderWeaver || 'Master Weaver',
     estimatedDays: p.preorderEstimatedDays || 14,
-    discount: p.preorderDiscount || (p.discountActive ? `${p.discount?.value}%` : ''),
+    discount: discountLabel,
   };
 }
 

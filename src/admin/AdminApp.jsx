@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -14,6 +15,7 @@ import Inquiries from './pages/Inquiries';
 import Coupons from './pages/Coupons';
 import Discounts from './pages/Discounts';
 import LimitedOfferAdmin from './pages/LimitedOfferAdmin';
+import Settings from './pages/Settings';
 import './index.css';
 
 function ProtectedRoute({ children }) {
@@ -32,12 +34,13 @@ function PublicRoute({ children }) {
 
 export default function AdminApp() {
   return (
-    <div className="admin-app-root">
-      <AuthProvider>
-        <Routes>
-          <Route path="login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-            <Route index element={<Dashboard />} />
+    <ThemeProvider>
+      <div className="admin-app-root">
+        <AuthProvider>
+          <Routes>
+            <Route path="login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+              <Route index element={<Dashboard />} />
             <Route path="products" element={<Products />} />
             <Route path="pre-booking" element={<PreBookingAdmin />} />
             <Route path="orders" element={<Orders />} />
@@ -49,10 +52,12 @@ export default function AdminApp() {
             <Route path="reviews" element={<Reviews />} />
             <Route path="inquiries" element={<Inquiries />} />
             <Route path="coupons" element={<Coupons />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>
       </AuthProvider>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }

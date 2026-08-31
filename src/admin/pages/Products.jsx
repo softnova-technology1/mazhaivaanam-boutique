@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { productAPI, categoryAPI, uploadAPI } from '../api/api.js';
 import { exportToCSV } from '../utils/exportCSV.js';
-import { Plus, Search, Edit, Trash2, Eye, Star, X, UploadCloud, Image as ImageIcon, Download, CheckSquare } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Eye, Star, X, UploadCloud, Image as ImageIcon, Download, CheckSquare, ArrowLeft } from 'lucide-react';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -14,6 +14,7 @@ export default function Products() {
   const [saving, setSaving] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [bulkLoading, setBulkLoading] = useState(false);
+  const [deleteAlert, setDeleteAlert] = useState({ open: false, type: 'single', id: null, name: '' });
 
   useEffect(() => {
     categoryAPI.getAll().then(r => setCategories(r.data)).catch(() => { });
@@ -65,17 +66,7 @@ export default function Products() {
 
   const handleBulkDelete = async () => {
     if (!selectedProducts.length) return;
-    if (!window.confirm(`Are you sure you want to remove ${selectedProducts.length} selected products?`)) return;
-
-    setBulkLoading(true);
-    try {
-      await productAPI.bulkDelete(selectedProducts);
-      setSelectedProducts([]);
-      loadProducts();
-    } catch (err) {
-      alert(err.message || 'Error deleting products');
-    }
-    setBulkLoading(false);
+    setDeleteAlert({ open: true, type: 'bulk', id: null, name: `${selectedProducts.length} selected products` });
   };
 
   const handleExportCSV = (exportSelected = false) => {
@@ -119,7 +110,13 @@ export default function Products() {
       isFeatured: false,
       isActive: true,
       imageFile: null,
-      imagePreview: '/Images/saree1.png'
+      imagePreview: '',
+      sec1File: null,
+      sec1Preview: '',
+      sec2File: null,
+      sec2Preview: '',
+      weight: '', colorName: '', colorHex: '#000000', pattern: '', border: '', 
+      pallu: '', sareeLength: '', blouseLength: '', style: '', returnPolicy: '', note: ''
     });
     setModal({ open: true, product: null });
   };
@@ -139,7 +136,22 @@ export default function Products() {
       isFeatured: Boolean(product.isFeatured),
       isActive: product.isActive !== false,
       imageFile: null,
-      imagePreview: product.images?.[0]?.url || ''
+      imagePreview: product.images?.[0]?.url || '',
+      sec1File: null,
+      sec1Preview: product.images?.[1]?.url || '',
+      sec2File: null,
+      sec2Preview: product.images?.[2]?.url || '',
+      weight: product.weight || '',
+      colorName: product.color?.name || '',
+      colorHex: product.color?.hex || '#000000',
+      pattern: product.pattern || '',
+      border: product.border || '',
+      pallu: product.pallu || '',
+      sareeLength: product.sareeLength || '',
+      blouseLength: product.blouseLength || '',
+      style: product.style || '',
+      returnPolicy: product.returnPolicy || '',
+      note: product.note || ''
     });
     setModal({ open: true, product });
   };
@@ -160,35 +172,44 @@ export default function Products() {
         tag: form.tag || null,
         isFeatured: Boolean(form.isFeatured),
         isActive: Boolean(form.isActive),
+        color: { name: form.colorName, hex: form.colorHex },
+        weight: form.weight,
+        pattern: form.pattern,
+        border: form.border,
+        pallu: form.pallu,
+        sareeLength: form.sareeLength,
+        blouseLength: form.blouseLength,
+        style: form.style,
+        returnPolicy: form.returnPolicy,
+        note: form.note,
       };
 
-      if (!modal.product && !form.imageFile && !form.imageUrl?.trim() && !form.imagePreview) {
-        alert('Please upload or provide a product image');
+      if (!modal.product && !form.imageFile && !form.imagePreview) {
+        alert('Please upload or provide a primary product image');
         setSaving(false);
         return;
       }
 
-      const safeFallback = (form.imageUrl && !form.imageUrl.startsWith('blob:')) 
-        ? form.imageUrl.trim() 
-        : (form.imagePreview && !form.imagePreview.startsWith('blob:')) 
-          ? form.imagePreview 
-          : '/Images/saree1.png';
-
-      if (form.imageFile) {
-        try {
-          const res = await uploadAPI.upload(form.imageFile);
-          body.images = [{ url: res.data.url, publicId: res.data.publicId || '' }];
-        } catch (uploadErr) {
-          console.warn('Upload API fallback:', uploadErr);
-          body.images = [{ url: safeFallback, publicId: '' }];
+      const prepareImage = async (file, preview, existingObj) => {
+        if (file) {
+          try {
+            const res = await uploadAPI.upload(file);
+            return { url: res.data.url, publicId: res.data.publicId || '' };
+          } catch (e) {
+            console.warn('Upload failed:', e);
+            return { url: (preview && !preview.startsWith('blob:')) ? preview : '', publicId: '' };
+          }
+        } else if (preview && !preview.startsWith('blob:')) {
+          return existingObj || { url: preview, publicId: '' };
         }
-      } else if (form.imageUrl && form.imageUrl.trim() && !form.imageUrl.startsWith('blob:')) {
-        body.images = [{ url: form.imageUrl.trim(), publicId: '' }];
-      } else if (modal.product?.images?.length && !modal.product.images[0]?.url?.startsWith('blob:')) {
-        body.images = modal.product.images;
-      } else {
-        body.images = [{ url: safeFallback, publicId: '' }];
-      }
+        return null;
+      };
+
+      const res1 = await prepareImage(form.imageFile, form.imagePreview, modal.product?.images?.[0]);
+      const res2 = await prepareImage(form.sec1File, form.sec1Preview, modal.product?.images?.[1]);
+      const res3 = await prepareImage(form.sec2File, form.sec2Preview, modal.product?.images?.[2]);
+
+      body.images = [res1, res2, res3].filter(img => img && img.url);
 
       if (modal.product) {
         await productAPI.update(modal.product._id, body);
@@ -203,17 +224,35 @@ export default function Products() {
     setSaving(false);
   };
 
-  const handleDelete = async (id, name) => {
-    if (!confirm(`Delete "${name}" from MongoDB database?`)) return;
-    try {
-      await productAPI.delete(id);
-      loadProducts();
-    } catch (err) { alert(err.message); }
+  const triggerDelete = (id, name) => {
+    setDeleteAlert({ open: true, type: 'single', id, name });
+  };
+
+  const confirmDelete = async () => {
+    if (deleteAlert.type === 'bulk') {
+      setBulkLoading(true);
+      try {
+        await productAPI.bulkDelete(selectedProducts);
+        setSelectedProducts([]);
+        loadProducts();
+      } catch (err) {
+        alert(err.message || 'Error deleting products');
+      }
+      setBulkLoading(false);
+    } else if (deleteAlert.type === 'single') {
+      try {
+        await productAPI.delete(deleteAlert.id);
+        loadProducts();
+      } catch (err) { alert(err.message); }
+    }
+    setDeleteAlert({ open: false, type: 'single', id: null, name: '' });
   };
 
   return (
     <div className="page-container">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      {!modal.open ? (
+        <>
+          <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <h1 className="page-title">Products Catalog</h1>
           <p className="page-subtitle">{pagination.total || 0} products in catalog</p>
@@ -375,7 +414,7 @@ export default function Products() {
                       <td style={{ textAlign: 'right' }}>
                         <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
                           <button className="btn-ghost btn-icon" onClick={() => openEdit(p)} title="Edit"><Edit size={16} /></button>
-                          <button className="btn-ghost btn-icon" onClick={() => handleDelete(p._id, p.name)} title="Delete" style={{ color: 'var(--danger)' }}><Trash2 size={16} /></button>
+                          <button className="btn-ghost btn-icon" onClick={() => triggerDelete(p._id, p.name)} title="Delete" style={{ color: 'var(--danger)' }}><Trash2 size={16} /></button>
                         </div>
                       </td>
                     </tr>
@@ -415,94 +454,155 @@ export default function Products() {
           )}
         </>
       )}
-
-      {/* Create/Edit Modal */}
-      {modal.open && (
-        <div className="modal-overlay" onClick={() => setModal({ open: false, product: null })}>
-          <div className="modal-content" style={{ maxWidth: 850, width: '100%' }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3 className="modal-title">{modal.product ? 'Edit Product' : 'Add Product'}</h3>
-              <button className="btn-ghost btn-icon" onClick={() => setModal({ open: false, product: null })}><X size={20} /></button>
-            </div>
-            <form onSubmit={handleSave}>
-              <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
+      </>
+    ) : (
+      /* Create/Edit Form Page */
+      <div className="form-page-container">
+          <div className="page-header" style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+            <button className="btn btn-outline" onClick={() => setModal({ open: false, product: null })} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <ArrowLeft size={16} /> Back to Products
+            </button>
+            <h2 className="page-title">{modal.product ? 'Edit Product' : 'Add New Product'}</h2>
+          </div>
+          <form onSubmit={handleSave} style={{ background: 'var(--bg-primary)', borderRadius: 12, padding: 32, border: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
 
                 {/* Left Column: Image Upload */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <label className="form-label">Product Image</label>
-                  <div
-                    style={{
-                      border: '2px dashed var(--border-color)',
-                      borderRadius: 12,
-                      flex: 1,
-                      minHeight: 350,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: 'var(--bg-secondary)',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      cursor: 'pointer',
-                      transition: 'border-color 0.2s'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
-                    onClick={() => document.getElementById('product-image-upload').click()}
-                  >
-                    {form.imagePreview ? (
-                      <>
-                        <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: 'rgba(0,0,0,0.5)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            opacity: 0,
-                            transition: 'opacity 0.2s'
-                          }}
-                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                          onMouseLeave={e => e.currentTarget.style.opacity = 0}
-                        >
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
-                            <UploadCloud size={32} />
-                            <span style={{ fontWeight: 500 }}>Change Image</span>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
-                        <UploadCloud size={48} style={{ marginBottom: 16, opacity: 0.6 }} />
-                        <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-primary)' }}>Click to upload</div>
-                        <div style={{ fontSize: '0.8rem', marginTop: 8 }}>Supports PNG, JPG, WEBP</div>
-                      </div>
-                    )}
-                    <input
-                      id="product-image-upload"
-                      type="file"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      onChange={e => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
-                        }
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div>
+                    <label className="form-label">Primary Image</label>
+                    <div
+                      style={{
+                        border: '2px dashed var(--border-color)',
+                        borderRadius: 12,
+                        minHeight: 280,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'var(--bg-secondary)',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        transition: 'border-color 0.2s'
                       }}
-                    />
+                      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
+                      onClick={() => document.getElementById('product-image-upload').click()}
+                    >
+                      {form.imagePreview ? (
+                        <>
+                          <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                          <div
+                            style={{
+                              position: 'absolute',
+                              inset: 0,
+                              background: 'rgba(0,0,0,0.5)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              opacity: 0,
+                              transition: 'opacity 0.2s'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                            onMouseLeave={e => e.currentTarget.style.opacity = 0}
+                          >
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
+                              <UploadCloud size={32} />
+                              <span style={{ fontWeight: 500 }}>Change</span>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                          <UploadCloud size={40} style={{ marginBottom: 12, opacity: 0.6 }} />
+                          <div style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>Primary Image</div>
+                        </div>
+                      )}
+                      <input
+                        id="product-image-upload"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={e => {
+                          const file = e.target.files[0];
+                          if (file) setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div style={{ marginTop: 12 }}>
-                    <label className="form-label" style={{ fontSize: '0.75rem' }}>Or Direct Image Path / URL</label>
-                    <input
-                      className="form-input"
-                      placeholder="/Images/saree1.png or https://..."
-                      value={form.imageUrl || ''}
-                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))}
-                    />
+
+                  <div>
+                    <label className="form-label">Secondary Images</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                      {/* Secondary 1 */}
+                      <div
+                        style={{
+                          border: '2px dashed var(--border-color)',
+                          borderRadius: 12,
+                          height: 140,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'var(--bg-secondary)',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => document.getElementById('sec1-upload').click()}
+                      >
+                        {form.sec1Preview ? (
+                          <>
+                            <img src={form.sec1Preview} alt="Sec 1" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec1File: null, sec1Preview: '' })); }}><X size={14}/></div>
+                          </>
+                        ) : (
+                          <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                            <Plus size={24} style={{ opacity: 0.6 }} />
+                          </div>
+                        )}
+                        <input id="sec1-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                          const file = e.target.files[0];
+                          if (file) setForm(f => ({ ...f, sec1File: file, sec1Preview: URL.createObjectURL(file) }));
+                        }} />
+                      </div>
+                      
+                      {/* Secondary 2 */}
+                      <div
+                        style={{
+                          border: '2px dashed var(--border-color)',
+                          borderRadius: 12,
+                          height: 140,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'var(--bg-secondary)',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => document.getElementById('sec2-upload').click()}
+                      >
+                        {form.sec2Preview ? (
+                          <>
+                            <img src={form.sec2Preview} alt="Sec 2" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec2File: null, sec2Preview: '' })); }}><X size={14}/></div>
+                          </>
+                        ) : (
+                          <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                            <Plus size={24} style={{ opacity: 0.6 }} />
+                          </div>
+                        )}
+                        <input id="sec2-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                          const file = e.target.files[0];
+                          if (file) setForm(f => ({ ...f, sec2File: file, sec2Preview: URL.createObjectURL(file) }));
+                        }} />
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+
 
                 {/* Right Column: Details */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -560,6 +660,70 @@ export default function Products() {
                       </select>
                     </div>
                   </div>
+                  
+                  {/* --- Product Specifications --- */}
+                  <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, borderBottom: '1px solid var(--border-color)', paddingBottom: 8 }}>Product Specifications</h4>
+                  
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Color Name</label>
+                      <input className="form-input" value={form.colorName} onChange={e => setForm(f => ({ ...f, colorName: e.target.value }))} placeholder="e.g. Royal Blue" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Color Hex</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <input type="color" value={form.colorHex} onChange={e => setForm(f => ({ ...f, colorHex: e.target.value }))} style={{ width: 42, height: 42, padding: 0, border: 'none', borderRadius: 8, cursor: 'pointer', background: 'transparent', flexShrink: 0 }} />
+                        <input className="form-input" value={form.colorHex} onChange={e => setForm(f => ({ ...f, colorHex: e.target.value }))} placeholder="#000000" style={{ flex: 1, textTransform: 'uppercase' }} />
+                      </div>
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Weight</label>
+                      <input className="form-input" value={form.weight} onChange={e => setForm(f => ({ ...f, weight: e.target.value }))} placeholder="e.g. 500g" />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Pattern</label>
+                      <input className="form-input" value={form.pattern} onChange={e => setForm(f => ({ ...f, pattern: e.target.value }))} placeholder="e.g. Floral Motif" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Border</label>
+                      <input className="form-input" value={form.border} onChange={e => setForm(f => ({ ...f, border: e.target.value }))} placeholder="e.g. Zari Border" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Pallu</label>
+                      <input className="form-input" value={form.pallu} onChange={e => setForm(f => ({ ...f, pallu: e.target.value }))} placeholder="e.g. Rich Brocade" />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Saree Length</label>
+                      <input className="form-input" value={form.sareeLength} onChange={e => setForm(f => ({ ...f, sareeLength: e.target.value }))} placeholder="e.g. 5.5 meters" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Blouse Length</label>
+                      <input className="form-input" value={form.blouseLength} onChange={e => setForm(f => ({ ...f, blouseLength: e.target.value }))} placeholder="e.g. 0.8 meters" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Style</label>
+                      <input className="form-input" value={form.style} onChange={e => setForm(f => ({ ...f, style: e.target.value }))} placeholder="e.g. Kanjivaram" />
+                    </div>
+                  </div>
+
+                  {/* --- Additional Info --- */}
+                  <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, borderBottom: '1px solid var(--border-color)', paddingBottom: 8 }}>Additional Info</h4>
+                  
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Return Policy</label>
+                      <input className="form-input" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))} placeholder="e.g. 7 Days Return" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Note</label>
+                      <input className="form-input" value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))} placeholder="e.g. Dry clean only" />
+                    </div>
+                  </div>
+
                   <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
                       <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
@@ -572,11 +736,27 @@ export default function Products() {
                   </div>
                 </div>
               </div>
-              <div className="modal-footer">
+
+              <div style={{ marginTop: 32, display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
                 <button type="button" className="btn btn-outline" onClick={() => setModal({ open: false, product: null })}>Cancel</button>
                 <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : 'Save Product'}</button>
               </div>
             </form>
+        </div>
+      )}
+
+      {/* Delete Confirmation Alert */}
+      {deleteAlert.open && (
+        <div className="modal-overlay" style={{ zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-content" style={{ maxWidth: 400, padding: 32, textAlign: 'center', borderRadius: 16 }}>
+            <h3 style={{ marginBottom: 16, fontSize: '1.25rem', fontWeight: 600 }}>Confirm Delete</h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 32, lineHeight: 1.5 }}>
+              Are you sure you want to delete <strong>{deleteAlert.name}</strong> from database? This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
+              <button className="btn btn-outline" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => setDeleteAlert({ open: false, type: 'single', id: null, name: '' })}>Cancel</button>
+              <button className="btn btn-primary" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'var(--danger)', borderColor: 'var(--danger)', color: '#fff' }} onClick={confirmDelete}>OK</button>
+            </div>
           </div>
         </div>
       )}

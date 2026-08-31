@@ -32,7 +32,11 @@ async function request(endpoint, options = {}) {
   const data = await res.json().catch(() => ({ success: false, message: 'Invalid response from server' }));
 
   if (!res.ok) {
-    throw new Error(data.message || 'Request failed');
+    let errorMsg = data.message || 'Request failed';
+    if (data.errors) {
+      errorMsg += ':\n' + Object.values(data.errors).join('\n');
+    }
+    throw new Error(errorMsg);
   }
 
   return data;

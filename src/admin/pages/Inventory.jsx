@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { inventoryAPI, productAPI, categoryAPI, uploadAPI } from '../api/api.js';
 import { exportToCSV } from '../utils/exportCSV.js';
-import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud, Download, EyeOff, Eye } from 'lucide-react';
+import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud, Download, EyeOff, Eye, ArrowLeft } from 'lucide-react';
 
 export default function Inventory() {
   const [inventory, setInventory] = useState([]);
@@ -115,9 +115,9 @@ export default function Inventory() {
   const openCreate = () => {
     setForm({
       name: '', description: '', category: categories[0]?._id || '',
-      fabric: 'Pure Silk', price: '', mrpPrice: '', stock: 25,
       occasion: 'Traditional', tag: '', imageUrl: '', isFeatured: false,
-      isActive: true, imageFile: null, imagePreview: '/Images/saree1.png'
+      isActive: true, imageFile: null, imagePreview: '',
+      sec1File: null, sec1Preview: '', sec2File: null, sec2Preview: ''
     });
     setModal({ open: true });
   };
@@ -133,25 +133,34 @@ export default function Inventory() {
         isFeatured: Boolean(form.isFeatured), isActive: Boolean(form.isActive),
       };
 
-      const safeFallback = (form.imageUrl && !form.imageUrl.startsWith('blob:')) 
-        ? form.imageUrl.trim() 
-        : (form.imagePreview && !form.imagePreview.startsWith('blob:')) 
-          ? form.imagePreview 
-          : '/Images/saree1.png';
-
-      if (form.imageFile) {
-        try {
-          const res = await uploadAPI.upload(form.imageFile);
-          body.images = [{ url: res.data.url, publicId: res.data.publicId || '' }];
-        } catch (uploadErr) {
-          console.warn('Upload API fallback:', uploadErr);
-          body.images = [{ url: safeFallback, publicId: '' }];
-        }
-      } else if (form.imageUrl && form.imageUrl.trim() && !form.imageUrl.startsWith('blob:')) {
-        body.images = [{ url: form.imageUrl.trim(), publicId: '' }];
-      } else {
-        body.images = [{ url: safeFallback, publicId: '' }];
+      if (!form.imageFile && !form.imagePreview) {
+        alert('Please upload or provide a primary product image');
+        setSaving(false);
+        return;
       }
+
+      const prepareImage = async (file, preview) => {
+        if (file) {
+          try {
+            const res = await uploadAPI.upload(file);
+            return { url: res.data.url, publicId: res.data.publicId || '' };
+          } catch (e) {
+            console.warn('Upload failed:', e);
+            return { url: (preview && !preview.startsWith('blob:')) ? preview : '', publicId: '' };
+          }
+        } else if (preview && !preview.startsWith('blob:')) {
+          return { url: preview, publicId: '' };
+        }
+        return null;
+      };
+
+      const res1 = await prepareImage(form.imageFile, form.imagePreview);
+      const res2 = await prepareImage(form.sec1File, form.sec1Preview);
+      const res3 = await prepareImage(form.sec2File, form.sec2Preview);
+
+      body.images = [res1, res2, res3]
+        .filter(img => img && img.url)
+        .map(({ _id, ...rest }) => rest);
 
       await productAPI.create(body);
       setModal({ open: false });
@@ -192,7 +201,9 @@ export default function Inventory() {
 
   return (
     <div className="page-container">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      {!modal.open ? (
+        <>
+          <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <h1 className="page-title">Inventory Management</h1>
           <p className="page-subtitle">{totalCount} products tracked</p>
@@ -431,87 +442,151 @@ export default function Inventory() {
           </div>
         </div>
       )}
-
-      {/* Create Product Modal */}
-      {modal.open && (
-        <div className="modal-overlay" onClick={() => setModal({ open: false })}>
-          <div className="modal-content" style={{ maxWidth: 850, width: '100%' }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3 className="modal-title">Add New Product</h3>
-              <button className="btn-ghost btn-icon" onClick={() => setModal({ open: false })}><X size={20} /></button>
-            </div>
-            <form onSubmit={handleSaveProduct}>
-              <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
+      </>
+    ) : (
+      /* Create Form Page */
+      <div className="form-page-container">
+        <div className="page-header" style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+          <button className="btn btn-outline" onClick={() => setModal({ open: false })} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ArrowLeft size={16} /> Back to Inventory
+          </button>
+          <h2 className="page-title">Add New Product</h2>
+        </div>
+        <form onSubmit={handleSaveProduct} style={{ background: 'var(--bg-primary)', borderRadius: 12, padding: 32, border: '1px solid var(--border-color)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
 
                 {/* Left Column: Image Upload */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <label className="form-label">Product Image</label>
-                  <div
-                    style={{
-                      border: '2px dashed var(--border-color)',
-                      borderRadius: 12,
-                      flex: 1,
-                      minHeight: 350,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: 'var(--bg-secondary)',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      cursor: 'pointer',
-                      transition: 'border-color 0.2s'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
-                    onClick={() => document.getElementById('inventory-product-image-upload').click()}
-                  >
-                    {form.imagePreview ? (
-                      <>
-                        <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        <div
-                          style={{
-                            position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            opacity: 0, transition: 'opacity 0.2s'
-                          }}
-                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                          onMouseLeave={e => e.currentTarget.style.opacity = 0}
-                        >
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
-                            <UploadCloud size={32} />
-                            <span style={{ fontWeight: 500 }}>Change Image</span>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
-                        <UploadCloud size={48} style={{ marginBottom: 16, opacity: 0.6 }} />
-                        <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-primary)' }}>Click to upload</div>
-                        <div style={{ fontSize: '0.8rem', marginTop: 8 }}>Supports PNG, JPG, WEBP</div>
-                      </div>
-                    )}
-                    <input
-                      id="inventory-product-image-upload"
-                      type="file"
-                      accept="image/*"
-                      style={{ display: 'none' }}
-                      onChange={e => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
-                        }
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div>
+                    <label className="form-label">Primary Image</label>
+                    <div
+                      style={{
+                        border: '2px dashed var(--border-color)',
+                        borderRadius: 12,
+                        minHeight: 280,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'var(--bg-secondary)',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        transition: 'border-color 0.2s'
                       }}
-                    />
+                      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
+                      onClick={() => document.getElementById('inventory-product-image-upload').click()}
+                    >
+                      {form.imagePreview ? (
+                        <>
+                          <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                          <div
+                            style={{
+                              position: 'absolute',
+                              inset: 0,
+                              background: 'rgba(0,0,0,0.5)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              opacity: 0,
+                              transition: 'opacity 0.2s'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                            onMouseLeave={e => e.currentTarget.style.opacity = 0}
+                          >
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
+                              <UploadCloud size={32} />
+                              <span style={{ fontWeight: 500 }}>Change</span>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                          <UploadCloud size={40} style={{ marginBottom: 12, opacity: 0.6 }} />
+                          <div style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>Primary Image</div>
+                        </div>
+                      )}
+                      <input
+                        id="inventory-product-image-upload"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={e => {
+                          const file = e.target.files[0];
+                          if (file) setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div style={{ marginTop: 12 }}>
-                    <label className="form-label" style={{ fontSize: '0.75rem' }}>Or Direct Image Path / URL</label>
-                    <input
-                      className="form-input"
-                      placeholder="/Images/saree1.png or https://..."
-                      value={form.imageUrl || ''}
-                      onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value, imagePreview: e.target.value || f.imagePreview }))}
-                    />
+
+                  <div>
+                    <label className="form-label">Secondary Images</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                      {/* Secondary 1 */}
+                      <div
+                        style={{
+                          border: '2px dashed var(--border-color)',
+                          borderRadius: 12,
+                          height: 140,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'var(--bg-secondary)',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => document.getElementById('inventory-sec1-upload').click()}
+                      >
+                        {form.sec1Preview ? (
+                          <>
+                            <img src={form.sec1Preview} alt="Sec 1" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec1File: null, sec1Preview: '' })); }}><X size={14}/></div>
+                          </>
+                        ) : (
+                          <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                            <Plus size={24} style={{ opacity: 0.6 }} />
+                          </div>
+                        )}
+                        <input id="inventory-sec1-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                          const file = e.target.files[0];
+                          if (file) setForm(f => ({ ...f, sec1File: file, sec1Preview: URL.createObjectURL(file) }));
+                        }} />
+                      </div>
+                      
+                      {/* Secondary 2 */}
+                      <div
+                        style={{
+                          border: '2px dashed var(--border-color)',
+                          borderRadius: 12,
+                          height: 140,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'var(--bg-secondary)',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => document.getElementById('inventory-sec2-upload').click()}
+                      >
+                        {form.sec2Preview ? (
+                          <>
+                            <img src={form.sec2Preview} alt="Sec 2" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec2File: null, sec2Preview: '' })); }}><X size={14}/></div>
+                          </>
+                        ) : (
+                          <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                            <Plus size={24} style={{ opacity: 0.6 }} />
+                          </div>
+                        )}
+                        <input id="inventory-sec2-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                          const file = e.target.files[0];
+                          if (file) setForm(f => ({ ...f, sec2File: file, sec2Preview: URL.createObjectURL(file) }));
+                        }} />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -583,12 +658,12 @@ export default function Inventory() {
                   </div>
                 </div>
               </div>
-              <div className="modal-footer">
+
+              <div style={{ marginTop: 32, display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
                 <button type="button" className="btn btn-outline" onClick={() => setModal({ open: false })}>Cancel</button>
                 <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : 'Add Product'}</button>
               </div>
             </form>
-          </div>
         </div>
       )}
     </div>

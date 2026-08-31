@@ -24,11 +24,17 @@ const getProductDetails = (product) => {
     headline: product.name,
     p1: product.description || 'Welcome to the heritage of handloom. Experience premium comfort, authentic design, and exquisite weave tailored for special occasions.',
     p2: '',
-    fabric: product.fabric || 'Pure Silk',
-    design: product.specs?.weave || 'Premium Handloom Weave',
-    border: product.specs?.zari || 'Traditional Borders',
-    texture: product.specs?.fabricType || 'Naturally rich texture and luxurious feel',
-    occasion: product.occasion || 'Traditional'
+    fabric: product.fabric,
+    pattern: product.pattern,
+    pallu: product.pallu,
+    blouse: product.blouse,
+    sareeLength: product.sareeLength,
+    height: product.height,
+    blouseLength: product.blouseLength,
+    weight: product.weight,
+    washCare: product.washCare,
+    returnPolicy: product.returnPolicy,
+    note: product.note
   };
 };
 
@@ -417,14 +423,19 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                       
                       <h5 className={styles['qv-highlights-title']}>Product Highlights:</h5>
                       <ul className={styles['qv-highlights-list']}>
-                        <li><strong>Fabric:</strong> {details.fabric}</li>
-                        <li><strong>Design:</strong> {details.design}</li>
-                        <li><strong>Border:</strong> {details.border}</li>
-                        <li><strong>Texture:</strong> {details.texture}</li>
-                        <li><strong>Occasion:</strong> {details.occasion}</li>
+                        {details.fabric && <li><strong>Fabric:</strong> {details.fabric}</li>}
+                        {details.pattern && <li><strong>Pattern / Design:</strong> {details.pattern}</li>}
+                        {details.pallu && <li><strong>Pallu:</strong> {details.pallu}</li>}
+                        {details.blouse && <li><strong>Blouse:</strong> {details.blouse}</li>}
+                        {details.sareeLength && <li><strong>Saree Length:</strong> {details.sareeLength}</li>}
+                        {details.height && <li><strong>Height:</strong> {details.height}</li>}
+                        {details.blouseLength && <li><strong>Blouse Length:</strong> {details.blouseLength}</li>}
+                        {details.weight && <li><strong>Weight:</strong> {details.weight}</li>}
+                        {details.washCare && <li><strong>Wash Care:</strong> {details.washCare}</li>}
+                        {details.returnPolicy && <li><strong>Return/Exchange:</strong> {details.returnPolicy}</li>}
                       </ul>
                       <p className={styles['qv-desc-note']}>
-                        <strong>Note:</strong> Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.
+                        <strong>Note:</strong> {details.note || 'Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.'}
                       </p>
                     </div>
                   )}

@@ -212,12 +212,40 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
               <span>Subtotal (MRP):</span>
               <span>{formatCurrency(order.mrpTotal || order.subtotal || order.finalAmount)}</span>
             </div>
-            {(order.totalSavings > 0 || order.discountAmount > 0) && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#16a34a' }}>
-                <span>Total Savings:</span>
-                <span>- {formatCurrency(order.totalSavings || order.discountAmount)}</span>
+            {order.subtotal && order.mrpTotal && order.mrpTotal !== order.subtotal && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#64748b' }}>
+                <span>Exclusive Price:</span>
+                <span>{formatCurrency(order.subtotal)}</span>
               </div>
             )}
+            {order.discount > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#16a34a' }}>
+                <span>Festival Discount:</span>
+                <span>- {formatCurrency(order.discount)}</span>
+              </div>
+            )}
+            {order.couponDiscount > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#16a34a' }}>
+                <span>Coupon Discount {order.couponCode ? `(${order.couponCode})` : ''}:</span>
+                <span>- {formatCurrency(order.couponDiscount)}</span>
+              </div>
+            )}
+            {order.convenienceFee > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#64748b' }}>
+                <span>Convenience Fees:</span>
+                <span>{formatCurrency(order.convenienceFee)}</span>
+              </div>
+            )}
+            {order.giftPackCharge > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#64748b' }}>
+                <span>Luxury Packaging Addon:</span>
+                <span>{formatCurrency(order.giftPackCharge)}</span>
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#64748b' }}>
+              <span>{order.deliveryMode === 'pickup' ? 'Self Pickup' : 'Shipping'}:</span>
+              <span>{order.shippingFee > 0 ? formatCurrency(order.shippingFee) : 'FREE'}</span>
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, paddingTop: 8, borderTop: '1px solid #cbd5e1', fontWeight: 700, fontSize: '1rem', color: '#0f172a' }}>
               <span>Final Paid Amount:</span>
               <span style={{ color: '#490017' }}>{formatCurrency(order.finalAmount || order.totalAmount)}</span>

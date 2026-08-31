@@ -158,7 +158,9 @@ export default function Inventory() {
       const res2 = await prepareImage(form.sec1File, form.sec1Preview);
       const res3 = await prepareImage(form.sec2File, form.sec2Preview);
 
-      body.images = [res1, res2, res3].filter(img => img && img.url);
+      body.images = [res1, res2, res3]
+        .filter(img => img && img.url)
+        .map(({ _id, ...rest }) => rest);
 
       await productAPI.create(body);
       setModal({ open: false });

@@ -26,7 +26,11 @@ async function request(endpoint, options = {}) {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data.message || 'Request failed');
+    let errorMsg = data.message || 'Request failed';
+    if (data.errors) {
+      errorMsg += ':\n' + Object.values(data.errors).join('\n');
+    }
+    throw new Error(errorMsg);
   }
 
   return data;
@@ -47,13 +51,14 @@ export const dashboardAPI = {
 
 // ====== PRODUCTS ======
 export const productAPI = {
-  getAll: (params = '') => request(`/products${params ? '?' + params : ''}`),
+  getAll: (params = '') => request(`/admin/products${params ? '?' + params : ''}`),
   getBySlug: (slug) => request(`/products/${slug}`),
   create: (body) => request('/admin/products', { method: 'POST', body }),
   update: (id, body) => request(`/admin/products/${id}`, { method: 'PUT', body }),
   delete: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
   hardDelete: (id) => request(`/admin/products/${id}/hard`, { method: 'DELETE' }),
   bulkDelete: (productIds) => request('/admin/products/bulk/delete', { method: 'POST', body: { productIds } }),
+  bulkHardDelete: (productIds) => request('/admin/products/bulk/hard-delete', { method: 'POST', body: { productIds } }),
 };
 
 // ====== CATEGORIES ======

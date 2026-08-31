@@ -5,77 +5,6 @@ import { formatCurrency } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
 import { getPreorderProducts } from '../../services/api';
 
-export const PREORDER_PRODUCTS = [
-  {
-    id: 'pre-1',
-    name: "Sona Roopa Kanjeevaram",
-    category: "Blended South Cotton",
-    fabric: "Pure Silk",
-    color: "#6B102A",
-    occasion: "Wedding",
-    price: 30600,
-    oldPrice: 34000,
-    progress: 75,
-    weaver: "Master Weaver Ramalingam",
-    image: "/Images/saree11.png",
-    description: "Exquisite gold and silver zari Kanjeevaram, meticulously hand-woven with traditional wedding temple motifs.",
-    isPreorder: true,
-    estimatedDays: 12,
-    discount: "10%"
-  },
-  {
-    id: 'pre-2',
-    name: "Shahi Shikargah Banarasi",
-    category: "Handloom Sarees",
-    fabric: "Pure Silk",
-    color: "#C8A34D",
-    occasion: "Wedding",
-    price: 41400,
-    oldPrice: 46000,
-    progress: 50,
-    weaver: "Master Weaver Kabir",
-    image: "/Images/saree13.png",
-    description: "Featuring complex hunting scenes woven in 24k gold zari, this Katan silk Banarasi is an imperial masterwork.",
-    isPreorder: true,
-    estimatedDays: 22,
-    discount: "10%"
-  },
-  {
-    id: 'pre-3',
-    name: "Chanderi Indigo Bloom",
-    category: "Linen Cotton",
-    fabric: "Pure Silk",
-    color: "#1A237E",
-    occasion: "Party Wear",
-    price: 18900,
-    oldPrice: 21000,
-    progress: 90,
-    weaver: "Artisan Meenakshi",
-    image: "/Images/saree14.png",
-    description: "Delicate Chanderi silk with hand-woven indigo floral butis, golden borders, and tissue pallu.",
-    isPreorder: true,
-    estimatedDays: 5,
-    discount: "10%"
-  },
-  {
-    id: 'pre-4',
-    name: "Organic Sage Cotton",
-    category: "Chanderi Cotton",
-    fabric: "Cotton",
-    color: "#004D40",
-    occasion: "Festival",
-    price: 11250,
-    oldPrice: 12500,
-    progress: 40,
-    weaver: "Weaver Kumar",
-    image: "/Images/saree2.png",
-    description: "Loom-woven pure organic cotton tinted with natural plant dyes, showcasing structural elegance and breathable weight.",
-    isPreorder: true,
-    estimatedDays: 28,
-    discount: "10%"
-  }
-];
-
 export const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
   { value: 'relevance', label: 'Most relevant' },
@@ -90,63 +19,22 @@ export const SORT_OPTIONS = [
 
 const getProductDetails = (product) => {
   if (!product) return null;
-  const productId = product.id || product._id;
-  const detailsMap = {
-    'pre-1': {
-      headline: "Exquisite Pure Silk Saree with Traditional Motifs",
-      p1: "Elevate your ethnic wardrobe with the timeless elegance of Pure Silk. Known for its rich texture and natural sheen, this collection combines heritage with traditional temple borders to create a look that is both grounded and sophisticated.",
-      p2: "Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic Kanjeevaram handloom. Finished with a refined gold and silver Zari border, these sarees are designed for the woman who appreciates understated luxury.",
-      fabric: "100% Pure Silk - breathable, lightweight, and durable.",
-      design: "Exquisite ruby red handwoven Kanjeevaram adorned with heritage gold & silver zari and wedding temple motifs.",
-      border: "Elegant metallic Zari border that adds a touch of festive shimmer.",
-      texture: "Naturally rich, uneven silk texture that lends an organic, high-end feel.",
-      occasion: "Perfect for weddings, traditional ceremonies, and festive celebrations."
-    },
-    'pre-2': {
-      headline: "Imperial Katan Silk Banarasi Saree",
-      p1: "Elevate your ethnic wardrobe with the timeless elegance of Pure Silk. Known for its rich texture and natural sheen, this collection combines heritage with imperial hunting motifs to create a look that is both grounded and sophisticated.",
-      p2: "Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic Banarasi handloom. Finished with a refined 24k gold Zari border, these sarees are designed for the woman who appreciates understated luxury.",
-      fabric: "100% Katan Pure Silk - breathable, lightweight, and durable.",
-      design: "Complex hunting scenes (Shikargah) woven in 24k gold zari, representing imperial masterwork.",
-      border: "Elaborate 24k gold zari border.",
-      texture: "Rich, heavy silk texture that drapes beautifully.",
-      occasion: "Perfect for grand weddings, receptions, and premium festive gatherings."
-    },
-    'pre-3': {
-      headline: "Delicate Chanderi Silk Saree with Indigo Floral Butis",
-      p1: "Elevate your ethnic wardrobe with the timeless elegance of Chanderi Silk. Known for its sheer texture and lightweight drape, this collection combines indigo floral dyes with golden zari border to create a look that is both grounded and sophisticated.",
-      p2: "Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic Chanderi handloom. Finished with a golden border and tissue pallu, these sarees are designed for the woman who appreciates understated luxury.",
-      fabric: "Pure Chanderi Silk-Cotton blend - breathable, lightweight, and sheer.",
-      design: "Delicate hand-woven indigo floral butis with rich tissue pallu.",
-      border: "Golden zari border adding subtle elegance.",
-      texture: "Lightweight, translucent, and fine texture.",
-      occasion: "Perfect for semi-formal gatherings, day events, and festive celebrations."
-    },
-    'pre-4': {
-      headline: "Organic Sage Cotton Saree with Natural Dyes",
-      p1: "Elevate your ethnic wardrobe with the timeless elegance of Organic Cotton. Known for its soft texture and breathable weight, this collection combines natural plant dyes with artisan weaving to create a look that is both grounded and sophisticated.",
-      p2: "Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic organic handloom. Finished with structural borders, these sarees are designed for the woman who appreciates eco-friendly luxury.",
-      fabric: "100% Organic Cotton - breathable, eco-friendly, and soft.",
-      design: "Loom-woven pure cotton tinted with natural plant dyes for a sustainable, elegant look.",
-      border: "Minimalist structural borders.",
-      texture: "Highly breathable, lightweight, and soft hand-feel.",
-      occasion: "Perfect for summer events, office wear, and casual festive celebrations."
-    }
-  };
-
-  if (detailsMap[productId]) {
-    return detailsMap[productId];
-  }
 
   return {
     headline: product.name,
     p1: product.description || 'Welcome to the heritage of handloom. Experience premium comfort, authentic design, and exquisite weave tailored for special occasions.',
     p2: '',
-    fabric: product.fabric || 'Pure Silk',
-    design: product.specs?.weave || 'Premium Handloom Weave',
-    border: product.specs?.zari || 'Traditional Borders',
-    texture: product.specs?.fabricType || 'Naturally rich texture and luxurious feel',
-    occasion: product.occasion || 'Traditional'
+    fabric: product.fabric,
+    pattern: product.pattern,
+    pallu: product.pallu,
+    blouse: product.blouse,
+    sareeLength: product.sareeLength,
+    height: product.height,
+    blouseLength: product.blouseLength,
+    weight: product.weight,
+    washCare: product.washCare,
+    returnPolicy: product.returnPolicy,
+    note: product.note
   };
 };
 
@@ -437,12 +325,17 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                 }
               `}</style>
             </div>
+          ) : sortedProducts.length === 0 ? (
+            <div style={{ padding: '4rem 2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+              <h3>No Pre-Booking products available at the moment.</h3>
+              <p style={{ marginTop: '1rem' }}>Please check back later.</p>
+            </div>
           ) : (
             <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
               {sortedProducts.map((product) => (
                 <div key={product.id} className={styles['product-card']}>
                   <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
-                    <div className={styles['discount-badge']}>{product.discount} OFF</div>
+                    {product.discount && <div className={styles['discount-badge']}>{product.discount}</div>}
                     <img src={product.image} alt={product.name} className={styles['product-image']} />
                   </div>
                   <div className={styles['product-info']}>
@@ -454,12 +347,12 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                     <div className={styles['product-rating']}>
                       <Star size={12} fill="#d32f2f" stroke="#d32f2f" />
                       <span>{product.rating || '4.8'}</span>
-                      <span className={styles['review-count']}>({product.reviews || '24'})</span>
+                      <span className={styles['review-count']}>({product.reviews || product.reviewCount || '0'})</span>
                     </div>
 
                     <div className={styles['product-price-row']}>
                       <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                      <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                      {product.oldPrice > product.price && <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>}
                     </div>
                     <div 
                       role="button" 
@@ -530,14 +423,19 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                       
                       <h5 className={styles['qv-highlights-title']}>Product Highlights:</h5>
                       <ul className={styles['qv-highlights-list']}>
-                        <li><strong>Fabric:</strong> {details.fabric}</li>
-                        <li><strong>Design:</strong> {details.design}</li>
-                        <li><strong>Border:</strong> {details.border}</li>
-                        <li><strong>Texture:</strong> {details.texture}</li>
-                        <li><strong>Occasion:</strong> {details.occasion}</li>
+                        {details.fabric && <li><strong>Fabric:</strong> {details.fabric}</li>}
+                        {details.pattern && <li><strong>Pattern / Design:</strong> {details.pattern}</li>}
+                        {details.pallu && <li><strong>Pallu:</strong> {details.pallu}</li>}
+                        {details.blouse && <li><strong>Blouse:</strong> {details.blouse}</li>}
+                        {details.sareeLength && <li><strong>Saree Length:</strong> {details.sareeLength}</li>}
+                        {details.height && <li><strong>Height:</strong> {details.height}</li>}
+                        {details.blouseLength && <li><strong>Blouse Length:</strong> {details.blouseLength}</li>}
+                        {details.weight && <li><strong>Weight:</strong> {details.weight}</li>}
+                        {details.washCare && <li><strong>Wash Care:</strong> {details.washCare}</li>}
+                        {details.returnPolicy && <li><strong>Return/Exchange:</strong> {details.returnPolicy}</li>}
                       </ul>
                       <p className={styles['qv-desc-note']}>
-                        <strong>Note:</strong> Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.
+                        <strong>Note:</strong> {details.note || 'Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.'}
                       </p>
                     </div>
                   )}

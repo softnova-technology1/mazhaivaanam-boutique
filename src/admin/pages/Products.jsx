@@ -15,6 +15,12 @@ export default function Products() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [bulkLoading, setBulkLoading] = useState(false);
   const [deleteAlert, setDeleteAlert] = useState({ open: false, type: 'single', id: null, name: '' });
+    const [toast, setToast] = useState({ open: false, message: '', type: 'error' });
+    const showToast = (message, type = 'error') => {
+      setToast({ open: true, message, type });
+      setTimeout(() => setToast({ open: false, message: '', type: 'error' }), 4000);
+    };
+  const [imagePreviewModal, setImagePreviewModal] = useState({ open: false, url: '' });
 
   useEffect(() => {
     categoryAPI.getAll().then(r => setCategories(r.data)).catch(() => { });
@@ -75,7 +81,7 @@ export default function Products() {
       : products;
 
     if (!listToExport.length) {
-      alert('No products to export');
+      showToast('No items to export', 'error');
       return;
     }
 
@@ -100,11 +106,10 @@ export default function Products() {
       name: '',
       description: '',
       category: categories[0]?._id || '',
-      fabric: 'Pure Silk',
+      fabric: '',
       price: '',
       mrpPrice: '',
       stock: 25,
-      occasion: 'Traditional',
       tag: '',
       imageUrl: '',
       isFeatured: false,
@@ -115,8 +120,10 @@ export default function Products() {
       sec1Preview: '',
       sec2File: null,
       sec2Preview: '',
-      weight: '', colorName: '', colorHex: '#000000', pattern: '', border: '', 
-      pallu: '', sareeLength: '', blouseLength: '', style: '', returnPolicy: '', note: ''
+      weight: '', pattern: '', 
+      pallu: '', sareeLength: '', blouseLength: '', blouse: '', height: '', washCare: '', 
+      returnPolicy: 'Not Applicable', 
+      note: 'Product Color May Slightly Vary Due To Photography Lighting.'
     });
     setModal({ open: true, product: null });
   };
@@ -126,11 +133,10 @@ export default function Products() {
       name: product.name,
       description: product.description,
       category: product.category?._id || product.category || '',
-      fabric: product.fabric,
+      fabric: product.fabric || '',
       price: product.price,
       mrpPrice: product.mrpPrice,
       stock: product.stock?.available ?? 25,
-      occasion: product.occasion,
       tag: product.tag || '',
       imageUrl: product.images?.[0]?.url || '',
       isFeatured: Boolean(product.isFeatured),
@@ -142,14 +148,13 @@ export default function Products() {
       sec2File: null,
       sec2Preview: product.images?.[2]?.url || '',
       weight: product.weight || '',
-      colorName: product.color?.name || '',
-      colorHex: product.color?.hex || '#000000',
       pattern: product.pattern || '',
-      border: product.border || '',
       pallu: product.pallu || '',
       sareeLength: product.sareeLength || '',
       blouseLength: product.blouseLength || '',
-      style: product.style || '',
+      blouse: product.blouse || '',
+      height: product.height || '',
+      washCare: product.washCare || '',
       returnPolicy: product.returnPolicy || '',
       note: product.note || ''
     });
@@ -168,24 +173,23 @@ export default function Products() {
         price: Number(form.price),
         mrpPrice: Number(form.mrpPrice) || 0,
         stock: Number(form.stock) || 0,
-        occasion: form.occasion,
         tag: form.tag || null,
         isFeatured: Boolean(form.isFeatured),
         isActive: Boolean(form.isActive),
-        color: { name: form.colorName, hex: form.colorHex },
         weight: form.weight,
         pattern: form.pattern,
-        border: form.border,
         pallu: form.pallu,
         sareeLength: form.sareeLength,
         blouseLength: form.blouseLength,
-        style: form.style,
+        blouse: form.blouse,
+        height: form.height,
+        washCare: form.washCare,
         returnPolicy: form.returnPolicy,
         note: form.note,
       };
 
       if (!modal.product && !form.imageFile && !form.imagePreview) {
-        alert('Please upload or provide a primary product image');
+        showToast('Please upload or provide a primary product image', 'error');
         setSaving(false);
         return;
       }
@@ -209,7 +213,9 @@ export default function Products() {
       const res2 = await prepareImage(form.sec1File, form.sec1Preview, modal.product?.images?.[1]);
       const res3 = await prepareImage(form.sec2File, form.sec2Preview, modal.product?.images?.[2]);
 
-      body.images = [res1, res2, res3].filter(img => img && img.url);
+      body.images = [res1, res2, res3]
+        .filter(img => img && img.url)
+        .map(({ _id, ...rest }) => rest);
 
       if (modal.product) {
         await productAPI.update(modal.product._id, body);
@@ -219,7 +225,7 @@ export default function Products() {
       setModal({ open: false, product: null });
       loadProducts();
     } catch (err) {
-      alert(err.message || 'Error saving product');
+      showToast(err.message || 'Error saving product', 'error');
     }
     setSaving(false);
   };
@@ -232,18 +238,18 @@ export default function Products() {
     if (deleteAlert.type === 'bulk') {
       setBulkLoading(true);
       try {
-        await productAPI.bulkDelete(selectedProducts);
+        await productAPI.bulkHardDelete(selectedProducts);
         setSelectedProducts([]);
         loadProducts();
       } catch (err) {
-        alert(err.message || 'Error deleting products');
+        showToast(err.message || 'Error deleting products', 'error');
       }
       setBulkLoading(false);
     } else if (deleteAlert.type === 'single') {
       try {
-        await productAPI.delete(deleteAlert.id);
+        await productAPI.hardDelete(deleteAlert.id);
         loadProducts();
-      } catch (err) { alert(err.message); }
+      } catch (err) { showToast(err.message, 'error'); }
     }
     setDeleteAlert({ open: false, type: 'single', id: null, name: '' });
   };
@@ -488,7 +494,13 @@ export default function Products() {
                       }}
                       onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
                       onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
-                      onClick={() => document.getElementById('product-image-upload').click()}
+                      onClick={() => {
+                        if (form.imagePreview) {
+                          setImagePreviewModal({ open: true, url: form.imagePreview });
+                        } else {
+                          document.getElementById('product-image-upload').click();
+                        }
+                      }}
                     >
                       {form.imagePreview ? (
                         <>
@@ -502,12 +514,22 @@ export default function Products() {
                               alignItems: 'center',
                               justifyContent: 'center',
                               opacity: 0,
-                              transition: 'opacity 0.2s'
+                              transition: 'opacity 0.2s',
+                              gap: 24
                             }}
                             onMouseEnter={e => e.currentTarget.style.opacity = 1}
                             onMouseLeave={e => e.currentTarget.style.opacity = 0}
                           >
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}>
+                            <div 
+                              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}
+                            >
+                              <Eye size={32} />
+                              <span style={{ fontWeight: 500 }}>Preview</span>
+                            </div>
+                            <div 
+                              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}
+                              onClick={(e) => { e.stopPropagation(); document.getElementById('product-image-upload').click(); }}
+                            >
                               <UploadCloud size={32} />
                               <span style={{ fontWeight: 500 }}>Change</span>
                             </div>
@@ -540,7 +562,7 @@ export default function Products() {
                         style={{
                           border: '2px dashed var(--border-color)',
                           borderRadius: 12,
-                          height: 140,
+                          minHeight: 280,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -549,12 +571,31 @@ export default function Products() {
                           overflow: 'hidden',
                           cursor: 'pointer'
                         }}
-                        onClick={() => document.getElementById('sec1-upload').click()}
+                        onClick={() => {
+                          if (form.sec1Preview) {
+                            setImagePreviewModal({ open: true, url: form.sec1Preview });
+                          } else {
+                            document.getElementById('sec1-upload').click();
+                          }
+                        }}
                       >
                         {form.sec1Preview ? (
                           <>
                             <img src={form.sec1Preview} alt="Sec 1" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
-                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec1File: null, sec1Preview: '' })); }}><X size={14}/></div>
+                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, background: 'rgba(0,0,0,0.4)', opacity: 0, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                               <div style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                                 <Eye size={24}/>
+                                 <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Preview</span>
+                               </div>
+                               <div 
+                                 style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
+                                 onClick={(e) => { e.stopPropagation(); document.getElementById('sec1-upload').click(); }}
+                               >
+                                 <UploadCloud size={24}/>
+                                 <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Change</span>
+                               </div>
+                            </div>
+                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4, zIndex: 10 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec1File: null, sec1Preview: '' })); }}><X size={14}/></div>
                           </>
                         ) : (
                           <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
@@ -572,7 +613,7 @@ export default function Products() {
                         style={{
                           border: '2px dashed var(--border-color)',
                           borderRadius: 12,
-                          height: 140,
+                          minHeight: 280,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -581,12 +622,31 @@ export default function Products() {
                           overflow: 'hidden',
                           cursor: 'pointer'
                         }}
-                        onClick={() => document.getElementById('sec2-upload').click()}
+                        onClick={() => {
+                          if (form.sec2Preview) {
+                            setImagePreviewModal({ open: true, url: form.sec2Preview });
+                          } else {
+                            document.getElementById('sec2-upload').click();
+                          }
+                        }}
                       >
                         {form.sec2Preview ? (
                           <>
                             <img src={form.sec2Preview} alt="Sec 2" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
-                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec2File: null, sec2Preview: '' })); }}><X size={14}/></div>
+                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, background: 'rgba(0,0,0,0.4)', opacity: 0, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                               <div style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                                 <Eye size={24}/>
+                                 <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Preview</span>
+                               </div>
+                               <div 
+                                 style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
+                                 onClick={(e) => { e.stopPropagation(); document.getElementById('sec2-upload').click(); }}
+                               >
+                                 <UploadCloud size={24}/>
+                                 <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Change</span>
+                               </div>
+                            </div>
+                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4, zIndex: 10 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec2File: null, sec2Preview: '' })); }}><X size={14}/></div>
                           </>
                         ) : (
                           <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
@@ -621,11 +681,15 @@ export default function Products() {
                         {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                       </select>
                     </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
+                    <div className="form-group">
                       <label className="form-label">Fabric</label>
-                      <select className="form-select" required value={form.fabric} onChange={e => setForm(f => ({ ...f, fabric: e.target.value }))}>
-                        {['Pure Silk', 'Cotton', 'Tussar', 'Organza', 'Linen', 'Georgette', 'Chiffon', 'Chanderi'].map(f => <option key={f}>{f}</option>)}
-                      </select>
+                      <input 
+                        type="text" 
+                        className="form-input" 
+                        value={form.fabric} 
+                        onChange={e => setForm(f => ({ ...f, fabric: e.target.value }))} 
+                        placeholder="e.g. Cotton" 
+                      />
                     </div>
                   </div>
                   <div className="form-row">
@@ -637,21 +701,15 @@ export default function Products() {
                       <label className="form-label">MRP Price (₹) *</label>
                       <input className="form-input" type="number" required min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
                     </div>
+                  </div>
+                  <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Stock Quantity *</label>
                       <input className="form-input" type="number" required min="0" value={form.stock ?? 25} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
                     </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Occasion *</label>
-                      <select className="form-select" required value={form.occasion} onChange={e => setForm(f => ({ ...f, occasion: e.target.value }))}>
-                        {['Wedding', 'Festival', 'Party Wear', 'Reception', 'Traditional', 'Casual', 'Bridal'].map(o => <option key={o}>{o}</option>)}
-                      </select>
-                    </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Tag</label>
-                      <select className="form-select" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
+                      <select className="form-input" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
                         <option value="">None</option>
                         <option value="BESTSELLER">Bestseller</option>
                         <option value="NEW ARRIVAL">New Arrival</option>
@@ -665,18 +723,7 @@ export default function Products() {
                   <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, borderBottom: '1px solid var(--border-color)', paddingBottom: 8 }}>Product Specifications</h4>
                   
                   <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Color Name</label>
-                      <input className="form-input" value={form.colorName} onChange={e => setForm(f => ({ ...f, colorName: e.target.value }))} placeholder="e.g. Royal Blue" />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Color Hex</label>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <input type="color" value={form.colorHex} onChange={e => setForm(f => ({ ...f, colorHex: e.target.value }))} style={{ width: 42, height: 42, padding: 0, border: 'none', borderRadius: 8, cursor: 'pointer', background: 'transparent', flexShrink: 0 }} />
-                        <input className="form-input" value={form.colorHex} onChange={e => setForm(f => ({ ...f, colorHex: e.target.value }))} placeholder="#000000" style={{ flex: 1, textTransform: 'uppercase' }} />
-                      </div>
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
+                    <div className="form-group">
                       <label className="form-label">Weight</label>
                       <input className="form-input" value={form.weight} onChange={e => setForm(f => ({ ...f, weight: e.target.value }))} placeholder="e.g. 500g" />
                     </div>
@@ -685,10 +732,6 @@ export default function Products() {
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Pattern</label>
                       <input className="form-input" value={form.pattern} onChange={e => setForm(f => ({ ...f, pattern: e.target.value }))} placeholder="e.g. Floral Motif" />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Border</label>
-                      <input className="form-input" value={form.border} onChange={e => setForm(f => ({ ...f, border: e.target.value }))} placeholder="e.g. Zari Border" />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Pallu</label>
@@ -701,12 +744,28 @@ export default function Products() {
                       <input className="form-input" value={form.sareeLength} onChange={e => setForm(f => ({ ...f, sareeLength: e.target.value }))} placeholder="e.g. 5.5 meters" />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Height</label>
+                      <input className="form-input" value={form.height} onChange={e => setForm(f => ({ ...f, height: e.target.value }))} placeholder="e.g. 45 inches" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Wash Care</label>
+                      <input className="form-input" value={form.washCare} onChange={e => setForm(f => ({ ...f, washCare: e.target.value }))} placeholder="e.g. Dry Clean Only" />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Blouse</label>
+                      <input className="form-input" value={form.blouse} onChange={e => setForm(f => ({ ...f, blouse: e.target.value }))} placeholder="e.g. Running Blouse" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Blouse Length</label>
                       <input className="form-input" value={form.blouseLength} onChange={e => setForm(f => ({ ...f, blouseLength: e.target.value }))} placeholder="e.g. 0.8 meters" />
                     </div>
+                  </div>
+                  <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Style</label>
-                      <input className="form-input" value={form.style} onChange={e => setForm(f => ({ ...f, style: e.target.value }))} placeholder="e.g. Kanjivaram" />
+                      <label className="form-label">Return/Exchange</label>
+                      <input className="form-input" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))} placeholder="e.g. Not Applicable" />
                     </div>
                   </div>
 
@@ -746,6 +805,28 @@ export default function Products() {
       )}
 
       {/* Delete Confirmation Alert */}
+      {toast.open && (
+        <div style={{
+          position: 'fixed',
+          top: 24,
+          right: 24,
+          zIndex: 99999,
+          background: toast.type === 'error' ? 'var(--danger)' : 'var(--success)',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: 8,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          fontWeight: 500
+        }}>
+          {toast.message}
+          <button onClick={() => setToast({ open: false, message: '', type: 'error' })} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex' }}><X size={16} /></button>
+        </div>
+      )}
+
+      {/* Delete Confirmation Alert */}
       {deleteAlert.open && (
         <div className="modal-overlay" style={{ zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="modal-content" style={{ maxWidth: 400, padding: 32, textAlign: 'center', borderRadius: 16 }}>
@@ -757,6 +838,21 @@ export default function Products() {
               <button className="btn btn-outline" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => setDeleteAlert({ open: false, type: 'single', id: null, name: '' })}>Cancel</button>
               <button className="btn btn-primary" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'var(--danger)', borderColor: 'var(--danger)', color: '#fff' }} onClick={confirmDelete}>OK</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Preview Modal */}
+      {imagePreviewModal.open && (
+        <div className="modal-overlay" style={{ zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: 'rgba(0,0,0,0.85)' }} onClick={() => setImagePreviewModal({ open: false, url: '' })}>
+          <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }}>
+            <img src={imagePreviewModal.url} alt="Full Preview" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: 8, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }} />
+            <button 
+              style={{ position: 'absolute', top: -16, right: -16, background: 'var(--bg-primary)', color: 'var(--text-primary)', border: 'none', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
+              onClick={(e) => { e.stopPropagation(); setImagePreviewModal({ open: false, url: '' }); }}
+            >
+              <X size={16} />
+            </button>
           </div>
         </div>
       )}

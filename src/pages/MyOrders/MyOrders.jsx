@@ -92,9 +92,11 @@ export const MyOrders = ({ setCurrentTab }) => {
             setOrders([...localOrders]);
           }
         })
-        .catch(() => setOrders([...localOrders]));
+        .catch(() => setOrders([...localOrders]))
+        .finally(() => setLoading(false));
     } else {
       setOrders([...localOrders]);
+      setLoading(false);
     }
   }, []);
 

@@ -203,21 +203,17 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
 
   // Helper to dynamically match thumbnail close-ups based on product color/category
   const getThumbnails = () => {
+    // If the product has images array from DB, use them
+    if (activeProduct.images && activeProduct.images.length > 0) {
+      return activeProduct.images.map(img => img.url).filter(Boolean);
+    }
+    
+    // Fallback to old structure
     const main = activeProduct.image;
-    // Using local catalog images for details to prevent external link blocking
     const blueDetail = "/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg";
     const goldDetail = "/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg";
 
-    const cat = activeProduct.category || "";
-    const col = activeProduct.color || "";
-
-    if (cat === "Cotton" || col === "#C8A34D") {
-      return [main, goldDetail, blueDetail];
-    } else if (col === "#1A237E") {
-      return [main, blueDetail, goldDetail];
-    } else {
-      return [main, goldDetail, blueDetail];
-    }
+    return [main, goldDetail, blueDetail];
   };
 
   const thumbnails = getThumbnails();
@@ -405,11 +401,6 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
             </div>
             <p className={styles['collection-sub']}>MAZHAI VAANAM SIGNATURE COLLECTION</p>
             <h1>{activeProduct.name} Saree - Royal Heritage Edition</h1>
-            {activeProduct.description && (
-              <p className={styles['product-one-liner']}>
-                {activeProduct.description}
-              </p>
-            )}
 
 
           </header>
@@ -512,27 +503,28 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
 
           {/* Classic Detailed Description */}
           <div className={styles['classic-description']}>
-            <p className={styles['desc-intro']}>
-              <strong>Exquisite {activeProduct.fabric || 'Pure Silk'} Saree with Contemporary Prints</strong>
-            </p>
-            <p>
-              Elevate your ethnic wardrobe with the timeless elegance of <strong>{activeProduct.fabric || 'Pure Silk'}</strong>. Known for its rich texture and natural sheen, this collection combines heritage with modern artistic prints to create a look that is both grounded and sophisticated.
-            </p>
-            <p>
-              Each saree features a luxurious drape and a subtle hand-feel that is characteristic of authentic handloom. Finished with a refined <strong>Zari border</strong>, these sarees are designed for the woman who appreciates understated luxury.
-            </p>
+            {activeProduct.description && (
+              <p style={{ whiteSpace: 'pre-line', lineHeight: '1.8' }}>
+                {activeProduct.description}
+              </p>
+            )}
 
             <p className={styles['highlights-title']}><strong>Product Highlights:</strong></p>
             <ul className={styles['highlights-list']}>
-              <li><strong>Fabric:</strong> 100% {activeProduct.fabric || 'Pure Silk'} – breathable, lightweight, and durable.</li>
-              <li><strong>Design:</strong> {activeProduct.description || 'Featuring unique motifs ranging from classic floral vines to modern geometric patterns and abstract twig prints.'}</li>
-              <li><strong>Border:</strong> Elegant metallic Zari border that adds a touch of festive shimmer.</li>
-              <li><strong>Texture:</strong> Naturally rich, uneven silk texture that lends an organic, high-end feel.</li>
-              <li><strong>Occasion:</strong> Perfect for office wear, semi-formal gatherings, weddings, and festive celebrations.</li>
+              {activeProduct.fabric && <li><strong>Fabric:</strong> {activeProduct.fabric}</li>}
+              {activeProduct.pattern && <li><strong>Pattern / Design:</strong> {activeProduct.pattern}</li>}
+              {activeProduct.pallu && <li><strong>Pallu:</strong> {activeProduct.pallu}</li>}
+              {activeProduct.blouse && <li><strong>Blouse:</strong> {activeProduct.blouse}</li>}
+              {activeProduct.sareeLength && <li><strong>Saree Length:</strong> {activeProduct.sareeLength}</li>}
+              {activeProduct.height && <li><strong>Height:</strong> {activeProduct.height}</li>}
+              {activeProduct.blouseLength && <li><strong>Blouse Length:</strong> {activeProduct.blouseLength}</li>}
+              {activeProduct.weight && <li><strong>Weight:</strong> {activeProduct.weight}</li>}
+              {activeProduct.washCare && <li><strong>Wash Care:</strong> {activeProduct.washCare}</li>}
+              {activeProduct.returnPolicy && <li><strong>Return/Exchange:</strong> {activeProduct.returnPolicy}</li>}
             </ul>
 
             <p className={styles['desc-note']}>
-              <strong>Note:</strong> Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.
+              <strong>Note:</strong> {activeProduct.note || 'Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.'}
             </p>
           </div>
 

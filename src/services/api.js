@@ -54,11 +54,19 @@ async function request(endpoint, options = {}) {
     delete headers['Content-Type'];
   }
 
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-    body: options.body instanceof FormData ? options.body : options.body ? JSON.stringify(options.body) : undefined,
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers,
+      body: options.body instanceof FormData ? options.body : options.body ? JSON.stringify(options.body) : undefined,
+    });
+  } catch (netErr) {
+    console.warn(`[API Network Error] ${endpoint}:`, netErr.message);
+    const err = new Error('Server connection error. Please ensure backend is running.');
+    err.isNetworkError = true;
+    throw err;
+  }
 
   const data = await res.json().catch(() => ({ success: false, message: 'Invalid response from server' }));
 

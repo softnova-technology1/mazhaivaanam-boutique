@@ -26,9 +26,14 @@ export default function InvoiceModal({ order, onClose }) {
     year: 'numeric',
   });
 
-  const subtotal = order.mrpTotal || order.subtotal || order.items?.reduce((sum, it) => sum + (it.price * (it.quantity || 1)), 0) || order.totalAmount || 0;
-  const couponDiscount = order.couponDiscount || order.totalSavings || 0;
-  const grandTotal = order.totalAmount || order.finalAmount || subtotal;
+  const subtotalMRP = order.mrpTotal || order.subtotal || order.items?.reduce((sum, it) => sum + (it.price * (it.quantity || 1)), 0) || order.totalAmount || 0;
+  const memberSubtotal = order.subtotal || subtotalMRP;
+  const festivalDiscount = order.discount || order.festivalDiscount || 0;
+  const couponDiscount = order.couponDiscount || 0;
+  const convenienceFee = order.convenienceFee !== undefined ? order.convenienceFee : (order.finalAmount ? 2 : 0);
+  const giftPackCharge = order.giftPackCharge || order.giftPackAddon || 0;
+  const shippingFee = order.shippingFee !== undefined ? order.shippingFee : 0;
+  const grandTotal = order.totalAmount || order.finalAmount || memberSubtotal;
   
   // Saree standard GST rate in India is 5% (2.5% CGST + 2.5% SGST)
   const taxableAmount = Math.round(grandTotal / 1.05);
@@ -236,18 +241,44 @@ export default function InvoiceModal({ order, onClose }) {
             {/* Calculations Summary */}
             <div style={{ fontSize: '0.85rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
-                <span style={{ color: '#64748b' }}>Item Total (Subtotal):</span>
-                <span style={{ fontWeight: 600 }}>₹{subtotal.toLocaleString('en-IN')}</span>
+                <span style={{ color: '#64748b' }}>Subtotal (MRP):</span>
+                <span style={{ fontWeight: 600 }}>₹{subtotalMRP.toLocaleString('en-IN')}</span>
               </div>
+              {memberSubtotal !== subtotalMRP && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
+                  <span style={{ color: '#64748b' }}>Exclusive Price:</span>
+                  <span style={{ fontWeight: 600 }}>₹{memberSubtotal.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              {festivalDiscount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9', color: '#16a34a' }}>
+                  <span>Festival Discount:</span>
+                  <span>- ₹{festivalDiscount.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               {couponDiscount > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9', color: '#16a34a' }}>
-                  <span>Discount / Savings:</span>
+                  <span>Coupon Discount {order.couponCode ? `(${order.couponCode})` : ''}:</span>
                   <span>- ₹{couponDiscount.toLocaleString('en-IN')}</span>
                 </div>
               )}
+              {convenienceFee > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
+                  <span style={{ color: '#64748b' }}>Convenience Fees:</span>
+                  <span>₹{convenienceFee.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              {giftPackCharge > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
+                  <span style={{ color: '#64748b' }}>Luxury Packaging Addon:</span>
+                  <span>₹{giftPackCharge.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
-                <span style={{ color: '#64748b' }}>Shipping & Handling:</span>
-                <span style={{ color: '#16a34a', fontWeight: 600 }}>FREE (Complimentary)</span>
+                <span style={{ color: '#64748b' }}>{order.deliveryMode === 'pickup' ? 'Self Pickup' : 'Shipping & Handling'}:</span>
+                <span style={{ color: shippingFee > 0 ? '#0f172a' : '#16a34a', fontWeight: 600 }}>
+                  {shippingFee > 0 ? `₹${shippingFee.toLocaleString('en-IN')}` : 'FREE (Complimentary)'}
+                </span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderTop: '2px solid #0f172a', marginTop: 8, fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>
                 <span>Grand Total:</span>

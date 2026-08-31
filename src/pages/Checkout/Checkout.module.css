@@ -1887,3 +1887,288 @@
     font-size: 7.5px !important;
   }
 }
+
+.fillDataMessage {
+  background-color: var(--surface-bright);
+  padding: 32px 24px;
+  border: 1px dashed var(--border-gold);
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  backdrop-filter: blur(4px);
+}
+
+.fillDataMessage h4 {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fillDataMessage p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.messageIcon {
+  color: var(--accent);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+.leftColumnFull {
+  grid-column: span 12;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  animation: fadeInUp 0.8s forwards ease-out;
+}
+
+.detailsSummaryCard {
+  background-color: var(--surface-bright);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.detailsSummaryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(200, 163, 77, 0.15);
+  padding-bottom: 12px;
+}
+
+.detailsSummaryHeader h3 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--primary);
+  margin: 0;
+}
+
+.editDetailsBtn {
+  background: #6B102A !important;
+  border: 1px solid #6B102A !important;
+  color: #FFFFFF !important;
+  padding: 8px 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(107, 16, 42, 0.25);
+}
+
+.editDetailsBtn:hover {
+  background: #8B1838 !important;
+  border-color: #8B1838 !important;
+  box-shadow: 0 4px 12px rgba(107, 16, 42, 0.35);
+  transform: translateY(-1px);
+}
+
+.detailsSummaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+}
+
+@media (max-width: 576px) {
+  .detailsSummaryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detailsSummaryItem {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.detailsSummaryItem strong {
+  color: var(--text-muted);
+  font-weight: 600;
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.detailsSummaryItem span {
+  font-weight: 500;
+}
+
+/* Quantity controls in checkout preview */
+.qtyControlGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(200, 163, 77, 0.08);
+  border: 1px solid var(--border-gold);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-top: 4px;
+}
+
+.qtyBtn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.qtyBtn:hover {
+  background: rgba(107, 16, 42, 0.15);
+}
+
+.qtyValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Collapsible Price Breakdown */
+.priceBreakdownToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(200, 163, 77, 0.06);
+  border: 1px dashed var(--border-gold);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 12px 0 8px 0;
+  transition: all 0.2s ease;
+}
+
+.priceBreakdownToggle:hover {
+  background: rgba(200, 163, 77, 0.12);
+}
+
+.rotate180 {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.collapsibleDetails {
+  padding: 12px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Left side trust & guarantee cards */
+.guaranteeSection {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.guaranteeTitle {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  color: var(--primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guaranteeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .guaranteeGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.guaranteeCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(200, 163, 77, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(200, 163, 77, 0.15);
+}
+
+.guaranteeIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.guaranteeText h5 {
+  margin: 0 0 4px 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.guaranteeText p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+

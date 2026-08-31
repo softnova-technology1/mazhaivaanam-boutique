@@ -17,13 +17,19 @@ async function request(endpoint, options = {}) {
     delete headers['Content-Type'];
   }
 
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers,
-    body: options.body instanceof FormData ? options.body : options.body ? JSON.stringify(options.body) : undefined,
-  });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers,
+      body: options.body instanceof FormData ? options.body : options.body ? JSON.stringify(options.body) : undefined,
+    });
+  } catch (netErr) {
+    console.warn(`[Admin API Network Error] ${endpoint}:`, netErr.message);
+    throw new Error('Server connection error. Please ensure backend is running.');
+  }
 
-  const data = await res.json();
+  const data = await res.json().catch(() => ({ success: false, message: 'Invalid response from server' }));
 
   if (!res.ok) {
     throw new Error(data.message || 'Request failed');

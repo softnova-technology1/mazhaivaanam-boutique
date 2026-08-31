@@ -78,6 +78,13 @@ export const MyOrders = ({ setCurrentTab }) => {
               subtotal: o.subtotal || o.totalAmount,
               totalSavings: o.totalSavings || o.discountAmount || 0,
               finalAmount: o.totalAmount,
+              shippingFee: o.shippingFee || 0,
+              convenienceFee: o.convenienceFee || 0,
+              giftPackCharge: o.giftPackCharge || 0,
+              discount: o.discount || 0,
+              couponDiscount: o.couponDiscount || 0,
+              couponCode: o.couponCode || '',
+              deliveryMode: o.deliveryMode || 'standard',
               items: (o.items || []).map(i => ({
                 id: i.product?._id || i.product,
                 name: i.name,

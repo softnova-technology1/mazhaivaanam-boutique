@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ShieldCheck, Leaf, LockKeyhole, Gift, Star } from 'lucide-react';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';
 import { getBestSellers } from '../../services/api';
+import { REVIEWS_DATA } from '../../data/reviewsData';
 import styles from './Home.module.css';
 
 const AnimatedCounter = ({ end, duration = 2000, suffix = '', decimals = 0 }) => {
@@ -52,44 +53,7 @@ const AnimatedCounter = ({ end, duration = 2000, suffix = '', decimals = 0 }) =>
 export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const reviews = useMemo(() => [
-    {
-      id: 1,
-      name: "Ananya Ravishankar",
-      role: "Verified Buyer",
-      initials: "AR",
-      rating: 5,
-      drape: "Ruby Petal Pure Silk Saree",
-      text: "The saree is even more beautiful in person. The zari work is incredibly fine, and the drape is absolute perfection. Truly an heirloom piece that I will cherish forever!"
-    },
-    {
-      id: 2,
-      name: "Megha Sundaram",
-      role: "Fashion Stylist",
-      initials: "MS",
-      rating: 5,
-      drape: "Snow Elegance Banarasi Saree",
-      text: "Mazhai Vaanam has redefined what luxury handloom means to me. The packaging itself was a work of art, and the fabric has a beautiful, rich weight to it. Absolute class."
-    },
-    {
-      id: 3,
-      name: "Priya Govind",
-      role: "Verified Patron",
-      initials: "PG",
-      rating: 5,
-      drape: "Sunset Glow Cotton Saree",
-      text: "Perfect lightweight cotton drape for festive summers. It breathes so well, holds its pleats beautifully, and the natural dyes give it a gorgeous warm glow."
-    },
-    {
-      id: 4,
-      name: "Devi Narayanan",
-      role: "Collector",
-      initials: "DN",
-      rating: 5,
-      drape: "Mystic Forest Banarasi Saree",
-      text: "A masterpiece of heritage weaving. The emerald green color is deeply saturated and the floral zari jaal looks absolutely regal. Excellent client support too."
-    }
-  ], []);
+  const reviews = REVIEWS_DATA;
 
   const [bestSellers, setBestSellers] = useState([]);
 

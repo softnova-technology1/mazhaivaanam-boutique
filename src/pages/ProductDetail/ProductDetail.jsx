@@ -4,7 +4,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { useWishlist } from '../../hooks/useWishlist';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
-import { getProducts, reviewAPI } from '../../services/api';
+import { getProducts } from '../../services/api';
+import { REVIEWS_DATA } from '../../data/reviewsData';
 import styles from './ProductDetail.module.css';
 
 export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setDirectCheckoutItem }) => {
@@ -17,42 +18,6 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
-
-  // Review form state with photo upload support & MongoDB Atlas Sync
-  const [reviewForm, setReviewForm] = useState({ name: '', location: '', text: '', rating: 5, photo: '' });
-  const [userReviews, setUserReviews] = useState([]);
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
-  const [hoverRating, setHoverRating] = useState(0);
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(3);
-
-  const handleSubmitReview = async (e) => {
-    e.preventDefault();
-    if (!reviewForm.name.trim() || !reviewForm.text.trim()) return;
-
-    const newReview = {
-      name: reviewForm.name.trim(),
-      location: reviewForm.location.trim() || 'Verified Patron',
-      text: reviewForm.text.trim(),
-      rating: reviewForm.rating,
-      photo: reviewForm.photo || '',
-    };
-
-    setReviewForm({ name: '', location: '', text: '', rating: 5, photo: '' });
-    setReviewSubmitted(true);
-    setShowReviewForm(false);
-    setTimeout(() => setReviewSubmitted(false), 5000);
-
-    // Save directly to MongoDB Atlas (Pending Admin Approval)
-    try {
-      const prodId = activeProduct._id || activeProduct.id;
-      if (prodId) {
-        await reviewAPI.createReview(prodId, newReview);
-      }
-    } catch (err) {
-      console.log('Error saving review to DB:', err);
-    }
-  };
 
   // Fallback product data if none is passed (e.g. direct nav)
   const defaultProduct = {
@@ -117,33 +82,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
           setRelatedProducts(res.products.filter(p => p.id !== activeProduct.id));
         }
       })
-    // Load Live Reviews for THIS specific product from MongoDB Atlas
-    setUserReviews([]);
-    setVisibleCount(3);
-    const prodId = activeProduct._id || activeProduct.id;
-    if (prodId) {
-      reviewAPI.getByProduct(prodId)
-        .then(dbReviews => {
-          if (isMounted) {
-            if (dbReviews && dbReviews.length > 0) {
-              setUserReviews(dbReviews.map(r => ({
-                id: r._id,
-                name: r.name,
-                location: r.location || 'Verified Patron',
-                text: r.text,
-                rating: r.rating,
-                photo: r.photo || '',
-                date: new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-              })));
-            } else {
-              setUserReviews([]);
-            }
-          }
-        })
-        .catch(() => {
-          if (isMounted) setUserReviews([]);
-        });
-    }
+      .catch(() => {});
 
     return () => { isMounted = false; };
   }, [activeProduct]);
@@ -540,6 +479,65 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         </div>
 
       </div>
+
+      {/* Patron Reviews & Drapes Section (Static 6 Reviews Array) */}
+      <section style={{ maxWidth: 1240, margin: '50px auto 40px auto', padding: '0 20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid rgba(200,163,77,0.2)', paddingBottom: 16 }}>
+          <div>
+            <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
+              Patron Voices & Feedback
+            </span>
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: 'var(--text-main)', marginTop: 4, marginBottom: 0 }}>
+              Authentic Client Reviews (5.0 ★★★★★)
+            </h2>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
+          {REVIEWS_DATA.slice(0, 3).map((rev) => (
+            <div
+              key={rev.id}
+              style={{
+                background: 'var(--bg-surface)',
+                padding: 22,
+                borderRadius: 12,
+                border: '1px solid var(--border-color)',
+                display: 'flex',
+                flexDirection: 'column',
+                justify: 'space-between'
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <div style={{ display: 'flex', gap: 3 }}>
+                    {[...Array(rev.rating)].map((_, i) => (
+                      <Star key={i} size={15} fill="#B38A4A" stroke="#B38A4A" />
+                    ))}
+                  </div>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{rev.date}</span>
+                </div>
+
+                <p style={{ fontSize: '0.92rem', color: 'var(--text-main)', lineHeight: 1.6, fontStyle: 'italic', marginBottom: 14 }}>
+                  "{rev.text}"
+                </p>
+                <div style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 600, marginBottom: 14 }}>
+                  Purchased: {rev.drape}
+                </div>
+              </div>
+
+              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8rem' }}>
+                  {rev.initials}
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)' }}>{rev.name}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>✓ {rev.role} • {rev.location}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Related Products Section */}
       <section className={styles['related-products-section']}>

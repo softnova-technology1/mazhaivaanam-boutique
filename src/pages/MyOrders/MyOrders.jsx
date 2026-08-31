@@ -331,6 +331,18 @@ export const MyOrders = ({ setCurrentTab }) => {
                         </>
                       ) : (
                         <>
+                          {(order.paymentStatus === 'pending' || order.paymentStatus === 'failed') && (
+                            <button 
+                              onClick={() => {
+                                localStorage.setItem('post_login_redirect', 'checkout');
+                                window.location.href = `/checkout?orderId=${order.orderId}`;
+                              }}
+                              className={styles.actionPrimaryBtn}
+                              style={{ background: '#b45309', borderColor: '#b45309' }}
+                            >
+                              ⚡ RETRY PAYMENT
+                            </button>
+                          )}
                           <button 
                             onClick={() => handleTrackOrder(order)}
                             className={styles.actionPrimaryBtn}

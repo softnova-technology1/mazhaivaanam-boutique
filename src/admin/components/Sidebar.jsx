@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { path: '/mazhaivaanam-sn2026/inventory', icon: PackageSearch, label: 'Inventory' },
   { path: '/mazhaivaanam-sn2026/limited-offer', icon: Sparkles, label: 'Limited Offer' },
   { path: '/mazhaivaanam-sn2026/discounts', icon: Percent, label: 'Discounts' },
-  { path: '/mazhaivaanam-sn2026/categories', icon: Layers3, label: 'Categories' },
+  { path: '/mazhaivaanam-sn2026/categories', icon: Layers3, label: 'Fabrics' },
   { path: '/mazhaivaanam-sn2026/users', icon: Users, label: 'Users' },
   { path: '/mazhaivaanam-sn2026/inquiries', icon: MessageSquare, label: 'Inquiries' },
   { path: '/mazhaivaanam-sn2026/coupons', icon: Ticket, label: 'Coupons' },

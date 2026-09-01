@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { discountAPI, categoryAPI } from '../api/api.js';
+import { discountAPI } from '../api/api.js';
+
+const PERMANENT_CATEGORIES = ['Everyday Elegance', 'Black Magic', 'Festive Glow', 'Style Studio'];
 import { Search, Percent, X, Zap, Tag, Calendar, Trash2, Edit, Filter, Clock, Sparkles, Layers } from 'lucide-react';
 
 const formatCurrency = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
@@ -14,7 +16,7 @@ const STATUS_STYLES = {
 
 export default function Discounts() {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ status: 'all', category: '', search: '' });
   const [modal, setModal] = useState({ open: false, product: null });
@@ -31,9 +33,7 @@ export default function Discounts() {
   const scheduledCount = products.filter((p) => p.discountStatus === 'scheduled').length;
   const expiredCount = products.filter((p) => p.discountStatus === 'expired').length;
 
-  useEffect(() => {
-    categoryAPI.getAll().then((r) => setCategories(r.data)).catch(() => {});
-  }, []);
+
 
   useEffect(() => {
     loadProducts();
@@ -239,8 +239,8 @@ export default function Discounts() {
         </select>
         <select className="form-select" value={filters.category} onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}>
           <option value="">All Categories</option>
-          {categories.map((c) => (
-            <option key={c._id} value={c.slug}>{c.name}</option>
+          {PERMANENT_CATEGORIES.map((cat) => (
+            <option key={cat} value={cat.toLowerCase().replace(/\s+/g, '-')}>{cat}</option>
           ))}
         </select>
       </div>
@@ -534,8 +534,8 @@ export default function Discounts() {
                       <label className="form-label">Category</label>
                       <select className="form-select" value={bulkForm.category} onChange={(e) => setBulkForm((f) => ({ ...f, category: e.target.value }))}>
                         <option value="">All Categories</option>
-                        {categories.map((c) => (
-                          <option key={c._id} value={c.slug}>{c.name}</option>
+                        {PERMANENT_CATEGORIES.map((cat) => (
+                          <option key={cat} value={cat.toLowerCase().replace(/\s+/g, '-')}>{cat}</option>
                         ))}
                       </select>
                     </div>
@@ -640,8 +640,8 @@ export default function Discounts() {
                       <label className="form-label">Category</label>
                       <select className="form-select" value={bulkRemoveForm.category} onChange={(e) => setBulkRemoveForm((f) => ({ ...f, category: e.target.value }))}>
                         <option value="">All Categories</option>
-                        {categories.map((c) => (
-                          <option key={c._id} value={c.slug}>{c.name}</option>
+                        {PERMANENT_CATEGORIES.map((cat) => (
+                          <option key={cat} value={cat.toLowerCase().replace(/\s+/g, '-')}>{cat}</option>
                         ))}
                       </select>
                     </div>

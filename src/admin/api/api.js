@@ -84,6 +84,14 @@ export const collectionAPI = {
   delete: (id) => request(`/admin/collections/${id}`, { method: 'DELETE' }),
 };
 
+// ====== FABRICS ======
+export const fabricAPI = {
+  getAll: () => request('/admin/fabrics'),
+  create: (body) => request('/admin/fabrics', { method: 'POST', body }),
+  update: (id, body) => request(`/admin/fabrics/${id}`, { method: 'PUT', body }),
+  delete: (id) => request(`/admin/fabrics/${id}`, { method: 'DELETE' }),
+};
+
 // ====== ORDERS ======
 export const orderAPI = {
   getAll: (params = '') => request(`/admin/orders${params ? '?' + params : ''}`),

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { productAPI, categoryAPI, uploadAPI } from '../api/api.js';
+import { productAPI, uploadAPI, fabricAPI } from '../api/api.js';
+
+const PERMANENT_CATEGORIES = ['Everyday Elegance', 'Black Magic', 'Festive Glow', 'Style Studio'];
 import { exportToCSV } from '../utils/exportCSV.js';
 import { downloadSampleImportTemplate, parseImportFile } from '../utils/importParser.js';
 import { Plus, Search, Edit, Trash2, X, UploadCloud, Download, ArrowLeft, Eye, Star, FileSpreadsheet } from 'lucide-react';
 
 export default function PreBooking() {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [fabricsList, setFabricsList] = useState([]);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ page: 1, limit: 15, category: '', tag: '', search: '' });
@@ -31,7 +33,7 @@ export default function PreBooking() {
   const [imagePreviewModal, setImagePreviewModal] = useState({ open: false, url: '' });
 
   useEffect(() => {
-    categoryAPI.getAll().then(r => setCategories(r.data)).catch(() => { });
+    fabricAPI.getAll().then(r => setFabricsList(r.data || [])).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -118,7 +120,7 @@ export default function PreBooking() {
     setForm({
       name: '',
       description: '',
-      category: categories[0]?._id || '',
+      category: PERMANENT_CATEGORIES[0] || '',
       fabric: '',
       price: '',
       mrpPrice: '',
@@ -367,7 +369,7 @@ export default function PreBooking() {
           </form>
           <select className="form-select" value={filters.category} onChange={(e) => setFilters(f => ({ ...f, category: e.target.value, page: 1 }))}>
             <option value="">All Categories</option>
-            {categories.map(c => <option key={c._id} value={c.slug}>{c.name}</option>)}
+            {PERMANENT_CATEGORIES.map(cat => <option key={cat} value={cat.toLowerCase().replace(/\s+/g, '-')}>{cat}</option>)}
           </select>
           <select className="form-select" value={filters.tag} onChange={(e) => setFilters(f => ({ ...f, tag: e.target.value, page: 1 }))}>
             <option value="">All Tags</option>
@@ -793,18 +795,19 @@ export default function PreBooking() {
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Category</label>
                       <select className="form-select" required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
-                        {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                        {PERMANENT_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                       </select>
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Fabric</label>
-                      <input 
-                        type="text" 
-                        className="form-input" 
+                      <select 
+                        className="form-select" 
                         value={form.fabric} 
                         onChange={e => setForm(f => ({ ...f, fabric: e.target.value }))} 
-                        placeholder="e.g. Cotton" 
-                      />
+                      >
+                        <option value="">Select Fabric</option>
+                        {fabricsList.map(fab => <option key={fab._id} value={fab.name}>{fab.name}</option>)}
+                      </select>
                     </div>
                   </div>
                   <div className="form-row">

@@ -93,10 +93,14 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   const [spinText, setSpinText] = useState("SPIN THE WHEEL");
   const [wonPrize, setWonPrize] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [spinCoupon, setSpinCoupon] = useState(null);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   // View All Offers State
   const [showAllOffers, setShowAllOffers] = useState(false);
   const [liveProducts, setLiveProducts] = useState([]);
+
 
   // Fetch Live Config from Backend
   useEffect(() => {
@@ -128,21 +132,31 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
       .catch(err => console.log('Using default offer config:', err));
   }, []);
 
-  // Fetch Offer Products from Backend — only FESTIVAL CHOICE and LIMITED EDITION tagged
+  // Fetch Offer Products — prefer FESTIVAL CHOICE tagged, fallback to all
   useEffect(() => {
     let isMounted = true;
-    getLimitedOfferProducts(20)
-      .then(products => {
-        if (isMounted && products && products.length > 0) {
-          const items = products.map(p => ({
-            id: p._id || p.id,
-            title: p.name,
-            price: `₹ ${p.price.toLocaleString('en-IN')}`,
-            image: p.images?.[0]?.url || p.image || '/Images/placeholder.svg',
-            tag: p.tag || '',
-            raw: p
-          }));
-          setLiveProducts(items);
+    const mapItems = (products) => products.map(p => ({
+      id: p._id || p.id,
+      title: p.name,
+      price: `₹ ${p.price.toLocaleString('en-IN')}`,
+      image: p.images?.[0]?.url || p.image || '/Images/saree1.png',
+      tag: p.tag || 'LIMITED OFFER',
+      raw: p,
+    }));
+
+    // First: try to get FESTIVAL CHOICE tagged products
+    getProducts({ limit: 8, tag: 'FESTIVAL CHOICE' })
+      .then(res => {
+        if (!isMounted) return;
+        if (res.products && res.products.length > 0) {
+          setLiveProducts(mapItems(res.products));
+        } else {
+          // Fallback: any 8 products if no tagged ones exist
+          return getProducts({ limit: 8 }).then(fb => {
+            if (isMounted && fb.products?.length > 0) {
+              setLiveProducts(mapItems(fb.products));
+            }
+          });
         }
       })
       .catch(console.error);
@@ -203,22 +217,53 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   // Spinning Wheel Logic
   const handleSpinWheel = () => {
     if (isSpinning) return;
-    const extraRotation = Math.floor(Math.random() * 360) + 1440; // 4 full rotations + random
+
+    // Must be logged in to get a real prize
+    const token = localStorage.getItem('boutique_token');
+    if (!token) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
+    const extraRotation = Math.floor(Math.random() * 360) + 1440;
     const newRotation = rotation + extraRotation;
-    
+
     setRotation(newRotation);
     setIsSpinning(true);
-    setSpinText("SPINNING...");
-    
-    setTimeout(() => {
+    setSpinText('SPINNING...');
+    setSpinCoupon(null);
+
+    setTimeout(async () => {
       setIsSpinning(false);
-      setSpinText("SPIN AGAIN");
-      
-      const winningAngle = (360 - (newRotation % 360)) % 360;
-      const winningIndex = Math.floor(winningAngle / 60);
-      const prizes = config.spinningWheelSection.prizes || ['Premium Saree', '10% Discount', 'Free Styling', 'Surprise Box', 'Artisan Blouse', 'Free Shipping'];
-      
-      setWonPrize(prizes[winningIndex] || prizes[0]);
+      setSpinText('SPIN AGAIN');
+
+      try {
+        const res = await fetch(`${API_BASE}/limited-offer/spin`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          setWonPrize(data.data.prize);
+          setSpinCoupon(data.data.couponCode || null);
+        } else {
+          // Already spun today or error
+          setWonPrize(data.message || 'Come back tomorrow!');
+          setSpinCoupon(null);
+        }
+      } catch {
+        // Network error — fallback to frontend random
+        const winningAngle = (360 - (newRotation % 360)) % 360;
+        const winningIndex = Math.floor(winningAngle / 60);
+        const prizes = config.spinningWheelSection.prizes || ['Premium Saree', '10% Discount', 'Free Styling', 'Surprise Box', 'Artisan Blouse', 'Free Shipping'];
+        setWonPrize(prizes[winningIndex] || prizes[0]);
+        setSpinCoupon(null);
+      }
+
       setShowPopup(true);
     }, 4100);
   };
@@ -386,9 +431,21 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
                       alt={item.title}
                       src={item.image}
                     />
-                    <div className="absolute top-2 left-2 bg-red-700 text-white px-2 py-0.5 shadow-sm rounded-sm">
-                      <span className="font-label-caps text-[7px] md:text-[8.5px] tracking-[0.1em] md:tracking-[0.15em] uppercase font-bold whitespace-nowrap leading-none block">FLAT 30% OFF</span>
-                    </div>
+                    {(() => {
+                      const d = item.raw?.discount;
+                      const active = item.raw?.discountActive;
+                      let badgeText = 'SPECIAL PRICE';
+                      if (active && d?.value) {
+                        badgeText = d.type === 'percentage'
+                          ? `FLAT ${d.value}% OFF`
+                          : `₹${Number(d.value).toLocaleString('en-IN')} OFF`;
+                      }
+                      return (
+                        <div className="absolute top-2 left-2 bg-red-700 text-white px-2 py-0.5 shadow-sm rounded-sm">
+                          <span className="font-label-caps text-[7px] md:text-[8.5px] tracking-[0.1em] md:tracking-[0.15em] uppercase font-bold whitespace-nowrap leading-none block">{badgeText}</span>
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-4 w-full">
                     <h4 className="font-display-lg text-[12px] sm:text-[14px] md:text-[18px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
@@ -613,21 +670,69 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
               <h3 className="font-display-lg text-3xl text-[#2D3326] mb-2">Congratulations!</h3>
               <p className="text-[#2D3326]/70 mb-6">You've unlocked an exclusive boutique reward.</p>
               
-              <div className="bg-white border border-[#D4AF37]/30 rounded-xl py-6 px-4 mb-8 shadow-sm relative overflow-hidden">
+              <div className="bg-white border border-[#D4AF37]/30 rounded-xl py-6 px-4 mb-5 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#490017] via-[#D4AF37] to-[#490017]"></div>
                 <span className="block font-label-caps text-[#D4AF37] text-[10px] tracking-widest uppercase mb-2">Your Prize</span>
                 <span className="font-display-lg text-[32px] text-[#490017] font-bold leading-none">{wonPrize}</span>
               </div>
+
+              {spinCoupon && (
+                <div className="bg-[#FFF8EC] border border-[#D4AF37]/50 rounded-xl py-4 px-4 mb-5">
+                  <span className="block font-label-caps text-[#4F4E22] text-[10px] tracking-widest uppercase mb-2">Your Coupon Code</span>
+                  <div className="flex items-center justify-center gap-3">
+                    <span className="font-display-lg text-[22px] text-[#490017] font-bold tracking-widest">{spinCoupon}</span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(spinCoupon);
+                        setCopiedCode(true);
+                        setTimeout(() => setCopiedCode(false), 2000);
+                      }}
+                      className="p-1.5 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/40 transition-colors"
+                      title="Copy code"
+                    >
+                      <span className="material-symbols-outlined text-[#4F4E22] text-sm">{copiedCode ? 'check' : 'content_copy'}</span>
+                    </button>
+                  </div>
+                  <p className="text-[#4F4E22]/60 text-[11px] mt-2">Valid for 7 days · Use at checkout</p>
+                </div>
+              )}
               
               <button 
                 onClick={() => setShowPopup(false)}
                 className="w-full py-4 bg-[#D4AF37] text-white font-bold font-label-caps text-[11px] tracking-[0.2em] uppercase hover:bg-[#490017] transition-all duration-300 rounded-full shadow-lg hover:shadow-xl"
               >
-                Claim Reward
+                {spinCoupon ? 'Use Coupon at Checkout' : 'Claim Reward'}
               </button>
             </div>
           </div>
         )}
+
+        {/* Login Prompt — shown when guest tries to spin */}
+        {showLoginPrompt && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="bg-[#FDFBF7] rounded-[2rem] border-2 border-[#D4AF37] p-10 max-w-sm w-full text-center shadow-2xl relative">
+              <button
+                onClick={() => setShowLoginPrompt(false)}
+                className="absolute top-6 right-6 text-[#2D3326]/50 hover:text-[#2D3326] transition-colors"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+              <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mx-auto mb-5 text-[#D4AF37]">
+                <span className="material-symbols-outlined text-3xl">lock</span>
+              </div>
+              <h3 className="font-display-lg text-2xl text-[#2D3326] mb-2">Login to Spin!</h3>
+              <p className="text-[#2D3326]/60 text-sm mb-6">You need to be logged in to spin the wheel and claim real prizes.</p>
+              <button
+                onClick={() => { setShowLoginPrompt(false); setCurrentTab('login'); }}
+                className="w-full py-3.5 bg-[#D4AF37] text-white font-bold font-label-caps text-[11px] tracking-[0.2em] uppercase hover:bg-[#490017] transition-all duration-300 rounded-full shadow-lg"
+              >
+                Login / Sign Up
+              </button>
+            </div>
+          </div>
+        )}
+
+
 
       </main>
     </div>

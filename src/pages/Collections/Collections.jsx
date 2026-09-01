@@ -21,30 +21,32 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
           const images = ['/Images/saree1.png', '/Images/silk1.png', '/Images/fancy1.png', '/Images/black1.png'];
           const mapped = dbCats.map((c, i) => ({
             id: c._id || c.slug,
-            label: c.name,
+            slug: c.slug,
+            label: c.name,          // exact DB name — used for filtering
             name: c.name,
-            subtitle: c.subtitle || 'HANDLOOM HERITAGE',
+            subtitle: c.subtitle || c.description?.split(' ').slice(0, 3).join(' ').toUpperCase() || 'HANDLOOM HERITAGE',
             image: c.image?.url || images[i % images.length],
             gridClass: gridClasses[i % gridClasses.length],
           }));
           setCategories(mapped);
         }
       })
-      .catch(err => console.error('Failed to load categories:', err));
+      .catch(err => console.error('Failed to load collections:', err));
     return () => { isMounted = false; };
   }, []);
 
+
   const handleCollectionClick = (label) => {
     if (setCatalogFilter) {
+      // Pass the exact category name from DB so Catalog filter matches correctly
       setCatalogFilter({ category: label, occasion: '', label: label });
     }
     setCurrentTab('catalog');
-    
-    // Wait for Catalog to render, then scroll specifically to the product grid section
     setTimeout(() => {
       document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    }, 150);
   };
+
 
   return (
     <div className={styles['collections-page']}>

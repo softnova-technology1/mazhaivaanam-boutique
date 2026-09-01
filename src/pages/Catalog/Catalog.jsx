@@ -4,41 +4,21 @@ import { useWishlist } from '../../hooks/useWishlist';
 import { formatCurrency } from '../../utils/formatters';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X, Loader2 } from 'lucide-react';
-import { getProducts, getCategories } from '../../services/api';
+import { getProducts, getFabrics } from '../../services/api';
 import styles from './Catalog.module.css';
 
 // Export empty fallback for backward compatibility
 export const ALL_PRODUCTS = [];
 
-const CATEGORY_CONTENT = {
-  'All': {
-    title: 'The Masterpiece Collection',
-    description: 'Explore our curated anthology of premium handloom luxury. From breathless cottons for daily grace to majestic silks for your grandest moments, discover drapes that speak your style.'
-  },
-  'Everyday Elegance': {
-    title: 'Pure Cotton Elegance',
-    description: 'Breathe easy in our meticulously handwoven cotton sarees designed for seamless day-to-night transitions. Experience unmatched comfort without ever compromising on your sophisticated everyday style.'
-  },
-  'Festive Glow': {
-    title: 'Heritage Silk Weaves',
-    description: 'Illuminate your celebrations with our exquisite collection of pure silk sarees. Woven with rich traditional zari motifs, these radiant drapes are destined to make you the center of attention.'
-  },
-  'Style Studio': {
-    title: 'Fancy Drapes',
-    description: 'Step into the spotlight with our trending, fashion-forward saree silhouettes. Featuring modern patterns and unique textures, this collection is crafted for the bold, contemporary woman.'
-  },
-  'Black Magic': {
-    title: 'The Black Magic Edit',
-    description: 'Embrace the midnight allure with our exclusive range of stunning black sarees. Dark, sophisticated, and deeply glamorous—these masterpieces are tailored for your most unforgettable evening events.'
-  }
-};
+// Permanent categories (hardcoded)
+const PERMANENT_CATEGORIES = ['Everyday Elegance', 'Black Magic', 'Festive Glow', 'Style Studio'];
 
 export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
   const [masterProducts, setMasterProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [dbCategories, setDbCategories] = useState([]);
+  const [fabrics, setFabrics] = useState([]);
 
   // States matching filters
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -69,23 +49,23 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     };
   }, [isMobileFilterOpen]);
 
-  // Initial fetch from MongoDB API
+  // Initial fetch from MongoDB API and fabrics
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
     Promise.all([
       getProducts({ limit: 100 }),
-      getCategories()
-    ]).then(([prodRes, catRes]) => {
+      getFabrics()
+    ]).then(([prodRes, fabList]) => {
       if (isMounted) {
         const list = prodRes.products || [];
         setMasterProducts(list);
         setProducts(list);
-        setDbCategories(catRes || []);
+        setFabrics(fabList || []);
         setLoading(false);
       }
     }).catch(err => {
-      console.error('Failed to load products from API:', err);
+      console.error('Failed to load data from API:', err);
       if (isMounted) setLoading(false);
     });
     return () => { isMounted = false; };
@@ -329,55 +309,74 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 </div>
               </div>
 
-              {/* Collection Filter Widget */}
-              <div className={styles['filter-widget']}>
-                <div className={styles['filter-widget-header']}>
-                  <div className={styles['widget-title-box']}>
-                    <span className="material-symbols-outlined">texture</span>
-                    <h4>COLLECTION</h4>
-                  </div>
-                </div>
-                <div className={styles['fabric-grid']}>
-                  {['All', 'Everyday Elegance', 'Festive Glow', 'Style Studio', 'Black Magic'].map(cat => {
-                    const isSelected = selectedCategory === cat;
-                    return (
-                      <button
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
-                        className={`${styles['fabric-chip']} ${isSelected ? styles['active-chip'] : ''}`}
-                        type="button"
-                      >
-                        {cat === 'All' ? 'All' : cat}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+               {/* Category Filter Widget — uses permanent categories */}
+               <div className={styles['filter-widget']}>
+                 <div className={styles['filter-widget-header']}>
+                   <div className={styles['widget-title-box']}>
+                     <span className="material-symbols-outlined">texture</span>
+                     <h4>CATEGORY</h4>
+                   </div>
+                 </div>
+                 <div className={styles['fabric-grid']}>
+                   {/* All button */}
+                   <button
+                     onClick={() => setSelectedCategory('All')}
+                     className={`${styles['fabric-chip']} ${selectedCategory === 'All' ? styles['active-chip'] : ''}`}
+                     type="button"
+                   >
+                     All
+                   </button>
+                   {/* Permanent categories */}
+                   {PERMANENT_CATEGORIES.map(catName => {
+                     const isSelected = selectedCategory === catName;
+                     return (
+                       <button
+                         key={catName}
+                         onClick={() => setSelectedCategory(catName)}
+                         className={`${styles['fabric-chip']} ${isSelected ? styles['active-chip'] : ''}`}
+                         type="button"
+                       >
+                         {catName}
+                       </button>
+                     );
+                   })}
+                 </div>
+               </div>
 
-              {/* Fabric Filter Widget */}
-              <div className={styles['filter-widget']}>
-                <div className={styles['filter-widget-header']}>
-                  <div className={styles['widget-title-box']}>
-                    <span className="material-symbols-outlined">styler</span>
-                    <h4>Fabric</h4>
-                  </div>
-                </div>
-                <div className={styles['fabric-grid']}>
-                  {['All', 'Pure Silk', 'Cotton', 'Tussar', 'Organza', 'Linen', 'Georgette', 'Chiffon', 'Chanderi'].map(fab => {
-                    const isSelected = selectedFabric === fab;
-                    return (
-                      <button
-                        key={fab}
-                        onClick={() => setSelectedFabric(fab)}
-                        className={`${styles['fabric-chip']} ${isSelected ? styles['active-chip'] : ''}`}
-                        type="button"
-                      >
-                        {fab}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              {/* Fabric Filter Widget — uses dynamic fabrics */}
+               <div className={styles['filter-widget']}>
+                 <div className={styles['filter-widget-header']}>
+                   <div className={styles['widget-title-box']}>
+                     <span className="material-symbols-outlined">styler</span>
+                     <h4>Fabric</h4>
+                   </div>
+                 </div>
+                 <div className={styles['fabric-grid']}>
+                   {/* All button */}
+                   <button
+                     onClick={() => setSelectedFabric('All')}
+                     className={`${styles['fabric-chip']} ${selectedFabric === 'All' ? styles['active-chip'] : ''}`}
+                     type="button"
+                   >
+                     All
+                   </button>
+                   {/* Dynamic fabrics */}
+                   {fabrics.map(fab => {
+                     const fabName = fab.name || fab;
+                     const isSelected = selectedFabric === fabName;
+                     return (
+                       <button
+                         key={fab._id || fabName}
+                         onClick={() => setSelectedFabric(fabName)}
+                         className={`${styles['fabric-chip']} ${isSelected ? styles['active-chip'] : ''}`}
+                         type="button"
+                       >
+                         {fabName}
+                       </button>
+                     );
+                   })}
+                 </div>
+               </div>
 
               {/* Availability Filter Widget */}
               <div className={styles['filter-widget']}>
@@ -446,17 +445,12 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
 
         {/* Right side: Product Grid */}
         <section className={styles['products-panel']}>
-          {/* Dynamic Category Content Banner */}
-          <div className={styles['category-content-banner']}>
-
-            <h2 className={styles['category-content-title']}>
-              {CATEGORY_CONTENT[selectedCategory]?.title || selectedCategory}
-            </h2>
-            <div className={styles['category-divider']}></div>
-            <p className={styles['category-content-description']}>
-              {CATEGORY_CONTENT[selectedCategory]?.description || ''}
-            </p>
-          </div>
+          {/* Static Category Content Banner */}
+               <div className={styles['category-content-banner']}>
+                 <h2 className={styles['category-content-title']}>Explore Our Collections</h2>
+                 <div className={styles['category-divider']}></div>
+                 <p className={styles['category-content-description']}>Discover premium handloom luxury across our four timeless categories.</p>
+               </div>
 
           <div className={styles['products-header']}>
             <div className={styles['products-header-left']}>

@@ -159,6 +159,11 @@ export const getCollections = async () => {
   return res.data || [];
 };
 
+export const getFabrics = async () => {
+  const res = await request('/fabrics');
+  return res.data || [];
+};
+
 // ====== AUTH API ======
 export const authAPI = {
   login: async (email, password) => {

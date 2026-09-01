@@ -58,7 +58,13 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       getFabrics()
     ]).then(([prodRes, fabList]) => {
       if (isMounted) {
-        const list = prodRes.products || [];
+        const now = new Date();
+        const list = (prodRes.products || []).filter(p => {
+          // Hide products where limited offer has expired
+          const lo = p.limitedOfferEntry;
+          if (lo && lo.isActive && lo.endDate && new Date(lo.endDate) < now) return false;
+          return true;
+        });
         setMasterProducts(list);
         setProducts(list);
         setFabrics(fabList || []);

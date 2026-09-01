@@ -1,9 +1,173 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, ShoppingCart, Eye } from 'lucide-react';
 import { getLimitedOfferProducts, getProducts } from '../../services/api';
 import styles from './LimitedOffer.module.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// ─── Countdown Badge ──────────────────────────────────────────────────────────
+function OfferCountdownBadge({ endDate }) {
+  const [timeLeft, setTimeLeft] = useState('');
+  const [expired, setExpired] = useState(false);
+
+  useEffect(() => {
+    const calc = () => {
+      const diff = new Date(endDate).getTime() - Date.now();
+      if (diff <= 0) { setExpired(true); setTimeLeft(''); return; }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const parts = [];
+      if (d > 0) parts.push(`${d}d`);
+      parts.push(`${String(h).padStart(2,'0')}h`, `${String(m).padStart(2,'0')}m`, `${String(s).padStart(2,'0')}s`);
+      setTimeLeft(parts.join(' '));
+    };
+    calc();
+    const iv = setInterval(calc, 1000);
+    return () => clearInterval(iv);
+  }, [endDate]);
+
+  if (expired) {
+    return (
+      <div style={{
+        position: 'absolute', top: 6, right: 6, background: 'rgba(180,0,0,0.88)',
+        backdropFilter: 'blur(4px)', color: '#fff', borderRadius: 6,
+        padding: '3px 8px', fontSize: '9px', fontWeight: 700,
+        letterSpacing: '0.08em', textTransform: 'uppercase', lineHeight: 1.4,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.3)', zIndex: 5,
+      }}>🔴 Offer Ended</div>
+    );
+  }
+  return (
+    <div style={{
+      position: 'absolute', top: 6, right: 6,
+      background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(4px)',
+      color: '#D4AF37', borderRadius: 6, padding: '4px 8px',
+      fontSize: '9px', fontWeight: 700, letterSpacing: '0.06em',
+      lineHeight: 1.4, boxShadow: '0 2px 8px rgba(0,0,0,0.3)', zIndex: 5,
+      whiteSpace: 'nowrap',
+    }}>⏱ {timeLeft}</div>
+  );
+}
+
+// ─── Timed Product Card ───────────────────────────────────────────────────────
+function TimedProductCard({ product, onView, onBuy, isCarousel }) {
+  const now = new Date();
+  const endDate = product.limitedOfferEntry?.endDate;
+  const isExpired = endDate ? new Date(endDate) < now : false;
+
+  const img = product.images?.[0]?.url || '/Images/saree1.png';
+  const price = product.price;
+  const mrp = product.mrpPrice || Math.round(price * 1.15);
+  const discountPct = mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
+  const tag = product.tag;
+
+  // Catalog-style card
+  return (
+    <div
+      onClick={() => onView(product)}
+      style={{
+        width: isCarousel ? 220 : '100%',
+        flexShrink: isCarousel ? 0 : undefined,
+        background: '#fff',
+        border: '1px solid #E9DDC7',
+        borderRadius: 16,
+        overflow: 'hidden',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        cursor: 'pointer',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'box-shadow 0.3s, transform 0.3s',
+        position: 'relative',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,0,0,0.16)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.06)'; e.currentTarget.style.transform = ''; }}
+    >
+      {/* Image area */}
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', overflow: 'hidden', background: '#f5f0e8' }}>
+        <img src={img} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s' }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
+          onMouseLeave={e => e.currentTarget.style.transform = ''} />
+
+        {/* Tag badge top-left */}
+        {tag && (
+          <div style={{
+            position: 'absolute', top: 8, left: 8,
+            background: '#D4AF37', color: '#fff', borderRadius: 4,
+            padding: '3px 8px', fontSize: '8px', fontWeight: 700,
+            letterSpacing: '0.12em', textTransform: 'uppercase',
+          }}>{tag}</div>
+        )}
+
+        {/* Countdown badge top-right */}
+        {endDate && <OfferCountdownBadge endDate={endDate} />}
+
+        {/* Offer Ended overlay */}
+        {isExpired && (
+          <div style={{
+            position: 'absolute', inset: 0, background: 'rgba(100,0,0,0.55)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backdropFilter: 'blur(2px)',
+          }}>
+            <div style={{
+              background: 'rgba(180,0,0,0.9)', color: '#fff',
+              padding: '10px 20px', borderRadius: 8, fontWeight: 800,
+              fontSize: '13px', letterSpacing: '0.12em', textTransform: 'uppercase',
+            }}>OFFER ENDED</div>
+          </div>
+        )}
+      </div>
+
+      {/* Info area */}
+      <div style={{ padding: '12px 14px', flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ fontWeight: 700, fontSize: '13px', color: '#2D3326', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{product.name}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <span style={{ color: '#2D3326', fontWeight: 800, fontSize: '14px' }}>₹{price.toLocaleString('en-IN')}</span>
+          {mrp > price && (
+            <>
+              <span style={{ color: '#aaa', textDecoration: 'line-through', fontSize: '11px' }}>₹{mrp.toLocaleString('en-IN')}</span>
+              <span style={{ background: '#fee2e2', color: '#dc2626', fontSize: '10px', fontWeight: 700, borderRadius: 4, padding: '1px 6px' }}>{discountPct}% OFF</span>
+            </>
+          )}
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display: 'flex', gap: 8, marginTop: 4 }} onClick={e => e.stopPropagation()}>
+          {isExpired ? (
+            <button
+              onClick={() => onView(product)}
+              style={{
+                flex: 1, padding: '8px 0', background: '#f5f0e8',
+                border: '1px solid #D4AF37', color: '#4F4E22',
+                borderRadius: 8, fontWeight: 700, fontSize: '11px',
+                letterSpacing: '0.1em', cursor: 'pointer', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', gap: 5,
+              }}
+            >
+              <Eye size={13} /> VIEW PRODUCT
+            </button>
+          ) : (
+            <button
+              onClick={() => onBuy(product)}
+              style={{
+                flex: 1, padding: '8px 0', background: '#4F4E22',
+                color: '#fff', border: 'none', borderRadius: 8,
+                fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em',
+                cursor: 'pointer', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', gap: 5, transition: 'background 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#3D3C1A'}
+              onMouseLeave={e => e.currentTarget.style.background = '#4F4E22'}
+            >
+              <ShoppingCart size={13} /> ADD TO CART
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   // Live Config State from DB
@@ -101,6 +265,10 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   const [showAllOffers, setShowAllOffers] = useState(false);
   const [liveProducts, setLiveProducts] = useState([]);
 
+  // Timed Offer Products (from admin-assigned entries)
+  const [section1Products, setSection1Products] = useState([]);
+  const [section2Products, setSection2Products] = useState([]);
+
 
   // Fetch Live Config from Backend
   useEffect(() => {
@@ -132,30 +300,49 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
       .catch(err => console.log('Using default offer config:', err));
   }, []);
 
-  // Fetch Offer Products — prefer FESTIVAL CHOICE tagged, fallback to all
+  // Fetch Offer Sections (section-level timing — admin creates sections, assigns products)
   useEffect(() => {
     let isMounted = true;
-    const mapItems = (products) => products.map(p => ({
-      id: p._id || p.id,
-      title: p.name,
-      price: `₹ ${p.price.toLocaleString('en-IN')}`,
-      image: p.images?.[0]?.url || p.image || '/Images/saree1.png',
-      tag: p.tag || 'LIMITED OFFER',
-      raw: p,
-    }));
+    fetch(`${API_BASE}/limited-offer/sections`)
+      .then(r => r.json())
+      .then(data => {
+        if (!isMounted) return;
+        if (data?.success && data?.data) {
+          // Flatten: attach parent section's endDate to each product
+          const mapSection = (sections) =>
+            sections.flatMap(sec =>
+              (sec.productIds || []).map(p => ({
+                ...p,
+                // Inject section endDate into limitedOfferEntry so countdown badge works
+                limitedOfferEntry: {
+                  ...(p.limitedOfferEntry || {}),
+                  isActive: true,
+                  endDate: sec.endDate,
+                  offerLabel: sec.name,
+                },
+              }))
+            );
+          const s1 = mapSection(data.data.slot1 || []);
+          const s2 = mapSection(data.data.slot2 || []);
+          setSection1Products(s1);
+          setSection2Products(s2);
+        }
+      })
+      .catch(console.error);
+    return () => { isMounted = false; };
+  }, []);
 
-    // First: try to get FESTIVAL CHOICE tagged products
+  // Fallback: keep old product fetch for legacy gallery if no timed products
+  useEffect(() => {
+    let isMounted = true;
     getProducts({ limit: 8, tag: 'FESTIVAL CHOICE' })
       .then(res => {
         if (!isMounted) return;
-        if (res.products && res.products.length > 0) {
-          setLiveProducts(mapItems(res.products));
+        if (res.products?.length > 0) {
+          setLiveProducts(res.products);
         } else {
-          // Fallback: any 8 products if no tagged ones exist
           return getProducts({ limit: 8 }).then(fb => {
-            if (isMounted && fb.products?.length > 0) {
-              setLiveProducts(mapItems(fb.products));
-            }
+            if (isMounted && fb.products?.length > 0) setLiveProducts(fb.products);
           });
         }
       })
@@ -163,7 +350,18 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
     return () => { isMounted = false; };
   }, []);
 
+  // Product navigation helpers
+  const handleViewProduct = (product) => {
+    if (setSelectedProduct) setSelectedProduct(product);
+    setCurrentTab('product-detail');
+  };
+  const handleBuyProduct = (product) => {
+    if (setSelectedProduct) setSelectedProduct(product);
+    setCurrentTab('product-detail');
+  };
+
   const galleryItems = liveProducts;
+
 
   // Gallery Carousel Ref
   const galleryRef = useRef(null);
@@ -399,130 +597,140 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
           </div>
         </section>
 
-        {/* Offer Products Grid */}
+        {/* ── Section 1: Exclusive Offers (Timed Grid) ── */}
         <section className="pt-10 md:pt-16 pb-0 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex flex-col items-center mb-8 md:mb-14 text-center">
             <div className="flex items-center gap-3 mb-2 md:mb-4">
               <div className="w-8 md:w-12 h-px bg-[#D4AF37]"></div>
-              <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">{config?.offerProductsSection?.badgeText || 'Festive Deals'}</span>
+              <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">
+                {config?.offerProductsSection?.badgeText || 'Festive Deals'}
+              </span>
               <div className="w-8 md:w-12 h-px bg-[#D4AF37]"></div>
             </div>
-            <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">{config?.offerProductsSection?.heading || 'Exclusive Offers'}</h3>
+            <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">
+              {config?.offerProductsSection?.heading || 'Exclusive Offers'}
+            </h3>
           </div>
-          
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-8">
-            {(showAllOffers ? [...galleryItems, ...galleryItems.slice(0, 2)] : galleryItems.slice(0, 4)).map((item, index) => {
-              const originalPrice = Math.round(parseInt(item.price.replace(/[^\d]/g, '')) * 1.4);
-              return (
-                <div key={`offer-${index}`} className="group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => {
-                  if (setSelectedProduct) {
-                    setSelectedProduct(item.raw || {
-                      id: `offer-${index}`,
-                      name: item.title,
-                      price: parseInt(item.price.replace(/[^\d]/g, '')),
-                      image: item.image,
-                    });
-                  }
-                  setCurrentTab('product-detail');
-                }}>
-                  <div className="relative w-full aspect-[3/4] overflow-hidden bg-surface-container-high">
-                    <img 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
-                      alt={item.title}
-                      src={item.image}
-                    />
-                    {(() => {
-                      const d = item.raw?.discount;
-                      const active = item.raw?.discountActive;
-                      let badgeText = 'SPECIAL PRICE';
-                      if (active && d?.value) {
-                        badgeText = d.type === 'percentage'
-                          ? `FLAT ${d.value}% OFF`
-                          : `₹${Number(d.value).toLocaleString('en-IN')} OFF`;
-                      }
-                      return (
-                        <div className="absolute top-2 left-2 bg-red-700 text-white px-2 py-0.5 shadow-sm rounded-sm">
-                          <span className="font-label-caps text-[7px] md:text-[8.5px] tracking-[0.1em] md:tracking-[0.15em] uppercase font-bold whitespace-nowrap leading-none block">{badgeText}</span>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                  <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-4 w-full">
-                    <h4 className="font-display-lg text-[12px] sm:text-[14px] md:text-[18px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
-                    <div className="flex items-center justify-center gap-1.5 md:gap-3 mt-0.5 flex-wrap">
-                      <p className="text-[#5F6652]/60 line-through text-[9.5px] md:text-[12px]">₹ {originalPrice.toLocaleString('en-IN')}</p>
-                      <p className="text-red-700 font-label-caps text-[11px] md:text-[13px] tracking-wide font-bold">{item.price}</p>
-                    </div>
-                  </div>
+
+          {section1Products.length > 0 ? (
+            <>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+                {(showAllOffers ? section1Products : section1Products.slice(0, 8)).map((product) => (
+                  <TimedProductCard
+                    key={product._id}
+                    product={product}
+                    onView={handleViewProduct}
+                    onBuy={handleBuyProduct}
+                    isCarousel={false}
+                  />
+                ))}
+              </div>
+              {section1Products.length > 8 && (
+                <div className="flex justify-center mt-6 md:mt-10 mb-8 md:mb-12">
+                  <button
+                    onClick={() => setShowAllOffers(!showAllOffers)}
+                    className="px-10 py-3.5 bg-[#4F4E22] text-white font-bold font-label-caps text-[11px] md:text-[12px] tracking-[0.2em] uppercase hover:bg-[#3D3C1A] hover:scale-105 active:scale-95 transition-all duration-300 rounded-full shadow-lg cursor-pointer"
+                    style={{ backgroundColor: '#4F4E22', color: '#ffffff' }}
+                  >
+                    {showAllOffers ? 'VIEW LESS' : `VIEW ALL ${section1Products.length} OFFERS`}
+                  </button>
                 </div>
-              );
-            })}
-          </div>
-          
-          <div className="flex justify-center mt-6 md:mt-10 mb-8 md:mb-12">
-            <button 
-              onClick={() => setShowAllOffers(!showAllOffers)}
-              className="px-10 py-3.5 bg-[#4F4E22] text-white font-bold font-label-caps text-[11px] md:text-[12px] tracking-[0.2em] uppercase hover:bg-[#3D3C1A] hover:scale-105 active:scale-95 transition-all duration-300 rounded-full shadow-lg border border-[#3D3C1A]/20 cursor-pointer"
-              style={{ backgroundColor: '#4F4E22', color: '#ffffff' }}
-            >
-              {showAllOffers ? "VIEW LESS" : "VIEW ALL OFFERS"}
-            </button>
-          </div>
+              )}
+            </>
+          ) : (
+            // Fallback: legacy products when no timed offers added yet
+            <>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-8">
+                {(showAllOffers ? [...galleryItems, ...galleryItems.slice(0, 2)] : galleryItems.slice(0, 4)).map((item, index) => {
+                  const originalPrice = Math.round((item.price || 0) * 1.4);
+                  return (
+                    <div key={`offer-${index}`} className="group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => {
+                      if (setSelectedProduct) setSelectedProduct(item);
+                      setCurrentTab('product-detail');
+                    }}>
+                      <div className="relative w-full aspect-[3/4] overflow-hidden bg-surface-container-high">
+                        <img className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={item.name} src={item.images?.[0]?.url || '/Images/saree1.png'} />
+                        <div className="absolute top-2 left-2 bg-red-700 text-white px-2 py-0.5 shadow-sm rounded-sm">
+                          <span className="font-label-caps text-[7px] md:text-[8.5px] tracking-[0.1em] uppercase font-bold whitespace-nowrap leading-none block">SPECIAL PRICE</span>
+                        </div>
+                      </div>
+                      <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-4 w-full">
+                        <h4 className="font-display-lg text-[12px] sm:text-[14px] md:text-[18px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.name}</h4>
+                        <p className="text-red-700 font-label-caps text-[11px] md:text-[13px] tracking-wide font-bold">₹{item.price?.toLocaleString('en-IN')}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex justify-center mt-6 md:mt-10 mb-8 md:mb-12">
+                <button onClick={() => setShowAllOffers(!showAllOffers)} className="px-10 py-3.5 bg-[#4F4E22] text-white font-bold font-label-caps text-[11px] md:text-[12px] tracking-[0.2em] uppercase hover:bg-[#3D3C1A] hover:scale-105 active:scale-95 transition-all duration-300 rounded-full shadow-lg cursor-pointer" style={{ backgroundColor: '#4F4E22', color: '#ffffff' }}>
+                  {showAllOffers ? 'VIEW LESS' : 'VIEW ALL OFFERS'}
+                </button>
+              </div>
+            </>
+          )}
         </section>
 
-        {/* Eligible Gallery Carousel Section */}
-        <section className="pt-8 md:pt-16 pb-0 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
-          <div className="flex justify-between items-end mb-8 md:mb-14">
-            <div>
-              <div className="flex items-center gap-3 mb-2 md:mb-4">
-                <div className="w-8 h-px bg-[#D4AF37]"></div>
-                <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">{config?.eligibleGallerySection?.badgeText || 'Eligible Selection'}</span>
+        {/* ── Section 2: Preview Gallery Carousel (Timed) ── */}
+        {(section2Products.length > 0 || galleryItems.length > 0) && (
+          <section className="pt-8 md:pt-16 pb-0 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
+            <div className="flex justify-between items-end mb-8 md:mb-14">
+              <div>
+                <div className="flex items-center gap-3 mb-2 md:mb-4">
+                  <div className="w-8 h-px bg-[#D4AF37]"></div>
+                  <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.25em] md:tracking-[0.3em] uppercase">
+                    {section2Products.length > 0 ? 'Limited Previews' : (config?.eligibleGallerySection?.badgeText || 'Eligible Selection')}
+                  </span>
+                </div>
+                <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">
+                  {section2Products.length > 0 ? 'Exclusive Preview Collection' : (config?.eligibleGallerySection?.heading || 'The Buy 2 Get 1 Gallery')}
+                </h3>
               </div>
-              <h3 className="font-display-lg text-2xl sm:text-4xl md:text-5xl text-primary leading-tight">{config?.eligibleGallerySection?.heading || 'The Buy 2 Get 1 Gallery'}</h3>
+              <div className="hidden md:flex gap-3">
+                <button onClick={() => scrollGallery('left')} className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-full text-[#4F4E22] bg-[#FAF9F6] hover:bg-[#4F4E22] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:scale-105 active:scale-95">
+                  <ChevronLeft size={20} strokeWidth={2.2} />
+                </button>
+                <button onClick={() => scrollGallery('right')} className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-full text-[#4F4E22] bg-[#FAF9F6] hover:bg-[#4F4E22] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:scale-105 active:scale-95">
+                  <ChevronRight size={20} strokeWidth={2.2} />
+                </button>
+              </div>
             </div>
-            <div className="hidden md:flex gap-3">
-              <button 
-                onClick={() => scrollGallery('left')} 
-                className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-full text-[#4F4E22] bg-[#FAF9F6] hover:bg-[#4F4E22] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
-              >
-                <ChevronLeft size={20} strokeWidth={2.2} />
-              </button>
-              <button 
-                onClick={() => scrollGallery('right')} 
-                className="w-11 h-11 flex items-center justify-center border border-[#D4AF37] rounded-full text-[#4F4E22] bg-[#FAF9F6] hover:bg-[#4F4E22] hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
-              >
-                <ChevronRight size={20} strokeWidth={2.2} />
-              </button>
-            </div>
-          </div>
-          
-          <div ref={galleryRef} className="flex overflow-x-auto gap-3 sm:gap-4 md:gap-6 lg:gap-8 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {[...galleryItems, ...galleryItems].map((item, index) => (
-              <div key={index} className="w-[120px] sm:w-[160px] md:w-[240px] shrink-0 group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => setCurrentTab('shop')}>
-                <div className="relative w-full aspect-[3/4] overflow-hidden bg-surface-container-high">
-                  <img 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
-                    alt={item.title}
-                    src={item.image}
+
+            <div ref={galleryRef} className="flex overflow-x-auto gap-3 sm:gap-4 md:gap-6 pb-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              {section2Products.length > 0 ? (
+                // Timed Section 2 products
+                [...section2Products, ...section2Products].map((product, index) => (
+                  <TimedProductCard
+                    key={`s2-${product._id}-${index}`}
+                    product={product}
+                    onView={handleViewProduct}
+                    onBuy={handleBuyProduct}
+                    isCarousel={true}
                   />
-                  {item.tag && (
-                    <div className="absolute top-2 left-2 bg-white/95 backdrop-blur-md px-1.5 py-0.5 shadow-sm border border-white/40 rounded-sm">
-                      <span className="text-[#B38A4A] font-label-caps text-[6.5px] md:text-[8.5px] tracking-[0.1em] uppercase font-bold leading-none block">{item.tag}</span>
+                ))
+              ) : (
+                // Fallback legacy carousel
+                [...galleryItems, ...galleryItems].map((item, index) => (
+                  <div key={index} className="w-[120px] sm:w-[160px] md:w-[240px] shrink-0 group cursor-pointer flex flex-col items-center bg-white border border-[#E9DDC7] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500" onClick={() => setCurrentTab('shop')}>
+                    <div className="relative w-full aspect-[3/4] overflow-hidden bg-surface-container-high">
+                      <img className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={item.name} src={item.images?.[0]?.url || '/Images/saree1.png'} />
+                      {item.tag && (
+                        <div className="absolute top-2 left-2 bg-white/95 backdrop-blur-md px-1.5 py-0.5 shadow-sm border border-white/40 rounded-sm">
+                          <span className="text-[#B38A4A] font-label-caps text-[6.5px] md:text-[8.5px] tracking-[0.1em] uppercase font-bold leading-none block">{item.tag}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-3 w-full">
-                  <h4 className="font-display-lg text-[12px] sm:text-[13px] md:text-[17px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.title}</h4>
-                  <div className="flex items-center justify-center gap-1.5 md:gap-2 mt-0.5">
-                    <div className="w-2 md:w-3 h-[1px] bg-[#D4AF37]/40"></div>
-                    <p className="text-[#5F6652] font-label-caps text-[9.5px] md:text-[10px] tracking-wide font-bold">{item.price}</p>
-                    <div className="w-2 md:w-3 h-[1px] bg-[#D4AF37]/40"></div>
+                    <div className="text-center flex-1 flex flex-col justify-start p-2.5 md:p-3 w-full">
+                      <h4 className="font-display-lg text-[12px] sm:text-[13px] md:text-[17px] text-primary mb-1 leading-snug group-hover:text-[#B38A4A] transition-colors truncate">{item.name}</h4>
+                      <p className="text-[#5F6652] font-label-caps text-[9.5px] md:text-[10px] tracking-wide font-bold">₹{item.price?.toLocaleString('en-IN')}</p>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+                ))
+              )}
+            </div>
+          </section>
+        )}
+
 
         {/* Offer Categories (Bento Grid) */}
         <section 

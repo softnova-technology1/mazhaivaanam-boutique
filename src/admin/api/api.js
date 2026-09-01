@@ -139,6 +139,12 @@ export const uploadAPI = {
     formData.append('folder', folder);
     return request('/admin/upload', { method: 'POST', body: formData });
   },
+  uploadImage: (file, folder = 'mazhaivaanam/products') => {
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('folder', folder);
+    return request('/admin/upload', { method: 'POST', body: formData });
+  },
 };
 
 // ====== DISCOUNTS ======
@@ -154,6 +160,18 @@ export const discountAPI = {
 export const offerAPI = {
   getConfig: () => request('/admin/limited-offer/config'),
   updateConfig: (body) => request('/admin/limited-offer', { method: 'PUT', body }),
+  // Timed offer product management (legacy per-product)
+  getOfferProducts: () => request('/admin/limited-offer/products'),
+  assignProduct: (productId, body) => request(`/admin/limited-offer/products/${productId}`, { method: 'POST', body }),
+  updateProduct: (productId, body) => request(`/admin/limited-offer/products/${productId}`, { method: 'PUT', body }),
+  removeProduct: (productId) => request(`/admin/limited-offer/products/${productId}`, { method: 'DELETE' }),
+  // Offer Sections (section-level timing)
+  getSections: () => request('/admin/limited-offer/sections'),
+  createSection: (body) => request('/admin/limited-offer/sections', { method: 'POST', body }),
+  updateSection: (id, body) => request(`/admin/limited-offer/sections/${id}`, { method: 'PUT', body }),
+  deleteSection: (id) => request(`/admin/limited-offer/sections/${id}`, { method: 'DELETE' }),
+  addProductToSection: (sectionId, productId) => request(`/admin/limited-offer/sections/${sectionId}/products`, { method: 'POST', body: { productId } }),
+  removeProductFromSection: (sectionId, productId) => request(`/admin/limited-offer/sections/${sectionId}/products/${productId}`, { method: 'DELETE' }),
 };
 
 // ====== STORE CONFIG (Festival Discount, Fees) ======

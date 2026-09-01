@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { offerAPI, uploadAPI } from '../api/api.js';
-import { Sparkles, Clock, Gift, Layers, Disc, Save, CheckCircle, RefreshCw, Upload, Image as ImageIcon } from 'lucide-react';
+﻿import { useState, useEffect } from 'react';
+import { offerAPI, uploadAPI, productAPI } from '../api/api.js';
+import { Sparkles, Clock, Gift, Layers, Disc, Save, CheckCircle, RefreshCw, Upload, Package, Trash2, Edit2, Plus, X, Search } from 'lucide-react';
 
 const ImageUploaderInput = ({ label, value, onChange }) => {
   const [uploading, setUploading] = useState(false);
@@ -56,6 +56,23 @@ export default function LimitedOfferAdmin() {
   const [toastMsg, setToastMsg] = useState('');
   const [activeTab, setActiveTab] = useState('hero');
 
+  // â”€â”€ Offer Sections State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const [sections, setSections] = useState([]);
+  const [sectionsLoading, setSectionsLoading] = useState(false);
+  const [sectionSaving, setSectionSaving] = useState(false);
+  // Create section form
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [createForm, setCreateForm] = useState({ name: '', description: '', slot: 1, startDate: '', endDate: '' });
+  // Edit section
+  const [editSectionId, setEditSectionId] = useState(null);
+  const [editSectionForm, setEditSectionForm] = useState({});
+  // Product picker per section
+  const [addingProductTo, setAddingProductTo] = useState(null); // sectionId
+  const [productSearch, setProductSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+
   const [config, setConfig] = useState({
     heroSection: {
       badgeText: 'Limited Exclusive Offer',
@@ -94,7 +111,7 @@ export default function LimitedOfferAdmin() {
       description: 'Spin the heritage wheel for a chance to win exclusive gift cards, artisan blouses, or a signature silk saree from our royal vault.',
       bulletPoints: [
         'Grand Prize: Royal Banarasi Saree',
-        'Gift Cards worth ₹ 10,000',
+        'Gift Cards worth â‚¹ 10,000',
         'Artisan Blouse Customizations',
       ],
       prizes: [
@@ -111,6 +128,11 @@ export default function LimitedOfferAdmin() {
   useEffect(() => {
     loadConfig();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'products') loadSections();
+  }, [activeTab]);
+
 
   const loadConfig = async () => {
     setLoading(true);
@@ -143,6 +165,106 @@ export default function LimitedOfferAdmin() {
       console.error('Error loading offer config:', err);
     }
     setLoading(false);
+  };
+
+
+  // â”€â”€ Section handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const loadSections = async () => {
+    setSectionsLoading(true);
+    try {
+      const res = await offerAPI.getSections();
+      if (res?.data) setSections(res.data);
+    } catch (err) { console.error('Error loading sections:', err); }
+    setSectionsLoading(false);
+  };
+
+  const handleCreateSection = async () => {
+    if (!createForm.name || !createForm.endDate) {
+      alert('Section name and end date are required.');
+      return;
+    }
+    setSectionSaving(true);
+    try {
+      await offerAPI.createSection({ ...createForm, slot: Number(createForm.slot) });
+      setShowCreateForm(false);
+      setCreateForm({ name: '', description: '', slot: 1, startDate: '', endDate: '' });
+      setToastMsg('Offer section created!');
+      setTimeout(() => setToastMsg(''), 3500);
+      await loadSections();
+    } catch (err) { alert(err.message); }
+    setSectionSaving(false);
+  };
+
+  const handleUpdateSection = async (sectionId) => {
+    setSectionSaving(true);
+    try {
+      await offerAPI.updateSection(sectionId, editSectionForm);
+      setEditSectionId(null);
+      setEditSectionForm({});
+      setToastMsg('Section updated!');
+      setTimeout(() => setToastMsg(''), 3500);
+      await loadSections();
+    } catch (err) { alert(err.message); }
+    setSectionSaving(false);
+  };
+
+  const handleDeleteSection = async (sectionId, name) => {
+    if (!window.confirm(`Delete offer section "${name}"? Products will NOT be deleted.`)) return;
+    setSectionSaving(true);
+    try {
+      await offerAPI.deleteSection(sectionId);
+      setToastMsg('Section deleted.');
+      setTimeout(() => setToastMsg(''), 3500);
+      await loadSections();
+    } catch (err) { alert(err.message); }
+    setSectionSaving(false);
+  };
+
+  const handleToggleSectionActive = async (section) => {
+    setSectionSaving(true);
+    try {
+      await offerAPI.updateSection(section._id, { isActive: !section.isActive });
+      await loadSections();
+    } catch (err) { alert(err.message); }
+    setSectionSaving(false);
+  };
+
+  // Product search within a section
+  const handleProductSearch = async (q) => {
+    setProductSearch(q);
+    if (!q || q.length < 2) { setSearchResults([]); return; }
+    setSearchLoading(true);
+    try {
+      const res = await productAPI.getAll(`search=${encodeURIComponent(q)}&limit=8`);
+      setSearchResults(res?.data?.products || res?.products || []);
+    } catch { setSearchResults([]); }
+    setSearchLoading(false);
+  };
+
+  const handleAddProductToSection = async (sectionId, product) => {
+    setSectionSaving(true);
+    try {
+      await offerAPI.addProductToSection(sectionId, product._id);
+      setAddingProductTo(null);
+      setProductSearch('');
+      setSearchResults([]);
+      setToastMsg(`"${product.name}" added to section!`);
+      setTimeout(() => setToastMsg(''), 3500);
+      await loadSections();
+    } catch (err) { alert(err.message); }
+    setSectionSaving(false);
+  };
+
+  const handleRemoveProductFromSection = async (sectionId, productId, productName) => {
+    if (!window.confirm(`Remove "${productName}" from this section?`)) return;
+    setSectionSaving(true);
+    try {
+      await offerAPI.removeProductFromSection(sectionId, productId);
+      setToastMsg('Product removed.');
+      setTimeout(() => setToastMsg(''), 3000);
+      await loadSections();
+    } catch (err) { alert(err.message); }
+    setSectionSaving(false);
   };
 
   const handleSave = async (e) => {
@@ -213,6 +335,7 @@ export default function LimitedOfferAdmin() {
           { id: 'duo', label: 'Curated Duo', icon: Gift },
           { id: 'tiers', label: 'Bespoke Offer Tiers', icon: Layers },
           { id: 'wheel', label: 'Spinning Wheel', icon: Disc },
+          { id: 'products', label: 'Offer Products', icon: Package },
         ].map(t => (
           <button
             key={t.id}
@@ -505,17 +628,236 @@ export default function LimitedOfferAdmin() {
           </div>
         )}
 
-        <div style={{ marginTop: 28, paddingTop: 16, borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end' }}>
-          <button 
-            type="submit" 
-            className="btn btn-primary" 
-            disabled={saving}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 28px' }}
-          >
-            {saving ? <RefreshCw className="spinner" size={16} /> : <Save size={16} />}
-            {saving ? 'Saving Changes...' : 'Save Configuration'}
-          </button>
-        </div>
+        {/* TAB 6: OFFER SECTIONS (Section-level timing) */}
+        {activeTab === 'products' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+              <div>
+                <h3 style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 4, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Package size={20} /> Offer Sections Manager
+                </h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  Create a section with timing â†’ then add products to it. All products in a section share the same countdown timer.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}
+                onClick={() => { setShowCreateForm(true); setEditSectionId(null); }}
+              >
+                <Plus size={15} /> Add Offer Section
+              </button>
+            </div>
+
+            {/* â”€â”€ Create Section Form â”€â”€ */}
+            {showCreateForm && (
+              <div className="card" style={{ padding: 20, marginBottom: 24, border: '2px solid var(--primary)', borderRadius: 12 }}>
+                <h4 style={{ fontWeight: 700, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Plus size={15} /> Create New Offer Section
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Section Name <span style={{ color: 'red' }}>*</span></label>
+                    <input type="text" className="form-input" placeholder="e.g. Diwali Grand Sale" value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Section Slot <span style={{ color: 'red' }}>*</span></label>
+                    <select className="form-input" value={createForm.slot} onChange={e => setCreateForm(f => ({ ...f, slot: Number(e.target.value) }))}>
+                      <option value={1}>Slot 1 â€” Exclusive Offers Grid</option>
+                      <option value={2}>Slot 2 â€” Preview Gallery Carousel</option>
+                    </select>
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Start Date (optional â€” blank = show immediately)</label>
+                    <input type="datetime-local" className="form-input" value={createForm.startDate} onChange={e => setCreateForm(f => ({ ...f, startDate: e.target.value }))} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">End Date & Time <span style={{ color: 'red' }}>*</span></label>
+                    <input type="datetime-local" className="form-input" value={createForm.endDate} onChange={e => setCreateForm(f => ({ ...f, endDate: e.target.value }))} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0, gridColumn: '1/-1' }}>
+                    <label className="form-label">Description (optional)</label>
+                    <input type="text" className="form-input" placeholder="e.g. Special festive offers for Diwali season" value={createForm.description} onChange={e => setCreateForm(f => ({ ...f, description: e.target.value }))} />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+                  <button type="button" className="btn btn-primary" onClick={handleCreateSection} disabled={sectionSaving} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {sectionSaving ? <RefreshCw className="spinner" size={14} /> : <Plus size={14} />}
+                    {sectionSaving ? 'Creating...' : 'Create Section'}
+                  </button>
+                  <button type="button" className="btn btn-outline" onClick={() => setShowCreateForm(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+
+            {/* â”€â”€ Sections List â”€â”€ */}
+            {sectionsLoading ? (
+              <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>Loading sections...</div>
+            ) : sections.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-muted)', border: '2px dashed var(--border-color)', borderRadius: 12 }}>
+                <Package size={40} style={{ marginBottom: 12, opacity: 0.25 }} />
+                <div style={{ fontWeight: 600, marginBottom: 6 }}>No Offer Sections Yet</div>
+                <div style={{ fontSize: '0.85rem' }}>Click "Add Offer Section" above to create your first timed offer section.</div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {sections.map(sec => {
+                  const now = new Date();
+                  const end = new Date(sec.endDate);
+                  const start = sec.startDate ? new Date(sec.startDate) : null;
+                  const isExpired = end < now;
+                  const isScheduled = start && start > now;
+                  const statusColor = !sec.isActive ? '#9ca3af' : isExpired ? '#dc2626' : isScheduled ? '#d97706' : '#16a34a';
+                  const statusLabel = !sec.isActive ? 'âš« Paused' : isExpired ? 'ðŸ”´ Expired' : isScheduled ? 'ðŸ• Scheduled' : 'ðŸŸ¢ Active';
+                  const isEditingThis = editSectionId === sec._id;
+
+                  return (
+                    <div key={sec._id} className="card" style={{ padding: 20, border: `2px solid ${statusColor}30`, borderRadius: 12 }}>
+                      {/* Section header */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
+                        <div style={{ flex: 1 }}>
+                          {isEditingThis ? (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                              <input type="text" className="form-input" style={{ padding: '4px 10px', fontSize: '0.87rem', flex: 1 }} value={editSectionForm.name ?? sec.name} onChange={e => setEditSectionForm(f => ({ ...f, name: e.target.value }))} placeholder="Section name" />
+                              <select className="form-input" style={{ padding: '4px 10px', fontSize: '0.87rem', width: 180 }} value={editSectionForm.slot ?? sec.slot} onChange={e => setEditSectionForm(f => ({ ...f, slot: Number(e.target.value) }))}>
+                                <option value={1}>Slot 1 â€” Grid</option>
+                                <option value={2}>Slot 2 â€” Carousel</option>
+                              </select>
+                              <input type="datetime-local" className="form-input" style={{ padding: '4px 10px', fontSize: '0.87rem' }} value={editSectionForm.endDate ?? end.toISOString().slice(0, 16)} onChange={e => setEditSectionForm(f => ({ ...f, endDate: e.target.value }))} />
+                              <button type="button" className="btn btn-primary" style={{ padding: '4px 12px', fontSize: '0.82rem' }} onClick={() => handleUpdateSection(sec._id)} disabled={sectionSaving}>Save</button>
+                              <button type="button" className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.82rem' }} onClick={() => { setEditSectionId(null); setEditSectionForm({}); }}>Cancel</button>
+                            </div>
+                          ) : (
+                            <>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                                <span style={{ fontWeight: 800, fontSize: '1rem' }}>{sec.name}</span>
+                                <span style={{ background: sec.slot === 1 ? '#eff6ff' : '#fef3c7', color: sec.slot === 1 ? '#1d4ed8' : '#92400e', borderRadius: 6, padding: '2px 8px', fontSize: '0.75rem', fontWeight: 700 }}>
+                                  {sec.slot === 1 ? 'Slot 1 â€” Grid' : 'Slot 2 â€” Carousel'}
+                                </span>
+                                <span style={{ color: statusColor, fontWeight: 700, fontSize: '0.8rem' }}>{statusLabel}</span>
+                              </div>
+                              {sec.description && <div style={{ color: 'var(--text-muted)', fontSize: '0.83rem', marginTop: 2 }}>{sec.description}</div>}
+                              <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: 4 }}>
+                                â± Ends: <strong>{end.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</strong>
+                                {start && <> &nbsp;Â·&nbsp; Starts: {start.toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</>}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        {!isEditingThis && (
+                          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                            <button type="button" className="btn btn-outline" style={{ padding: '4px 10px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 4 }}
+                              onClick={() => { setEditSectionId(sec._id); setEditSectionForm({}); }}>
+                              <Edit2 size={12} /> Edit
+                            </button>
+                            <button type="button" style={{ padding: '4px 10px', fontSize: '0.78rem', background: sec.isActive ? '#fef3c7' : '#dcfce7', border: '1px solid', borderColor: sec.isActive ? '#fcd34d' : '#86efac', color: sec.isActive ? '#92400e' : '#166534', borderRadius: 6, cursor: 'pointer' }}
+                              onClick={() => handleToggleSectionActive(sec)}>
+                              {sec.isActive ? 'Pause' : 'Resume'}
+                            </button>
+                            <button type="button" style={{ padding: '4px 10px', fontSize: '0.78rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#dc2626', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+                              onClick={() => handleDeleteSection(sec._id, sec.name)}>
+                              <Trash2 size={12} /> Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Products in this section */}
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                          <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                            {sec.productIds?.length || 0} product{(sec.productIds?.length || 0) !== 1 ? 's' : ''}
+                          </span>
+                          <button type="button" className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 4 }}
+                            onClick={() => { setAddingProductTo(addingProductTo === sec._id ? null : sec._id); setProductSearch(''); setSearchResults([]); }}>
+                            <Plus size={13} /> Add Product
+                          </button>
+                        </div>
+
+                        {/* Product picker */}
+                        {addingProductTo === sec._id && (
+                          <div style={{ marginBottom: 12, padding: 14, background: '#f9fafb', borderRadius: 8, border: '1px solid var(--border-color)', position: 'relative' }}>
+                            <div style={{ position: 'relative', marginBottom: searchResults.length > 0 ? 0 : 0 }}>
+                              <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                              <input type="text" className="form-input" placeholder="Type to search products..." value={productSearch}
+                                onChange={e => handleProductSearch(e.target.value)}
+                                style={{ paddingLeft: 30, fontSize: '0.85rem', padding: '8px 10px 8px 30px' }} />
+                            </div>
+                            {searchLoading && <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 4 }}>Searching...</div>}
+                            {searchResults.length > 0 && (
+                              <div style={{ background: '#fff', border: '1px solid var(--border-color)', borderRadius: 8, maxHeight: 220, overflowY: 'auto', marginTop: 6, boxShadow: '0 8px 20px rgba(0,0,0,0.1)' }}>
+                                {searchResults.map(p => {
+                                  const alreadyAdded = sec.productIds?.some(pid => (pid._id || pid) === p._id);
+                                  return (
+                                    <div key={p._id}
+                                      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', cursor: alreadyAdded ? 'default' : 'pointer', borderBottom: '1px solid var(--border-color)', opacity: alreadyAdded ? 0.5 : 1, transition: 'background 0.12s' }}
+                                      onMouseEnter={e => { if (!alreadyAdded) e.currentTarget.style.background = '#f5f5f5'; }}
+                                      onMouseLeave={e => { e.currentTarget.style.background = ''; }}
+                                      onClick={() => !alreadyAdded && handleAddProductToSection(sec._id, p)}
+                                    >
+                                      <img src={p.images?.[0]?.url || '/Images/saree1.png'} alt={p.name} style={{ width: 36, height: 46, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
+                                      <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div style={{ fontWeight: 600, fontSize: '0.84rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
+                                        <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>â‚¹{p.price?.toLocaleString('en-IN')} Â· {p.tag || 'No tag'}</div>
+                                      </div>
+                                      {alreadyAdded ? <span style={{ fontSize: '0.72rem', color: '#16a34a', fontWeight: 700 }}>âœ“ Added</span> : <Plus size={15} style={{ color: 'var(--primary)', flexShrink: 0 }} />}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Product chips */}
+                        {sec.productIds?.length > 0 ? (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                            {sec.productIds.map(p => {
+                              const pid = p._id || p;
+                              const pname = p.name || 'Product';
+                              const pimg = p.images?.[0]?.url || '/Images/saree1.png';
+                              return (
+                                <div key={pid} style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f5f0e8', border: '1px solid #E9DDC7', borderRadius: 8, padding: '5px 10px 5px 6px' }}>
+                                  <img src={pimg} alt={pname} style={{ width: 28, height: 36, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
+                                  <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#2D3326', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pname}</span>
+                                  <button type="button"
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 0, display: 'flex', alignItems: 'center', marginLeft: 2, transition: 'color 0.15s' }}
+                                    onMouseEnter={e => e.currentTarget.style.color = '#dc2626'}
+                                    onMouseLeave={e => e.currentTarget.style.color = '#9ca3af'}
+                                    onClick={() => handleRemoveProductFromSection(sec._id, pid, pname)}
+                                  ><X size={13} /></button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', padding: '8px 0', fontStyle: 'italic' }}>
+                            No products yet â€” click "Add Product" to add some.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab !== 'products' && (
+          <div style={{ marginTop: 28, paddingTop: 16, borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={saving}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 28px' }}
+            >
+              {saving ? <RefreshCw className="spinner" size={16} /> : <Save size={16} />}
+              {saving ? 'Saving Changes...' : 'Save Configuration'}
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );

@@ -19,6 +19,7 @@ export default function Products() {
     parsedProducts: [],
     importing: false,
     error: '',
+    uploadProgress: '', // NEW: shows image upload progress during parse
   });
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
@@ -266,10 +267,20 @@ export default function Products() {
   const handleFileSelect = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Reset state and show parsing state
+    setImportModal(m => ({ ...m, file: null, parsedProducts: [], error: '', uploadProgress: 'Reading file...' }));
+
     try {
-      const parsed = await parseImportFile(file);
+      // onProgress callback — updates the modal with live upload status for embedded images
+      const onProgress = (_cur, _tot, msg) => {
+        setImportModal(m => ({ ...m, uploadProgress: msg }));
+      };
+
+      const parsed = await parseImportFile(file, onProgress);
+
       if (!parsed.length) {
-        setImportModal(m => ({ ...m, file: null, parsedProducts: [], error: 'No product rows found in file.' }));
+        setImportModal(m => ({ ...m, file: null, parsedProducts: [], error: 'No product rows found in file.', uploadProgress: '' }));
         return;
       }
       setImportModal(m => ({
@@ -277,11 +288,13 @@ export default function Products() {
         file,
         parsedProducts: parsed,
         error: '',
+        uploadProgress: '',
       }));
     } catch (err) {
       setImportModal(m => ({
         ...m,
         error: err.message || 'Failed to parse file. Please check file format.',
+        uploadProgress: '',
       }));
     }
   };
@@ -292,7 +305,7 @@ export default function Products() {
     try {
       const res = await productAPI.bulkImport(importModal.parsedProducts);
       showToast(res.message || `Imported ${res.data?.importedCount || importModal.parsedProducts.length} products successfully!`, 'success');
-      setImportModal({ open: false, file: null, parsedProducts: [], importing: false, error: '' });
+      setImportModal({ open: false, file: null, parsedProducts: [], importing: false, error: '', uploadProgress: '' });
       loadProducts();
     } catch (err) {
       showToast(err.message || 'Error executing bulk import', 'error');
@@ -972,14 +985,14 @@ export default function Products() {
             {/* Template Download & File Picker Section */}
             <div style={{ background: 'var(--bg-secondary)', padding: 18, borderRadius: 12, marginBottom: 20, border: '1px solid var(--border-color)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
-                <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>1. Download Sample Excel/CSV Template:</span>
+                <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>1. Download Sample Excel Template:</span>
                 <button
                   type="button"
                   className="btn btn-outline"
                   onClick={downloadSampleImportTemplate}
                   style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem' }}
                 >
-                  <Download size={14} /> Download Sample Template (.csv)
+                  <Download size={14} /> Download Sample Template (.xlsx)
                 </button>
               </div>
 
@@ -999,6 +1012,26 @@ export default function Products() {
                   }}
                 />
               </div>
+
+              {/* Upload progress for embedded images */}
+              {importModal.uploadProgress && (
+                <div style={{
+                  marginTop: 12,
+                  padding: '10px 14px',
+                  background: 'rgba(200,163,77,0.1)',
+                  border: '1px solid var(--primary)',
+                  borderRadius: 8,
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  color: 'var(--primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8
+                }}>
+                  <span style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }}>⏳</span>
+                  {importModal.uploadProgress}
+                </div>
+              )}
 
               {importModal.error && (
                 <div style={{ color: '#d32f2f', fontSize: '0.85rem', marginTop: 12, fontWeight: 600 }}>
@@ -1024,6 +1057,7 @@ export default function Products() {
                     <thead>
                       <tr>
                         <th>#</th>
+                        <th>Image</th>
                         <th>Product Name</th>
                         <th>Category</th>
                         <th>Fabric</th>
@@ -1037,6 +1071,18 @@ export default function Products() {
                       {importModal.parsedProducts.map((p, idx) => (
                         <tr key={idx}>
                           <td>{idx + 1}</td>
+                          <td>
+                            {p.images?.[0]?.url ? (
+                              <img
+                                src={p.images[0].url}
+                                alt=""
+                                style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 4, border: '1px solid var(--border-color)' }}
+                                onError={e => { e.target.style.display = 'none'; }}
+                              />
+                            ) : (
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No image</span>
+                            )}
+                          </td>
                           <td style={{ fontWeight: 600 }}>{p.name || <span style={{ color: 'red' }}>Missing</span>}</td>
                           <td>{p.category || 'Default'}</td>
                           <td>{p.fabric || 'Cotton'}</td>

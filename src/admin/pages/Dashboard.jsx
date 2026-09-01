@@ -112,9 +112,7 @@ export default function Dashboard() {
   const statusMap = {};
   (data?.statusBreakdown || []).forEach(s => { statusMap[s._id] = s.count; });
   const statusColors = {
-    PROCESSING: '#F59E0B', CONFIRMED: '#3B82F6', SHIPPED: '#8B5CF6',
-    'IN TRANSIT': '#06B6D4', 'OUT FOR DELIVERY': '#EC4899',
-    DELIVERED: '#22C55E', CANCELLED: '#EF4444', RETURNED: '#6B7280',
+    CONFIRMED: '#3B82F6', SHIPPING: '#8B5CF6', DELIVERED: '#22C55E'
   };
 
   const doughnutData = {
@@ -277,9 +275,7 @@ export default function Dashboard() {
 
 function getStatusColor(status) {
   const map = {
-    PROCESSING: 'warning', CONFIRMED: 'info', SHIPPED: 'primary',
-    'IN TRANSIT': 'info', 'OUT FOR DELIVERY': 'primary',
-    DELIVERED: 'success', CANCELLED: 'danger', RETURNED: 'neutral',
+    CONFIRMED: 'info', SHIPPING: 'primary', DELIVERED: 'success'
   };
   return map[status] || 'neutral';
 }

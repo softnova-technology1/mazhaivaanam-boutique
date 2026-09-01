@@ -63,8 +63,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         image: activeProduct.image,
         fabric: activeProduct.fabric,
         category: activeProduct.category,
-        rating: activeProduct.rating || 4.8
-      });
+        });
       // Keep up to 6 items
       viewedList = viewedList.slice(0, 6);
       localStorage.setItem('boutique_recently_viewed', JSON.stringify(viewedList));

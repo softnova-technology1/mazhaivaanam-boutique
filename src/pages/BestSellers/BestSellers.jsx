@@ -280,12 +280,6 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                   <div className={styles['product-details']}>
                     <div className={styles['title-row']}>
                       <h3 className={styles['product-title']}>{product.name}</h3>
-                      {product.rating && (
-                        <div className={styles['rating-badge']}>
-                          <Star size={10} fill="#B38A4A" stroke="#B38A4A" />
-                          <span>{product.rating.toFixed(1)}</span>
-                        </div>
-                      )}
                     </div>
 
                     <p className={styles['product-desc']}>{product.description}</p>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Heart, Star, Share2 } from 'lucide-react';
+import { Heart, Share2 } from 'lucide-react';
 import { useCart } from '../../../hooks/useCart';
 import { useWishlist } from '../../../hooks/useWishlist';
 import { formatCurrency } from '../../../utils/formatters';
@@ -8,7 +8,7 @@ import styles from './ProductCard.module.css';
 
 export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTab }) => {
   const { addToCart } = useCart();
-  const { name, category, price, image, rating = 5.0, oldPrice, tag, isNew, isLimited, description } = product;
+  const { name, category, price, image, oldPrice, tag, isNew, isLimited, description } = product;
 
   const { wishlist, toggleWishlist } = useWishlist();
   const isWishlisted = wishlist.some(w => (w.id || w._id) === (product.id || product._id));
@@ -103,12 +103,6 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
       <div className={styles['card-details']}>
         <div className={styles['title-row']}>
           <h4>{name}</h4>
-          {rating && (
-            <div className={styles['rating-badge-inline']}>
-              <Star size={10} fill="#B38A4A" stroke="#B38A4A" />
-              <span>{rating.toFixed(1)}</span>
-            </div>
-          )}
         </div>
         
         {/* Small Description */}

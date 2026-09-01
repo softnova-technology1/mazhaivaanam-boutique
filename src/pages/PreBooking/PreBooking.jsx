@@ -344,11 +344,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                     </h3>
                     <p className={styles['product-desc']}>{product.description}</p>
                     
-                    <div className={styles['product-rating']}>
-                      <Star size={12} fill="#d32f2f" stroke="#d32f2f" />
-                      <span>{product.rating || '4.8'}</span>
-                      <span className={styles['review-count']}>({product.reviews || product.reviewCount || '0'})</span>
-                    </div>
+                    
 
                     <div className={styles['product-price-row']}>
                       <span className={styles['current-price']}>{formatCurrency(product.price)}</span>

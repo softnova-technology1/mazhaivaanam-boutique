@@ -504,6 +504,11 @@ ul, ol {
   50% { opacity: 0.5; }
 }
 
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 /* ==================== SEARCH BAR ==================== */
 .search-bar {
   position: relative;

@@ -20,14 +20,9 @@ const DUMMY_ORDERS = [];
 
 const getStatusStepIndex = (status) => {
   switch (status?.toUpperCase()) {
-    case 'PLACED':
-    case 'PROCESSING': return 1;
-    case 'QUALITY CHECK': return 2;
-    case 'PACKAGING': return 3;
-    case 'SHIPPED':
-    case 'IN TRANSIT': return 4;
-    case 'DELIVERED': return 5;
-    case 'CANCELLED': return 0;
+    case 'CONFIRMED': return 1;
+    case 'SHIPPING': return 2;
+    case 'DELIVERED': return 3;
     default: return 1;
   }
 };
@@ -118,8 +113,7 @@ export const MyOrders = ({ setCurrentTab }) => {
         category: item.category || '',
         fabric: item.fabric || '',
         color: item.color || '',
-        rating: 4.8
-      }, item.quantity || 1);
+        }, item.quantity || 1);
     });
     triggerToast("Items added back to your bag!");
     setTimeout(() => {
@@ -211,7 +205,6 @@ export const MyOrders = ({ setCurrentTab }) => {
             <div className={styles.ordersStack}>
               {orders.map((order) => {
                 const isDelivered = order.status === 'DELIVERED';
-                const isCancelled = order.status === 'CANCELLED';
                 const isExpanded = expandedOrderIds.includes(order.orderId);
                 const currentStepIndex = getStatusStepIndex(order.status);
 
@@ -243,7 +236,7 @@ export const MyOrders = ({ setCurrentTab }) => {
                               {order.items.length > 1 && ` & ${order.items.length - 1} other item(s)`}
                             </h3>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span className={`${styles.statusBadge} ${isDelivered ? styles.deliveredBadge : isCancelled ? styles.cancelledBadge : styles.transitBadge}`}>
+                              <span className={`${styles.statusBadge} ${isDelivered ? styles.deliveredBadge : styles.transitBadge}`}>
                                 {order.status}
                               </span>
                               <svg 
@@ -284,33 +277,29 @@ export const MyOrders = ({ setCurrentTab }) => {
                       </div>
                     </div>
 
-                    {/* Dynamic Process Stepper Timeline (Only render if not delivered & not cancelled) */}
-                    {!isDelivered && !isCancelled && (
-                      <div className={styles.timelineWrapper}>
-                        <div className={styles.timelineLine}></div>
-                        <div className={styles.timelineNodesRow}>
-                          {[
-                            { label: 'ORDER PLACED', step: 1 },
-                            { label: 'QUALITY CHECK', step: 2 },
-                            { label: 'PACKAGING', step: 3 },
-                            { label: 'SHIPPED', step: 4 },
-                            { label: 'DELIVERED', step: 5 }
-                          ].map((stepObj) => {
-                            const isActive = stepObj.step <= currentStepIndex;
-                            const isCurrent = stepObj.step === currentStepIndex;
+                    {/* Dynamic Process Stepper Timeline */}
+                    <div className={styles.timelineWrapper}>
+                      <div className={styles.timelineLine}></div>
+                      <div className={styles.timelineNodesRow}>
+                        {[
+                          { label: 'CONFIRMED', step: 1 },
+                          { label: 'SHIPPING', step: 2 },
+                          { label: 'DELIVERED', step: 3 }
+                        ].map((stepObj) => {
+                          const isActive = stepObj.step <= currentStepIndex;
+                          const isCurrent = stepObj.step === currentStepIndex;
 
-                            return (
-                              <div key={stepObj.label} className={styles.timelineStepBlock}>
-                                <div className={`${styles.timelineDot} ${isActive ? styles.activeDot : ''} ${isCurrent ? styles.timelineRing : ''}`}></div>
-                                <span className={`${styles.timelineNodeLabel} ${!isActive ? styles.timelineMutedLabel : ''}`}>
-                                  {stepObj.label}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
+                          return (
+                            <div key={stepObj.label} className={styles.timelineStepBlock}>
+                              <div className={`${styles.timelineDot} ${isActive ? styles.activeDot : ''} ${isCurrent ? styles.timelineRing : ''}`}></div>
+                              <span className={`${styles.timelineNodeLabel} ${!isActive ? styles.timelineMutedLabel : ''}`}>
+                                {stepObj.label}
+                              </span>
+                            </div>
+                          );
+                        })}
                       </div>
-                    )}
+                    </div>
 
                     {/* Actions buttons */}
                     <div className={styles.cardActionsFooter}>

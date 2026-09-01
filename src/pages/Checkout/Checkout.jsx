@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
 import { formatCurrency } from '../../utils/formatters';
-import { orderAPI } from '../../services/api';
+import { orderAPI, addressAPI } from '../../services/api';
 import {
   Lock,
   ShieldCheck,
@@ -85,22 +85,42 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     const num = Math.floor(100000 + Math.random() * 900000);
     setOrderId(`MV-${num}`);
 
-    // Load saved addresses
-    try {
-      const addresses = JSON.parse(localStorage.getItem('boutique_addresses') || '[]');
-      setSavedAddresses(addresses);
-      if (addresses.length > 0) {
-        setShowAddressForm(false);
-        const defaultAddr = addresses.find(a => a.isDefault);
-        if (defaultAddr) {
-          setSelectedAddressId(defaultAddr.id);
-        } else {
-          setSelectedAddressId(addresses[0].id);
+    // Load saved addresses — from backend if logged in, localStorage fallback
+    const loadAddresses = async () => {
+      try {
+        if (user) {
+          const serverAddrs = await addressAPI.getAddresses();
+          if (serverAddrs && serverAddrs.length > 0) {
+            setSavedAddresses(serverAddrs);
+            // Addresses from server use _id
+            const defaultAddr = serverAddrs.find(a => a.isDefault);
+            const firstAddr = serverAddrs[0];
+            const selected = defaultAddr || firstAddr;
+            if (selected) {
+              setShowAddressForm(false);
+              setSelectedAddressId(selected._id || selected.id);
+            }
+            return;
+          }
         }
+        // Fallback: localStorage (for guests or no server addresses)
+        const addresses = JSON.parse(localStorage.getItem('boutique_addresses') || '[]');
+        setSavedAddresses(addresses);
+        if (addresses.length > 0) {
+          setShowAddressForm(false);
+          const defaultAddr = addresses.find(a => a.isDefault);
+          if (defaultAddr) {
+            setSelectedAddressId(defaultAddr.id);
+          } else {
+            setSelectedAddressId(addresses[0].id);
+          }
+        }
+      } catch (e) {
+        console.error('Failed to load addresses:', e);
       }
-    } catch (e) {
-      console.error(e);
-    }
+    };
+    loadAddresses();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -112,13 +132,13 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   useEffect(() => {
     if (selectedAddressId && !showAddressForm) {
-      const addr = savedAddresses.find(a => a.id === selectedAddressId);
+      const addr = savedAddresses.find(a => (a._id || a.id) === selectedAddressId);
       if (addr) {
-        setFullName(addr.name || user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+        setFullName(addr.fullName || addr.name || user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
         setPhone(addr.phone || '');
         setAddressLine(addr.addressLine || '');
         setCity(addr.city || '');
-        setStateName(addr.state || '');
+        setStateName(addr.stateName || addr.state || '');
         setPinCode(addr.pinCode || '');
       }
     }
@@ -148,6 +168,43 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   // Price calculations - Strict balance: MRP - Total Savings + Fees = Final Payable
   const GIFT_WRAP_PRICE = 499;
+  const DEFAULT_SAREE_WEIGHT_KG = 0.5;
+
+  // Weight-based shipping rate table (same as backend shipping.js)
+  const SHIPPING_RATES = [
+    { label: 'Standard',   uptoKg: 0.5,       price: 60  },
+    { label: 'Upto 1kg',   uptoKg: 1.0,       price: 75  },
+    { label: 'Upto 1.5kg', uptoKg: 1.5,       price: 90  },
+    { label: 'Upto 2kg',   uptoKg: 2.0,       price: 115 },
+    { label: 'Upto 2.5kg', uptoKg: 2.5,       price: 130 },
+    { label: 'Upto 3kg',   uptoKg: 3.0,       price: 145 },
+    { label: 'Upto 4kg',   uptoKg: 4.0,       price: 170 },
+    { label: 'Upto 5kg',   uptoKg: 5.0,       price: 190 },
+    { label: 'Above 5kg',  uptoKg: Infinity,   price: 220 },
+  ];
+
+  const calcShippingFee = (items, mode) => {
+    if (mode === 'pickup' || items.length === 0) return 0;
+    const totalWeightKg = items.reduce((sum, item) => {
+      const w = Number(item.weightKg) || DEFAULT_SAREE_WEIGHT_KG;
+      return sum + w * (item.quantity || 1);
+    }, 0);
+    const slab = SHIPPING_RATES.find(r => totalWeightKg <= r.uptoKg);
+    const base = slab ? slab.price : 220;
+    return mode === 'express' ? base + 60 : base;
+  };
+
+  const getShippingLabel = (items, mode) => {
+    if (mode === 'pickup') return 'Store Pickup (Free)';
+    if (items.length === 0) return '';
+    const totalWeightKg = items.reduce((sum, item) => {
+      const w = Number(item.weightKg) || DEFAULT_SAREE_WEIGHT_KG;
+      return sum + w * (item.quantity || 1);
+    }, 0);
+    const slab = SHIPPING_RATES.find(r => totalWeightKg <= r.uptoKg);
+    return `${slab ? slab.label : 'Above 5kg'} (${totalWeightKg.toFixed(2)} kg)${mode === 'express' ? ' + Express' : ''}`;
+  };
+
   const mrpTotal = checkoutItems.reduce((sum, item) => sum + (item.oldPrice || Math.round(item.price * 1.15)) * (item.quantity || 1), 0);
   const subtotal = directCheckoutItem
     ? (directCheckoutItem.price * (directCheckoutItem.quantity || 1))
@@ -160,7 +217,8 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
   const convenienceFee = checkoutItems.length > 0 ? 2 : 0;
-  const shippingFee = checkoutItems.length > 0 ? (deliveryMode === 'standard' ? 100 : 0) : 0;
+  const shippingFee = calcShippingFee(checkoutItems, deliveryMode);
+  const shippingLabel = getShippingLabel(checkoutItems, deliveryMode);
   const totalFees = giftPackAddon + convenienceFee + shippingFee;
 
   const finalAmount = Math.max(0, mrpTotal - totalSavings + totalFees);

@@ -351,7 +351,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/admin/*" element={<AdminApp />} />
+        <Route path="/mazhaivaanam-sn2026/*" element={<AdminApp />} />
         <Route
           path="/*"
           element={

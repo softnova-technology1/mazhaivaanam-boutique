@@ -334,3 +334,38 @@ export const wishlistAPI = {
     return res.data;
   },
 };
+
+// ====== ADDRESS API ======
+export const addressAPI = {
+  getAddresses: async () => {
+    const res = await request('/addresses');
+    return res.data || [];
+  },
+  createAddress: async (addressData) => {
+    const res = await request('/addresses', {
+      method: 'POST',
+      body: addressData,
+    });
+    return res.data;
+  },
+  updateAddress: async (id, addressData) => {
+    const res = await request(`/addresses/${id}`, {
+      method: 'PUT',
+      body: addressData,
+    });
+    return res.data;
+  },
+  deleteAddress: async (id) => {
+    const res = await request(`/addresses/${id}`, {
+      method: 'DELETE',
+    });
+    return res.data;
+  },
+  setDefault: async (id) => {
+    const res = await request(`/addresses/${id}/default`, {
+      method: 'PUT',
+    });
+    return res.data;
+  },
+};
+

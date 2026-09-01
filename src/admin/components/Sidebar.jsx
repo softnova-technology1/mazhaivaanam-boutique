@@ -7,18 +7,18 @@ import {
 import './Sidebar.css';
 
 const NAV_ITEMS = [
-  { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
-  { path: '/admin/products', icon: ShoppingBag, label: 'Products' },
-  { path: '/admin/pre-booking', icon: Clock, label: 'Pre-Booking' },
-  { path: '/admin/orders', icon: ClipboardList, label: 'Orders' },
-  { path: '/admin/inventory', icon: PackageSearch, label: 'Inventory' },
-  { path: '/admin/limited-offer', icon: Sparkles, label: 'Limited Offer' },
-  { path: '/admin/discounts', icon: Percent, label: 'Discounts' },
-  { path: '/admin/categories', icon: Layers3, label: 'Categories' },
-  { path: '/admin/users', icon: Users, label: 'Users' },
-  { path: '/admin/inquiries', icon: MessageSquare, label: 'Inquiries' },
-  { path: '/admin/coupons', icon: Ticket, label: 'Coupons' },
-  { path: '/admin/settings', icon: Settings, label: 'Settings' },
+  { path: '/mazhaivaanam-sn2026', icon: LayoutDashboard, label: 'Dashboard' },
+  { path: '/mazhaivaanam-sn2026/products', icon: ShoppingBag, label: 'Products' },
+  { path: '/mazhaivaanam-sn2026/pre-booking', icon: Clock, label: 'Pre-Booking' },
+  { path: '/mazhaivaanam-sn2026/orders', icon: ClipboardList, label: 'Orders' },
+  { path: '/mazhaivaanam-sn2026/inventory', icon: PackageSearch, label: 'Inventory' },
+  { path: '/mazhaivaanam-sn2026/limited-offer', icon: Sparkles, label: 'Limited Offer' },
+  { path: '/mazhaivaanam-sn2026/discounts', icon: Percent, label: 'Discounts' },
+  { path: '/mazhaivaanam-sn2026/categories', icon: Layers3, label: 'Categories' },
+  { path: '/mazhaivaanam-sn2026/users', icon: Users, label: 'Users' },
+  { path: '/mazhaivaanam-sn2026/inquiries', icon: MessageSquare, label: 'Inquiries' },
+  { path: '/mazhaivaanam-sn2026/coupons', icon: Ticket, label: 'Coupons' },
+  { path: '/mazhaivaanam-sn2026/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }) {
@@ -53,9 +53,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `sidebar-link ${isActive && (item.path === '/admin' ? location.pathname === '/admin' : true) ? 'active' : ''}`
+              `sidebar-link ${isActive && (item.path === '/mazhaivaanam-sn2026' ? location.pathname === '/mazhaivaanam-sn2026' : true) ? 'active' : ''}`
             }
-            end={item.path === '/admin'}
+            end={item.path === '/mazhaivaanam-sn2026'}
             title={isCollapsed ? item.label : ""}
           >
             <item.icon size={18} />

@@ -21,14 +21,14 @@ import './index.css';
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="loader"><div className="spinner" /></div>;
-  if (!user) return <Navigate to="/admin/login" replace />;
+  if (!user) return <Navigate to="/mazhaivaanam-sn2026/login" replace />;
   return children;
 }
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="loader"><div className="spinner" /></div>;
-  if (user) return <Navigate to="/admin" replace />;
+  if (user) return <Navigate to="/mazhaivaanam-sn2026" replace />;
   return children;
 }
 
@@ -54,7 +54,7 @@ export default function AdminApp() {
             <Route path="coupons" element={<Coupons />} />
             <Route path="settings" element={<Settings />} />
           </Route>
-          <Route path="*" element={<Navigate to="/admin" replace />} />
+          <Route path="*" element={<Navigate to="/mazhaivaanam-sn2026" replace />} />
         </Routes>
       </AuthProvider>
       </div>

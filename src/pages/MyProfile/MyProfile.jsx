@@ -27,7 +27,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
 import { useWishlist } from '../../hooks/useWishlist';
-import { orderAPI, authAPI } from '../../services/api';
+import { orderAPI, authAPI, addressAPI } from '../../services/api';
 import { formatCurrency } from '../../utils/formatters';
 import InvoiceModal from '../../admin/components/InvoiceModal';
 import styles from './MyProfile.module.css';
@@ -107,11 +107,34 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   });
 
   // 3. Saved Addresses State
-  const [addresses, setAddresses] = useState(() => {
-    const saved = localStorage.getItem('boutique_addresses');
-    if (saved) return JSON.parse(saved);
-    return [];
-  });
+  const [addresses, setAddresses] = useState([]);
+  const [addressesLoading, setAddressesLoading] = useState(false);
+
+  // Load addresses from backend (or localStorage fallback)
+  useEffect(() => {
+    const loadAddresses = async () => {
+      if (!user) {
+        // Not logged in — use localStorage
+        const saved = localStorage.getItem('boutique_addresses');
+        if (saved) setAddresses(JSON.parse(saved));
+        return;
+      }
+      setAddressesLoading(true);
+      try {
+        const serverAddrs = await addressAPI.getAddresses();
+        setAddresses(serverAddrs || []);
+        // Keep localStorage in sync for offline
+        localStorage.setItem('boutique_addresses', JSON.stringify(serverAddrs || []));
+      } catch (err) {
+        // Fallback to localStorage if API fails
+        const saved = localStorage.getItem('boutique_addresses');
+        if (saved) setAddresses(JSON.parse(saved));
+      } finally {
+        setAddressesLoading(false);
+      }
+    };
+    loadAddresses();
+  }, [user]);
 
   // Modal State for Address
   const [isAddAddressOpen, setIsAddAddressOpen] = useState(false);
@@ -137,14 +160,10 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   // FAQ accordion state
   const [activeFaq, setActiveFaq] = useState(null);
 
-  // Sync state to localStorage
+  // Sync profile to localStorage
   useEffect(() => {
     localStorage.setItem('boutique_profile', JSON.stringify(profile));
   }, [profile]);
-
-  useEffect(() => {
-    localStorage.setItem('boutique_addresses', JSON.stringify(addresses));
-  }, [addresses]);
 
 
 
@@ -187,59 +206,82 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     }
   };
 
-  const handleSetDefaultAddress = (id) => {
-    const updated = addresses.map(addr => ({
-      ...addr,
-      isDefault: addr.id === id
-    }));
-    setAddresses(updated);
-    triggerToast('Default shipping address updated.');
+  const handleSetDefaultAddress = async (id) => {
+    if (user) {
+      try {
+        await addressAPI.setDefault(id);
+        const updated = addresses.map(addr => ({ ...addr, isDefault: addr._id === id || addr.id === id }));
+        setAddresses(updated);
+        localStorage.setItem('boutique_addresses', JSON.stringify(updated));
+        triggerToast('Default shipping address updated.');
+      } catch (err) {
+        triggerToast(err.message || 'Failed to update default address.');
+      }
+    } else {
+      const updated = addresses.map(addr => ({ ...addr, isDefault: addr.id === id }));
+      setAddresses(updated);
+      localStorage.setItem('boutique_addresses', JSON.stringify(updated));
+      triggerToast('Default shipping address updated.');
+    }
   };
 
-  const handleDeleteAddress = (id) => {
-    const target = addresses.find(addr => addr.id === id);
+  const handleDeleteAddress = async (id) => {
+    const target = addresses.find(addr => (addr._id || addr.id) === id);
     if (target?.isDefault && addresses.length > 1) {
       triggerToast('Cannot delete default address. Set another default first.');
       return;
     }
-    setAddresses(addresses.filter(addr => addr.id !== id));
-    triggerToast('Address deleted successfully.');
+    if (user) {
+      try {
+        await addressAPI.deleteAddress(id);
+        const updated = addresses.filter(addr => (addr._id || addr.id) !== id);
+        setAddresses(updated);
+        localStorage.setItem('boutique_addresses', JSON.stringify(updated));
+        triggerToast('Address deleted successfully.');
+      } catch (err) {
+        triggerToast(err.message || 'Failed to delete address.');
+      }
+    } else {
+      const updated = addresses.filter(addr => addr.id !== id);
+      setAddresses(updated);
+      localStorage.setItem('boutique_addresses', JSON.stringify(updated));
+      triggerToast('Address deleted successfully.');
+    }
   };
 
-  const handleAddAddressSubmit = (e) => {
+  const handleAddAddressSubmit = async (e) => {
     e.preventDefault();
     if (!newAddress.fullName || !newAddress.addressLine || !newAddress.city || !newAddress.stateName || !newAddress.pinCode || !newAddress.phone) {
       triggerToast('Please fill out all address details.');
       return;
     }
 
-    const createdAddress = {
-      ...newAddress,
-      id: `addr-${Date.now()}`
-    };
-
-    let updatedAddresses = [...addresses];
-    if (createdAddress.isDefault) {
-      updatedAddresses = updatedAddresses.map(addr => ({ ...addr, isDefault: false }));
+    if (user) {
+      try {
+        const created = await addressAPI.createAddress(newAddress);
+        const updated = [...addresses, created];
+        setAddresses(updated);
+        localStorage.setItem('boutique_addresses', JSON.stringify(updated));
+        setIsAddAddressOpen(false);
+        setNewAddress({ fullName: '', addressLine: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+        triggerToast('New address saved! 🏡');
+      } catch (err) {
+        triggerToast(err.message || 'Failed to save address.');
+      }
+    } else {
+      // Guest — localStorage only
+      const createdAddress = { ...newAddress, id: `addr-${Date.now()}` };
+      let updatedAddresses = [...addresses];
+      if (createdAddress.isDefault) {
+        updatedAddresses = updatedAddresses.map(addr => ({ ...addr, isDefault: false }));
+      }
+      if (updatedAddresses.length === 0) createdAddress.isDefault = true;
+      setAddresses([...updatedAddresses, createdAddress]);
+      localStorage.setItem('boutique_addresses', JSON.stringify([...updatedAddresses, createdAddress]));
+      setIsAddAddressOpen(false);
+      setNewAddress({ fullName: '', addressLine: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+      triggerToast('New address saved to your notebook! 🏡');
     }
-    
-    if (updatedAddresses.length === 0) {
-      createdAddress.isDefault = true;
-    }
-
-    setAddresses([...updatedAddresses, createdAddress]);
-    setIsAddAddressOpen(false);
-    setNewAddress({
-      fullName: '',
-      addressLine: '',
-      city: '',
-      stateName: '',
-      pinCode: '',
-      country: 'India',
-      phone: '',
-      isDefault: false
-    });
-    triggerToast('New address saved to your notebook! 🏡');
   };
 
   const handleSupportSubmit = (e) => {

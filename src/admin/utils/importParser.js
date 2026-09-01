@@ -1,6 +1,7 @@
 /**
  * Utility to parse CSV/Excel files into product objects & generate downloadable sample templates
  */
+import * as xlsx from 'xlsx';
 
 // Downloadable Sample Template Definition
 export function downloadSampleImportTemplate() {
@@ -80,8 +81,6 @@ export function downloadSampleImportTemplate() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
-
-import * as xlsx from 'xlsx';
 
 /**
  * Main file parser accepting .csv, .xlsx, or .xls files using SheetJS (xlsx)

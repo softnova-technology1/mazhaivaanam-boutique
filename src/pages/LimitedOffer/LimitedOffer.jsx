@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getLimitedOfferProducts } from '../../services/api';
+import { getLimitedOfferProducts, getProducts } from '../../services/api';
 import styles from './LimitedOffer.module.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getProducts } from '../../services/api';
+import { getLimitedOfferProducts } from '../../services/api';
 import styles from './LimitedOffer.module.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -128,18 +128,18 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
       .catch(err => console.log('Using default offer config:', err));
   }, []);
 
-  // Fetch Offer Products from Backend
+  // Fetch Offer Products from Backend — only FESTIVAL CHOICE and LIMITED EDITION tagged
   useEffect(() => {
     let isMounted = true;
-    getProducts({ limit: 8 })
-      .then(res => {
-        if (isMounted && res.products && res.products.length > 0) {
-          const items = res.products.map(p => ({
+    getLimitedOfferProducts(20)
+      .then(products => {
+        if (isMounted && products && products.length > 0) {
+          const items = products.map(p => ({
             id: p._id || p.id,
             title: p.name,
             price: `₹ ${p.price.toLocaleString('en-IN')}`,
             image: p.images?.[0]?.url || p.image || '/Images/placeholder.svg',
-            tag: p.tag || 'LIMITED OFFER',
+            tag: p.tag || '',
             raw: p
           }));
           setLiveProducts(items);

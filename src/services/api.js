@@ -27,12 +27,12 @@ export function normalizeProduct(p) {
     price: isHundredPercentOff ? 0 : Number(p.price || 0),
     oldPrice: Number(p.mrpPrice || p.oldPrice || p.price || 0),
     mrpPrice: Number(p.mrpPrice || p.oldPrice || p.price || 0),
-    rating: Number(p.averageRating || p.rating || 4.8),
+    
     fabric: p.fabric || 'Pure Silk',
     occasion: p.occasion || 'Traditional',
     color: typeof p.color === 'object' ? p.color?.hex || '#6B102A' : (p.color || '#6B102A'),
     colorName: typeof p.color === 'object' ? p.color?.name || '' : '',
-    tag: p.tag || (p.isFeatured ? 'BESTSELLER' : ''),
+    tag: p.tag || '',  // Use only the actual tag set in admin, never auto-inject
     isPreorder: Boolean(p.isPreorder),
     deposit: p.preorderDeposit || 5000,
     progress: p.preorderProgress || 70,
@@ -130,6 +130,11 @@ export const getNewArrivals = async (limit = 12) => {
 
 export const getBestSellers = async (limit = 12) => {
   const res = await request(`/products/best-sellers?limit=${limit}`);
+  return (res.data || []).map(normalizeProduct);
+};
+
+export const getLimitedOfferProducts = async (limit = 20) => {
+  const res = await request(`/products/limited-offers?limit=${limit}`);
   return (res.data || []).map(normalizeProduct);
 };
 

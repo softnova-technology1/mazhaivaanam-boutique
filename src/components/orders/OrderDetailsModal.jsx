@@ -6,7 +6,6 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
   if (!order) return null;
 
   const isDelivered = order.status === 'DELIVERED';
-  const isCancelled = order.status === 'CANCELLED';
 
   const address = order.shippingAddress || {
     fullName: order.fullName || 'Connoisseur Client',
@@ -94,16 +93,16 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
             <div>
               <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Current Status: </span>
               <strong style={{
-                color: isDelivered ? '#16a34a' : isCancelled ? '#dc2626' : '#C8A34D',
+                color: isDelivered ? '#16a34a' : '#C8A34D',
                 fontSize: '0.9rem',
                 marginLeft: 4
               }}>
-                {order.status || 'PROCESSING'}
+                {order.status || 'CONFIRMED'}
               </strong>
             </div>
 
             <div style={{ display: 'flex', gap: 10 }}>
-              {onTrackOrder && !isDelivered && !isCancelled && (
+              {onTrackOrder && !isDelivered && (
                 <button
                   onClick={() => { onClose(); onTrackOrder(order); }}
                   style={{

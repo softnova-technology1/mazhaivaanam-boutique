@@ -696,12 +696,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                           >
                             {product.name}
                           </h4>
-                          {product.rating && (
-                            <div className={styles['rating-badge-inline']}>
-                              <Star size={10} fill="#B38A4A" stroke="#B38A4A" />
-                              <span>{product.rating.toFixed(1)}</span>
-                            </div>
-                          )}
                         </div>
 
                         {/* Product Description */}

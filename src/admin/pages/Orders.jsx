@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useRef } from 'react';
 import { orderAPI, dashboardAPI } from '../api/api.js';
 import { exportToCSV } from '../utils/exportCSV.js';
 import InvoiceModal from '../components/InvoiceModal.jsx';
@@ -8,15 +8,15 @@ import {
   Square, RefreshCw, Send, Printer
 } from 'lucide-react';
 
-const STATUSES = ['', 'PROCESSING', 'CONFIRMED', 'SHIPPED', 'IN TRANSIT', 'OUT FOR DELIVERY', 'DELIVERED', 'CANCELLED'];
-const STATUS_COLORS = { PROCESSING: 'warning', CONFIRMED: 'info', SHIPPED: 'primary', 'IN TRANSIT': 'info', 'OUT FOR DELIVERY': 'primary', DELIVERED: 'success', CANCELLED: 'danger', RETURNED: 'neutral' };
+const STATUSES = ['', 'CONFIRMED', 'SHIPPING', 'DELIVERED'];
+const STATUS_COLORS = { CONFIRMED: 'info', SHIPPING: 'primary', DELIVERED: 'success' };
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [stats, setStats] = useState(null);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
-  const [paymentStatusFilter, setPaymentStatusFilter] = useState('paid'); // Default: 'paid' for 100% bank verified fulfillment queue
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState('paid');
   const [statusFilter, setStatusFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
@@ -27,6 +27,23 @@ export default function Orders() {
   // Multi-select state
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [bulkLoading, setBulkLoading] = useState(false);
+
+  // Toast notification state
+  const [toast, setToast] = useState(null); // { message, type: 'error'|'success'|'warning' }
+  const toastTimerRef = useRef(null);
+
+  // Confirm dialog state
+  const [confirm, setConfirm] = useState(null); // { message, onConfirm }
+
+  const showToast = (message, type = 'error') => {
+    setToast({ message, type });
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 4000);
+  };
+
+  const showConfirm = (message, onConfirm) => {
+    setConfirm({ message, onConfirm });
+  };
 
   // Invoice Modal state
   const [invoiceOrder, setInvoiceOrder] = useState(null);
@@ -63,12 +80,23 @@ export default function Orders() {
   };
 
   const handleStatusUpdate = async (orderId) => {
+    if (updateForm.status === 'SHIPPING') {
+      if (!updateForm.trackingNumber.trim()) {
+        showToast('Tracking number is required when marking as SHIPPING.', 'warning');
+        return;
+      }
+      if (!updateForm.courier.trim()) {
+        showToast('Courier partner is required when marking as SHIPPING.', 'warning');
+        return;
+      }
+    }
     try {
       await orderAPI.updateStatus(orderId, updateForm);
+      showToast('Order status updated successfully!', 'success');
       setExpanded(null);
       loadOrders();
       loadStats();
-    } catch (err) { alert(err.message); }
+    } catch (err) { showToast(err.message || 'Failed to update order status.', 'error'); }
   };
 
   // Multi-select handlers
@@ -92,18 +120,22 @@ export default function Orders() {
   // Bulk Status Update
   const handleBulkStatus = async (targetStatus) => {
     if (!selectedOrders.length) return;
-    if (!window.confirm(`Update status of ${selectedOrders.length} selected orders to "${targetStatus}"?`)) return;
-
-    setBulkLoading(true);
-    try {
-      await orderAPI.bulkUpdateStatus(selectedOrders, targetStatus);
-      setSelectedOrders([]);
-      loadOrders();
-      loadStats();
-    } catch (err) {
-      alert(err.message || 'Error updating orders in bulk');
-    }
-    setBulkLoading(false);
+    showConfirm(
+      `Update status of ${selectedOrders.length} selected order(s) to "${targetStatus}"?`,
+      async () => {
+        setBulkLoading(true);
+        try {
+          await orderAPI.bulkUpdateStatus(selectedOrders, targetStatus);
+          setSelectedOrders([]);
+          loadOrders();
+          loadStats();
+          showToast(`${selectedOrders.length} order(s) updated to ${targetStatus}.`, 'success');
+        } catch (err) {
+          showToast(err.message || 'Error updating orders in bulk', 'error');
+        }
+        setBulkLoading(false);
+      }
+    );
   };
 
   // Export CSV
@@ -113,7 +145,7 @@ export default function Orders() {
       : orders;
 
     if (!listToExport.length) {
-      alert('No orders to export');
+      showToast('No orders to export.', 'warning');
       return;
     }
 
@@ -178,17 +210,17 @@ export default function Orders() {
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3B82F6', flexShrink: 0 }}><ShoppingBag size={20} /></div>
           <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{totalOrdersCount}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{getQueueLabel()}</div></div>
         </div>
-        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'PROCESSING' ? '1px solid var(--warning)' : undefined }} onClick={() => { setStatusFilter('PROCESSING'); setPage(1); }}>
-          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F59E0B', flexShrink: 0 }}><Clock size={20} /></div>
-          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('PROCESSING')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Processing</div></div>
-        </div>
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'CONFIRMED' ? '1px solid var(--info)' : undefined }} onClick={() => { setStatusFilter('CONFIRMED'); setPage(1); }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(14,165,233,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0EA5E9', flexShrink: 0 }}><Check size={20} /></div>
           <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('CONFIRMED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Confirmed</div></div>
         </div>
-        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'SHIPPED' ? '1px solid var(--primary)' : undefined }} onClick={() => { setStatusFilter('SHIPPED'); setPage(1); }}>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'SHIPPING' ? '1px solid var(--primary)' : undefined }} onClick={() => { setStatusFilter('SHIPPING'); setPage(1); }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8B5CF6', flexShrink: 0 }}><Truck size={20} /></div>
-          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('SHIPPED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Shipped</div></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('SHIPPING')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Shipping</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'DELIVERED' ? '1px solid var(--success)' : undefined }} onClick={() => { setStatusFilter('DELIVERED'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(22,163,74,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16A34A', flexShrink: 0 }}><CheckCircle size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('DELIVERED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Delivered</div></div>
         </div>
       </div>
 
@@ -243,9 +275,9 @@ export default function Orders() {
             <button 
               className="btn btn-sm btn-primary"
               disabled={bulkLoading}
-              onClick={() => handleBulkStatus('SHIPPED')}
+              onClick={() => handleBulkStatus('SHIPPING')}
             >
-              <Truck size={14} /> Mark as Shipped
+              <Truck size={14} /> Mark as Shipping
             </button>
             <button 
               className="btn btn-sm btn-primary"
@@ -255,13 +287,7 @@ export default function Orders() {
             >
               <CheckCircle size={14} /> Mark as Delivered
             </button>
-            <button 
-              className="btn btn-sm btn-outline"
-              disabled={bulkLoading}
-              onClick={() => handleBulkStatus('PROCESSING')}
-            >
-              <RefreshCw size={14} /> Mark Processing
-            </button>
+
             <button 
               className="btn btn-sm btn-outline"
               onClick={() => handleExportCSV(true)}
@@ -398,8 +424,35 @@ export default function Orders() {
                                 <select className="form-select" style={{ marginBottom: 8 }} value={updateForm.status} onChange={e => setUpdateForm(f => ({ ...f, status: e.target.value }))}>
                                   {STATUSES.filter(Boolean).map(s => <option key={s} value={s}>{s}</option>)}
                                 </select>
-                                <input className="form-input" placeholder="Tracking number (e.g. BD98765432)" style={{ marginBottom: 8 }} value={updateForm.trackingNumber} onChange={e => setUpdateForm(f => ({ ...f, trackingNumber: e.target.value }))} />
-                                <input className="form-input" placeholder="Courier partner (e.g. BlueDart)" style={{ marginBottom: 8 }} value={updateForm.courier} onChange={e => setUpdateForm(f => ({ ...f, courier: e.target.value }))} />
+
+                                {/* Tracking & Courier — visible & required only when SHIPPING */}
+                                {updateForm.status === 'SHIPPING' && (
+                                  <>
+                                    <div style={{ position: 'relative', marginBottom: 8 }}>
+                                      <input
+                                        className="form-input"
+                                        placeholder="Tracking number (e.g. BD98765432)"
+                                        value={updateForm.trackingNumber}
+                                        onChange={e => setUpdateForm(f => ({ ...f, trackingNumber: e.target.value }))}
+                                        required
+                                        style={{ borderColor: !updateForm.trackingNumber.trim() ? '#e53e3e' : undefined }}
+                                      />
+                                      <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', fontSize: '0.7rem', color: '#e53e3e', fontWeight: 600, pointerEvents: 'none' }}>REQUIRED</span>
+                                    </div>
+                                    <div style={{ position: 'relative', marginBottom: 8 }}>
+                                      <input
+                                        className="form-input"
+                                        placeholder="Courier partner (e.g. BlueDart)"
+                                        value={updateForm.courier}
+                                        onChange={e => setUpdateForm(f => ({ ...f, courier: e.target.value }))}
+                                        required
+                                        style={{ borderColor: !updateForm.courier.trim() ? '#e53e3e' : undefined }}
+                                      />
+                                      <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', fontSize: '0.7rem', color: '#e53e3e', fontWeight: 600, pointerEvents: 'none' }}>REQUIRED</span>
+                                    </div>
+                                  </>
+                                )}
+
                                 <input className="form-input" placeholder="Status note (optional)" style={{ marginBottom: 10 }} value={updateForm.note} onChange={e => setUpdateForm(f => ({ ...f, note: e.target.value }))} />
                                 <button className="btn btn-primary btn-sm" onClick={() => handleStatusUpdate(order.orderId || order._id)}>Save Updates</button>
                               </div>
@@ -461,6 +514,82 @@ export default function Orders() {
           order={invoiceOrder}
           onClose={() => setInvoiceOrder(null)}
         />
+      )}
+
+      {/* ── Toast Notification ── */}
+      {toast && (
+        <div style={{
+          position: 'fixed',
+          bottom: 28,
+          right: 28,
+          zIndex: 99999,
+          minWidth: 280,
+          maxWidth: 420,
+          background: toast.type === 'success' ? '#166534' : toast.type === 'warning' ? '#92400e' : '#7f1d1d',
+          color: '#fff',
+          borderRadius: 10,
+          padding: '14px 20px',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.25)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          animation: 'slideInRight 0.3s ease',
+        }}>
+          <span style={{ fontSize: 20 }}>
+            {toast.type === 'success' ? '✅' : toast.type === 'warning' ? '⚠️' : '❌'}
+          </span>
+          <span style={{ flex: 1, fontSize: '0.875rem', fontWeight: 500, lineHeight: 1.4 }}>
+            {toast.message}
+          </span>
+          <button
+            onClick={() => setToast(null)}
+            style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', borderRadius: 6, padding: '2px 8px', cursor: 'pointer', fontSize: 16, lineHeight: 1 }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* ── Confirm Dialog Modal ── */}
+      {confirm && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 99998,
+          background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(3px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{
+            background: 'var(--bg-card, #1e1e2e)',
+            border: '1px solid var(--border-color, #2a2a36)',
+            borderRadius: 14,
+            padding: '32px 28px',
+            maxWidth: 400,
+            width: '90%',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.4)',
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>🔄</div>
+            <h3 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary, #fff)' }}>Bulk Status Update</h3>
+            <p style={{ margin: '0 0 24px', fontSize: '0.875rem', color: 'var(--text-secondary, #a0a0b2)', lineHeight: 1.5 }}>
+              {confirm.message}
+            </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button
+                className="btn btn-outline btn-sm"
+                onClick={() => setConfirm(null)}
+                style={{ minWidth: 90 }}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => { confirm.onConfirm(); setConfirm(null); }}
+                style={{ minWidth: 90 }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

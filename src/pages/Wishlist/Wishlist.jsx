@@ -66,7 +66,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
       category: "Linen Handloom",
       fabric: "Linen",
       color: "#DAA520",
-      rating: 4.8,
       description: "Fine organic linen saree detailed with beautiful metallic gold zari weave boundaries."
     },
     {
@@ -121,7 +120,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
       category: "Pure Kanjivaram",
       fabric: "Pure Silk",
       color: "#0F52BA",
-      rating: 4.8,
       description: "Breathtaking sapphire blue silk draped with authentic silver and gold threads."
     }
   ];
@@ -232,11 +230,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                       {item.name} | {item.id.toUpperCase()}
                     </h3>
                     <p className={styles['product-desc']}>{item.description || 'Elegant handcrafted saree perfect for special occasions.'}</p>
-                    <div className={styles['product-rating']}>
-                      <Star size={12} fill="#d32f2f" stroke="#d32f2f" />
-                      <span>{item.rating || '4.8'}</span>
-                      <span className={styles['review-count']}>({item.reviews || '24'})</span>
-                    </div>
+                    
                     <div className={styles['product-price-row']}>
                       <span className={styles['current-price']}>{formatCurrency(item.price)}</span>
                       {hasDrop && <span className={styles['old-price']}>{formatCurrency(item.oldPrice)}</span>}

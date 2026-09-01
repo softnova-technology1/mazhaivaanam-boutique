@@ -12,13 +12,13 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
 
   const handleRemoveFromWishlist = (productId, productName) => {
     removeFromWishlist(productId);
-    setToastMessage(`Removed "${productName}" Saree from Wishlist.`);
+    setToastMessage(`Removed "${productName}" from Wishlist.`);
     setTimeout(() => setToastMessage(''), 3000);
   };
 
   const handleAddToCart = (product) => {
     addToCart(product, 1);
-    setToastMessage(`"${product.name}" Saree added to Trousseau!`);
+    setToastMessage(`"${product.name}" added to Trousseau!`);
     if (setCurrentTab) {
       window.history.pushState(null, '', '/cart');
       setCurrentTab('cart');

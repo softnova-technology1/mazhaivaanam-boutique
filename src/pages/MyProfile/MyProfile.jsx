@@ -521,7 +521,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                           {order.items?.map((item, i) => (
                             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                               <div style={{ width: 48, height: 48, borderRadius: 6, overflow: 'hidden', flexShrink: 0, background: '#111' }}>
-                                <img src={item.image || '/Images/saree1.png'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={item.image || '/Images/placeholder.svg'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>{item.name}</div>

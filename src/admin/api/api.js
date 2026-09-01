@@ -65,6 +65,7 @@ export const productAPI = {
   hardDelete: (id) => request(`/admin/products/${id}/hard`, { method: 'DELETE' }),
   bulkDelete: (productIds) => request('/admin/products/bulk/delete', { method: 'POST', body: { productIds } }),
   bulkHardDelete: (productIds) => request('/admin/products/bulk/hard-delete', { method: 'POST', body: { productIds } }),
+  bulkImport: (products) => request('/admin/products/bulk/import', { method: 'POST', body: { products } }),
 };
 
 // ====== CATEGORIES ======

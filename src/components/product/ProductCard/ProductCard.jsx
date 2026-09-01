@@ -52,7 +52,8 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
     }
   };
 
-  const displayImage = (typeof image === 'string' && !image.startsWith('blob:')) ? image : '/Images/saree1.png';
+  
+  const displayImage = (typeof image === 'string' && !image.startsWith('blob:') && image.trim() !== '') ? image : '/Images/placeholder.svg';
 
   return (
     <div className={styles['product-card']} onClick={handleCardClick}>
@@ -63,7 +64,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
           loading="lazy" 
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = '/Images/saree1.png';
+            e.target.src = '/Images/placeholder.svg';
           }}
         />
 

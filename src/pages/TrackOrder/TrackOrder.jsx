@@ -49,7 +49,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
         id: 'default-track-item',
         name: "Signature Silk Saree - Ruby Zari",
         price: 65000,
-        image: "/Images/saree1.png"
+        image: "/Images/placeholder.svg"
       }
     ]
   };

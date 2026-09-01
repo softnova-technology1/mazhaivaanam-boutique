@@ -162,7 +162,7 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
               {order.items?.map((item, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: 14, padding: 12, border: '1px solid #e2e8f0', borderRadius: 8, alignItems: 'center' }}>
                   <img 
-                    src={item.image || '/Images/saree1.png'} 
+                    src={item.image || '/Images/placeholder.svg'} 
                     alt={item.name} 
                     style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} 
                   />

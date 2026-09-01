@@ -29,7 +29,7 @@ export const CartProvider = ({ children }) => {
           const formatted = data.items.map(item => ({
             ...item.product,
             id: item.product._id || item.product.id,
-            image: (item.product.images && item.product.images.length > 0) ? item.product.images[0].url : (item.product.image || '/Images/saree1.png'),
+            image: (item.product.images && item.product.images.length > 0) ? item.product.images[0].url : (item.product.image || '/Images/placeholder.svg'),
             quantity: item.quantity
           }));
           setCart(formatted);

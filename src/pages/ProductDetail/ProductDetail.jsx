@@ -207,7 +207,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
     if (isWishlisted) {
       setWishlistMessage(`Removed ${activeProduct.name} from Wishlist!`);
     } else {
-      setWishlistMessage(`Added ${activeProduct.name} Saree to Wishlist!`);
+      setWishlistMessage(`Added ${activeProduct.name} to Wishlist!`);
     }
 
     setTimeout(() => setWishlistMessage(''), 3000);
@@ -247,7 +247,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         <span className={styles['breadcrumb-separator']}>
           <ChevronRight size={10} />
         </span>
-        <span className={styles['breadcrumb-active']}>{activeProduct.name} Saree</span>
+        <span className={styles['breadcrumb-active']}>{activeProduct.name}</span>
       </nav>
 
       {/* Main product columns */}
@@ -306,7 +306,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
           </div>
 
           <div className={styles['mobile-variant-text']}>
-            <strong>Selected Color:</strong> {activeProduct.name.split(' ')[0]}
+            <strong>Fabric:</strong> {activeProduct.fabric || 'Pure Handloom'}
           </div>
 
           <div className={styles['thumbnails-strip']}>
@@ -339,7 +339,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
               {activeProduct.tag && <span className={`${styles['detail-badge']} ${getBadgeClass(activeProduct.tag)}`}>{activeProduct.tag}</span>}
             </div>
             <p className={styles['collection-sub']}>MAZHAI VAANAM SIGNATURE COLLECTION</p>
-            <h1>{activeProduct.name} Saree - Royal Heritage Edition</h1>
+            <h1>{activeProduct.name}</h1>
 
 
           </header>

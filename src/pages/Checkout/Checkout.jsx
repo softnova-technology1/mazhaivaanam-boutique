@@ -146,12 +146,12 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   // Image & Quantity Helpers
   const getImageUrl = (item) => {
-    if (!item) return '/Images/saree1.png';
+    if (!item) return '/Images/placeholder.svg';
     let url = item.image;
     if (!url || typeof url !== 'string' || url.startsWith('blob:')) {
-      url = item.images?.[0]?.url || '/Images/saree1.png';
+      url = item.images?.[0]?.url || '/Images/placeholder.svg';
     }
-    return url || '/Images/saree1.png';
+    return url || '/Images/placeholder.svg';
   };
 
   const handleQuantityChange = (item, delta) => {
@@ -635,7 +635,7 @@ Thank you for choosing handloom heritage.
                 alt={item.name}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = '/Images/saree1.png';
+                  e.currentTarget.src = '/Images/placeholder.svg';
                 }}
               />
             </div>

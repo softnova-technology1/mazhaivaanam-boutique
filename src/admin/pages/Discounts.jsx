@@ -304,7 +304,7 @@ export default function Discounts() {
                         <div style={{ width: 44, height: 44, borderRadius: 8, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
                           {(() => {
                             const rawUrl = p.images?.[0]?.url;
-                            const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/saree1.png';
+                            const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/placeholder.svg';
                             return (
                               <img 
                                 src={safeUrl} 
@@ -312,7 +312,7 @@ export default function Discounts() {
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                                 onError={(e) => {
                                   e.target.onerror = null;
-                                  e.target.src = '/Images/saree1.png';
+                                  e.target.src = '/Images/placeholder.svg';
                                 }}
                               />
                             );

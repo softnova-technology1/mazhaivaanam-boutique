@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { productAPI, categoryAPI, uploadAPI } from '../api/api.js';
 import { exportToCSV } from '../utils/exportCSV.js';
-import { Plus, Search, Edit, Trash2, Eye, Star, X, UploadCloud, Image as ImageIcon, Download, CheckSquare, ArrowLeft } from 'lucide-react';
+import { downloadSampleImportTemplate, parseImportFile } from '../utils/importParser.js';
+import { Plus, Search, Edit, Trash2, Eye, Star, X, UploadCloud, Image as ImageIcon, Download, CheckSquare, ArrowLeft, FileSpreadsheet } from 'lucide-react';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,13 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ page: 1, limit: 15, category: '', tag: '', search: '' });
   const [modal, setModal] = useState({ open: false, product: null });
+  const [importModal, setImportModal] = useState({
+    open: false,
+    file: null,
+    parsedProducts: [],
+    importing: false,
+    error: '',
+  });
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -93,7 +101,6 @@ export default function Products() {
       { key: 'mrpPrice', label: 'MRP Price (INR)' },
       { key: 'tag', label: 'Tag Badge', formatter: (p) => p.tag || 'None' },
       { key: 'occasion', label: 'Occasion' },
-      { key: 'averageRating', label: 'Rating' },
       { key: 'isActive', label: 'Status', formatter: (p) => p.isActive ? 'Active' : 'Inactive' },
       { key: 'image', label: 'Primary Image URL', formatter: (p) => p.images?.[0]?.url || '' },
     ];
@@ -254,6 +261,43 @@ export default function Products() {
     setDeleteAlert({ open: false, type: 'single', id: null, name: '' });
   };
 
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const parsed = await parseImportFile(file);
+      if (!parsed.length) {
+        setImportModal(m => ({ ...m, file: null, parsedProducts: [], error: 'No product rows found in file.' }));
+        return;
+      }
+      setImportModal(m => ({
+        ...m,
+        file,
+        parsedProducts: parsed,
+        error: '',
+      }));
+    } catch (err) {
+      setImportModal(m => ({
+        ...m,
+        error: err.message || 'Failed to parse file. Please check file format.',
+      }));
+    }
+  };
+
+  const handleExecuteImport = async () => {
+    if (!importModal.parsedProducts.length) return;
+    setImportModal(m => ({ ...m, importing: true }));
+    try {
+      const res = await productAPI.bulkImport(importModal.parsedProducts);
+      showToast(res.message || `Imported ${res.data?.importedCount || importModal.parsedProducts.length} products successfully!`, 'success');
+      setImportModal({ open: false, file: null, parsedProducts: [], importing: false, error: '' });
+      loadProducts();
+    } catch (err) {
+      showToast(err.message || 'Error executing bulk import', 'error');
+      setImportModal(m => ({ ...m, importing: false }));
+    }
+  };
+
   return (
     <div className="page-container">
       {!modal.open ? (
@@ -264,6 +308,13 @@ export default function Products() {
           <p className="page-subtitle">{pagination.total || 0} products in catalog</p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            className="btn btn-outline"
+            onClick={() => setImportModal({ open: true, file: null, parsedProducts: [], importing: false, error: '' })}
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          >
+            <FileSpreadsheet size={16} /> Import Excel / CSV
+          </button>
           <button
             className="btn btn-outline"
             onClick={() => handleExportCSV(false)}
@@ -356,7 +407,7 @@ export default function Products() {
                   <th>Fabric</th>
                   <th>Price</th>
                   <th>Tag</th>
-                  <th>Rating</th>
+                  <th>Occasion</th>
                   <th>Status</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
@@ -382,7 +433,7 @@ export default function Products() {
                           <div style={{ width: 44, height: 44, borderRadius: 8, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
                             {(() => {
                               const rawUrl = p.images?.[0]?.url;
-                              const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/saree1.png';
+                              const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/placeholder.svg';
                               return (
                                 <img 
                                   src={safeUrl} 
@@ -390,7 +441,7 @@ export default function Products() {
                                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                                   onError={(e) => {
                                     e.target.onerror = null;
-                                    e.target.src = '/Images/saree1.png';
+                                    e.target.src = '/Images/placeholder.svg';
                                   }}
                                 />
                               );
@@ -409,13 +460,7 @@ export default function Products() {
                         {p.mrpPrice > p.price && <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textDecoration: 'line-through' }}>₹{p.mrpPrice?.toLocaleString('en-IN')}</div>}
                       </td>
                       <td>{p.tag ? <span className={`badge badge-${p.tag === 'BESTSELLER' ? 'primary' : p.tag === 'NEW ARRIVAL' ? 'info' : 'warning'}`}>{p.tag}</span> : '—'}</td>
-                      <td>
-                        {p.averageRating > 0 ? (
-                          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <Star size={14} fill="#C8A34D" stroke="#C8A34D" /> {p.averageRating}
-                          </span>
-                        ) : '—'}
-                      </td>
+                      <td>{p.occasion || '-'}</td>
                       <td><span className={`badge ${p.isActive ? 'badge-success' : 'badge-danger'}`}>{p.isActive ? 'Active' : 'Inactive'}</span></td>
                       <td style={{ textAlign: 'right' }}>
                         <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
@@ -476,11 +521,17 @@ export default function Products() {
                 {/* Left Column: Image Upload */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div>
-                    <label className="form-label">Primary Image</label>
+                    <label className="form-label">
+                      Primary Image
+                      <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 500, marginLeft: 8 }}>
+                        (Max 5MB for AWS S3 • Aspect Ratio 3:4)
+                      </span>
+                    </label>
                     <div
                       style={{
                         border: '2px dashed var(--border-color)',
                         borderRadius: 12,
+                        aspectRatio: '3/4',
                         minHeight: 280,
                         display: 'flex',
                         flexDirection: 'column',
@@ -536,9 +587,15 @@ export default function Products() {
                           </div>
                         </>
                       ) : (
-                        <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                        <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 16 }}>
                           <UploadCloud size={40} style={{ marginBottom: 12, opacity: 0.6 }} />
-                          <div style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-primary)' }}>Primary Image</div>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Upload Primary Image</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: 4 }}>
+                            Max 5MB (Suitable for S3 Bucket)
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>
+                            Recommended Ratio: 3:4 (e.g. 600x800px)
+                          </div>
                         </div>
                       )}
                       <input
@@ -548,21 +605,33 @@ export default function Products() {
                         style={{ display: 'none' }}
                         onChange={e => {
                           const file = e.target.files[0];
-                          if (file) setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
+                          if (!file) return;
+                          if (file.size > 5 * 1024 * 1024) {
+                            showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
+                            e.target.value = '';
+                            return;
+                          }
+                          setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
                         }}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="form-label">Secondary Images</label>
+                    <label className="form-label">
+                      Secondary Images
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 400, marginLeft: 8 }}>
+                        (Max 5MB • 3:4 Ratio)
+                      </span>
+                    </label>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       {/* Secondary 1 */}
                       <div
                         style={{
                           border: '2px dashed var(--border-color)',
                           borderRadius: 12,
-                          minHeight: 280,
+                          aspectRatio: '3/4',
+                          minHeight: 180,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -600,11 +669,18 @@ export default function Products() {
                         ) : (
                           <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
                             <Plus size={24} style={{ opacity: 0.6 }} />
+                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>3:4 (Max 5MB)</div>
                           </div>
                         )}
                         <input id="sec1-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
                           const file = e.target.files[0];
-                          if (file) setForm(f => ({ ...f, sec1File: file, sec1Preview: URL.createObjectURL(file) }));
+                          if (!file) return;
+                          if (file.size > 5 * 1024 * 1024) {
+                            showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
+                            e.target.value = '';
+                            return;
+                          }
+                          setForm(f => ({ ...f, sec1File: file, sec1Preview: URL.createObjectURL(file) }));
                         }} />
                       </div>
                       
@@ -613,7 +689,8 @@ export default function Products() {
                         style={{
                           border: '2px dashed var(--border-color)',
                           borderRadius: 12,
-                          minHeight: 280,
+                          aspectRatio: '3/4',
+                          minHeight: 180,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -651,11 +728,18 @@ export default function Products() {
                         ) : (
                           <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
                             <Plus size={24} style={{ opacity: 0.6 }} />
+                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>3:4 (Max 5MB)</div>
                           </div>
                         )}
                         <input id="sec2-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
                           const file = e.target.files[0];
-                          if (file) setForm(f => ({ ...f, sec2File: file, sec2Preview: URL.createObjectURL(file) }));
+                          if (!file) return;
+                          if (file.size > 5 * 1024 * 1024) {
+                            showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
+                            e.target.value = '';
+                            return;
+                          }
+                          setForm(f => ({ ...f, sec2File: file, sec2Preview: URL.createObjectURL(file) }));
                         }} />
                       </div>
                     </div>
@@ -853,6 +937,137 @@ export default function Products() {
             >
               <X size={16} />
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* BULK IMPORT EXCEL / CSV MODAL */}
+      {importModal.open && (
+        <div className="modal-overlay" style={{ zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-content" style={{ maxWidth: 850, width: '90vw', maxHeight: '90vh', overflowY: 'auto', padding: 24, borderRadius: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ background: 'rgba(200, 163, 77, 0.15)', padding: 10, borderRadius: 8, color: 'var(--primary)' }}>
+                  <FileSpreadsheet size={24} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600 }}>Import Bulk Products (Excel / CSV)</h3>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                    Upload a .csv or Excel file to batch insert multiple products into catalog
+                  </p>
+                </div>
+              </div>
+              <button
+                className="btn btn-outline"
+                style={{ border: 'none', padding: 6, cursor: 'pointer' }}
+                onClick={() => setImportModal({ open: false, file: null, parsedProducts: [], importing: false, error: '' })}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Template Download & File Picker Section */}
+            <div style={{ background: 'var(--bg-secondary)', padding: 18, borderRadius: 12, marginBottom: 20, border: '1px solid var(--border-color)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
+                <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>1. Download Sample Excel/CSV Template:</span>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={downloadSampleImportTemplate}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem' }}
+                >
+                  <Download size={14} /> Download Sample Template (.csv)
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>2. Select or Drop Product File (.csv, .xlsx, .xls):</span>
+                <input
+                  type="file"
+                  accept=".csv, .xlsx, .xls"
+                  onChange={handleFileSelect}
+                  style={{
+                    padding: 12,
+                    background: 'var(--bg-surface)',
+                    border: '1px dashed var(--primary)',
+                    borderRadius: 8,
+                    cursor: 'pointer',
+                    width: '100%'
+                  }}
+                />
+              </div>
+
+              {importModal.error && (
+                <div style={{ color: '#d32f2f', fontSize: '0.85rem', marginTop: 12, fontWeight: 600 }}>
+                  ⚠️ {importModal.error}
+                </div>
+              )}
+            </div>
+
+            {/* Preview Table */}
+            {importModal.parsedProducts.length > 0 && (
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>
+                    Preview Products ({importModal.parsedProducts.length} rows found)
+                  </h4>
+                  <span style={{ fontSize: '0.8rem', color: '#2e7d32', fontWeight: 700, background: 'rgba(46,125,50,0.1)', padding: '4px 10px', borderRadius: 12 }}>
+                    ✓ Ready to Import
+                  </span>
+                </div>
+
+                <div style={{ maxHeight: 260, overflowY: 'auto', border: '1px solid var(--border-color)', borderRadius: 8 }}>
+                  <table className="data-table" style={{ width: '100%', fontSize: '0.85rem' }}>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Fabric</th>
+                        <th>Price (₹)</th>
+                        <th>MRP (₹)</th>
+                        <th>Stock</th>
+                        <th>Tag</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {importModal.parsedProducts.map((p, idx) => (
+                        <tr key={idx}>
+                          <td>{idx + 1}</td>
+                          <td style={{ fontWeight: 600 }}>{p.name || <span style={{ color: 'red' }}>Missing</span>}</td>
+                          <td>{p.category || 'Default'}</td>
+                          <td>{p.fabric || 'Cotton'}</td>
+                          <td>₹{p.price || 0}</td>
+                          <td>₹{p.mrpPrice || Math.round((p.price || 0) * 1.15)}</td>
+                          <td>{p.stock || 25}</td>
+                          <td>{p.tag || '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Modal Actions */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => setImportModal({ open: false, file: null, parsedProducts: [], importing: false, error: '' })}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={!importModal.parsedProducts.length || importModal.importing}
+                onClick={handleExecuteImport}
+                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                {importModal.importing ? 'Importing Products...' : `Import ${importModal.parsedProducts.length} Products Now`}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -138,7 +138,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
             id: p._id || p.id,
             title: p.name,
             price: `₹ ${p.price.toLocaleString('en-IN')}`,
-            image: p.images?.[0]?.url || p.image || '/Images/saree1.png',
+            image: p.images?.[0]?.url || p.image || '/Images/placeholder.svg',
             tag: p.tag || 'LIMITED OFFER',
             raw: p
           }));

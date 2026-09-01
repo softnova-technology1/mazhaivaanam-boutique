@@ -18,11 +18,13 @@ import {
   ShoppingBag 
 } from 'lucide-react';
 import styles from './Cart.module.css';
+import { useStoreConfig } from '../../context/StoreConfigContext';
 
 export const Cart = ({ setCurrentTab }) => {
   const { cart, updateQuantity, removeFromCart, cartTotal, addToCart, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
   const { toggleWishlist } = useWishlist();
+  const storeConfig = useStoreConfig();
   const carouselRef = useRef(null);
 
   // Local interactive states
@@ -136,9 +138,11 @@ export const Cart = ({ setCurrentTab }) => {
   const mrpTotal = cart.reduce((sum, item) => sum + (item.oldPrice || Math.round(item.price * 1.15)) * item.quantity, 0);
   const subtotal = cartTotal;
   const exclusivePricingSavings = mrpTotal - subtotal;
-  const festivalDiscount = Math.round(subtotal * 0.05); // 5% discount
+  const festivalPct = 0; // festival discount removed
+  const festivalDiscountLabel = '';
+  const festivalDiscount = 0;
   const couponDiscount = couponApplied ? 1000 : 0;
-  const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
+  const totalSavings = exclusivePricingSavings + couponDiscount;
   const shippingFee = cart.length > 0 ? 100 : 0;
   const finalAmount = Math.max(0, mrpTotal - totalSavings) + (cart.length > 0 ? 2 : 0) + shippingFee;
 
@@ -315,10 +319,12 @@ export const Cart = ({ setCurrentTab }) => {
                     <span>Exclusive Pricing</span>
                     <span className={styles.priceValue}>{formatCurrency(subtotal)}</span>
                   </div>
+                  {festivalDiscount > 0 && (
                   <div className={styles.discountRow}>
-                    <span> Discount</span>
+                    <span>{festivalDiscountLabel}</span>
                     <span className={styles.discountValue}>-{formatCurrency(festivalDiscount)}</span>
                   </div>
+                  )}
                   <div className={styles.priceRow}>
                     <span>Convenient Fees</span>
                     <span className={styles.priceValue}>₹2</span>

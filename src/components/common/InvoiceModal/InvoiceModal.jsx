@@ -28,7 +28,6 @@ export default function InvoiceModal({ order, onClose }) {
 
   const subtotalMRP = order.mrpTotal || order.subtotal || order.items?.reduce((sum, it) => sum + (it.price * (it.quantity || 1)), 0) || order.totalAmount || 0;
   const memberSubtotal = order.subtotal || subtotalMRP;
-  const festivalDiscount = order.discount || order.festivalDiscount || 0;
   const couponDiscount = order.couponDiscount || 0;
   const convenienceFee = order.convenienceFee !== undefined ? order.convenienceFee : (order.finalAmount ? 2 : 0);
   const giftPackCharge = order.giftPackCharge || order.giftPackAddon || 0;
@@ -250,12 +249,7 @@ export default function InvoiceModal({ order, onClose }) {
                   <span style={{ fontWeight: 600 }}>₹{memberSubtotal.toLocaleString('en-IN')}</span>
                 </div>
               )}
-              {festivalDiscount > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9', color: '#16a34a' }}>
-                  <span>Festival Discount:</span>
-                  <span>- ₹{festivalDiscount.toLocaleString('en-IN')}</span>
-                </div>
-              )}
+
               {couponDiscount > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9', color: '#16a34a' }}>
                   <span>Coupon Discount {order.couponCode ? `(${order.couponCode})` : ''}:</span>

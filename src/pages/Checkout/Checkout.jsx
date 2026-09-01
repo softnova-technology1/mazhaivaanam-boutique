@@ -29,9 +29,11 @@ import {
   Check
 } from 'lucide-react';
 import styles from './Checkout.module.css';
+import { useStoreConfig } from '../../context/StoreConfigContext';
 
 export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutItem }) => {
   const { cart, cartTotal, clearCart, updateQuantity } = useCart();
+  const storeConfig = useStoreConfig();
   const checkoutItems = directCheckoutItem
     ? [{ ...directCheckoutItem, quantity: directCheckoutItem.quantity || 1 }]
     : cart;
@@ -211,7 +213,9 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     : cartTotal;
 
   const exclusivePricingSavings = Math.max(0, mrpTotal - subtotal);
-  const festivalDiscount = Math.round(subtotal * 0.05); // 5% festival discount
+  const festivalDiscount = 0; // festival discount removed
+  const festivalDiscountLabel = '';
+  const festivalPct = 0;
   const couponDiscount = appliedCoupon ? appliedCoupon.discountAmount : 0;
   const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
 
@@ -787,10 +791,7 @@ Thank you for choosing handloom heritage.
               <span>Exclusive Member Price</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
-            <div className={styles.discountRow}>
-              <span>Festival Privilege Discount (-5%)</span>
-              <span>-{formatCurrency(festivalDiscount)}</span>
-            </div>
+
             {couponDiscount > 0 && (
               <div className={styles.discountRow} style={{ color: 'var(--success)' }}>
                 <span>Coupon Discount ({appliedCoupon?.code})</span>

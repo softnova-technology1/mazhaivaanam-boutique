@@ -5,6 +5,7 @@ import AdminApp from './admin/AdminApp';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { StoreConfigProvider } from './context/StoreConfigContext';
 import { useCart } from './hooks/useCart';
 import { Navbar } from './components/layout/Navbar/Navbar';
 import { WhatsAppButton } from './components/common/WhatsAppButton/WhatsAppButton';
@@ -356,11 +357,13 @@ export default function App() {
           path="/*"
           element={
             <AuthProvider>
-              <CartProvider>
-                <WishlistProvider>
-                  <AppContent />
-                </WishlistProvider>
-              </CartProvider>
+              <StoreConfigProvider>
+                <CartProvider>
+                  <WishlistProvider>
+                    <AppContent />
+                  </WishlistProvider>
+                </CartProvider>
+              </StoreConfigProvider>
             </AuthProvider>
           }
         />

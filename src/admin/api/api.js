@@ -147,3 +147,9 @@ export const offerAPI = {
   getConfig: () => request('/admin/limited-offer/config'),
   updateConfig: (body) => request('/admin/limited-offer', { method: 'PUT', body }),
 };
+
+// ====== STORE CONFIG (Festival Discount, Fees) ======
+export const storeConfigAPI = {
+  getConfig: () => request('/admin/store/config'),
+  updateConfig: (body) => request('/admin/store/config', { method: 'PUT', body }),
+};

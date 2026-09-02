@@ -28,6 +28,8 @@ export default function InvoiceModal({ order, onClose }) {
 
   const subtotal = order.items?.reduce((sum, it) => sum + (it.price * (it.quantity || 1)), 0) || order.totalAmount || 0;
   const couponDiscount = order.couponDiscount || 0;
+  const shippingFee = order.shippingFee || 0;
+  const giftPackCharge = order.giftPackaging ? (order.giftPackCharge || 499) : 0;
   const grandTotal = order.totalAmount || subtotal;
   
   // Saree standard GST rate in India is 5% (2.5% CGST + 2.5% SGST)
@@ -235,8 +237,21 @@ export default function InvoiceModal({ order, onClose }) {
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
                 <span style={{ color: '#64748b' }}>Shipping & Handling:</span>
-                <span style={{ color: '#16a34a', fontWeight: 600 }}>FREE (Complimentary)</span>
+                <span style={{ fontWeight: 600 }}>
+                  {shippingFee > 0 ? `₹${shippingFee.toLocaleString('en-IN')}` : 'FREE'}
+                </span>
               </div>
+              {giftPackCharge > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
+                  <span style={{ color: '#64748b' }}>🎁 Gift Packaging:</span>
+                  <span style={{ fontWeight: 600 }}>₹{giftPackCharge.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+              {order.giftMessage && (
+                <div style={{ padding: '6px 0 6px', borderBottom: '1px solid #f1f5f9', fontSize: '0.78rem', color: '#6B102A', fontStyle: 'italic' }}>
+                  🎁 Gift message: "{order.giftMessage}"
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderTop: '2px solid #0f172a', marginTop: 8, fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>
                 <span>Grand Total:</span>
                 <span style={{ color: '#6B102A' }}>₹{grandTotal.toLocaleString('en-IN')}</span>

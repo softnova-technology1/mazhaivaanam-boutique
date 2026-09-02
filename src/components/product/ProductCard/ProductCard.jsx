@@ -8,7 +8,17 @@ import styles from './ProductCard.module.css';
 
 export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTab }) => {
   const { addToCart } = useCart();
-  const { name, category, price, image, oldPrice, tag, isNew, isLimited, description } = product;
+  const { name, category, price, image, oldPrice, mrpPrice, discountedPrice, discountActive, tag, isNew, isLimited, description } = product;
+
+  const effectivePrice = (discountActive && discountedPrice) || (discountedPrice && discountedPrice < price)
+    ? discountedPrice
+    : price;
+
+  const effectiveOldPrice = mrpPrice || oldPrice || (effectivePrice < price ? price : Math.round(price * 1.15));
+  const hasDiscount = effectiveOldPrice > effectivePrice;
+  const discountPct = hasDiscount ? Math.round(((effectiveOldPrice - effectivePrice) / effectiveOldPrice) * 100) : 0;
+
+  const itemToPass = { ...product, price: effectivePrice, discountedPrice: effectivePrice };
 
   const { wishlist, toggleWishlist } = useWishlist();
   const isWishlisted = wishlist.some(w => (w.id || w._id) === (product.id || product._id));
@@ -46,7 +56,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
     if (onClick) {
       onClick();
     } else if (setSelectedProduct && setCurrentTab) {
-      setSelectedProduct(product);
+      setSelectedProduct(itemToPass);
       setCurrentTab('product-detail');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -113,12 +123,12 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
         )}
         
         <div className={styles['price-row']}>
-          <span className={styles['current-price']}>{formatCurrency(price)}</span>
-          {oldPrice && (
+          <span className={styles['current-price']}>{formatCurrency(effectivePrice)}</span>
+          {hasDiscount && (
             <>
-              <span className={styles['old-price']}>{formatCurrency(oldPrice)}</span>
+              <span className={styles['old-price']}>{formatCurrency(effectiveOldPrice)}</span>
               <span className={styles['discount-pill']}>
-                {Math.round(((oldPrice - price) / oldPrice) * 100)}% OFF
+                {discountPct}% OFF
               </span>
             </>
           )}
@@ -127,7 +137,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
           className={styles['add-cart-btn']}
           onClick={(e) => {
             e.stopPropagation();
-            addToCart(product, 1);
+            addToCart(itemToPass, 1);
           }}
         >
           ADD TO CART

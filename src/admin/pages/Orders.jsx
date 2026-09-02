@@ -5,7 +5,7 @@ import InvoiceModal from '../components/InvoiceModal.jsx';
 import {
   Search, ChevronDown, ChevronUp, Truck, MapPin, ShoppingBag, Clock,
   CheckCircle, Check, Navigation, XCircle, Download, FileText, CheckSquare,
-  Square, RefreshCw, Send, Printer
+  Square, RefreshCw, Send, Printer, Gift
 } from 'lucide-react';
 
 const STATUSES = ['', 'CONFIRMED', 'SHIPPING', 'DELIVERED'];
@@ -353,7 +353,19 @@ export default function Orders() {
                         <br/>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{order.user?.email || order.shippingAddress?.phone}</span>
                       </td>
-                      <td>{order.items?.length} item{order.items?.length > 1 ? 's' : ''}</td>
+                      <td>
+                        {order.items?.length} item{order.items?.length > 1 ? 's' : ''}
+                        {order.giftPackaging && (
+                          <span title="Gift Packaging Requested" style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 3,
+                            marginLeft: 6, padding: '1px 7px', borderRadius: 10,
+                            background: 'rgba(200,163,77,0.18)', border: '1px solid rgba(200,163,77,0.5)',
+                            fontSize: '0.68rem', fontWeight: 700, color: '#C8A34D', verticalAlign: 'middle'
+                          }}>
+                            <Gift size={10} /> GIFT
+                          </span>
+                        )}
+                      </td>
                       <td style={{ fontWeight: 600 }}>₹{order.totalAmount?.toLocaleString('en-IN')}</td>
                       <td><span className={`badge ${order.paymentStatus === 'paid' ? 'badge-success' : order.paymentStatus === 'failed' ? 'badge-danger' : 'badge-warning'}`}>{order.paymentStatus}</span></td>
                       <td><span className={`badge badge-${STATUS_COLORS[order.status] || 'neutral'}`}>{order.status}</span></td>
@@ -392,6 +404,39 @@ export default function Orders() {
                                     </div>
                                   </div>
                                 ))}
+
+                                {/* Gift Packaging — shown directly under items */}
+                                {order.giftPackaging && (
+                                  <div style={{
+                                    marginTop: 12,
+                                    padding: '10px 14px',
+                                    background: 'rgba(200, 163, 77, 0.12)',
+                                    border: '1px solid rgba(200, 163, 77, 0.5)',
+                                    borderRadius: 8,
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    gap: 10
+                                  }}>
+                                    <Gift size={18} color="#C8A34D" style={{ flexShrink: 0, marginTop: 1 }} />
+                                    <div>
+                                      <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#C8A34D', marginBottom: 2 }}>
+                                        🎁 GIFT PACKAGING REQUESTED
+                                      </div>
+                                      {order.giftMessage ? (
+                                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                                          "{order.giftMessage}"
+                                        </div>
+                                      ) : (
+                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                          No message provided
+                                        </div>
+                                      )}
+                                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>
+                                        Packaging charge: ₹{order.giftPackCharge || 499}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
 
                               {/* Address */}

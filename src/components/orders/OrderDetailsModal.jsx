@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, MapPin, Truck, Calendar, CreditCard, ShoppingBag, CheckCircle, Clock } from 'lucide-react';
+import { X, MapPin, Truck, Calendar, CreditCard, ShoppingBag, CheckCircle, Clock, Gift } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 
 export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTrackOrder }) {
@@ -55,25 +55,25 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '16px 24px',
+          padding: '18px 24px',
           background: '#490017',
           color: '#ffffff',
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12
         }}>
           <div>
-            <div style={{ fontSize: '0.75rem', letterSpacing: '0.1em', color: '#C8A34D', fontWeight: 600 }}>
+            <div style={{ fontSize: '0.75rem', letterSpacing: '0.1em', color: '#ffffff', opacity: 0.95, fontWeight: 700, marginBottom: 2 }}>
               ORDER SPECIFICATION DETAILS
             </div>
-            <h3 style={{ margin: 0, fontFamily: "'Playfair Display', serif", fontSize: '1.25rem' }}>
+            <h3 style={{ margin: 0, fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', color: '#ffffff', fontWeight: 700 }}>
               Order #{order.orderId}
             </h3>
           </div>
           <button 
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: '#ffffff', cursor: 'pointer' }}
+            style={{ background: 'transparent', border: 'none', color: '#ffffff', cursor: 'pointer', padding: 4 }}
           >
-            <X size={20} />
+            <X size={22} />
           </button>
         </div>
 
@@ -179,6 +179,49 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
             </div>
           </div>
 
+          {/* Gift Packaging Box (if selected) */}
+          {(order.giftPackaging || order.giftPackCharge > 0) && (
+            <div style={{
+              padding: '14px 18px',
+              background: 'rgba(200, 163, 77, 0.12)',
+              border: '1.5px solid #C8A34D',
+              borderRadius: 10,
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 12
+            }}>
+              <div style={{
+                width: 40,
+                height: 40,
+                borderRadius: 8,
+                background: '#C8A34D',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <Gift size={22} color="#ffffff" />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#490017', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>🎁 Luxury Gift Packaging Requested</span>
+                  <span style={{ fontSize: '0.85rem', color: '#C8A34D', fontWeight: 700 }}>
+                    +{formatCurrency(order.giftPackCharge || 499)}
+                  </span>
+                </div>
+                {order.giftMessage ? (
+                  <div style={{ marginTop: 8, fontSize: '0.83rem', color: '#1e293b', background: '#ffffff', padding: '10px 14px', borderRadius: 6, border: '1px dashed #cbd5e1', fontStyle: 'italic', lineHeight: 1.4 }}>
+                    "{order.giftMessage}"
+                  </div>
+                ) : (
+                  <div style={{ marginTop: 4, fontSize: '0.78rem', color: '#64748b' }}>
+                    Premium silk box wrap with handwritten message card.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Shipping Address & Payment Info Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div style={{ padding: 14, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: '0.82rem' }}>
@@ -235,10 +278,10 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
                 <span>{formatCurrency(order.convenienceFee)}</span>
               </div>
             )}
-            {order.giftPackCharge > 0 && (
+            {(order.giftPackaging || order.giftPackCharge > 0) && (
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#64748b' }}>
-                <span>Luxury Packaging Addon:</span>
-                <span>{formatCurrency(order.giftPackCharge)}</span>
+                <span>🎁 Luxury Packaging Addon:</span>
+                <span>{formatCurrency(order.giftPackCharge || 499)}</span>
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#64748b' }}>

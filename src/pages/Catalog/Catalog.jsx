@@ -643,18 +643,29 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
               <div className={styles['products-grid']}>
                 {currentProducts.map((product) => {
                   const isWishlisted = wishlist.some(w => (w.id || w._id) === (product.id || product._id));
+                  
+                  const effectivePrice = (product.discountActive && product.discountedPrice) || (product.discountedPrice && product.discountedPrice < product.price)
+                    ? product.discountedPrice
+                    : product.price;
+
+                  const originalMrp = product.mrpPrice || product.oldPrice || (effectivePrice < product.price ? product.price : Math.round(product.price * 1.15));
+                  const hasDiscount = originalMrp > effectivePrice;
+                  const discountPct = hasDiscount ? Math.round(((originalMrp - effectivePrice) / originalMrp) * 100) : 0;
+
+                  const itemWithDiscountPrice = { ...product, price: effectivePrice, discountedPrice: effectivePrice };
+
                   return (
-                    <div key={product.id} className={styles['product-card']}>
-                      {product.oldPrice && (
+                    <div key={product.id || product._id} className={styles['product-card']}>
+                      {hasDiscount && (
                         <span className={styles['offer-badge']}>
-                          <span className={styles['offer-value']}>{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%</span>
+                          <span className={styles['offer-value']}>{discountPct}%</span>
                           <span className={styles['offer-text']}>OFF</span>
                         </span>
                       )}
                       <div
                         className={styles['image-container']}
                         style={{ cursor: 'pointer' }}
-                        onClick={() => handleProductClick(product)}
+                        onClick={() => handleProductClick(itemWithDiscountPrice)}
                       >
                         <img src={product.image} alt={product.name} loading="lazy" />
                         {product.tag && (
@@ -692,7 +703,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         <div className={styles['title-row']}>
                           <h4
                             style={{ cursor: 'pointer' }}
-                            onClick={() => handleProductClick(product)}
+                            onClick={() => handleProductClick(itemWithDiscountPrice)}
                           >
                             {product.name}
                           </h4>
@@ -706,16 +717,16 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         )}
 
                         <div className={styles['price-row']}>
-                          <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                          {product.oldPrice && (
-                            <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>
+                          <span className={styles['current-price']}>{formatCurrency(effectivePrice)}</span>
+                          {hasDiscount && (
+                            <span className={styles['old-price']}>{formatCurrency(originalMrp)}</span>
                           )}
                         </div>
                         <button
                           className={styles['add-cart-btn']}
                           onClick={(e) => {
                             e.stopPropagation();
-                            addToCart(product, 1);
+                            addToCart(itemWithDiscountPrice, 1);
                           }}
                         >
                           ADD TO CART

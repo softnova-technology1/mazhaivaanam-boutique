@@ -1109,10 +1109,12 @@ Thank you for choosing handloom heritage.
 
                   {deliveryMode === 'standard' && savedAddresses.length > 0 && !showAddressForm ? (
                     <div className={styles.addressGrid}>
-                      {savedAddresses.map(addr => (
+                      {savedAddresses.map(addr => {
+                        const isSelected = selectedAddressId === addr.id;
+                        return (
                         <div
                           key={addr.id}
-                          className={`${styles.addressCard} ${selectedAddressId === addr.id ? styles.addressCardDefault : ''}`}
+                          className={`${styles.addressCard} ${isSelected ? styles.addressCardDefault : ''}`}
                           onClick={() => setSelectedAddressId(addr.id)}
                         >
                           {isSelected && <div className={styles.defaultBadge}>SELECTED</div>}
@@ -1129,7 +1131,7 @@ Thank you for choosing handloom heritage.
                             </button>
                           </div>
                         </div>
-                      ))}
+                      )})}
 
                       <div className={styles.addAddressBtn} onClick={() => {
                         setShowAddressForm(true);

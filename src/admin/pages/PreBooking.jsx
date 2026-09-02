@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { productAPI, uploadAPI, fabricAPI } from '../api/api.js';
+import { productAPI, uploadAPI, fabricAPI, categoryAPI } from '../api/api.js';
 
-const PERMANENT_CATEGORIES = ['Everyday Elegance', 'Black Magic', 'Festive Glow', 'Style Studio'];
+
 import { exportToCSV } from '../utils/exportCSV.js';
 import { downloadSampleImportTemplate, parseImportFile } from '../utils/importParser.js';
 import { Plus, Search, Edit, Trash2, X, UploadCloud, Download, ArrowLeft, Eye, Star, FileSpreadsheet } from 'lucide-react';
@@ -10,6 +10,7 @@ import { ProductPreview } from '../components/ProductPreview.jsx';
 export default function PreBooking() {
   const [products, setProducts] = useState([]);
   const [fabricsList, setFabricsList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ page: 1, limit: 15, category: '', tag: '', search: '' });
@@ -36,6 +37,7 @@ export default function PreBooking() {
 
   useEffect(() => {
     fabricAPI.getAll().then(r => setFabricsList(r.data || [])).catch(() => { });
+    categoryAPI.getAll().then(r => setCategoriesList(r.data || [])).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -379,7 +381,7 @@ export default function PreBooking() {
           </form>
           <select className="form-select" value={filters.category} onChange={(e) => setFilters(f => ({ ...f, category: e.target.value, page: 1 }))}>
             <option value="">All Categories</option>
-            {PERMANENT_CATEGORIES.map(cat => <option key={cat} value={cat.toLowerCase().replace(/\s+/g, '-')}>{cat}</option>)}
+            {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
           </select>
           <select className="form-select" value={filters.tag} onChange={(e) => setFilters(f => ({ ...f, tag: e.target.value, page: 1 }))}>
             <option value="">All Tags</option>
@@ -806,7 +808,7 @@ export default function PreBooking() {
                       <label className="form-label">Category</label>
                       <select className="form-select" required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
                         <option value="">Select Category</option>
-                        {PERMANENT_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                        {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
                       </select>
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>

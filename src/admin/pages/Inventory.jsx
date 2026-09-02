@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { inventoryAPI, productAPI, uploadAPI, fabricAPI } from '../api/api.js';
+import { inventoryAPI, productAPI, uploadAPI, fabricAPI, categoryAPI } from '../api/api.js';
 
-const PERMANENT_CATEGORIES = ['Everyday Elegance', 'Black Magic', 'Festive Glow', 'Style Studio'];
+
 import { exportToCSV } from '../utils/exportCSV.js';
 import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud, Download, EyeOff, Eye, ArrowLeft } from 'lucide-react';
 
 export default function Inventory() {
   const [inventory, setInventory] = useState([]);
   const [fabricsList, setFabricsList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,6 +31,7 @@ export default function Inventory() {
   useEffect(() => {
     loadInventory();
     fabricAPI.getAll().then(res => setFabricsList(res.data || [])).catch(() => { });
+    categoryAPI.getAll().then(res => setCategoriesList(res.data || [])).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -116,7 +118,7 @@ export default function Inventory() {
 
   const openCreate = () => {
     setForm({
-      name: '', description: '', category: PERMANENT_CATEGORIES[0] || '',
+      name: '', description: '', category: categoriesList[0]?._id || '',
       occasion: 'Traditional', tag: '', imageUrl: '', isFeatured: false,
       isActive: true, imageFile: null, imagePreview: '',
       sec1File: null, sec1Preview: '', sec2File: null, sec2Preview: ''
@@ -236,7 +238,7 @@ export default function Inventory() {
         </div>
         <select className="form-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
           <option value="">All Categories</option>
-          {PERMANENT_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
         </select>
       </div>
 
@@ -606,7 +608,7 @@ export default function Inventory() {
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Category</label>
                       <select className="form-select" required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
-                        {PERMANENT_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                        {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
                       </select>
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>

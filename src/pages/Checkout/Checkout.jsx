@@ -207,7 +207,8 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     return `${slab ? slab.label : 'Above 5kg'} (${totalWeightKg.toFixed(2)} kg)${mode === 'express' ? ' + Express' : ''}`;
   };
 
-  const mrpTotal = checkoutItems.reduce((sum, item) => sum + (item.oldPrice || Math.round(item.price * 1.15)) * (item.quantity || 1), 0);
+  // mrpPrice from DB = original MRP; item.price = effective (post-discount) price
+  const mrpTotal = checkoutItems.reduce((sum, item) => sum + (item.mrpPrice || item.oldPrice || Math.round(item.price * 1.15)) * (item.quantity || 1), 0);
   const subtotal = directCheckoutItem
     ? (directCheckoutItem.price * (directCheckoutItem.quantity || 1))
     : cartTotal;
@@ -667,7 +668,14 @@ Thank you for choosing handloom heritage.
                   </button>
                 </div>
               </div>
-              <p className={styles.previewPrice}>{formatCurrency(item.price * (item.quantity || 1))}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 4 }}>
+                {(item.oldPrice || Math.round(item.price * 1.15)) > item.price && (
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
+                    {formatCurrency((item.oldPrice || Math.round(item.price * 1.15)) * (item.quantity || 1))}
+                  </span>
+                )}
+                <span className={styles.previewPrice}>{formatCurrency(item.price * (item.quantity || 1))}</span>
+              </div>
             </div>
           </div>
         ))}
@@ -755,18 +763,31 @@ Thank you for choosing handloom heritage.
         )}
       </div>
 
-      {/* Simplified Price Breakdown */}
+      {/* Clean Price Breakdown — no dropdown, no savings row */}
       <div className={styles.priceBreakdown}>
+
+        {/* Subtotal row: MRP crossed + member price */}
         <div className={styles.priceRow}>
-          <span>Subtotal (MRP)</span>
-          <span className={styles.mrpValue}>{formatCurrency(mrpTotal)}</span>
+          <span>Subtotal</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+              {formatCurrency(mrpTotal)}
+            </span>
+            <span style={{ fontWeight: 700, color: 'var(--text-main)' }}>
+              {formatCurrency(subtotal)}
+            </span>
+          </div>
         </div>
-        <div className={styles.discountRow} style={{ color: 'var(--success)' }}>
-          <span>Total Savings</span>
-          <span className={styles.discountValue} style={{ color: 'var(--success)', fontWeight: 700 }}>
-            -{formatCurrency(totalSavings)}
-          </span>
-        </div>
+
+        {/* Coupon row — only when applied */}
+        {couponDiscount > 0 && (
+          <div className={styles.priceRow} style={{ color: 'var(--success)' }}>
+            <span>Coupon ({appliedCoupon?.code})</span>
+            <span style={{ fontWeight: 700 }}>-{formatCurrency(couponDiscount)}</span>
+          </div>
+        )}
+
+        {/* Shipping */}
         <div className={styles.priceRow}>
           <span>Shipping & Delivery</span>
           <span className={styles.priceValue}>
@@ -774,43 +795,24 @@ Thank you for choosing handloom heritage.
           </span>
         </div>
 
-        {/* Collapsible toggle */}
-        <button
-          type="button"
-          className={styles.priceBreakdownToggle}
-          onClick={() => setShowDetailedPrice(!showDetailedPrice)}
-        >
-          <span>{showDetailedPrice ? 'Hide Price Breakdown' : 'View Detailed Price Breakdown'}</span>
-          <ChevronDown size={16} className={showDetailedPrice ? styles.rotate180 : ''} />
-        </button>
+        {/* Convenience Fee */}
+        <div className={styles.priceRow}>
+          <span>Convenience Fee</span>
+          <span>₹2</span>
+        </div>
 
-        {/* Expanded details */}
-        {showDetailedPrice && (
-          <div className={styles.collapsibleDetails}>
-            <div className={styles.priceRow}>
-              <span>Exclusive Member Price</span>
-              <span>{formatCurrency(subtotal)}</span>
-            </div>
-
-            {couponDiscount > 0 && (
-              <div className={styles.discountRow} style={{ color: 'var(--success)' }}>
-                <span>Coupon Discount ({appliedCoupon?.code})</span>
-                <span>-{formatCurrency(couponDiscount)}</span>
-              </div>
-            )}
-            <div className={styles.priceRow}>
-              <span>Platform Convenience Fee</span>
-              <span>₹2</span>
-            </div>
-            {giftPackaging && (
-              <div className={styles.priceRow}>
-                <span>Luxury Packaging Addon</span>
-                <span>{formatCurrency(GIFT_WRAP_PRICE)}</span>
-              </div>
-            )}
+        {/* Gift packaging — only when selected */}
+        {giftPackaging && (
+          <div className={styles.priceRow}>
+            <span>Gift Packaging</span>
+            <span>{formatCurrency(GIFT_WRAP_PRICE)}</span>
           </div>
         )}
+
       </div>
+
+      {/* Divider */}
+      <div style={{ height: 1, background: 'var(--border-color)', margin: '4px 0 12px' }} />
 
       {/* Final Payable */}
       <div className={styles.totalsBlock}>
@@ -1107,27 +1109,31 @@ Thank you for choosing handloom heritage.
                   
                   {deliveryMode === 'standard' && savedAddresses.length > 0 && !showAddressForm ? (
                     <div className={styles.addressGrid}>
-                      {savedAddresses.map(addr => (
+                      {savedAddresses.map(addr => {
+                        const addrId = addr._id || addr.id;
+                        const isSelected = selectedAddressId === addrId;
+                        return (
                         <div 
-                          key={addr.id}
-                          className={`${styles.addressCard} ${selectedAddressId === addr.id ? styles.addressCardDefault : ''}`}
-                          onClick={() => setSelectedAddressId(addr.id)}
+                          key={addrId}
+                          className={`${styles.addressCard} ${isSelected ? styles.addressCardDefault : ''}`}
+                          onClick={() => setSelectedAddressId(addrId)}
                         >
-                          {selectedAddressId === addr.id && <div className={styles.defaultBadge}>SELECTED</div>}
-                          <h3 className={styles.addressName}>{addr.name}</h3>
+                          {isSelected && <div className={styles.defaultBadge}>SELECTED</div>}
+                          <h3 className={styles.addressName}>{addr.fullName || addr.name}</h3>
                           <div className={styles.addressDetails}>
                             <p>{addr.addressLine}</p>
-                            <p>{addr.city}, {addr.state} - {addr.pinCode}</p>
+                            <p>{addr.city}, {addr.stateName || addr.state} - {addr.pinCode}</p>
                             <p>{addr.country || 'India'}</p>
                             <p>Phone: {addr.phone}</p>
                           </div>
                           <div className={styles.addressActions}>
-                            <button type="button" className={`${styles.addressLinkBtn} ${selectedAddressId === addr.id ? '' : styles.deleteBtn}`}>
-                              {selectedAddressId === addr.id ? 'SELECTED' : 'SELECT'}
+                            <button type="button" className={`${styles.addressLinkBtn} ${isSelected ? '' : styles.deleteBtn}`}>
+                              {isSelected ? 'SELECTED' : 'SELECT'}
                             </button>
                           </div>
                         </div>
-                      ))}
+                        );
+                      })}
                       
                       <div className={styles.addAddressBtn} onClick={() => {
                           setShowAddressForm(true);
@@ -1318,7 +1324,7 @@ Thank you for choosing handloom heritage.
                         <span className={styles.deliveryOptionTitle}>Standard Delivery</span>
                         <p className={styles.deliveryOptionSubtitle}>Delivery in 5-7 business days</p>
                       </div>
-                      <span className={styles.deliveryCost}>{formatCurrency(100)}</span>
+                      <span className={styles.deliveryCost}>{formatCurrency(calcShippingFee(checkoutItems, 'standard'))}</span>
                     </label>
 
                     <label
@@ -1340,29 +1346,171 @@ Thank you for choosing handloom heritage.
                     </label>
                   </div>
                 </section>
+
+                {/* Gift Packaging Section */}
+                <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
+                  <h2 className={styles.sectionTitle}>
+                    <Gift size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
+                    Gift Options
+                  </h2>
+
+                  {/* Toggle card — full-row click */}
+                  <div
+                    onClick={() => setGiftPackaging(prev => !prev)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '14px 18px',
+                      border: `2px solid ${giftPackaging ? 'var(--primary)' : 'var(--border-color)'}`,
+                      borderRadius: 10,
+                      background: giftPackaging ? 'rgba(200,163,77,0.08)' : 'var(--bg-surface)',
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                      {/* Large icon */}
+                      <div style={{
+                        width: 44, height: 44, borderRadius: 8,
+                        background: giftPackaging ? 'var(--primary)' : 'rgba(200,163,77,0.12)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0, transition: 'all 0.2s ease'
+                      }}>
+                        <Gift size={22} color={giftPackaging ? '#fff' : 'var(--primary)'} />
+                      </div>
+                      <div>
+                        <p style={{ margin: 0, fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                          Luxury Gift Packaging
+                        </p>
+                        <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                          Premium silk box wrap + handwritten message card
+                        </p>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--primary)' }}>
+                        +{formatCurrency(GIFT_WRAP_PRICE)}
+                      </span>
+                      {/* Toggle switch */}
+                      <div style={{
+                        width: 44, height: 24, borderRadius: 12,
+                        background: giftPackaging ? 'var(--primary)' : 'var(--border-color)',
+                        position: 'relative', transition: 'background 0.25s ease'
+                      }}>
+                        <div style={{
+                          position: 'absolute', top: 3,
+                          left: giftPackaging ? 23 : 3,
+                          width: 18, height: 18, borderRadius: '50%',
+                          background: '#fff',
+                          transition: 'left 0.25s ease',
+                          boxShadow: '0 1px 4px rgba(0,0,0,0.25)'
+                        }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Gift message input — slides in when toggled on */}
+                  {giftPackaging && (
+                    <div style={{ marginTop: 12 }}>
+                      <div className={styles.floatingLabelContainer} style={{ width: '100%' }}>
+                        <input
+                          type="text"
+                          placeholder=" "
+                          value={giftMessage}
+                          onChange={e => setGiftMessage(e.target.value)}
+                          className={styles.formInput}
+                          maxLength={120}
+                        />
+                        <label className={styles.formLabel}>Gift Message (optional, max 120 chars)</label>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'right', marginTop: 4 }}>
+                        {giftMessage.length}/120
+                      </div>
+                    </div>
+                  )}
+                </section>
               </>
             ) : (
               <>
                 {renderDetailsSummary()}
 
-                <div style={{
-                  padding: '24px',
-                  background: 'rgba(200, 163, 77, 0.05)',
-                  border: '1px solid var(--border-gold)',
-                  borderRadius: '12px',
-                  marginTop: '16px'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <ShieldCheck size={28} color="var(--primary)" />
-                    <h4 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '18px', color: 'var(--primary)' }}>
-                      Secure Payment Gateway
-                    </h4>
+                {/* Payment Method Selection */}
+                <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
+                  <h2 className={styles.sectionTitle}>
+                    <Lock size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
+                    Choose Payment Method
+                  </h2>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {/* Card */}
+                    <label
+                      className={`${styles.deliveryLabelCard} ${paymentMethod === 'card' ? styles.selectedDelivery : ''}`}
+                      onClick={() => setPaymentMethod('card')}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <input type="radio" name="payMethod" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className={styles.hiddenRadio} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <CreditCard size={22} color={paymentMethod === 'card' ? 'var(--primary)' : 'var(--text-muted)'} />
+                        <div className={styles.deliveryInfo}>
+                          <span className={styles.deliveryOptionTitle}>Credit / Debit Card</span>
+                          <p className={styles.deliveryOptionSubtitle}>Visa, Mastercard, RuPay &amp; more</p>
+                        </div>
+                      </div>
+                    </label>
+
+                    {/* UPI */}
+                    <label
+                      className={`${styles.deliveryLabelCard} ${paymentMethod === 'upi' ? styles.selectedDelivery : ''}`}
+                      onClick={() => setPaymentMethod('upi')}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <input type="radio" name="payMethod" checked={paymentMethod === 'upi'} onChange={() => setPaymentMethod('upi')} className={styles.hiddenRadio} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <Smartphone size={22} color={paymentMethod === 'upi' ? 'var(--primary)' : 'var(--text-muted)'} />
+                        <div className={styles.deliveryInfo}>
+                          <span className={styles.deliveryOptionTitle}>UPI / QR</span>
+                          <p className={styles.deliveryOptionSubtitle}>GPay, PhonePe, Paytm, BHIM &amp; more</p>
+                        </div>
+                      </div>
+                    </label>
+
+                    {/* Net Banking */}
+                    <label
+                      className={`${styles.deliveryLabelCard} ${paymentMethod === 'netbanking' ? styles.selectedDelivery : ''}`}
+                      onClick={() => setPaymentMethod('netbanking')}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <input type="radio" name="payMethod" checked={paymentMethod === 'netbanking'} onChange={() => setPaymentMethod('netbanking')} className={styles.hiddenRadio} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <Landmark size={22} color={paymentMethod === 'netbanking' ? 'var(--primary)' : 'var(--text-muted)'} />
+                        <div className={styles.deliveryInfo}>
+                          <span className={styles.deliveryOptionTitle}>Net Banking</span>
+                          <p className={styles.deliveryOptionSubtitle}>All major Indian banks supported</p>
+                        </div>
+                      </div>
+                    </label>
                   </div>
-                  <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-                    Your transaction is encrypted using state-of-the-art SSL algorithms. 
-                    Clicking the payment button on the right will launch the Razorpay interface to choose cards, UPI, or netbanking.
-                  </p>
-                </div>
+
+                  <div style={{
+                    marginTop: 16,
+                    padding: '12px 16px',
+                    background: 'rgba(200, 163, 77, 0.06)',
+                    border: '1px solid var(--border-gold)',
+                    borderRadius: 8,
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 10
+                  }}>
+                    <ShieldCheck size={18} color="var(--primary)" style={{ flexShrink: 0, marginTop: 1 }} />
+                    <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                      Your payment is secured by <strong>Razorpay</strong> with 256-bit SSL encryption.
+                      After clicking <em>Complete Order</em>, you will be redirected to complete payment securely.
+                    </p>
+                  </div>
+                </section>
               </>
             )}
 

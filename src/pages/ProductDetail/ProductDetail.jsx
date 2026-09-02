@@ -87,10 +87,14 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   }, [activeProduct]);
 
   // Derived calculations for price details card
-  const boutiquePrice = (activeProduct.oldPrice || Math.round(activeProduct.price * 1.3)) * quantity;
-  const finalPrice = activeProduct.price * quantity;
+  const effectiveProductPrice = (activeProduct.discountedPrice && activeProduct.discountedPrice < activeProduct.price)
+    ? activeProduct.discountedPrice
+    : activeProduct.price;
+
+  const boutiquePrice = (activeProduct.mrpPrice || activeProduct.oldPrice || Math.round(activeProduct.price * 1.15)) * quantity;
+  const finalPrice = effectiveProductPrice * quantity;
   const totalSavings = boutiquePrice - finalPrice;
-  const totalDiscountPct = Math.round((totalSavings / boutiquePrice) * 100);
+  const totalDiscountPct = boutiquePrice > 0 ? Math.round((totalSavings / boutiquePrice) * 100) : 0;
 
   // Helper to generate dynamic specifications based on fabric and category
   const getSpecs = () => {
@@ -157,32 +161,27 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   const thumbnails = getThumbnails();
 
   const handleAddToCartClick = () => {
+    const itemToAdd = {
+      ...activeProduct,
+      price: effectiveProductPrice
+    };
     if (activeProduct.isPreorder) {
-      const preorderItem = {
-        ...activeProduct,
-        name: `[Pre-Order] ${activeProduct.name}`,
-        price: activeProduct.price,
-        isPreorder: true
-      };
-      addToCart(preorderItem, quantity);
-    } else {
-      addToCart(activeProduct, quantity);
+      itemToAdd.name = `[Pre-Order] ${activeProduct.name}`;
+      itemToAdd.isPreorder = true;
     }
+    addToCart(itemToAdd, quantity);
     setIsAddedToCart(true);
     setTimeout(() => setIsAddedToCart(false), 3000);
   };
 
   const handleBuyNowClick = () => {
-    let itemToCheckout;
+    let itemToCheckout = {
+      ...activeProduct,
+      price: effectiveProductPrice
+    };
     if (activeProduct.isPreorder) {
-      itemToCheckout = {
-        ...activeProduct,
-        name: `[Pre-Order] ${activeProduct.name}`,
-        price: activeProduct.price,
-        isPreorder: true
-      };
-    } else {
-      itemToCheckout = activeProduct;
+      itemToCheckout.name = `[Pre-Order] ${activeProduct.name}`;
+      itemToCheckout.isPreorder = true;
     }
 
     if (setDirectCheckoutItem) {

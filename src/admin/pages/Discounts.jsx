@@ -28,6 +28,18 @@ export default function Discounts() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [saving, setSaving] = useState(false);
 
+  // Custom Toast state
+  const [toast, setToast] = useState({ open: false, message: '', type: 'error' });
+  const [formError, setFormError] = useState('');
+
+  // Custom Remove Confirm Dialog state
+  const [removeConfirm, setRemoveConfirm] = useState({ open: false, productId: null, productName: '' });
+
+  const showToast = (message, type = 'error') => {
+    setToast({ open: true, message, type });
+    setTimeout(() => setToast({ open: false, message: '', type: 'error' }), 4000);
+  };
+
   // Stats
   const activeCount = products.filter((p) => p.discountStatus === 'active').length;
   const scheduledCount = products.filter((p) => p.discountStatus === 'scheduled').length;
@@ -61,6 +73,7 @@ export default function Discounts() {
 
   const openEdit = (product) => {
     const d = product.discount || {};
+    setFormError('');
     setForm({
       type: d.type || 'percentage',
       value: d.value || '',
@@ -83,32 +96,55 @@ export default function Discounts() {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setFormError('');
+
+    if (form.startDate && form.endDate && new Date(form.endDate) < new Date(form.startDate)) {
+      const errText = 'End Date & Time cannot be earlier than Start Date & Time!';
+      setFormError(errText);
+      showToast(errText, 'error');
+      return;
+    }
+
     setSaving(true);
     try {
       await discountAPI.update(modal.product._id, {
         ...form,
         value: Number(form.value),
       });
+      showToast('Discount saved successfully!', 'success');
       setModal({ open: false, product: null });
       loadProducts();
     } catch (err) {
-      alert(err.message);
+      setFormError(err.message || 'Failed to save discount');
+      showToast(err.message || 'Failed to save discount', 'error');
     }
     setSaving(false);
   };
 
-  const handleRemove = async (productId, productName) => {
-    if (!confirm(`Remove discount from "${productName}"?`)) return;
+  const triggerRemove = (productId, productName) => {
+    setRemoveConfirm({ open: true, productId, productName });
+  };
+
+  const confirmRemoveAction = async () => {
+    if (!removeConfirm.productId) return;
     try {
-      await discountAPI.remove(productId);
+      await discountAPI.remove(removeConfirm.productId);
+      showToast('Discount removed successfully!', 'success');
       loadProducts();
     } catch (err) {
-      alert(err.message);
+      showToast(err.message || 'Failed to remove discount', 'error');
+    } finally {
+      setRemoveConfirm({ open: false, productId: null, productName: '' });
     }
   };
 
   const handleBulkSave = async (e) => {
     e.preventDefault();
+    if (bulkForm.startDate && bulkForm.endDate && new Date(bulkForm.endDate) < new Date(bulkForm.startDate)) {
+      showToast('End Date & Time cannot be earlier than Start Date & Time!', 'error');
+      return;
+    }
+
     setSaving(true);
     try {
       const payload = {
@@ -117,11 +153,12 @@ export default function Discounts() {
       };
       if (selectedItems.length > 0) payload.productIds = selectedItems;
       await discountAPI.bulkUpdate(payload);
+      showToast('Bulk discount applied successfully!', 'success');
       setBulkModal(false);
       setSelectedItems([]);
       loadProducts();
     } catch (err) {
-      alert(err.message);
+      showToast(err.message || 'Error applying bulk discount', 'error');
     }
     setSaving(false);
   };
@@ -133,11 +170,12 @@ export default function Discounts() {
       const payload = { ...bulkRemoveForm };
       if (selectedItems.length > 0) payload.productIds = selectedItems;
       await discountAPI.bulkRemove(payload);
+      showToast('Bulk discounts removed successfully!', 'success');
       setBulkRemoveModal(false);
       setSelectedItems([]);
       loadProducts();
     } catch (err) {
-      alert(err.message);
+      showToast(err.message || 'Error removing bulk discounts', 'error');
     }
     setSaving(false);
   };
@@ -338,7 +376,17 @@ export default function Discounts() {
                       )}
                     </td>
                     <td style={{ fontWeight: 600, color: hasDiscount ? 'var(--accent)' : 'inherit' }}>
-                      {formatCurrency(p.discountedPrice)}
+                      {hasDiscount ? (
+                        formatCurrency(
+                          p.discount?.type === 'percentage'
+                            ? Math.round(p.price * (1 - (p.discount.value || 0) / 100))
+                            : p.discount?.type === 'fixed'
+                            ? Math.max(0, p.price - (p.discount.value || 0))
+                            : (p.discountedPrice || p.price)
+                        )
+                      ) : (
+                        formatCurrency(p.price)
+                      )}
                     </td>
                     <td>
                       {p.discount?.label ? (
@@ -363,7 +411,7 @@ export default function Discounts() {
                           <Edit size={16} />
                         </button>
                         {hasDiscount && (
-                          <button className="btn-ghost btn-icon" onClick={() => handleRemove(p._id, p.name)} title="Remove Discount" style={{ color: 'var(--danger)' }}>
+                          <button className="btn-ghost btn-icon" onClick={() => triggerRemove(p._id, p.name)} title="Remove Discount" style={{ color: 'var(--danger)' }}>
                             <Trash2 size={16} />
                           </button>
                         )}
@@ -419,6 +467,26 @@ export default function Discounts() {
             </div>
             <form onSubmit={handleSave}>
               <div className="modal-body">
+                {/* Form Inline Error Banner */}
+                {formError && (
+                  <div style={{
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    background: 'rgba(239, 68, 68, 0.12)',
+                    border: '1px solid #ef4444',
+                    color: '#ef4444',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    marginBottom: 16,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8
+                  }}>
+                    <X size={16} />
+                    {formError}
+                  </div>
+                )}
+
                 {/* Product Preview */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', marginBottom: 20 }}>
                   <div style={{ width: 56, height: 56, borderRadius: 10, background: 'var(--bg-surface-hover)', overflow: 'hidden', flexShrink: 0 }}>
@@ -663,6 +731,65 @@ export default function Discounts() {
                 <button type="submit" className="btn btn-primary" style={{ background: 'var(--danger)', borderColor: 'var(--danger)' }} disabled={saving}>{saving ? 'Removing...' : 'Remove Discounts'}</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Floating Toast Notification */}
+      {toast.open && (
+        <div style={{
+          position: 'fixed',
+          top: 24,
+          right: 24,
+          zIndex: 99999,
+          background: toast.type === 'error' ? '#ef4444' : '#16a34a',
+          color: '#ffffff',
+          padding: '12px 22px',
+          borderRadius: 8,
+          boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          fontWeight: 600,
+          fontSize: '0.88rem'
+        }}>
+          <span>{toast.message}</span>
+          <button 
+            onClick={() => setToast({ open: false, message: '', type: 'error' })} 
+            style={{ background: 'transparent', border: 'none', color: '#ffffff', cursor: 'pointer', display: 'flex', padding: 2 }}
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Remove Confirmation Modal Dialog */}
+      {removeConfirm.open && (
+        <div className="modal-overlay" style={{ zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-content" style={{ maxWidth: 420, padding: 28, textAlign: 'center', borderRadius: 12 }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#ef4444' }}>
+              <Trash2 size={24} />
+            </div>
+            <h3 style={{ marginBottom: 8, fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>Remove Discount</h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: '0.9rem', lineHeight: 1.5 }}>
+              Are you sure you want to remove discount from <strong>"{removeConfirm.productName}"</strong>?
+            </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button 
+                type="button" 
+                className="btn btn-outline" 
+                onClick={() => setRemoveConfirm({ open: false, productId: null, productName: '' })}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-primary" 
+                style={{ background: '#ef4444', borderColor: '#ef4444', color: '#ffffff' }}
+                onClick={confirmRemoveAction}
+              >
+                Yes, Remove
+              </button>
+            </div>
           </div>
         </div>
       )}

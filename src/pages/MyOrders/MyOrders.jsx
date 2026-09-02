@@ -12,7 +12,8 @@ import {
   PhoneCall, 
   Palette,
   MessageSquare,
-  FileText
+  FileText,
+  Gift
 } from 'lucide-react';
 import styles from './MyOrders.module.css';
 
@@ -76,6 +77,8 @@ export const MyOrders = ({ setCurrentTab }) => {
               shippingFee: o.shippingFee || 0,
               convenienceFee: o.convenienceFee || 0,
               giftPackCharge: o.giftPackCharge || 0,
+              giftPackaging: o.giftPackaging || (o.giftPackCharge > 0) || false,
+              giftMessage: o.giftMessage || '',
               discount: o.discount || 0,
               couponDiscount: o.couponDiscount || 0,
               couponCode: o.couponCode || '',
@@ -89,7 +92,9 @@ export const MyOrders = ({ setCurrentTab }) => {
                 quantity: i.quantity || 1,
               }))
             }));
-            setOrders([...normalized, ...localOrders]);
+            const dbOrderIds = new Set(normalized.map(o => o.orderId));
+            const uniqueLocalOrders = localOrders.filter(o => !dbOrderIds.has(o.orderId));
+            setOrders([...normalized, ...uniqueLocalOrders]);
           } else {
             setOrders([...localOrders]);
           }
@@ -236,6 +241,22 @@ export const MyOrders = ({ setCurrentTab }) => {
                               {order.items.length > 1 && ` & ${order.items.length - 1} other item(s)`}
                             </h3>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              {(order.giftPackaging || order.giftPackCharge > 0) && (
+                                <span style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  padding: '3px 8px',
+                                  borderRadius: '12px',
+                                  background: 'rgba(200, 163, 77, 0.15)',
+                                  border: '1px solid #C8A34D',
+                                  fontSize: '0.72rem',
+                                  fontWeight: 700,
+                                  color: '#C8A34D'
+                                }}>
+                                  <Gift size={12} /> GIFT
+                                </span>
+                              )}
                               <span className={`${styles.statusBadge} ${isDelivered ? styles.deliveredBadge : styles.transitBadge}`}>
                                 {order.status}
                               </span>

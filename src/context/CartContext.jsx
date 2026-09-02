@@ -26,12 +26,23 @@ export const CartProvider = ({ children }) => {
       try {
         const data = await cartAPI.getCart();
         if (data && data.items) {
-          const formatted = data.items.map(item => ({
-            ...item.product,
-            id: item.product._id || item.product.id,
-            image: (item.product.images && item.product.images.length > 0) ? item.product.images[0].url : (item.product.image || '/Images/placeholder.svg'),
-            quantity: item.quantity
-          }));
+          const formatted = data.items.map(item => {
+            const prod = item.product;
+            // Use discountedPrice from backend if discount is active
+            const finalPrice = prod.discountedPrice && prod.discountActive
+              ? prod.discountedPrice
+              : prod.price;
+            return {
+              ...prod,
+              id: prod._id || prod.id,
+              price: finalPrice,          // effective checkout price
+              mrpPrice: prod.mrpPrice,    // original MRP for strikethrough
+              image: (prod.images && prod.images.length > 0)
+                ? prod.images[0].url
+                : (prod.image || '/Images/placeholder.svg'),
+              quantity: item.quantity,
+            };
+          });
           setCart(formatted);
         }
       } catch (e) {
@@ -78,6 +89,10 @@ export const CartProvider = ({ children }) => {
     // Optimistic update for UI responsiveness
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => (item.id || item._id) === prodId);
+      // Use discountedPrice if discount is active
+      const effectivePrice = (product.discountedPrice && product.discountActive)
+        ? product.discountedPrice
+        : product.price;
       if (existingItem) {
         return prevCart.map((item) =>
           (item.id || item._id) === prodId
@@ -85,7 +100,7 @@ export const CartProvider = ({ children }) => {
             : item
         );
       }
-      return [...prevCart, { ...product, id: prodId, quantity }];
+      return [...prevCart, { ...product, id: prodId, price: effectivePrice, quantity }];
     });
 
     if (isAuthenticated) {

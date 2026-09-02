@@ -8,7 +8,7 @@ import styles from './ProductCard.module.css';
 
 export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTab }) => {
   const { addToCart } = useCart();
-  const { name, category, price, image, oldPrice, mrpPrice, discountedPrice, discountActive, tag, isNew, isLimited, description } = product;
+  const { name, category, price, image, oldPrice, mrpPrice, discountedPrice, discountActive, tag, isNew, isLimited, shortDescription } = product;
 
   const effectivePrice = (discountActive && discountedPrice) || (discountedPrice && discountedPrice < price)
     ? discountedPrice
@@ -114,11 +114,11 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
         <div className={styles['title-row']}>
           <h4>{name}</h4>
         </div>
-        
-        {/* Small Description */}
-        {description && (
+
+        {/* Simple Description from DB - truncated to 2 lines */}
+        {shortDescription && (
           <p className={styles['product-description']}>
-            {description}
+            {shortDescription}
           </p>
         )}
         

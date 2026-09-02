@@ -28,6 +28,8 @@ export function normalizeProduct(p) {
     oldPrice: Number(p.mrpPrice || p.oldPrice || p.price || 0),
     mrpPrice: Number(p.mrpPrice || p.oldPrice || p.price || 0),
     
+    shortDescription: p.shortDescription || p.simpleDescription || '',
+    description: p.description || p.longDescription || '',
     fabric: p.fabric || 'Pure Silk',
     occasion: p.occasion || 'Traditional',
     color: typeof p.color === 'object' ? p.color?.hex || '#6B102A' : (p.color || '#6B102A'),

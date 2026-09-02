@@ -338,6 +338,11 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
             </div>
             <p className={styles['collection-sub']}>MAZHAI VAANAM SIGNATURE COLLECTION</p>
             <h1>{activeProduct.name}</h1>
+            {activeProduct.shortDescription && (
+              <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginTop: '6px', marginBottom: '12px', fontStyle: 'italic' }}>
+                {activeProduct.shortDescription}
+              </p>
+            )}
 
 
           </header>
@@ -461,9 +466,11 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
               {activeProduct.returnPolicy && <li><strong>Return/Exchange:</strong> {activeProduct.returnPolicy}</li>}
             </ul>
 
-            <p className={styles['desc-note']}>
-              <strong>Note:</strong> {activeProduct.note || 'Digital images may vary slightly from the actual product colour due to screen settings and photography lighting.'}
-            </p>
+            {activeProduct.note && (
+              <p className={styles['desc-note']}>
+                <strong>Note:</strong> {activeProduct.note}
+              </p>
+            )}
           </div>
 
 

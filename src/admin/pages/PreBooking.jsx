@@ -125,6 +125,7 @@ export default function PreBooking() {
   const openCreate = () => {
     setForm({
       name: '',
+      shortDescription: '',
       description: '',
       category: '',
       fabric: '',
@@ -160,7 +161,8 @@ export default function PreBooking() {
   const openEdit = (product) => {
     setForm({
       name: product.name,
-      description: product.description,
+      shortDescription: product.shortDescription || '',
+      description: product.description || '',
       category: product.category?._id || product.category || '',
       fabric: product.fabric || '',
       price: product.price,
@@ -204,6 +206,7 @@ export default function PreBooking() {
     try {
       const body = {
         name: form.name,
+        shortDescription: form.shortDescription,
         description: form.description,
         category: form.category,
         fabric: form.fabric,
@@ -800,8 +803,12 @@ export default function PreBooking() {
                     <input className="form-input" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
                   </div>
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Description</label>
-                    <textarea className="form-textarea" required rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+                    <label className="form-label">Simple Description (Shows on Shop Card & Details Subtitle)</label>
+                    <input className="form-input" value={form.shortDescription} onChange={e => setForm(f => ({ ...f, shortDescription: e.target.value }))} placeholder="e.g. Handcrafted Megatron saree" />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Detailed Description (Shows on Product Details Page)</label>
+                    <textarea className="form-textarea" rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Detailed product description..." />
                   </div>
                   <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
@@ -943,11 +950,7 @@ export default function PreBooking() {
                   <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Return/Exchange</label>
-                      <select className="form-select" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))}>
-                        <option value="Applicable">Applicable</option>
-                        <option value="Not Applicable">Not Applicable</option>
-                        <option value="Valid Reason">Valid Reason</option>
-                      </select>
+                      <input className="form-input" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))} placeholder="e.g. Not Applicable" />
                     </div>
                   </div>
 

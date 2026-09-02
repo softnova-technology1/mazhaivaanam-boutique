@@ -8,7 +8,7 @@ import { getProducts } from '../../services/api';
 import { REVIEWS_DATA } from '../../data/reviewsData';
 import styles from './ProductDetail.module.css';
 
-export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setDirectCheckoutItem }) => {
+export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setDirectCheckoutItem, isPreview = false }) => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   const { wishlist, toggleWishlist } = useWishlist();
@@ -472,7 +472,9 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
       </div>
 
       {/* Patron Reviews & Drapes Section (Static 6 Reviews Array) */}
-      <section style={{ maxWidth: 1240, margin: '50px auto 40px auto', padding: '0 20px' }}>
+      {!isPreview && (
+        <>
+          <section style={{ maxWidth: 1240, margin: '50px auto 40px auto', padding: '0 20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid rgba(200,163,77,0.2)', paddingBottom: 16 }}>
           <div>
             <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
@@ -770,6 +772,9 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
             ))}
           </div>
         </section>
+      )}
+      
+      </>
       )}
 
     </div>

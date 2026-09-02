@@ -4,6 +4,14 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Default fallback values
 const DEFAULT_CONFIG = {
+  storeName: 'MAZHAI VAANAM',
+  email: 'support@mazhaivaanam.com',
+  phone: '',
+  whatsapp: '',
+  address: '',
+  facebookUrl: 'https://www.facebook.com/profile.php?id=61569890920943',
+  instagramUrl: 'https://www.instagram.com/mazhaivaanam',
+  youtubeUrl: 'https://www.youtube.com/@mazhaivaanam',
   convenienceFee: 2,
   giftWrapPrice: 499,
 };

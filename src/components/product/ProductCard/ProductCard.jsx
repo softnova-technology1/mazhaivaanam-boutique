@@ -53,7 +53,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
   };
 
   
-  const displayImage = (typeof image === 'string' && !image.startsWith('blob:') && image.trim() !== '') ? image : '/Images/placeholder.svg';
+  const displayImage = (typeof image === 'string' && image.trim() !== '') ? image : '/Images/placeholder.svg';
 
   return (
     <div className={styles['product-card']} onClick={handleCardClick}>

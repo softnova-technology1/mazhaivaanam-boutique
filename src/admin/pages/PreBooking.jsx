@@ -5,6 +5,7 @@ const PERMANENT_CATEGORIES = ['Everyday Elegance', 'Black Magic', 'Festive Glow'
 import { exportToCSV } from '../utils/exportCSV.js';
 import { downloadSampleImportTemplate, parseImportFile } from '../utils/importParser.js';
 import { Plus, Search, Edit, Trash2, X, UploadCloud, Download, ArrowLeft, Eye, Star, FileSpreadsheet } from 'lucide-react';
+import { ProductPreview } from '../components/ProductPreview.jsx';
 
 export default function PreBooking() {
   const [products, setProducts] = useState([]);
@@ -22,6 +23,7 @@ export default function PreBooking() {
   });
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [bulkLoading, setBulkLoading] = useState(false);
   const [deleteAlert, setDeleteAlert] = useState({ open: false, type: 'single', id: null, name: '' });
@@ -111,6 +113,8 @@ export default function PreBooking() {
       { key: 'occasion', label: 'Occasion' },
       { key: 'isActive', label: 'Status', formatter: (p) => p.isActive ? 'Active' : 'Inactive' },
       { key: 'image', label: 'Primary Image URL', formatter: (p) => p.images?.[0]?.url || '' },
+      { key: 'sec1_image', label: 'Secondary Image 1 URL', formatter: (p) => p.images?.[1]?.url || '' },
+      { key: 'sec2_image', label: 'Secondary Image 2 URL', formatter: (p) => p.images?.[2]?.url || '' },
     ];
 
     exportToCSV(listToExport, columns, 'MazhaiVaanam_PreBooking_Catalog');
@@ -120,15 +124,17 @@ export default function PreBooking() {
     setForm({
       name: '',
       description: '',
-      category: PERMANENT_CATEGORIES[0] || '',
+      category: '',
       fabric: '',
       price: '',
       mrpPrice: '',
-      stock: 1,
+      stock: 0,
       tag: '',
       imageUrl: '',
       isFeatured: false,
       isActive: true,
+      isScheduled: false,
+      scheduledAt: '',
       imageFile: null,
       imagePreview: '',
       sec1File: null,
@@ -162,6 +168,8 @@ export default function PreBooking() {
       imageUrl: product.images?.[0]?.url || '',
       isFeatured: Boolean(product.isFeatured),
       isActive: product.isActive !== false,
+      isScheduled: Boolean(product.isScheduled),
+      scheduledAt: product.scheduledAt ? new Date(product.scheduledAt).toISOString().slice(0, 16) : '',
       imageFile: null,
       imagePreview: product.images?.[0]?.url || '',
       sec1File: null,
@@ -203,6 +211,8 @@ export default function PreBooking() {
         tag: form.tag || null,
         isFeatured: Boolean(form.isFeatured),
         isActive: Boolean(form.isActive),
+        isScheduled: Boolean(form.isScheduled),
+        scheduledAt: form.isScheduled && form.scheduledAt ? form.scheduledAt : null,
         isPreorder: true, // Always true for Pre-Booking page
         preorderDeposit: Number(form.preorderDeposit) || 0,
         preorderProgress: Number(form.preorderProgress) || 0,
@@ -622,7 +632,7 @@ export default function PreBooking() {
                           </div>
                         </>
                       ) : (
-                        <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 16 }}>
+                        <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 16, margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                           <UploadCloud size={40} style={{ marginBottom: 12, opacity: 0.6 }} />
                           <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Upload Primary Image</div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: 4 }}>
@@ -702,7 +712,7 @@ export default function PreBooking() {
                             <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4, zIndex: 10 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec1File: null, sec1Preview: '' })); }}><X size={14}/></div>
                           </>
                         ) : (
-                          <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                          <div style={{ textAlign: 'center', color: 'var(--text-muted)', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <Plus size={24} style={{ opacity: 0.6 }} />
                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>3:4 (Max 5MB)</div>
                           </div>
@@ -761,7 +771,7 @@ export default function PreBooking() {
                             <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4, zIndex: 10 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec2File: null, sec2Preview: '' })); }}><X size={14}/></div>
                           </>
                         ) : (
-                          <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                          <div style={{ textAlign: 'center', color: 'var(--text-muted)', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <Plus size={24} style={{ opacity: 0.6 }} />
                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>3:4 (Max 5MB)</div>
                           </div>
@@ -795,6 +805,7 @@ export default function PreBooking() {
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Category</label>
                       <select className="form-select" required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
+                        <option value="">Select Category</option>
                         {PERMANENT_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                       </select>
                     </div>
@@ -822,8 +833,55 @@ export default function PreBooking() {
                   </div>
                   <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Discount (%)</label>
+                      <input 
+                        className="form-input" 
+                        type="number" 
+                        min="0" 
+                        max="100" 
+                        value={
+                          Number(form.mrpPrice) > 0 && Number(form.mrpPrice) > Number(form.price)
+                            ? parseFloat((((Number(form.mrpPrice) - Number(form.price)) / Number(form.mrpPrice)) * 100).toFixed(2))
+                            : 0
+                        }
+                        onChange={e => {
+                          const percent = Number(e.target.value) || 0;
+                          const mrp = Number(form.mrpPrice) || 0;
+                          if (mrp > 0) {
+                            const newPrice = mrp - (mrp * percent / 100);
+                            setForm(f => ({ ...f, price: Math.round(newPrice) }));
+                          }
+                        }} 
+                      />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">
+                        Discount Amount / Profit (₹)
+                        <span style={{ fontSize: '0.7rem', color: 'var(--primary)', marginLeft: 6, fontWeight: 500, opacity: 0.8 }}>(Admin Only)</span>
+                      </label>
+                      <input 
+                        className="form-input" 
+                        type="number" 
+                        min="0"
+                        value={
+                          Number(form.mrpPrice) > 0 && Number(form.mrpPrice) > Number(form.price)
+                            ? Number(form.mrpPrice) - Number(form.price)
+                            : 0
+                        }
+                        onChange={e => {
+                          const amt = Number(e.target.value) || 0;
+                          const mrp = Number(form.mrpPrice) || 0;
+                          if (mrp > 0) {
+                            setForm(f => ({ ...f, price: Math.max(0, mrp - amt) }));
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Stock Quantity *</label>
-                      <input className="form-input" type="number" required min="0" value={form.stock ?? 1} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
+                      <input className="form-input" type="number" required min="0" value={form.stock ?? 0} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Tag</label>
@@ -845,6 +903,20 @@ export default function PreBooking() {
                       <label className="form-label">Weight</label>
                       <input className="form-input" value={form.weight} onChange={e => setForm(f => ({ ...f, weight: e.target.value }))} placeholder="e.g. 500g" />
                     </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Height</label>
+                      <input className="form-input" value={form.height} onChange={e => setForm(f => ({ ...f, height: e.target.value }))} placeholder="e.g. 45 inches" />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Saree Length</label>
+                      <input className="form-input" value={form.sareeLength} onChange={e => setForm(f => ({ ...f, sareeLength: e.target.value }))} placeholder="e.g. 5.5 meters" />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label">Blouse Length</label>
+                      <input className="form-input" value={form.blouseLength} onChange={e => setForm(f => ({ ...f, blouseLength: e.target.value }))} placeholder="e.g. 0.8 meters" />
+                    </div>
                   </div>
                   <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
@@ -858,12 +930,8 @@ export default function PreBooking() {
                   </div>
                   <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Saree Length</label>
-                      <input className="form-input" value={form.sareeLength} onChange={e => setForm(f => ({ ...f, sareeLength: e.target.value }))} placeholder="e.g. 5.5 meters" />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Height</label>
-                      <input className="form-input" value={form.height} onChange={e => setForm(f => ({ ...f, height: e.target.value }))} placeholder="e.g. 45 inches" />
+                      <label className="form-label">Blouse</label>
+                      <input className="form-input" value={form.blouse} onChange={e => setForm(f => ({ ...f, blouse: e.target.value }))} placeholder="e.g. Running Blouse" />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Wash Care</label>
@@ -872,23 +940,19 @@ export default function PreBooking() {
                   </div>
                   <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Blouse</label>
-                      <input className="form-input" value={form.blouse} onChange={e => setForm(f => ({ ...f, blouse: e.target.value }))} placeholder="e.g. Running Blouse" />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Blouse Length</label>
-                      <input className="form-input" value={form.blouseLength} onChange={e => setForm(f => ({ ...f, blouseLength: e.target.value }))} placeholder="e.g. 0.8 meters" />
+                      <label className="form-label">Return/Exchange</label>
+                      <select className="form-select" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))}>
+                        <option value="Applicable">Applicable</option>
+                        <option value="Not Applicable">Not Applicable</option>
+                        <option value="Valid Reason">Valid Reason</option>
+                      </select>
                     </div>
                   </div>
-                  
+
                   {/* --- Additional Info --- */}
                   <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, borderBottom: '1px solid var(--border-color)', paddingBottom: 8 }}>Additional Info</h4>
                   
                   <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Return/Exchange</label>
-                      <input className="form-input" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))} placeholder="e.g. Not Applicable" />
-                    </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Note</label>
                       <input className="form-input" value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))} placeholder="e.g. Dry clean only" />
@@ -922,7 +986,7 @@ export default function PreBooking() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
+                  <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)', flexWrap: 'wrap' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
                       <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
                       Featured Product
@@ -931,15 +995,70 @@ export default function PreBooking() {
                       <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
                       Active Status
                     </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
+                      <input 
+                        type="checkbox" 
+                        checked={form.isScheduled} 
+                        onChange={e => {
+                          const isScheduled = e.target.checked;
+                          setForm(f => ({ ...f, isScheduled, isActive: isScheduled ? false : f.isActive }));
+                        }} 
+                        style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} 
+                      />
+                      Schedule Product
+                    </label>
+                  </div>
+                  
+                  {form.isScheduled && (
+                    <div className="form-row" style={{ marginTop: 16, padding: '16px', background: 'var(--bg-secondary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
+                      <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label className="form-label" style={{ color: 'var(--primary)', fontWeight: 600 }}>Publish Date & Time *</label>
+                        <input 
+                          type="datetime-local" 
+                          className="form-input" 
+                          required={form.isScheduled}
+                          value={form.scheduledAt} 
+                          onChange={e => setForm(f => ({ ...f, scheduledAt: e.target.value }))} 
+                        />
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 8 }}>
+                          The product will automatically become active at this time.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div style={{ marginTop: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridColumn: '1 / -1' }}>
+                  <button type="button" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => setPreviewModalOpen(true)}>
+                    <Eye size={16} /> Preview
+                  </button>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <button type="button" className="btn btn-outline" onClick={() => setModal({ open: false, product: null })}>Cancel</button>
+                    <button type="submit" className="btn btn-primary" disabled={saving}>
+                      {saving ? 'Saving...' : 'Save Product'}
+                    </button>
                   </div>
                 </div>
-              </div>
+            </div>
+          </form>
+        </div>
+      )}
 
-              <div style={{ marginTop: 32, display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-                <button type="button" className="btn btn-outline" onClick={() => setModal({ open: false, product: null })}>Cancel</button>
-                <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : 'Save Product'}</button>
-              </div>
-            </form>
+      {/* Preview Modal */}
+      {previewModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+          <div style={{ background: '#fff', borderRadius: 16, width: '90vw', maxWidth: 1100, maxHeight: '90vh', overflowY: 'auto', position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
+            <div style={{ position: 'sticky', top: 0, background: '#fff', padding: '16px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
+              <h3 style={{ margin: 0, color: 'var(--primary-dark)', fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Eye size={20} /> Live Product Preview
+              </h3>
+              <button onClick={() => setPreviewModalOpen(false)} style={{ background: '#f5f5f5', border: 'none', cursor: 'pointer', borderRadius: '50%', padding: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#ffebee'; e.currentTarget.style.color = '#d32f2f'; }} onMouseLeave={e => { e.currentTarget.style.background = '#f5f5f5'; e.currentTarget.style.color = '#666'; }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ background: '#fcfaf8', overflow: 'hidden', borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
+              <ProductPreview form={form} />
+            </div>
+          </div>
         </div>
       )}
 

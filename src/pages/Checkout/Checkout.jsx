@@ -122,7 +122,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       }
     };
     loadAddresses();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -174,15 +174,15 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   // Weight-based shipping rate table (same as backend shipping.js)
   const SHIPPING_RATES = [
-    { label: 'Standard',   uptoKg: 0.5,       price: 60  },
-    { label: 'Upto 1kg',   uptoKg: 1.0,       price: 75  },
-    { label: 'Upto 1.5kg', uptoKg: 1.5,       price: 90  },
-    { label: 'Upto 2kg',   uptoKg: 2.0,       price: 115 },
-    { label: 'Upto 2.5kg', uptoKg: 2.5,       price: 130 },
-    { label: 'Upto 3kg',   uptoKg: 3.0,       price: 145 },
-    { label: 'Upto 4kg',   uptoKg: 4.0,       price: 170 },
-    { label: 'Upto 5kg',   uptoKg: 5.0,       price: 190 },
-    { label: 'Above 5kg',  uptoKg: Infinity,   price: 220 },
+    { label: 'Standard', uptoKg: 0.5, price: 60 },
+    { label: 'Upto 1kg', uptoKg: 1.0, price: 75 },
+    { label: 'Upto 1.5kg', uptoKg: 1.5, price: 90 },
+    { label: 'Upto 2kg', uptoKg: 2.0, price: 115 },
+    { label: 'Upto 2.5kg', uptoKg: 2.5, price: 130 },
+    { label: 'Upto 3kg', uptoKg: 3.0, price: 145 },
+    { label: 'Upto 4kg', uptoKg: 4.0, price: 170 },
+    { label: 'Upto 5kg', uptoKg: 5.0, price: 190 },
+    { label: 'Above 5kg', uptoKg: Infinity, price: 220 },
   ];
 
   const calcShippingFee = (items, mode) => {
@@ -260,8 +260,8 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       <div className={styles.detailsSummaryCard}>
         <div className={styles.detailsSummaryHeader}>
           <h3>Delivery & Contact Information</h3>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={styles.editDetailsBtn}
             onClick={() => setCheckoutStep('checkout')}
           >
@@ -379,7 +379,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const handleCompleteOrder = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     setSubmitError('');
-    
+
     if (!validateForm()) return;
 
     setIsSubmitting(true);
@@ -1104,11 +1104,11 @@ Thank you for choosing handloom heritage.
               <>
                 <section className={styles.sectionBlock}>
                   <h2 className={styles.sectionTitle}>{deliveryMode === 'standard' ? 'Shipping Details' : 'Contact Details'}</h2>
-                  
+
                   {deliveryMode === 'standard' && savedAddresses.length > 0 && !showAddressForm ? (
                     <div className={styles.addressGrid}>
                       {savedAddresses.map(addr => (
-                        <div 
+                        <div
                           key={addr.id}
                           className={`${styles.addressCard} ${selectedAddressId === addr.id ? styles.addressCardDefault : ''}`}
                           onClick={() => setSelectedAddressId(addr.id)}
@@ -1128,16 +1128,16 @@ Thank you for choosing handloom heritage.
                           </div>
                         </div>
                       ))}
-                      
+
                       <div className={styles.addAddressBtn} onClick={() => {
-                          setShowAddressForm(true);
-                          setFullName(user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
-                          setPhone('');
-                          setAddressLine('');
-                          setCity('');
-                          setStateName('');
-                          setPinCode('');
-                        }}>
+                        setShowAddressForm(true);
+                        setFullName(user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+                        setPhone('');
+                        setAddressLine('');
+                        setCity('');
+                        setStateName('');
+                        setPinCode('');
+                      }}>
                         <span style={{ fontSize: '24px', color: '#C8A34D' }}>+</span>
                         <p className={styles.addAddressTitle}>ADD NEW ADDRESS</p>
                       </div>
@@ -1146,9 +1146,9 @@ Thank you for choosing handloom heritage.
                     <form className={styles.formContainer} onSubmit={handleConfirmDetails}>
                       {savedAddresses.length > 0 && deliveryMode === 'standard' && (
                         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-16px' }}>
-                          <button 
-                            type="button" 
-                            className={styles.addressLinkBtn} 
+                          <button
+                            type="button"
+                            className={styles.addressLinkBtn}
                             onClick={() => {
                               setShowAddressForm(false);
                               const addr = savedAddresses.find(a => a.id === selectedAddressId);
@@ -1359,7 +1359,7 @@ Thank you for choosing handloom heritage.
                     </h4>
                   </div>
                   <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-                    Your transaction is encrypted using state-of-the-art SSL algorithms. 
+                    Your transaction is encrypted using state-of-the-art SSL algorithms.
                     Clicking the payment button on the right will launch the Razorpay interface to choose cards, UPI, or netbanking.
                   </p>
                 </div>

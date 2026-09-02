@@ -35,7 +35,7 @@ export const Contact = ({ setCurrentTab }) => {
       alert("Please fill out all required fields.");
       return;
     }
-    
+
     setIsSubmitting(true);
     try {
       await contactAPI.submitInquiry({

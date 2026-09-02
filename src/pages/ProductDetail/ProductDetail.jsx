@@ -371,13 +371,14 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                 </>
               ) : (
                 <>
-                  <div className={styles['price-card-row']}>
-                    <span>Original Showroom Price</span>
-                    <span className={styles['old-price-slashed']}>{formatCurrency(boutiquePrice)}</span>
-                  </div>
-                  <div className={styles['price-card-row']}>
+                  <div className={styles['price-card-row']} style={{ alignItems: 'center' }}>
                     <span>Mazhai Vaanam Base Price</span>
-                    <span className={styles['medium-price']}>{formatCurrency(activeProduct.price * quantity)}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className={styles['old-price-slashed']}>{formatCurrency(boutiquePrice)}</span>
+                      <span className={styles['medium-price']} style={{ fontSize: '1.8rem', fontWeight: '700', color: '#FFBEA2' }}>
+                        {formatCurrency(activeProduct.price * quantity)}
+                      </span>
+                    </div>
                   </div>
 
 

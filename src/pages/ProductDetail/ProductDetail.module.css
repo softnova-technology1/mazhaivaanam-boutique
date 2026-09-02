@@ -550,7 +550,7 @@
 
 .final-price-amt {
   font-family: var(--font-body);
-  font-size: 1.8rem;
+  font-size: 1.25rem;
   color: var(--primary);
   margin: 0;
   font-weight: 500;
@@ -565,7 +565,7 @@
 }
 
 .savings-lbl {
-  font-size: 13px;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #6c5d35;
   margin: 0;

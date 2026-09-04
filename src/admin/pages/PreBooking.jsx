@@ -102,6 +102,7 @@ export default function PreBooking() {
 
     const columns = [
       { key: 'name', label: 'Product Name' },
+      { key: 'sku', label: 'SKU' },
       { key: 'category', label: 'Category', formatter: (p) => p.category?.name || '' },
       { key: 'fabric', label: 'Fabric' },
       { key: 'price', label: 'Sale Price (INR)' },
@@ -125,6 +126,7 @@ export default function PreBooking() {
   const openCreate = () => {
     setForm({
       name: '',
+      sku: '',
       shortDescription: '',
       description: '',
       category: '',
@@ -161,6 +163,7 @@ export default function PreBooking() {
   const openEdit = (product) => {
     setForm({
       name: product.name,
+      sku: product.sku || '',
       shortDescription: product.shortDescription || '',
       description: product.description || '',
       category: product.category?._id || product.category || '',
@@ -206,6 +209,7 @@ export default function PreBooking() {
     try {
       const body = {
         name: form.name,
+        sku: form.sku || undefined,
         shortDescription: form.shortDescription,
         description: form.description,
         category: form.category,
@@ -446,6 +450,7 @@ export default function PreBooking() {
                   </th>
                   <th style={{ width: 45, textAlign: 'center' }}>#</th>
                   <th>Product</th>
+                  <th>SKU</th>
                   <th>Category</th>
                   <th>Fabric</th>
                   <th>Full Price</th>
@@ -497,6 +502,7 @@ export default function PreBooking() {
                           </div>
                         </div>
                       </td>
+                      <td>{p.sku || '—'}</td>
                       <td>{p.category?.name || '—'}</td>
                       <td>{p.fabric}</td>
                       <td>
@@ -803,6 +809,10 @@ export default function PreBooking() {
                     <input className="form-input" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
                   </div>
                   <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">SKU</label>
+                    <input className="form-input" value={form.sku} onChange={e => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="e.g. MV-001" />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Simple Description (Shows on Shop Card & Details Subtitle)</label>
                     <input className="form-input" value={form.shortDescription} onChange={e => setForm(f => ({ ...f, shortDescription: e.target.value }))} placeholder="e.g. Handcrafted Megatron saree" />
                   </div>
@@ -836,8 +846,8 @@ export default function PreBooking() {
                       <input className="form-input" type="number" required min="0" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">MRP Price (₹) *</label>
-                      <input className="form-input" type="number" required min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
+                      <label className="form-label">MRP Price (₹)</label>
+                      <input className="form-input" type="number" min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
                     </div>
                   </div>
                   <div className="form-row">
@@ -1195,31 +1205,68 @@ export default function PreBooking() {
                   </span>
                 </div>
 
-                <div style={{ maxHeight: 260, overflowY: 'auto', border: '1px solid var(--border-color)', borderRadius: 8 }}>
-                  <table className="data-table" style={{ width: '100%', fontSize: '0.85rem' }}>
+                <div style={{ maxHeight: 260, overflow: 'auto', border: '1px solid var(--border-color)', borderRadius: 8 }}>
+                  <table className="data-table" style={{ width: '100%', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
                     <thead>
                       <tr>
                         <th>#</th>
+                        <th>Image</th>
                         <th>Product Name</th>
                         <th>Category</th>
                         <th>Fabric</th>
                         <th>Price (₹)</th>
                         <th>MRP (₹)</th>
                         <th>Stock</th>
+                        <th>Weight</th>
+                        <th>Pattern</th>
+                        <th>Pallu</th>
+                        <th>Border</th>
+                        <th>Saree Length</th>
+                        <th>Blouse Length</th>
+                        <th>Style</th>
+                        <th>Wash Care</th>
+                        <th>Return Policy</th>
                         <th>Tag</th>
+                        <th>Note</th>
                       </tr>
                     </thead>
                     <tbody>
                       {importModal.parsedProducts.map((p, idx) => (
                         <tr key={idx}>
                           <td>{idx + 1}</td>
+                          <td>
+                            {p.images?.[0]?.url ? (
+                              <img
+                                src={p.images[0].url}
+                                alt=""
+                                style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 4, border: '1px solid var(--border-color)' }}
+                                onError={e => { e.target.style.display = 'none'; }}
+                              />
+                            ) : (
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No image</span>
+                            )}
+                          </td>
                           <td style={{ fontWeight: 600 }}>{p.name || <span style={{ color: 'red' }}>Missing</span>}</td>
-                          <td>{p.category || 'Default'}</td>
-                          <td>{p.fabric || 'Cotton'}</td>
-                          <td>₹{p.price || 0}</td>
-                          <td>₹{p.mrpPrice || Math.round((p.price || 0) * 1.15)}</td>
-                          <td>{p.stock || 25}</td>
-                          <td>{p.tag || '-'}</td>
+                          <td>{p.category || '—'}</td>
+                          <td>{p.fabric || '—'}</td>
+                          <td>{p.price ? `₹${p.price}` : '—'}</td>
+                          <td>{p.mrpPrice ? `₹${p.mrpPrice}` : '—'}</td>
+                          <td>{p.stock !== undefined && p.stock !== '' ? p.stock : '—'}</td>
+                          <td>{p.weight || '—'}</td>
+                          <td>{p.pattern || '—'}</td>
+                          <td>{p.pallu || '—'}</td>
+                          <td>{p.border || '—'}</td>
+                          <td>{p.sareeLength || '—'}</td>
+                          <td>{p.blouseLength || '—'}</td>
+                          <td>{p.style || '—'}</td>
+                          <td>{p.washCare || '—'}</td>
+                          <td>{p.returnPolicy || '—'}</td>
+                          <td>{p.tag || '—'}</td>
+                          <td>
+                            <div style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }} title={p.note}>
+                              {p.note || '—'}
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

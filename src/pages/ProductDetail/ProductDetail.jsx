@@ -384,19 +384,26 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                   <div className={styles['price-card-row']} style={{ alignItems: 'center' }}>
                     <span>Mazhai Vaanam Base Price</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span className={styles['old-price-slashed']}>{formatCurrency(boutiquePrice)}</span>
+                      {boutiquePrice > finalPrice && (
+                        <span className={styles['old-price-slashed']}>{formatCurrency(boutiquePrice)}</span>
+                      )}
                       <span className={styles['medium-price']} style={{ fontSize: '1.8rem', fontWeight: '700', color: '#FFBEA2' }}>
-                        {formatCurrency(activeProduct.price * quantity)}
+                        {formatCurrency(finalPrice)}
                       </span>
                     </div>
                   </div>
 
-
                   <div className={styles['price-card-footer']}>
-                    <div className={styles['savings-banner']}>
-                      <p className={styles['savings-lbl']}>SAVINGS {formatCurrency(totalSavings)}</p>
-                      <p className={styles['savings-pct']}>{totalDiscountPct}% OFF ATELIER VALUE</p>
-                    </div>
+                    {totalSavings > 0 ? (
+                      <div className={styles['savings-banner']}>
+                        <p className={styles['savings-lbl']}>SAVINGS {formatCurrency(totalSavings)}</p>
+                        <p className={styles['savings-pct']}>{totalDiscountPct}% OFF ATELIER VALUE</p>
+                      </div>
+                    ) : (
+                      <div className={styles['savings-banner']} style={{ visibility: 'hidden' }}>
+                        <p className={styles['savings-lbl']}>SAVINGS ₹0</p>
+                      </div>
+                    )}
                     <div className={styles['final-price-box']}>
                       <p className={styles['final-price-lbl']}>FINAL BESPOKE PRICE</p>
                       <p className={styles['final-price-amt']}>

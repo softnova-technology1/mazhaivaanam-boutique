@@ -898,8 +898,8 @@ export default function Products() {
                       <input className="form-input" type="number" required min="0" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">MRP Price (₹) *</label>
-                      <input className="form-input" type="number" required min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
+                      <label className="form-label">MRP Price (₹)</label>
+                      <input className="form-input" type="number" min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
                     </div>
                   </div>
                   <div className="form-row">
@@ -1250,8 +1250,8 @@ export default function Products() {
                   </span>
                 </div>
 
-                <div style={{ maxHeight: 260, overflowY: 'auto', border: '1px solid var(--border-color)', borderRadius: 8 }}>
-                  <table className="data-table" style={{ width: '100%', fontSize: '0.85rem' }}>
+                <div style={{ maxHeight: 260, overflow: 'auto', border: '1px solid var(--border-color)', borderRadius: 8 }}>
+                  <table className="data-table" style={{ width: '100%', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
                     <thead>
                       <tr>
                         <th>#</th>
@@ -1262,7 +1262,17 @@ export default function Products() {
                         <th>Price (₹)</th>
                         <th>MRP (₹)</th>
                         <th>Stock</th>
+                        <th>Weight</th>
+                        <th>Pattern</th>
+                        <th>Pallu</th>
+                        <th>Border</th>
+                        <th>Saree Length</th>
+                        <th>Blouse Length</th>
+                        <th>Style</th>
+                        <th>Wash Care</th>
+                        <th>Return Policy</th>
                         <th>Tag</th>
+                        <th>Note</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1282,12 +1292,26 @@ export default function Products() {
                             )}
                           </td>
                           <td style={{ fontWeight: 600 }}>{p.name || <span style={{ color: 'red' }}>Missing</span>}</td>
-                          <td>{p.category || 'Default'}</td>
-                          <td>{p.fabric || 'Cotton'}</td>
-                          <td>₹{p.price || 0}</td>
-                          <td>₹{p.mrpPrice || Math.round((p.price || 0) * 1.15)}</td>
-                          <td>{p.stock || 25}</td>
-                          <td>{p.tag || '-'}</td>
+                          <td>{p.category || '—'}</td>
+                          <td>{p.fabric || '—'}</td>
+                          <td>{p.price ? `₹${p.price}` : '—'}</td>
+                          <td>{p.mrpPrice ? `₹${p.mrpPrice}` : '—'}</td>
+                          <td>{p.stock !== undefined && p.stock !== '' ? p.stock : '—'}</td>
+                          <td>{p.weight || '—'}</td>
+                          <td>{p.pattern || '—'}</td>
+                          <td>{p.pallu || '—'}</td>
+                          <td>{p.border || '—'}</td>
+                          <td>{p.sareeLength || '—'}</td>
+                          <td>{p.blouseLength || '—'}</td>
+                          <td>{p.style || '—'}</td>
+                          <td>{p.washCare || '—'}</td>
+                          <td>{p.returnPolicy || '—'}</td>
+                          <td>{p.tag || '—'}</td>
+                          <td>
+                            <div style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }} title={p.note}>
+                              {p.note || '—'}
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

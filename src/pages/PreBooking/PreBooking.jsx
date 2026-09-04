@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styles from './PreBooking.module.css';
-import { ChevronDown, ArrowRight, Grid, List, Filter, X, Star } from 'lucide-react';
+import { ChevronDown, ArrowRight, Grid, List, Filter, X, Star, Heart, Share2 } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useCart } from '../../hooks/useCart';
+import { useWishlist } from '../../hooks/useWishlist';
 import { getPreorderProducts } from '../../services/api';
 
 export const SORT_OPTIONS = [
@@ -22,6 +23,7 @@ const getProductDetails = (product) => {
 
   return {
     headline: product.name,
+    shortDescription: product.shortDescription,
     p1: product.description || 'Welcome to the heritage of handloom. Experience premium comfort, authentic design, and exquisite weave tailored for special occasions.',
     p2: '',
     fabric: product.fabric,
@@ -53,8 +55,28 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
   const [viewMode, setViewMode] = useState('grid');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [activeQuickViewImage, setActiveQuickViewImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  const { wishlist, toggleWishlist } = useWishlist();
+
+  const handleShareClick = (e, product) => {
+    e.stopPropagation();
+    const productUrl = `${window.location.origin}/product/${product.id}`;
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: product.description || `Check out ${product.name} at Mazhai Vaanam!`,
+        url: productUrl,
+      }).catch((error) => console.log('Error sharing:', error));
+    } else {
+      navigator.clipboard.writeText(productUrl).then(() => {
+        window.dispatchEvent(new CustomEvent('show-toast', { 
+          detail: { message: `Link to "${product.name}" copied to clipboard!` } 
+        }));
+      }).catch((err) => console.error('Could not copy text: ', err));
+    }
+  };
 
   const details = quickViewProduct ? getProductDetails(quickViewProduct) : null;
 
@@ -336,11 +358,36 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                 <div key={product.id} className={styles['product-card']}>
                   <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
                     {product.discount && <div className={styles['discount-badge']}>{product.discount}</div>}
+                    {product.estimatedDays && (
+                      <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(255, 255, 255, 0.95)', color: 'var(--primary-dark)', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, zIndex: 2, border: '1px solid rgba(200, 163, 77, 0.3)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                        ⏳ {product.estimatedDays}
+                      </div>
+                    )}
+                    
+                    <div 
+                      className={styles['wishlist-btn']} 
+                      onClick={(e) => { e.stopPropagation(); toggleWishlist(product); }}
+                      role="button"
+                    >
+                      <Heart 
+                        size={16} 
+                        fill={wishlist.some(w => (w.id || w._id) === (product.id || product._id)) ? "#e63946" : "none"} 
+                        stroke={wishlist.some(w => (w.id || w._id) === (product.id || product._id)) ? "#e63946" : "var(--primary-dark)"} 
+                      />
+                    </div>
+                    <div 
+                      className={styles['share-btn']} 
+                      onClick={(e) => handleShareClick(e, product)}
+                      role="button"
+                    >
+                      <Share2 size={16} stroke="var(--primary-dark)" />
+                    </div>
+
                     <img src={product.image} alt={product.name} className={styles['product-image']} />
                   </div>
                   <div className={styles['product-info']}>
                     <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
-                      {product.name} | {getProductDisplayId(product)} | PRE BOOKING
+                      {product.name} | {product.sku}
                     </h3>
                     <p className={styles['product-desc']}>{product.description}</p>
                     
@@ -360,7 +407,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                     >
                       PRE BOOK NOW
                     </div>
-                    <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); }}>
+                    <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); setActiveQuickViewImage(0); }}>
                       Quick view
                     </div>
                   </div>
@@ -379,27 +426,69 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
             
             <div className={styles['quick-view-content']}>
               <div className={styles['quick-view-images']}>
-                <div className={styles['thumbnails']}>
-                  <img src={quickViewProduct.image} className={styles['thumbnail-active']} alt="thumb 1" />
-                  <img src={quickViewProduct.image} className={styles['thumbnail']} alt="thumb 2" />
-                  <img src={quickViewProduct.image} className={styles['thumbnail']} alt="thumb 3" />
-                </div>
-                <div className={styles['main-image-container']}>
-                  <img src={quickViewProduct.image} alt={quickViewProduct.name} className={styles['main-image']} />
+                {quickViewProduct.images && quickViewProduct.images.length > 1 && (
+                  <div className={styles['thumbnails']}>
+                    {quickViewProduct.images.map((imgObj, idx) => (
+                      <img 
+                        key={idx} 
+                        src={imgObj.url || imgObj} 
+                        className={idx === activeQuickViewImage ? styles['thumbnail-active'] : styles['thumbnail']} 
+                        alt={`thumb ${idx + 1}`} 
+                        onClick={() => setActiveQuickViewImage(idx)}
+                      />
+                    ))}
+                  </div>
+                )}
+                <div className={styles['main-image-container']} style={{ position: 'relative' }}>
+                  <img 
+                    src={quickViewProduct.images && quickViewProduct.images.length > 0 ? (quickViewProduct.images[activeQuickViewImage]?.url || quickViewProduct.images[activeQuickViewImage]) : quickViewProduct.image} 
+                    alt={quickViewProduct.name} 
+                    className={styles['main-image']} 
+                  />
+                  <div 
+                    className={styles['wishlist-btn']} 
+                    onClick={(e) => { e.stopPropagation(); toggleWishlist(quickViewProduct); }}
+                    role="button"
+                    style={{ top: '20px', right: '20px', width: '42px', height: '42px' }}
+                  >
+                    <Heart 
+                      size={20} 
+                      fill={wishlist.some(w => (w.id || w._id) === (quickViewProduct.id || quickViewProduct._id)) ? "#e63946" : "none"} 
+                      stroke={wishlist.some(w => (w.id || w._id) === (quickViewProduct.id || quickViewProduct._id)) ? "#e63946" : "var(--primary-dark)"} 
+                    />
+                  </div>
+                  <div 
+                    className={styles['share-btn']} 
+                    onClick={(e) => handleShareClick(e, quickViewProduct)}
+                    role="button"
+                    style={{ top: '72px', right: '20px', width: '42px', height: '42px' }}
+                  >
+                    <Share2 size={20} stroke="var(--primary-dark)" />
+                  </div>
                 </div>
               </div>
               
               <div className={styles['quick-view-details']}>
                 <div className={styles['qv-scrollable-content']}>
-                  <h2 className={styles['qv-title']}>{quickViewProduct.name} | {getProductDisplayId(quickViewProduct)} | PRE BOOKING</h2>
-                  <div className={styles['qv-badge']}>Save {quickViewProduct.discount}</div>
+                  <div className={styles['qv-collection-title']}>MAZHAI VAANAM PRE BOOKING COLLECTIONS</div>
+                  <h2 className={styles['qv-title']}>{quickViewProduct.name} | {quickViewProduct.sku}</h2>
+                  {details.shortDescription && <p className={styles['qv-desc-p']} style={{ fontWeight: 500, color: 'var(--text-main)', marginBottom: '15px' }}>{details.shortDescription}</p>}
                   
-                  <div className={styles['qv-vendor']}>MAZHAI VAANAM</div>
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '15px' }}>
+                    {quickViewProduct.discount && <div className={styles['qv-badge']} style={{ margin: 0 }}>Save {quickViewProduct.discount}</div>}
+                    {quickViewProduct.estimatedDays && (
+                      <div className={styles['qv-badge']} style={{ margin: 0, background: '#f5f5f5', color: 'var(--text-main)', border: '1px solid #ddd' }}>
+                        ⏳ Est. Dispatch: {quickViewProduct.estimatedDays}
+                      </div>
+                    )}
+                  </div>
                   
-                  <div className={styles['qv-price-row']}>
+                  <div className={styles['qv-price-row']} style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
                     <span className={styles['qv-label']}>Price:</span>
                     <span className={styles['qv-current-price']}>{formatCurrency(quickViewProduct.price)}</span>
-                    <span className={styles['qv-old-price']}>{formatCurrency(quickViewProduct.oldPrice)}</span>
+                    {quickViewProduct.oldPrice && quickViewProduct.oldPrice > quickViewProduct.price && (
+                      <span className={styles['qv-old-price']}>{formatCurrency(quickViewProduct.oldPrice)}</span>
+                    )}
                   </div>
                   
                   <div className={styles['qv-quantity-row']}>
@@ -413,7 +502,6 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
 
                   {details && (
                     <div className={styles['qv-description-section']}>
-                      <h4 className={styles['qv-desc-title']}>{details.headline}</h4>
                       <p className={styles['qv-desc-p']}>{details.p1}</p>
                       <p className={styles['qv-desc-p']}>{details.p2}</p>
                       

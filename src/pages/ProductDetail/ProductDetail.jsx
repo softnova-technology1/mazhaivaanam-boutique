@@ -337,15 +337,17 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
               {activeProduct.tag && <span className={`${styles['detail-badge']} ${getBadgeClass(activeProduct.tag)}`}>{activeProduct.tag}</span>}
             </div>
             <p className={styles['collection-sub']}>MAZHAI VAANAM SIGNATURE COLLECTION</p>
-            <h1>{activeProduct.name}</h1>
+            <h1 style={{ marginBottom: '4px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+              {activeProduct.name}
+            </h1>
+            {activeProduct.shortDescription && (
+              <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginTop: 0, marginBottom: '12px', fontStyle: 'italic' }}>
+                {activeProduct.shortDescription}
+              </p>
+            )}
             {activeProduct.sku && (
               <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', letterSpacing: '0.06em', marginTop: '2px', marginBottom: '8px', fontFamily: 'monospace' }}>
                 SKU: {activeProduct.sku}
-              </p>
-            )}
-            {activeProduct.shortDescription && (
-              <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginTop: '6px', marginBottom: '12px', fontStyle: 'italic' }}>
-                {activeProduct.shortDescription}
               </p>
             )}
 

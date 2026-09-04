@@ -236,9 +236,11 @@ export default function Products() {
         return null;
       };
 
-      const res1 = await prepareImage(form.imageFile, form.imagePreview, modal.product?.images?.[0]);
-      const res2 = await prepareImage(form.sec1File, form.sec1Preview, modal.product?.images?.[1]);
-      const res3 = await prepareImage(form.sec2File, form.sec2Preview, modal.product?.images?.[2]);
+      const [res1, res2, res3] = await Promise.all([
+        prepareImage(form.imageFile, form.imagePreview, modal.product?.images?.[0]),
+        prepareImage(form.sec1File, form.sec1Preview, modal.product?.images?.[1]),
+        prepareImage(form.sec2File, form.sec2Preview, modal.product?.images?.[2])
+      ]);
 
       body.images = [res1, res2, res3]
         .filter(img => img && img.url)
@@ -512,9 +514,9 @@ export default function Products() {
                               );
                             })()}
                           </div>
-                          <div>
-                            <div style={{ color: 'var(--text-primary)', fontWeight: 500, fontSize: '0.9rem' }}>{p.name}</div>
-                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{p.slug}</div>
+                          <div style={{ maxWidth: 220, overflow: 'hidden' }} title={p.name}>
+                            <div style={{ color: 'var(--text-primary)', fontWeight: 500, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
+                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.slug}</div>
                           </div>
                         </div>
                       </td>
@@ -1257,6 +1259,8 @@ export default function Products() {
                         <th>#</th>
                         <th>Image</th>
                         <th>Product Name</th>
+                        <th>Simple Description</th>
+                        <th>Description</th>
                         <th>Category</th>
                         <th>Fabric</th>
                         <th>Price (₹)</th>
@@ -1292,6 +1296,16 @@ export default function Products() {
                             )}
                           </td>
                           <td style={{ fontWeight: 600 }}>{p.name || <span style={{ color: 'red' }}>Missing</span>}</td>
+                          <td>
+                            <div style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={p.shortDescription}>
+                              {p.shortDescription || '—'}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={p.description}>
+                              {p.description || '—'}
+                            </div>
+                          </td>
                           <td>{p.category || '—'}</td>
                           <td>{p.fabric || '—'}</td>
                           <td>{p.price ? `₹${p.price}` : '—'}</td>

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Utility to parse CSV/Excel files into product objects & generate downloadable sample templates
  *
  * IMAGES SUPPORT:
@@ -45,36 +45,14 @@ function extToMime(ext = '') {
 
 export function downloadSampleImportTemplate() {
   const headers = [
-    'name', 'description', 'category', 'fabric', 'price', 'mrpPrice',
-    'stock', 'weight', 'tag',
-    'image1', 'image2', 'image3',
-    'pattern', 'border', 'pallu', 'sareeLength', 'blouseLength',
-    'style', 'washCare', 'returnPolicy', 'note',
-  ];
-  const sampleRows = [
-    [
-      'Kanchipuram Red Silk Saree',
-      'Exquisite handwoven pure Kanchipuram silk saree with golden zari weave.',
-      'Festive Glow', 'Pure Silk', 14999, 18000, 20, '650g', 'BESTSELLER',
-      'https://mazhaivaanam.s3.ap-south-1.amazonaws.com/sample1.jpg', '', '',
-      'Temple Border', 'Elegant Golden Zari Border', 'Rich Zari Pallu',
-      '5.5 mtr', '80 to 90 cms', 'Traditional Bridal',
-      'Dry Clean Only', 'Not Applicable',
-      'Product colour may slightly vary due to photography lighting.',
-    ],
-    [
-      'Organic Chanderi Cotton Saree',
-      'Lightweight breathable organic cotton saree perfect for everyday elegance.',
-      'Everyday Elegance', 'Cotton', 4500, 5500, 35, '420g', 'NEW ARRIVAL',
-      'https://mazhaivaanam.s3.ap-south-1.amazonaws.com/sample2.jpg', '', '',
-      'Floral Kalamkari Print', 'Plain Zari Border', 'Soft Threadwork',
-      '5.5 mtr', '70 to 80 cms', 'Contemporary',
-      'Hand Wash Gentle', 'Not Applicable',
-      'Product colour may slightly vary due to photography lighting.',
-    ],
+    'Product Name', 'Simple Description', 'Description', 'Category', 'Fabric', 'Price (Rs)', 'MRP Price (Rs)',
+    'Stock', 'Weight', 'Tag',
+    'Image 1 URL', 'Image 2 URL', 'Image 3 URL',
+    'Pattern', 'Border', 'Pallu', 'Saree Length', 'Blouse Length',
+    'Style', 'Wash Care', 'Return Policy', 'Note'
   ];
   const wb = xlsx.utils.book_new();
-  const ws = xlsx.utils.aoa_to_sheet([headers, ...sampleRows]);
+  const ws = xlsx.utils.aoa_to_sheet([headers]);
   ws['!cols'] = headers.map(h => ({ wch: Math.max(String(h).length + 4, 16) }));
   xlsx.utils.book_append_sheet(wb, ws, 'Products');
   xlsx.writeFile(wb, 'MazhaiVaanam_Products_Import_Template.xlsx');
@@ -83,17 +61,18 @@ export function downloadSampleImportTemplate() {
 function normalizeKey(header) {
   const h = String(header).toLowerCase().replace(/[^a-z0-9]/g, '');
   if (h === 'name' || h === 'productname') return 'name';
+  if (h === 'shortdescription' || h === 'simpledescription') return 'shortDescription';
   if (h.includes('desc')) return 'description';
   if (h.includes('cat')) return 'category';
   if (h.includes('fabric')) return 'fabric';
-  if (h === 'price' || h === 'saleprice' || h === 'sellingprice') return 'price';
+  if (h === 'price' || h === 'saleprice' || h === 'sellingprice' || h === 'pricers') return 'price';
   if (h.includes('mrp') || h === 'originalprice') return 'mrpPrice';
   if (h.includes('stock') || h === 'qty' || h.includes('quantity')) return 'stock';
   if (h.includes('weight')) return 'weight';
   if (h.includes('tag') || h.includes('badge')) return 'tag';
-  if (h === 'image1' || h === 'img1' || h === 'primaryimage' || h === 'primaryimageurl') return 'image1';
-  if (h === 'image2' || h === 'img2' || h === 'secondimage') return 'image2';
-  if (h === 'image3' || h === 'img3' || h === 'thirdimage') return 'image3';
+  if (h === 'image1' || h === 'img1' || h === 'primaryimage' || h === 'primaryimageurl' || h === 'image1url') return 'image1';
+  if (h === 'image2' || h === 'img2' || h === 'secondimage' || h === 'image2url') return 'image2';
+  if (h === 'image3' || h === 'img3' || h === 'thirdimage' || h === 'image3url') return 'image3';
   if (h === 'image' || h === 'img' || h === 'imageurl' || h === 'url') return 'image1';
   if (h.includes('pattern')) return 'pattern';
   if (h.includes('border')) return 'border';

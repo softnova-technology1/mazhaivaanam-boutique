@@ -39,7 +39,7 @@ export function normalizeProduct(p) {
     deposit: p.preorderDeposit || 5000,
     progress: p.preorderProgress || 70,
     weaver: p.preorderWeaver || 'Master Weaver',
-    estimatedDays: p.preorderEstimatedDays || 14,
+    estimatedDays: p.preorderEstimatedDays ?? '',
     discount: discountLabel,
   };
 }

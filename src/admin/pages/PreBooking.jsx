@@ -124,9 +124,20 @@ export default function PreBooking() {
   };
 
   const openCreate = () => {
+    let maxId = 0;
+    products.forEach(p => {
+      if (p.sku && String(p.sku).toUpperCase().startsWith('PRE-BOOKING-')) {
+        const numStr = p.sku.split('-').pop();
+        const num = parseInt(numStr, 10);
+        if (!isNaN(num) && num > maxId) {
+          maxId = num;
+        }
+      }
+    });
+
     setForm({
       name: '',
-      sku: '',
+      sku: `PRE-BOOKING-${maxId + 1}`,
       shortDescription: '',
       description: '',
       category: '',
@@ -150,8 +161,8 @@ export default function PreBooking() {
       preorderDeposit: 5000,
       preorderProgress: 70,
       preorderWeaver: 'Master Weaver',
-      preorderEstimatedDays: 14,
-      preorderDiscount: '10%',
+      preorderEstimatedDays: '',
+      preorderDiscount: '',
       weight: '', pattern: '', 
       pallu: '', sareeLength: '', blouseLength: '', blouse: '', height: '', washCare: '', 
       returnPolicy: 'Not Applicable', 
@@ -187,8 +198,8 @@ export default function PreBooking() {
       preorderDeposit: product.preorderDeposit ?? 5000,
       preorderProgress: product.preorderProgress ?? 70,
       preorderWeaver: product.preorderWeaver || 'Master Weaver',
-      preorderEstimatedDays: product.preorderEstimatedDays ?? 14,
-      preorderDiscount: product.preorderDiscount || '10%',
+      preorderEstimatedDays: product.preorderEstimatedDays || '',
+      preorderDiscount: product.preorderDiscount || '',
       weight: product.weight || '',
       pattern: product.pattern || '',
       pallu: product.pallu || '',
@@ -212,7 +223,7 @@ export default function PreBooking() {
         sku: form.sku || undefined,
         shortDescription: form.shortDescription,
         description: form.description,
-        category: form.category,
+        category: '6a9b0b3cd3c2a4205477172d', // Hardcoded to Pre-Booking category
         fabric: form.fabric,
         price: Number(form.price),
         mrpPrice: Number(form.mrpPrice) || 0,
@@ -226,7 +237,7 @@ export default function PreBooking() {
         preorderDeposit: Number(form.preorderDeposit) || 0,
         preorderProgress: Number(form.preorderProgress) || 0,
         preorderWeaver: form.preorderWeaver || '',
-        preorderEstimatedDays: Number(form.preorderEstimatedDays) || 0,
+        preorderEstimatedDays: form.preorderEstimatedDays || '',
         preorderDiscount: form.preorderDiscount || '',
         weight: form.weight,
         pattern: form.pattern,
@@ -261,9 +272,11 @@ export default function PreBooking() {
         return null;
       };
 
-      const res1 = await prepareImage(form.imageFile, form.imagePreview, modal.product?.images?.[0]);
-      const res2 = await prepareImage(form.sec1File, form.sec1Preview, modal.product?.images?.[1]);
-      const res3 = await prepareImage(form.sec2File, form.sec2Preview, modal.product?.images?.[2]);
+      const [res1, res2, res3] = await Promise.all([
+        prepareImage(form.imageFile, form.imagePreview, modal.product?.images?.[0]),
+        prepareImage(form.sec1File, form.sec1Preview, modal.product?.images?.[1]),
+        prepareImage(form.sec2File, form.sec2Preview, modal.product?.images?.[2])
+      ]);
 
       body.images = [res1, res2, res3]
         .filter(img => img && img.url)
@@ -451,11 +464,8 @@ export default function PreBooking() {
                   <th style={{ width: 45, textAlign: 'center' }}>#</th>
                   <th>Product</th>
                   <th>SKU</th>
-                  <th>Category</th>
                   <th>Fabric</th>
                   <th>Full Price</th>
-                  <th>Deposit</th>
-                  <th>Weaver / Progress</th>
                   <th>Est. Days</th>
                   <th>Status</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
@@ -496,25 +506,17 @@ export default function PreBooking() {
                               );
                             })()}
                           </div>
-                          <div>
-                            <div style={{ color: 'var(--text-primary)', fontWeight: 500, fontSize: '0.9rem' }}>{p.name}</div>
-                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{p.slug}</div>
+                          <div style={{ maxWidth: 220, overflow: 'hidden' }} title={p.name}>
+                            <div style={{ color: 'var(--text-primary)', fontWeight: 500, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
+                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.slug}</div>
                           </div>
                         </div>
                       </td>
                       <td>{p.sku || '—'}</td>
-                      <td>{p.category?.name || '—'}</td>
                       <td>{p.fabric}</td>
                       <td>
                         <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>₹{p.price?.toLocaleString('en-IN')}</span>
                         {p.mrpPrice > p.price && <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textDecoration: 'line-through' }}>₹{p.mrpPrice?.toLocaleString('en-IN')}</div>}
-                      </td>
-                      <td>
-                        <span style={{ color: 'var(--primary)', fontWeight: 600 }}>₹{(p.preorderDeposit || 5000).toLocaleString('en-IN')}</span>
-                      </td>
-                      <td>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 500 }}>{p.preorderWeaver || 'Master Weaver'}</div>
-                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Progress: {p.preorderProgress || 70}%</div>
                       </td>
                       <td>{p.preorderEstimatedDays || 14} days</td>
                       <td><span className={`badge ${p.isActive ? 'badge-success' : 'badge-danger'}`}>{p.isActive ? 'Active' : 'Inactive'}</span></td>
@@ -822,13 +824,6 @@ export default function PreBooking() {
                   </div>
                   <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Category</label>
-                      <select className="form-select" required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
-                        <option value="">Select Category</option>
-                        {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
-                      </select>
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Fabric</label>
                       <select 
                         className="form-select" 
@@ -977,27 +972,15 @@ export default function PreBooking() {
                   {/* Pre-order Specific Inputs */}
                   <div className="form-row">
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Preorder Deposit (₹) *</label>
-                      <input className="form-input" type="number" required min="0" value={form.preorderDeposit} onChange={e => setForm(f => ({ ...f, preorderDeposit: e.target.value }))} />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Weaver Name *</label>
-                      <input className="form-input" required value={form.preorderWeaver} onChange={e => setForm(f => ({ ...f, preorderWeaver: e.target.value }))} />
-                    </div>
-                  </div>
-
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Estimated Days *</label>
-                      <input className="form-input" type="number" required min="0" value={form.preorderEstimatedDays} onChange={e => setForm(f => ({ ...f, preorderEstimatedDays: e.target.value }))} />
+                      <select className="form-select" required value={form.preorderEstimatedDays} onChange={e => setForm(f => ({ ...f, preorderEstimatedDays: e.target.value }))}>
+                        <option value="">Select Estimated Days</option>
+                        <option value="10 to 15 days">10 to 15 days</option>
+                        <option value="15 to 20 days">15 to 20 days</option>
+                      </select>
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Progress Percentage (%) *</label>
-                      <input className="form-input" type="number" required min="0" max="100" value={form.preorderProgress} onChange={e => setForm(f => ({ ...f, preorderProgress: e.target.value }))} />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Preorder Discount Label</label>
-                      <input className="form-input" placeholder="e.g. 10% OFF" value={form.preorderDiscount} onChange={e => setForm(f => ({ ...f, preorderDiscount: e.target.value }))} />
+                      {/* Empty space to keep layout balanced if needed, or leave it spanning full width depending on css */}
                     </div>
                   </div>
 
@@ -1212,6 +1195,8 @@ export default function PreBooking() {
                         <th>#</th>
                         <th>Image</th>
                         <th>Product Name</th>
+                        <th>Simple Description</th>
+                        <th>Description</th>
                         <th>Category</th>
                         <th>Fabric</th>
                         <th>Price (₹)</th>
@@ -1247,6 +1232,16 @@ export default function PreBooking() {
                             )}
                           </td>
                           <td style={{ fontWeight: 600 }}>{p.name || <span style={{ color: 'red' }}>Missing</span>}</td>
+                          <td>
+                            <div style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={p.shortDescription}>
+                              {p.shortDescription || '—'}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={p.description}>
+                              {p.description || '—'}
+                            </div>
+                          </td>
                           <td>{p.category || '—'}</td>
                           <td>{p.fabric || '—'}</td>
                           <td>{p.price ? `₹${p.price}` : '—'}</td>

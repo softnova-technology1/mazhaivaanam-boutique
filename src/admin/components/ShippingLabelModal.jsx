@@ -19,6 +19,7 @@ export default function ShippingLabelModal({ order, onClose }) {
 
   const customerName = order.shippingAddress?.fullName || 'Customer';
   const addressLine = order.shippingAddress?.addressLine1 || order.shippingAddress?.addressLine || '';
+  const landmark = order.shippingAddress?.landmark || '';
   const city = order.shippingAddress?.city || '';
   const state = order.shippingAddress?.state || '';
   const pincode = order.shippingAddress?.postalCode || order.shippingAddress?.pinCode || '';
@@ -112,6 +113,7 @@ export default function ShippingLabelModal({ order, onClose }) {
                 <div className={styles.addressText}>
                   <div className={styles.customerName}>{customerName}</div>
                   {addressLine}<br />
+                  {landmark && <>{landmark}<br /></>}
                   {city}, {state} {pincode}<br />
                   India<br />
                   T: +91 {phone}

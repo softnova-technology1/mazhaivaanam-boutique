@@ -141,6 +141,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   const [newAddress, setNewAddress] = useState({
     fullName: '',
     addressLine: '',
+    landmark: '',
     city: '',
     stateName: '',
     pinCode: '',
@@ -263,7 +264,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
         setAddresses(updated);
         localStorage.setItem('boutique_addresses', JSON.stringify(updated));
         setIsAddAddressOpen(false);
-        setNewAddress({ fullName: '', addressLine: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+        setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
         triggerToast('New address saved! 🏡');
       } catch (err) {
         triggerToast(err.message || 'Failed to save address.');
@@ -279,7 +280,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
       setAddresses([...updatedAddresses, createdAddress]);
       localStorage.setItem('boutique_addresses', JSON.stringify([...updatedAddresses, createdAddress]));
       setIsAddAddressOpen(false);
-      setNewAddress({ fullName: '', addressLine: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+      setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
       triggerToast('New address saved to your notebook! 🏡');
     }
   };
@@ -601,6 +602,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                         <h4 className={styles.addressName}>{addr.fullName}</h4>
                         <p className={styles.addressDetails}>
                           {addr.addressLine}<br />
+                          {addr.landmark && <>{addr.landmark}<br /></>}
                           {addr.city}, {addr.stateName} - {addr.pinCode}<br />
                           {addr.country}<br />
                           Phone: {addr.phone}
@@ -868,6 +870,17 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                   placeholder="Avenue details, block number"
                   className={styles.formInput}
                   required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Landmark (Optional)</label>
+                <input 
+                  type="text" 
+                  value={newAddress.landmark}
+                  onChange={(e) => setNewAddress({ ...newAddress, landmark: e.target.value })}
+                  placeholder="e.g. Near City Mall"
+                  className={styles.formInput}
                 />
               </div>
 

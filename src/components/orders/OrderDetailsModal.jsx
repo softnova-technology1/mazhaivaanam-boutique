@@ -10,6 +10,7 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
   const address = order.shippingAddress || {
     fullName: order.fullName || 'Connoisseur Client',
     addressLine: order.addressLine || '',
+    landmark: order.landmark || '',
     city: order.city || '',
     state: order.stateName || order.state || '',
     pinCode: order.pinCode || order.postalCode || '',
@@ -231,6 +232,7 @@ export default function OrderDetailsModal({ order, onClose, onOpenInvoice, onTra
               <div style={{ fontWeight: 600, color: '#0f172a' }}>{address.fullName}</div>
               <div style={{ color: '#475569', lineHeight: 1.5, marginTop: 4 }}>
                 {address.addressLine || address.addressLine1}<br />
+                {address.landmark && <>{address.landmark}<br /></>}
                 {address.city}{address.city && address.state ? ', ' : ''}{address.state || address.stateName} {address.pinCode || address.postalCode ? `- ${address.pinCode || address.postalCode}` : ''}<br />
                 📞 Phone: {address.phone}
               </div>

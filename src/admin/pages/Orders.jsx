@@ -455,6 +455,7 @@ export default function Orders() {
                                 <div style={{ fontSize: '0.85rem', lineHeight: 1.7, color: 'var(--text-secondary)' }}>
                                   <strong>{order.shippingAddress?.fullName}</strong><br/>
                                   {order.shippingAddress?.addressLine1 || order.shippingAddress?.addressLine}<br/>
+                                  {order.shippingAddress?.landmark && <>{order.shippingAddress.landmark}<br/></>}
                                   {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.postalCode || order.shippingAddress?.pinCode}<br/>
                                   📞 {order.shippingAddress?.phone}
                                 </div>

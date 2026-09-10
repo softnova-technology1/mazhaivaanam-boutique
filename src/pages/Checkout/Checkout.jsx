@@ -49,6 +49,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const [phone, setPhone] = useState('');
   const [pinCode, setPinCode] = useState('');
   const [addressLine, setAddressLine] = useState('');
+  const [landmark, setLandmark] = useState('');
   const [city, setCity] = useState('');
   const [stateName, setStateName] = useState('');
 
@@ -139,6 +140,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
         setFullName(addr.fullName || addr.name || user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
         setPhone(addr.phone || '');
         setAddressLine(addr.addressLine || '');
+        setLandmark(addr.landmark || '');
         setCity(addr.city || '');
         setStateName(addr.stateName || addr.state || '');
         setPinCode(addr.pinCode || '');
@@ -392,6 +394,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       phone,
       pinCode,
       addressLine,
+      landmark,
       city,
       stateName,
       deliveryMode,
@@ -435,6 +438,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
           name: fullName,
           fullName: fullName,
           addressLine: addressLine,
+          landmark: landmark,
           city: city,
           stateName: stateName,
           state: stateName,
@@ -459,6 +463,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       shippingAddress: {
         fullName,
         addressLine,
+        landmark,
         city,
         state: stateName,
         pinCode,
@@ -1121,6 +1126,7 @@ Thank you for choosing handloom heritage.
                           <h3 className={styles.addressName}>{addr.fullName || addr.name}</h3>
                           <div className={styles.addressDetails}>
                             <p>{addr.addressLine}</p>
+                            {addr.landmark && <p>Landmark: {addr.landmark}</p>}
                             <p>{addr.city}, {addr.stateName || addr.state} - {addr.pinCode}</p>
                             <p>{addr.country || 'India'}</p>
                             <p>Phone: {addr.phone}</p>
@@ -1138,6 +1144,7 @@ Thank you for choosing handloom heritage.
                         setFullName(user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
                         setPhone('');
                         setAddressLine('');
+                        setLandmark('');
                         setCity('');
                         setStateName('');
                         setPinCode('');
@@ -1160,6 +1167,7 @@ Thank you for choosing handloom heritage.
                                 setFullName(addr.name || user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
                                 setPhone(addr.phone || '');
                                 setAddressLine(addr.addressLine || '');
+                                setLandmark(addr.landmark || '');
                                 setCity(addr.city || '');
                                 setStateName(addr.state || '');
                                 setPinCode(addr.pinCode || '');
@@ -1261,6 +1269,18 @@ Thank you for choosing handloom heritage.
                             />
                             <label className={styles.formLabel}>Flat, House no., Apartment *</label>
                             {errors.addressLine && <span className={styles.errorText}>{errors.addressLine}</span>}
+                          </div>
+
+                          <div className={styles.floatingLabelContainer} style={{ width: '100%', marginTop: '16px' }}>
+                            <input
+                              type="text"
+                              placeholder=" "
+                              value={landmark}
+                              onChange={(e) => setLandmark(e.target.value)}
+                              className={styles.formInput}
+                              id="landmark"
+                            />
+                            <label className={styles.formLabel}>Landmark (Optional)</label>
                           </div>
 
                           <div className={styles.gridRow}>

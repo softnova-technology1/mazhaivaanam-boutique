@@ -43,7 +43,10 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   useEffect(() => {
     if (activeProduct.image) {
       setSelectedImage(activeProduct.image);
+    } else if (activeProduct.images && activeProduct.images.length > 0) {
+      setSelectedImage(activeProduct.images[0].url);
     }
+
     if (activeProduct.color) {
       setSelectedHue(activeProduct.color);
     }
@@ -60,7 +63,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         name: activeProduct.name,
         price: activeProduct.price,
         oldPrice: activeProduct.oldPrice,
-        image: activeProduct.image,
+        image: activeProduct.image || (activeProduct.images?.[0]?.url),
         fabric: activeProduct.fabric,
         category: activeProduct.category,
         });
@@ -254,9 +257,9 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         {/* Left Column: Image Gallery */}
         <div className={styles['gallery-column']}>
           <div className={styles['main-image-viewport']}>
-            {(selectedImage || activeProduct.image) && (
+            {(selectedImage || activeProduct.image || activeProduct.images?.[0]?.url) && (
               <img
-                src={selectedImage || activeProduct.image}
+                src={selectedImage || activeProduct.image || activeProduct.images?.[0]?.url}
                 alt={activeProduct.name || 'Handcrafted Saree'}
                 className={styles['main-img']}
               />

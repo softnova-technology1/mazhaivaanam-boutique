@@ -175,6 +175,7 @@ export default function InvoiceModal({ order, onClose }) {
               </div>
               <div style={{ fontSize: '0.82rem', color: '#334155', lineHeight: 1.5 }}>
                 {order.shippingAddress?.addressLine || order.shippingAddress?.addressLine1 || order.addressLine || 'Registered Customer Address'}<br />
+                {(order.shippingAddress?.landmark || order.landmark) && `${order.shippingAddress?.landmark || order.landmark}, `}
                 {(order.shippingAddress?.city || order.city) && `${order.shippingAddress?.city || order.city}, `}
                 {(order.shippingAddress?.state || order.stateName || order.state) && `${order.shippingAddress?.state || order.stateName || order.state} `}
                 {(order.shippingAddress?.pinCode || order.shippingAddress?.postalCode || order.pinCode) && `- ${order.shippingAddress?.pinCode || order.shippingAddress?.postalCode || order.pinCode}`}<br />

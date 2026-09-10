@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { offerAPI, uploadAPI, productAPI, categoryAPI, fabricAPI } from '../api/api.js';
-import { Sparkles, Clock, Gift, Layers, Disc, Save, CheckCircle, RefreshCw, Upload, Package, Trash2, Edit2, Plus, X, Search } from 'lucide-react';
+import { Sparkles, Clock, Gift, Layers, Disc, Save, CheckCircle, RefreshCw, Upload, Package, Trash2, Edit2, Edit3, Plus, X, Search } from 'lucide-react';
 
 const ImageUploaderInput = ({ label, value, onChange }) => {
   const [uploading, setUploading] = useState(false);
@@ -187,6 +187,9 @@ export default function LimitedOfferAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+  
+  // Edit Offer Modal State
+  const [editModal, setEditModal] = useState({ open: false, section: null, product: null, endDate: '', offerLabel: '' });
   const [activeTab, setActiveTab] = useState('hero');
   const [selectedSectionSlot, setSelectedSectionSlot] = useState(1);
 
@@ -252,6 +255,7 @@ export default function LimitedOfferAdmin() {
 
 
   const [config, setConfig] = useState({
+    isActive: true,
     heroSection: {
       badgeText: 'Limited Exclusive Offer',
       title: 'Exclusive Offers,',
@@ -294,6 +298,7 @@ export default function LimitedOfferAdmin() {
       ],
     },
     spinningWheelSection: {
+      isActive: true,
       title: 'Festival Lucky Draw',
       description: 'Spin the heritage wheel for a chance to win exclusive gift cards, artisan blouses, or a signature silk saree from our royal vault.',
       bulletPoints: [
@@ -531,6 +536,7 @@ export default function LimitedOfferAdmin() {
       if (res && res.data) {
         const d = res.data;
         setConfig(prev => ({
+          isActive: d.isActive !== undefined ? d.isActive : prev.isActive,
           heroSection: { ...prev.heroSection, ...(d.heroSection || {}) },
           timerSection: {
             ...prev.timerSection,
@@ -706,6 +712,52 @@ export default function LimitedOfferAdmin() {
     setSectionSaving(false);
   };
 
+  const handleSaveEdit = async () => {
+    if (!editModal.section) return;
+    setSectionSaving(true);
+    try {
+      const { section, product, endDate, offerLabel } = editModal;
+      let secIdToUpdate = section._id;
+      const products = section.productIds || [];
+      const pId = product ? (product._id || product.id || (typeof product === 'string' ? product : null)) : null;
+
+      // Handle endDate update: split section if multiple products exist and we only edit one product
+      if (endDate && new Date(endDate).getTime() !== new Date(section.endDate).getTime()) {
+        if (products.length > 1 && pId) {
+          await offerAPI.removeProductFromSection(section._id, pId);
+          const newSecRes = await offerAPI.createSection({
+            name: section.name,
+            slot: section.slot,
+            endDate: new Date(endDate).toISOString(),
+            startDate: section.startDate,
+          });
+          secIdToUpdate = newSecRes?.data?._id || newSecRes?._id || newSecRes?.data?.data?._id;
+          if (secIdToUpdate) {
+            await offerAPI.addProductToSection(secIdToUpdate, pId);
+          }
+        } else {
+          await offerAPI.updateSection(secIdToUpdate, { endDate: new Date(endDate).toISOString() });
+        }
+      }
+
+      // Handle offerLabel update (which goes to product limitedOfferEntry)
+      if (pId && offerLabel !== (product.limitedOfferEntry?.offerLabel || '')) {
+        await offerAPI.updateProduct(pId, { offerLabel });
+      } else if (!pId && offerLabel !== section.name) {
+        // If no product, they might want to rename the section placeholder label
+        await offerAPI.updateSection(secIdToUpdate, { name: offerLabel });
+      }
+
+      setToastMsg('Offer updated successfully!');
+      setTimeout(() => setToastMsg(''), 3500);
+      await loadSections();
+      setEditModal({ open: false, section: null, product: null, endDate: '', offerLabel: '' });
+    } catch (err) {
+      alert('Failed to update offer: ' + err.message);
+    }
+    setSectionSaving(false);
+  };
+
   // Product search within a section
   const handleProductSearch = async (q) => {
     setProductSearch(q);
@@ -793,7 +845,6 @@ export default function LimitedOfferAdmin() {
 
   return (
     <div className="page-container">
-      {/* Page Header */}
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -801,15 +852,49 @@ export default function LimitedOfferAdmin() {
           </h1>
           <p className="page-subtitle">Customize all sections, countdown timer, banner images, offer tiers & wheel prizes for customer storefront.</p>
         </div>
-        <button 
-          className="btn btn-primary" 
-          onClick={handleSave} 
-          disabled={saving}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 24px' }}
-        >
-          {saving ? <RefreshCw className="spinner" size={16} /> : <Save size={16} />}
-          {saving ? 'Saving...' : 'Save Live Configuration'}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: config.isActive ? 'rgba(22, 163, 74, 0.08)' : 'rgba(220, 38, 38, 0.08)', padding: '8px 16px', borderRadius: '30px', border: `1px solid ${config.isActive ? 'rgba(22, 163, 74, 0.2)' : 'rgba(220, 38, 38, 0.2)'}`, transition: 'all 0.3s ease' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: config.isActive ? '#16a34a' : '#dc2626', letterSpacing: '0.5px' }}>
+              {config.isActive ? 'PAGE ACTIVE' : 'PAGE INACTIVE'}
+            </span>
+            <label style={{ position: 'relative', display: 'inline-block', width: 44, height: 24, cursor: 'pointer', margin: 0 }}>
+              <input 
+                type="checkbox" 
+                checked={config.isActive} 
+                onChange={(e) => setConfig({ ...config, isActive: e.target.checked })}
+                style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+              />
+              <span style={{
+                position: 'absolute',
+                top: 0, left: 0, right: 0, bottom: 0,
+                backgroundColor: config.isActive ? '#16a34a' : '#e5e7eb',
+                transition: '.3s',
+                borderRadius: 24,
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+              }}>
+                <span style={{
+                  position: 'absolute',
+                  height: 18, width: 18,
+                  left: config.isActive ? 23 : 3,
+                  bottom: 3,
+                  backgroundColor: 'white',
+                  transition: '.3s',
+                  borderRadius: '50%',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                }} />
+              </span>
+            </label>
+          </div>
+          <button 
+            className="btn btn-primary" 
+            onClick={handleSave} 
+            disabled={saving}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 24px' }}
+          >
+            {saving ? <RefreshCw className="spinner" size={16} /> : <Save size={16} />}
+            {saving ? 'Saving...' : 'Save Live Configuration'}
+          </button>
+        </div>
       </div>
 
       {toastMsg && (
@@ -1072,9 +1157,35 @@ export default function LimitedOfferAdmin() {
         {/* TAB 5: SPINNING WHEEL */}
         {activeTab === 'wheel' && (
           <div>
-            <h3 style={{ fontSize: '1.1rem', marginBottom: 20, color: 'var(--primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: 10 }}>
-              5. Festival Lucky Draw Spinning Wheel
-            </h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, borderBottom: '1px solid var(--border-color)', paddingBottom: 10 }}>
+              <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--primary)' }}>
+                5. Festival Lucky Draw Spinning Wheel
+              </h3>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 8, fontSize: '0.85rem', fontWeight: 600 }}>
+                <span style={{ color: config.spinningWheelSection.isActive !== false ? '#16a34a' : '#dc2626' }}>
+                  {config.spinningWheelSection.isActive !== false ? 'SECTION ACTIVE' : 'SECTION INACTIVE'}
+                </span>
+                <div style={{ position: 'relative', width: 44, height: 24 }}>
+                  <input 
+                    type="checkbox" 
+                    checked={config.spinningWheelSection.isActive !== false} 
+                    onChange={(e) => setConfig({ ...config, spinningWheelSection: { ...config.spinningWheelSection, isActive: e.target.checked } })}
+                    style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                  />
+                  <span style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                    backgroundColor: config.spinningWheelSection.isActive !== false ? '#16a34a' : '#e5e7eb',
+                    transition: '.3s', borderRadius: 24, boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+                  }}>
+                    <span style={{
+                      position: 'absolute', height: 18, width: 18,
+                      left: config.spinningWheelSection.isActive !== false ? 23 : 3, bottom: 3,
+                      backgroundColor: 'white', transition: '.3s', borderRadius: '50%', boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                    }} />
+                  </span>
+                </div>
+              </label>
+            </div>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Wheel Section Heading</label>
               <input 
@@ -1371,10 +1482,20 @@ export default function LimitedOfferAdmin() {
                                 type="button" 
                                 className="btn btn-outline" 
                                 style={{ padding: '5px 10px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 4, background: '#fff8e6', borderColor: '#D4AF37', color: '#B38A4A', fontWeight: 700 }}
-                                onClick={() => handleExtendOffer(sec, product)}
+                                onClick={() => {
+                                  const dateVal = sec.endDate ? new Date(new Date(sec.endDate).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
+                                  setEditModal({
+                                    open: true,
+                                    section: sec,
+                                    product: product,
+                                    endDate: dateVal,
+                                    offerLabel: product ? (product.limitedOfferEntry?.offerLabel || sec.name) : sec.name
+                                  });
+                                }}
                                 disabled={sectionSaving}
+                                title="Edit Offer Label and End Date"
                               >
-                                <Clock size={13} /> Extend (+3 Days)
+                                <Edit3 size={13} /> Edit
                               </button>
 
                               <button 
@@ -2057,6 +2178,68 @@ export default function LimitedOfferAdmin() {
               >
                 {sectionSaving ? <RefreshCw className="spinner" size={16} /> : <Plus size={16} />}
                 {sectionSaving ? 'Creating Saree...' : 'Save & Add Saree to Limited Offer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Offer Modal */}
+      {editModal.open && (
+        <div className="modal-overlay" style={{ zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-content" style={{ maxWidth: 500, width: '100%', background: '#fff', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#faf9f6' }}>
+              <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Edit3 size={20} color="var(--primary)" /> Edit Offer
+              </h3>
+              <button 
+                className="close-btn" 
+                onClick={() => setEditModal({ open: false, section: null, product: null, endDate: '', offerLabel: '' })}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ padding: 24 }}>
+              <div style={{ marginBottom: 16 }}>
+                <label className="form-label">Offer Label</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  value={editModal.offerLabel}
+                  onChange={e => setEditModal(m => ({ ...m, offerLabel: e.target.value }))}
+                  placeholder="e.g. Exclusive Offers Sale"
+                />
+              </div>
+              <div>
+                <label className="form-label">Offer End Date & Time</label>
+                <input 
+                  type="datetime-local" 
+                  className="form-input" 
+                  value={editModal.endDate}
+                  onChange={e => setEditModal(m => ({ ...m, endDate: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-color)', background: '#faf9f6', display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+              <button 
+                type="button" 
+                className="btn btn-outline" 
+                onClick={() => setEditModal({ open: false, section: null, product: null, endDate: '', offerLabel: '' })}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-primary" 
+                disabled={sectionSaving}
+                onClick={handleSaveEdit}
+                style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+              >
+                {sectionSaving ? <RefreshCw className="spinner" size={16} /> : <Save size={16} />}
+                {sectionSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>

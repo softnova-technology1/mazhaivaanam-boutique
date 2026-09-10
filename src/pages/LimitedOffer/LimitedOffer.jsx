@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, ShoppingCart, Eye } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingCart, Eye, Sparkles } from 'lucide-react';
 import { getLimitedOfferProducts, getProducts } from '../../services/api';
 import styles from './LimitedOffer.module.css';
 
@@ -172,6 +172,7 @@ function TimedProductCard({ product, onView, onBuy, isCarousel }) {
 export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   // Live Config State from DB
   const [config, setConfig] = useState({
+    isActive: true,
     heroSection: {
       badgeText: 'Limited Exclusive Offer',
       title: 'Exclusive Offers,',
@@ -277,7 +278,16 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
       .then(data => {
         if (data && data.success && data.data) {
           const d = data.data;
+          
+          let active = d.isActive !== undefined ? d.isActive : prev.isActive;
+          if (active && d.timerSection?.endDate) {
+             if (new Date(d.timerSection.endDate) < new Date()) {
+               active = false;
+             }
+          }
+
           setConfig(prev => ({
+            isActive: active,
             heroSection: { ...prev.heroSection, ...(d.heroSection || {}) },
             timerSection: { ...prev.timerSection, ...(d.timerSection || {}) },
             featuredDuoSection: { ...prev.featuredDuoSection, ...(d.featuredDuoSection || {}) },
@@ -468,6 +478,28 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
     }, 4100);
   };
 
+  if (config.isActive === false) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4" style={{ backgroundColor: '#FDFBF7' }}>
+        <div className="mb-6">
+          <Sparkles color="#D4AF37" size={48} />
+        </div>
+        <h1 className="font-display-lg text-3xl md:text-5xl text-[#2D3326] mb-4">
+          Stay Tuned!
+        </h1>
+        <p className="text-[#4A4F40] max-w-md mx-auto text-lg mb-8">
+          Our next exclusive Limited Offer is brewing. Join our newsletter to be the first to know when the vault opens again.
+        </p>
+        <button 
+          onClick={() => setCurrentTab('home')}
+          className="px-8 py-3 bg-[#4F4E22] text-white font-label-caps text-xs tracking-widest uppercase hover:bg-[#3D3C1A] transition-colors rounded-full"
+        >
+          Return to Home
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
       <main className="pt-0">
@@ -600,7 +632,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
         </section>
 
         {/* ── Section 1: Exclusive Offers (Timed Grid) ── */}
-        <section className="pt-10 md:pt-16 pb-0 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
+        <section className="pt-10 md:pt-16 pb-12 md:pb-20 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex flex-col items-center mb-8 md:mb-14 text-center">
             <div className="flex items-center gap-3 mb-2 md:mb-4">
               <div className="w-8 md:w-12 h-px bg-[#D4AF37]"></div>
@@ -647,7 +679,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
         </section>
 
         {/* ── Section 2: Preview Gallery Carousel (Timed) ── */}
-        <section className="pt-8 md:pt-16 pb-0 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
+        <section className="pt-8 md:pt-16 pb-12 md:pb-24 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
           <div className="flex justify-between items-end mb-8 md:mb-14">
             <div>
               <div className="flex items-center gap-3 mb-2 md:mb-4">
@@ -736,7 +768,8 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
         </section>
 
         {/* Lucky Draw Spinning Wheel Section */}
-        <section className="pt-8 md:pt-16 pb-16 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
+        {config.spinningWheelSection?.isActive !== false && (
+          <section className="pt-8 md:pt-16 pb-16 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
           <div className="bg-[#FDFBF7] rounded-3xl border border-[#D4AF37]/30 shadow-[0_15px_40px_rgba(0,0,0,0.05)] p-5 sm:p-8 md:p-14 overflow-hidden relative">
             <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center relative z-10">
               <div>
@@ -819,6 +852,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
             </div>
           </div>
         </section>
+        )}
 
         {/* Prize Popup Modal */}
         {showPopup && (

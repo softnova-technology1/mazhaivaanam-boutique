@@ -74,6 +74,7 @@ function AppContent() {
   const { cartItemCount } = useCart();
   const [toastMessage, setToastMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isLimitedOfferActive, setIsLimitedOfferActive] = useState(true);
 
   // Clear directCheckoutItem when navigating away from checkout page
   useEffect(() => {
@@ -108,12 +109,28 @@ function AppContent() {
     } catch (e) {}
   }, []);
 
-  // Initial loading effect
+  // Initial loading effect and Limited Offer Config
   useEffect(() => {
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
+
+    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/limited-offer/config`)
+      .then(res => res.json())
+      .then(data => {
+        if (data?.success && data?.data) {
+          let active = data.data.isActive !== false;
+          if (active && data.data.timerSection?.endDate) {
+            if (new Date(data.data.timerSection.endDate) < new Date()) {
+              active = false;
+            }
+          }
+          setIsLimitedOfferActive(active);
+        }
+      })
+      .catch(() => {});
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -297,6 +314,7 @@ function AppContent() {
         setCatalogFilter={setCatalogFilter}
         setSelectedProduct={setSelectedProduct}
         cartItemCount={cartItemCount} 
+        isLimitedOfferActive={isLimitedOfferActive}
       />
       <main className="main-content">
         <Breadcrumbs 

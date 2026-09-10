@@ -163,6 +163,7 @@ export default function InvoiceModal({ order, onClose }) {
                 {order.shippingAddress?.addressLine1 || order.shippingAddress?.addressLine ? (
                   <>
                     {order.shippingAddress.addressLine1 || order.shippingAddress.addressLine}<br />
+                    {order.shippingAddress.landmark && `${order.shippingAddress.landmark}, `}
                     {order.shippingAddress.addressLine2 && `${order.shippingAddress.addressLine2}, `}
                     {order.shippingAddress.city && `${order.shippingAddress.city}, `}
                     {order.shippingAddress.state && `${order.shippingAddress.state} `}

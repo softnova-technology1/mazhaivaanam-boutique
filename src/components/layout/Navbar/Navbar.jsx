@@ -7,7 +7,7 @@ import { getProducts } from '../../../services/api';
 import { formatCurrency } from '../../../utils/formatters';
 import styles from './Navbar.module.css';
 
-export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelectedProduct }) => {
+export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelectedProduct, isLimitedOfferActive = true }) => {
   const { cart, removeFromCart, updateQuantity, cartTotal, cartItemCount, addToCart } = useCart();
   const { user, isAuthenticated, logout } = useAuth();
   const [isSticky, setIsSticky] = useState(false);
@@ -308,9 +308,11 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('new-arrivals')} className={`${styles.menuLink} ${currentTab === 'new-arrivals' ? styles.active : ''}`}>New Arrivals</button>
               </li>
-              <li className={styles.menuItem}>
-                <button onClick={() => handleTabChange('limited-offer')} className={`${styles.menuLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
-              </li>
+              {isLimitedOfferActive && (
+                <li className={styles.menuItem}>
+                  <button onClick={() => handleTabChange('limited-offer')} className={`${styles.menuLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
+                </li>
+              )}
               <li className={styles.menuItem}>
                 <button onClick={() => handleTabChange('pre-booking')} className={`${styles.menuLink} ${styles.preBookingLink} ${currentTab === 'pre-booking' ? styles.active : ''}`}>Pre-Booking</button>
               </li>
@@ -629,9 +631,11 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('best-sellers')} className={styles.drawerLink}>Best Sellers</button>
               </li>
-              <li className={styles.drawerItem}>
-                <button onClick={() => handleTabChange('limited-offer')} className={`${styles.drawerLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
-              </li>
+              {isLimitedOfferActive && (
+                <li className={styles.drawerItem}>
+                  <button onClick={() => handleTabChange('limited-offer')} className={`${styles.drawerLink} ${styles.limitedOfferLink} ${currentTab === 'limited-offer' ? styles.active : ''}`}>Limited Offer</button>
+                </li>
+              )}
               <li className={styles.drawerItem}>
                 <button onClick={() => handleTabChange('pre-booking')} className={`${styles.drawerLink} ${styles.preBookingLink} ${currentTab === 'pre-booking' ? styles.active : ''}`}>Pre-Booking</button>
               </li>

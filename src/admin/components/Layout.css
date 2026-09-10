@@ -16,3 +16,13 @@
 .admin-layout.collapsed .admin-main {
   padding-left: 80px;
 }
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .admin-main {
+    padding-left: 220px;
+    overflow-x: hidden;
+  }
+  .admin-layout.collapsed .admin-main {
+    padding-left: 80px;
+  }
+}

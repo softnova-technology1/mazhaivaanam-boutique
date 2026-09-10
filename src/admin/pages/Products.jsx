@@ -521,9 +521,9 @@ export default function Products() {
                         </div>
                       </td>
                       {/* SKU Column */}
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         {p.sku ? (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, width: 'max-content' }}>
                             <span
                               title="Click to copy SKU"
                               onClick={() => { navigator.clipboard.writeText(p.sku); }}
@@ -538,12 +538,13 @@ export default function Products() {
                                 cursor: 'copy',
                                 letterSpacing: '0.05em',
                                 display: 'inline-block',
+                                whiteSpace: 'nowrap',
                               }}
                             >
                               {p.sku}
                             </span>
                             {p.patternCode && (
-                              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                                 Pattern: {p.patternCode} #{p.patternSeq}
                               </span>
                             )}

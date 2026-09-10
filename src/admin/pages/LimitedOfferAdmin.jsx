@@ -1361,11 +1361,11 @@ export default function LimitedOfferAdmin() {
                 <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
                   <thead>
                     <tr style={{ background: '#FAF9F6', borderBottom: '2px solid var(--border-color)' }}>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)' }}>Saree / Product</th>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)' }}>Offer Label</th>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)' }}>Offer End Date & Timer</th>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)' }}>Status</th>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', textAlign: 'right' }}>Actions</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Saree / Product</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Offer Label</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Offer End Date & Timer</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Status</th>
+                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', textAlign: 'right', whiteSpace: 'nowrap' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1386,17 +1386,17 @@ export default function LimitedOfferAdmin() {
                       return (
                         <tr key={`${sec._id}-${product?._id || idx}`} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background 0.12s' }}>
                           {/* Saree / Product Column */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
+                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                             {product ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
                                 <img 
                                   src={product.images?.[0]?.url || '/Images/saree1.png'} 
                                   alt={product.name} 
                                   style={{ width: 38, height: 50, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border-color)' }} 
                                 />
                                 <div>
-                                  <div style={{ fontWeight: 700, color: '#2D3326', fontSize: '0.86rem' }}>{product.name}</div>
-                                  <div style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700, marginTop: 2 }}>
+                                  <div style={{ fontWeight: 700, color: '#2D3326', fontSize: '0.86rem', whiteSpace: 'nowrap' }}>{product.name}</div>
+                                  <div style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700, marginTop: 2, whiteSpace: 'nowrap' }}>
                                     ₹{product.price?.toLocaleString('en-IN')}
                                     {product.mrpPrice > product.price && (
                                       <span style={{ textDecoration: 'line-through', color: '#94a3b8', marginLeft: 6, fontSize: '0.72rem', fontWeight: 400 }}>
@@ -1407,21 +1407,21 @@ export default function LimitedOfferAdmin() {
                                 </div>
                               </div>
                             ) : (
-                              <span style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '0.82rem' }}>No product attached</span>
+                              <span style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>No product attached</span>
                             )}
                           </td>
 
                           {/* Offer Label Column */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', fontWeight: 600, color: '#334155' }}>
-                            <span style={{ background: '#f5f0e8', color: 'var(--primary)', padding: '4px 10px', borderRadius: 6, fontSize: '0.8rem', fontWeight: 700, display: 'inline-block' }}>
+                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', fontWeight: 600, color: '#334155', whiteSpace: 'nowrap' }}>
+                            <span style={{ background: '#f5f0e8', color: 'var(--primary)', padding: '4px 10px', borderRadius: 6, fontSize: '0.8rem', fontWeight: 700, display: 'inline-block', whiteSpace: 'nowrap' }}>
                               {sec.name}
                             </span>
                           </td>
 
                           {/* Offer End Date & Timer Column */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
+                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                             {isEditingTime ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                                 <input 
                                   type="datetime-local" 
                                   className="form-input" 
@@ -1433,11 +1433,11 @@ export default function LimitedOfferAdmin() {
                                 <button type="button" className="btn btn-outline" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => setEditSectionId(null)}>X</button>
                               </div>
                             ) : (
-                              <div>
-                                <div style={{ fontWeight: 600, fontSize: '0.84rem' }}>
+                              <div style={{ whiteSpace: 'nowrap' }}>
+                                <div style={{ fontWeight: 600, fontSize: '0.84rem', whiteSpace: 'nowrap' }}>
                                   {end.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                 </div>
-                                <div style={{ fontSize: '0.76rem', color: isExpired ? '#dc2626' : '#d97706', fontWeight: 700, marginTop: 2 }}>
+                                <div style={{ fontSize: '0.76rem', color: isExpired ? '#dc2626' : '#d97706', fontWeight: 700, marginTop: 2, whiteSpace: 'nowrap' }}>
                                   {isExpired ? '🔴 Time Expired' : `⏱ Active Countdown`}
                                 </div>
                               </div>
@@ -1445,7 +1445,7 @@ export default function LimitedOfferAdmin() {
                           </td>
 
                           {/* Status Badge */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
+                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                             <span style={{ 
                               background: `${statusColor}18`, 
                               color: statusColor, 
@@ -1461,12 +1461,12 @@ export default function LimitedOfferAdmin() {
                           </td>
 
                           {/* Actions Column */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', textAlign: 'right' }}>
-                            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap', alignItems: 'center' }}>
+                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'nowrap', alignItems: 'center', whiteSpace: 'nowrap' }}>
                               {product && (
                                 <button 
                                   type="button" 
-                                  style={{ padding: '5px 10px', fontSize: '0.78rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#dc2626', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700 }}
+                                  style={{ padding: '5px 10px', fontSize: '0.78rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#dc2626', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, whiteSpace: 'nowrap' }}
                                   onClick={() => {
                                     const pId = product._id || (typeof product === 'string' ? product : null);
                                     handleRemoveProductFromSection(sec._id, pId, product.name || 'Saree');
@@ -1500,7 +1500,7 @@ export default function LimitedOfferAdmin() {
 
                               <button 
                                 type="button" 
-                                style={{ padding: '5px 10px', fontSize: '0.78rem', background: sec.isActive ? '#fef3c7' : '#dcfce7', border: '1px solid', borderColor: sec.isActive ? '#fcd34d' : '#86efac', color: sec.isActive ? '#92400e' : '#166534', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}
+                                style={{ padding: '5px 10px', fontSize: '0.78rem', background: sec.isActive ? '#fef3c7' : '#dcfce7', border: '1px solid', borderColor: sec.isActive ? '#fcd34d' : '#86efac', color: sec.isActive ? '#92400e' : '#166534', borderRadius: 6, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}
                                 onClick={() => handleToggleSectionActive(sec, product)}
                                 disabled={sectionSaving}
                               >

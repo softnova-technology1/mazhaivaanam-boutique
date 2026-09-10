@@ -222,6 +222,37 @@
   color: var(--text-muted);
 }
 
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px;
+  }
+
+  .chart-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .chart-card,
+  .chart-revenue {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .stat-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .stat-value {
+    font-size: 1.3rem;
+  }
+
+  .chart-body {
+    height: 250px;
+  }
+}
+
 @media (max-width: 900px) {
   .chart-row {
     flex-direction: column;

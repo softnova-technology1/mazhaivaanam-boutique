@@ -1,0 +1,430 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+  max-width: 650px;
+  width: 95%;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: #ffffff;
+  color: #111;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #0f172a;
+  color: #ffffff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.modalTitle {
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.sizeSelect {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+}
+
+.sizeSelect option {
+  color: #000;
+}
+
+.printBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #C8A34D;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+
+.printBtn:hover {
+  opacity: 0.9;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeBtn:hover {
+  color: #fff;
+}
+
+/* Printable Area */
+.printableArea {
+  padding: 40px;
+  background: #ffffff;
+}
+
+.labelContainer {
+  border: 1px solid #C8A34D;
+  padding: 30px;
+  background: #ffffff;
+  position: relative;
+  /* Gold outer border with slight padding inside before content */
+}
+
+/* Optional top tab like in mockup (M V badge) */
+.topBadge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #C8A34D;
+  color: #fff;
+  padding: 4px 12px;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+/* Top Row: Logo & Barcode */
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.brandBlock {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+}
+
+.logoImage {
+  height: 45px;
+  object-fit: contain;
+}
+
+.shopBrandName {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  /* color: #111; */
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #a77c38;
+}
+
+.shopSubName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.metaBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.barcodeImageWrapper {
+  margin-top: 25px;
+  margin-left: 5px;
+}
+
+.barcodeImage {
+  height: 50px;
+  object-fit: contain;
+}
+
+.qrCodeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qrCode {
+  width: 70px;
+  height: 70px;
+  border: 1px solid #ccc;
+  padding: 2px;
+}
+
+.qrText {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* Middle Section (Addresses) */
+.addressSection {
+  display: flex;
+  border-top: 1px solid #C8A34D;
+  border-bottom: 1px solid #C8A34D;
+  padding: 20px 0;
+  margin-bottom: 30px;
+}
+
+.addressCol {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.addressCol:last-child {
+  border-left: 1px solid rgba(200, 163, 77, 0.3);
+  padding-left: 20px;
+  padding-right: 0;
+}
+
+.sectionTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #a77c38;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.addressText {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.6;
+  color: #111;
+}
+
+.customerName {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Care Tag */
+.careTag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #fcf9f2;
+  border: 1px dashed #C8A34D;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 15px;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+
+.careTag strong {
+  font-weight: 700;
+  font-style: normal;
+  color: #a77c38;
+}
+
+/* Details Section */
+.detailsSection {
+  margin-bottom: 30px;
+}
+
+.detailsTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #a77c38;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.detailsRow {
+  font-size: 15px;
+  margin-bottom: 5px;
+  color: #222;
+}
+
+.detailsRow strong {
+  font-weight: 700;
+}
+
+/* Products Section */
+.productsSection {
+  border-bottom: 1px solid rgba(200, 163, 77, 0.3);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.productsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.productsTable th {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid rgba(200, 163, 77, 0.3);
+  font-family: 'Playfair Display', serif;
+  color: #a77c38;
+  font-weight: 600;
+}
+
+.productsTable td {
+  padding: 10px 8px;
+  vertical-align: middle;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.productsTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.productImageWrapper {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.productName {
+  font-weight: 500;
+  color: #222;
+}
+
+.productSku {
+  color: #666;
+  font-size: 13px;
+}
+
+.productQty {
+  font-weight: 700;
+  text-align: center;
+  color: #a77c38;
+}
+
+/* Footer Section */
+.footerBadge {
+  border-top: 1px solid rgba(200, 163, 77, 0.3);
+  padding-top: 15px;
+  text-align: center;
+}
+
+.thankYouNote {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.premiumBadgeText {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #a77c38;
+  letter-spacing: 4px;
+}
+
+@media print {
+  :global(body *) {
+    visibility: hidden;
+  }
+  :global(#root) {
+    display: none !important;
+  }
+  .modalOverlay {
+    position: static !important;
+    background: transparent !important;
+  }
+  .printableArea, .printableArea * {
+    visibility: visible;
+  }
+  .printableArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0 !important;
+    padding: 20px !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Small Print Mode - Maintain side-by-side layout but scale properly */
+.smallPrint .labelContainer {
+  width: 700px !important; 
+  max-width: none !important;
+  margin: 0 auto;
+  padding: 20px;
+  zoom: 0.53; /* Chrome/Edge shrink trick */
+}
+
+.smallPrint .topRow {
+  margin-bottom: 20px;
+}
+
+.smallPrint .addressSection {
+  padding: 15px 0;
+  margin-bottom: 20px;
+}

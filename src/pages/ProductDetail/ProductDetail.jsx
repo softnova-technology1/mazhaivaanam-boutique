@@ -433,29 +433,43 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                 <button
                   className={styles['qty-btn']}
                   onClick={() => setQuantity(q => q + 1)}
+                  disabled={activeProduct.stock?.isOutOfStock || quantity >= (activeProduct.stock?.available || 99)}
                 >
                   +
                 </button>
               </div>
             </div>
-            <button
-              className={styles['add-trousseau-btn']}
-              onClick={handleAddToCartClick}
-              style={activeProduct.isPreorder ? { backgroundColor: '#B5893D', borderColor: '#B5893D' } : {}}
-            >
-              {activeProduct.isPreorder ? (
-                isAddedToCart ? 'PRE-ORDER ADDED' : 'PRE-BOOK NOW'
-              ) : (
-                isAddedToCart ? 'ADDED TO CART' : 'ADD TO CART'
-              )}
-              <ArrowRight size={14} />
-            </button>
-            <button
-              className={styles['concierge-btn']}
-              onClick={handleBuyNowClick}
-            >
-              BUY NOW
-            </button>
+            
+            {activeProduct.stock?.isOutOfStock ? (
+              <button
+                className={styles['add-trousseau-btn']}
+                disabled
+                style={{ backgroundColor: '#9ca3af', borderColor: '#9ca3af', cursor: 'not-allowed', color: '#fff', width: '100%', maxWidth: '400px', display: 'flex', justifyContent: 'center' }}
+              >
+                OUT OF STOCK
+              </button>
+            ) : (
+              <>
+                <button
+                  className={styles['add-trousseau-btn']}
+                  onClick={handleAddToCartClick}
+                  style={activeProduct.isPreorder ? { backgroundColor: '#B5893D', borderColor: '#B5893D' } : {}}
+                >
+                  {activeProduct.isPreorder ? (
+                    isAddedToCart ? 'PRE-ORDER ADDED' : 'PRE-BOOK NOW'
+                  ) : (
+                    isAddedToCart ? 'ADDED TO CART' : 'ADD TO CART'
+                  )}
+                  <ArrowRight size={14} />
+                </button>
+                <button
+                  className={styles['concierge-btn']}
+                  onClick={handleBuyNowClick}
+                >
+                  BUY NOW
+                </button>
+              </>
+            )}
           </div>
 
           {/* Classic Detailed Description */}

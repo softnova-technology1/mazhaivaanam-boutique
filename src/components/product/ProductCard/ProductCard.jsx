@@ -14,8 +14,8 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
     ? discountedPrice
     : price;
 
-  const effectiveOldPrice = mrpPrice || oldPrice || (effectivePrice < price ? price : Math.round(price * 1.15));
-  const hasDiscount = effectiveOldPrice > effectivePrice;
+  const effectiveOldPrice = (mrpPrice && mrpPrice > effectivePrice) ? mrpPrice : (oldPrice && oldPrice > effectivePrice) ? oldPrice : (effectivePrice < price ? price : null);
+  const hasDiscount = Boolean(effectiveOldPrice && effectiveOldPrice > effectivePrice);
   const discountPct = hasDiscount ? Math.round(((effectiveOldPrice - effectivePrice) / effectiveOldPrice) * 100) : 0;
 
   const itemToPass = { ...product, price: effectivePrice, discountedPrice: effectivePrice };
@@ -79,9 +79,12 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
         />
 
         {/* Status badges */}
-        {isNew && <span className={`${styles['badge-tag']} ${getBadgeClass('NEW ARRIVAL')}`}>NEW ARRIVAL</span>}
-        {isLimited && <span className={`${styles['badge-tag']} ${getBadgeClass('LIMITED EDITION')}`}>LIMITED EDITION</span>}
-        {tag && <span className={`${styles['badge-tag']} ${getBadgeClass(tag)}`}>{tag}</span>}
+        {product.stock?.isOutOfStock && (
+          <span className={`${styles['badge-tag']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
+        )}
+        {!product.stock?.isOutOfStock && isNew && <span className={`${styles['badge-tag']} ${getBadgeClass('NEW ARRIVAL')}`}>NEW ARRIVAL</span>}
+        {!product.stock?.isOutOfStock && isLimited && <span className={`${styles['badge-tag']} ${getBadgeClass('LIMITED EDITION')}`}>LIMITED EDITION</span>}
+        {!product.stock?.isOutOfStock && tag && <span className={`${styles['badge-tag']} ${getBadgeClass(tag)}`}>{tag}</span>}
 
         {/* Share Button */}
         <div 
@@ -133,15 +136,26 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
             </>
           )}
         </div>
-        <button 
-          className={styles['add-cart-btn']}
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart(itemToPass, 1);
-          }}
-        >
-          ADD TO CART
-        </button>
+        {product.stock?.isOutOfStock ? (
+          <button 
+            className={styles['add-cart-btn']}
+            disabled
+            style={{ backgroundColor: '#9ca3af', borderColor: '#9ca3af', color: '#fff', cursor: 'not-allowed' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            OUT OF STOCK
+          </button>
+        ) : (
+          <button 
+            className={styles['add-cart-btn']}
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart(itemToPass, 1);
+            }}
+          >
+            ADD TO CART
+          </button>
+        )}
       </div>
     </div>
   );

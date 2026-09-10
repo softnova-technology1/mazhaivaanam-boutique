@@ -3,7 +3,7 @@ import { inventoryAPI, productAPI, uploadAPI, fabricAPI, categoryAPI } from '../
 
 
 import { exportToCSV } from '../utils/exportCSV.js';
-import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud, Download, EyeOff, Eye, ArrowLeft } from 'lucide-react';
+import { PackageSearch, AlertTriangle, PackageX, RotateCcw, X, Search, Trash2, Plus, UploadCloud, Download, EyeOff, Eye, ArrowLeft, Edit } from 'lucide-react';
 
 export default function Inventory() {
   const [inventory, setInventory] = useState([]);
@@ -16,6 +16,8 @@ export default function Inventory() {
   const [restockModal, setRestockModal] = useState(null);
   const [restockQty, setRestockQty] = useState('');
   const [restockNote, setRestockNote] = useState('');
+  const [editStockModal, setEditStockModal] = useState(null);
+  const [newTotalStock, setNewTotalStock] = useState('');
 
   // Create Product Modal State
   const [modal, setModal] = useState({ open: false });
@@ -80,6 +82,21 @@ export default function Inventory() {
       setRestockModal(null);
       setRestockQty('');
       setRestockNote('');
+      loadInventory();
+    } catch (err) { alert(err.message); }
+  };
+
+  const handleEditStock = async () => {
+    if (newTotalStock === '' || Number(newTotalStock) < 0) return;
+    const diff = Number(newTotalStock) - editStockModal.availableStock;
+    if (diff === 0) {
+      setEditStockModal(null);
+      return;
+    }
+    try {
+      await inventoryAPI.adjust(editStockModal.product?._id, { quantity: diff, note: `Admin edited available stock to ${newTotalStock}` });
+      setEditStockModal(null);
+      setNewTotalStock('');
       loadInventory();
     } catch (err) { alert(err.message); }
   };
@@ -219,9 +236,6 @@ export default function Inventory() {
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
             <Download size={16} /> Export All to CSV
-          </button>
-          <button className="btn btn-primary" onClick={openCreate} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Plus size={18} /> Add New Product
           </button>
         </div>
       </div>
@@ -377,8 +391,9 @@ export default function Inventory() {
                       </span>
                     </td>
                     <td style={{ textAlign: 'right', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                      <button className="btn btn-outline btn-sm" onClick={() => setRestockModal(inv)}><RotateCcw size={14} /> Restock</button>
-                      <button className="btn btn-outline btn-sm" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => handleHardDelete(inv.product)}><Trash2 size={14} /></button>
+                      <button className="btn btn-outline btn-sm" title="Restock (Add items)" onClick={() => setRestockModal(inv)}><RotateCcw size={14} /></button>
+                      <button className="btn btn-outline btn-sm" title="Edit Stock (Set exact items)" onClick={() => { setEditStockModal(inv); setNewTotalStock(inv.totalStock); }}><Edit size={14} /></button>
+                      <button className="btn btn-outline btn-sm" title="Delete Product" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => handleHardDelete(inv.product)}><Trash2 size={14} /></button>
                     </td>
                   </tr>
                 );
@@ -442,6 +457,33 @@ export default function Inventory() {
             <div className="modal-footer">
               <button className="btn btn-outline" onClick={() => setRestockModal(null)}>Cancel</button>
               <button className="btn btn-primary" onClick={handleRestock}>Restock</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Stock Modal */}
+      {editStockModal && (
+        <div className="modal-overlay" onClick={() => setEditStockModal(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 420 }}>
+            <div className="modal-header">
+              <h3 className="modal-title">Edit Stock: {editStockModal.product?.name}</h3>
+              <button className="btn-ghost btn-icon" onClick={() => setEditStockModal(null)}><X size={20} /></button>
+            </div>
+            <div className="modal-body">
+              <div style={{ marginBottom: 16, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                Current Total Stock: <strong>{editStockModal.totalStock}</strong><br/>
+                Current Available Stock: <strong>{editStockModal.availableStock}</strong>
+              </div>
+              <div className="form-group">
+                <label className="form-label">New Available Stock</label>
+                <input className="form-input" type="number" min="0" value={newTotalStock} onChange={e => setNewTotalStock(e.target.value)} autoFocus placeholder="e.g. 10" />
+                <small style={{ color: 'var(--text-muted)', display: 'block', marginTop: 4 }}>This updates how many items are physically available to sell right now.</small>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-outline" onClick={() => setEditStockModal(null)}>Cancel</button>
+              <button className="btn btn-primary" onClick={handleEditStock}>Update Stock</button>
             </div>
           </div>
         </div>

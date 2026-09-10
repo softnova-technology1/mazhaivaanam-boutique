@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Printer, Download, X, CheckCircle, Package } from 'lucide-react';
 
 function numberToWords(num) {
@@ -42,7 +43,7 @@ export default function InvoiceModal({ order, onClose }) {
     window.print();
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={onClose} style={{ zIndex: 9999 }}>
       <div 
         className="modal-content invoice-modal-container" 
@@ -119,10 +120,10 @@ export default function InvoiceModal({ order, onClose }) {
                 LUXURY HANDLOOM BOUTIQUE
               </div>
               <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>
-                124, Silk Weaver Street, Gandhi Nagar<br />
-                Coimbatore, Tamil Nadu - 641001<br />
-                GSTIN: <strong>33AAAAA0000A1Z5</strong> | State Code: 33<br />
-                📞 +91 98765 43210 | ✉️ support@mazhaivaanam.com
+                ANA Complex- 1st Floor, Sethu Road, <br />
+                Peravurani, Thanjavur, Tamil Nadu, India 614804<br />
+                GSTIN: <strong>33ANYPN4388D1ZH</strong> | State Code: 33<br />
+                📞 +91 8807959179 | ✉️ mazhaivaanampvi@gmail.com
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
@@ -159,12 +160,18 @@ export default function InvoiceModal({ order, onClose }) {
                 SHIPPED TO / DELIVERY ADDRESS
               </div>
               <div style={{ fontSize: '0.82rem', color: '#334155', lineHeight: 1.5 }}>
-                {order.shippingAddress?.addressLine1 || 'Store Pickup'}<br />
-                {order.shippingAddress?.addressLine2 && `${order.shippingAddress.addressLine2}, `}
-                {order.shippingAddress?.city && `${order.shippingAddress.city}, `}
-                {order.shippingAddress?.state && `${order.shippingAddress.state} `}
-                {order.shippingAddress?.postalCode && `- ${order.shippingAddress.postalCode}`}<br />
-                Country: India
+                {order.shippingAddress?.addressLine1 || order.shippingAddress?.addressLine ? (
+                  <>
+                    {order.shippingAddress.addressLine1 || order.shippingAddress.addressLine}<br />
+                    {order.shippingAddress.addressLine2 && `${order.shippingAddress.addressLine2}, `}
+                    {order.shippingAddress.city && `${order.shippingAddress.city}, `}
+                    {order.shippingAddress.state && `${order.shippingAddress.state} `}
+                    {(order.shippingAddress.postalCode || order.shippingAddress.pinCode) && `- ${order.shippingAddress.postalCode || order.shippingAddress.pinCode}`}<br />
+                    Country: India
+                  </>
+                ) : (
+                  <span style={{ fontWeight: 600, color: '#0f172a' }}>Store Pickup</span>
+                )}
               </div>
             </div>
           </div>
@@ -174,9 +181,10 @@ export default function InvoiceModal({ order, onClose }) {
             <thead>
               <tr style={{ background: '#0f172a', color: '#ffffff', fontSize: '0.8rem', textTransform: 'uppercase' }}>
                 <th style={{ padding: '10px 12px', textAlign: 'center', width: 40 }}>#</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center', width: 50 }}>Image</th>
                 <th style={{ padding: '10px 12px', textAlign: 'left' }}>Item Description</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center', width: 80 }}>HSN</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center', width: 60 }}>Qty</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center', width: 140 }}>SKU</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center', width: 20 }}>Qty</th>
                 <th style={{ padding: '10px 12px', textAlign: 'right', width: 100 }}>Rate</th>
                 <th style={{ padding: '10px 12px', textAlign: 'right', width: 110 }}>Amount</th>
               </tr>
@@ -185,11 +193,18 @@ export default function InvoiceModal({ order, onClose }) {
               {order.items?.map((item, idx) => (
                 <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
                   <td style={{ padding: '12px', textAlign: 'center', color: '#64748b' }}>{idx + 1}</td>
+                  <td style={{ padding: '8px', textAlign: 'center' }}>
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4, display: 'block', margin: '0 auto' }} />
+                    ) : (
+                      <div style={{ width: 40, height: 40, background: '#f1f5f9', borderRadius: 4, margin: '0 auto' }}></div>
+                    )}
+                  </td>
                   <td style={{ padding: '12px' }}>
                     <div style={{ fontWeight: 600, color: '#0f172a' }}>{item.name}</div>
                     <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Fabric: {item.fabric || 'Pure Handloom Silk'}</div>
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'center', color: '#64748b' }}>5007</td>
+                  <td style={{ padding: '12px', textAlign: 'center', color: '#000000ff', fontSize: '0.75rem' }}>{item.product?.sku || item.sku || '-'}</td>
                   <td style={{ padding: '12px', textAlign: 'center', fontWeight: 600 }}>{item.quantity || 1}</td>
                   <td style={{ padding: '12px', textAlign: 'right', color: '#334155' }}>₹{Number(item.price).toLocaleString('en-IN')}</td>
                   <td style={{ padding: '12px', textAlign: 'right', fontWeight: 600, color: '#0f172a' }}>
@@ -262,10 +277,10 @@ export default function InvoiceModal({ order, onClose }) {
           {/* Footer & Signature */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: 20, marginTop: 30, fontSize: '0.75rem', color: '#64748b' }}>
             <div>
-              <strong>Terms & Conditions:</strong><br />
-              1. Goods once sold can be exchanged within 7 days in original condition.<br />
-              2. Dry clean only recommended for pure silk and zari weaves.<br />
-              3. This is a computer generated invoice and does not require physical signature.
+              <strong style={{ display: 'block', marginBottom: 0 }}>Terms & Conditions:</strong>
+              <div style={{ marginBottom: 0 }}>1. We take utmost care to offer quality products; Returns/Exchanges are subject to our Return Policy and applicable conditions.</div>
+              <div style={{ marginBottom: 0 }}>2. Please follow the recommended Wash & Care instructions to maintain the quality and appearance of the product.</div>
+              <div>3. This is a computer-generated invoice and does not require a physical signature.</div>
             </div>
             <div style={{ textAlign: 'center', minWidth: 180 }}>
               <div style={{ fontFamily: "'Kaushan Script', cursive", fontSize: '1.2rem', color: '#6B102A', marginBottom: 4 }}>Mazhai Vaanam</div>
@@ -296,6 +311,7 @@ export default function InvoiceModal({ order, onClose }) {
           }
         `}</style>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

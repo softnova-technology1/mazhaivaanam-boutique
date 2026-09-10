@@ -2,21 +2,22 @@ import { useState, useEffect, Fragment, useRef } from 'react';
 import { orderAPI, dashboardAPI } from '../api/api.js';
 import { exportToCSV } from '../utils/exportCSV.js';
 import InvoiceModal from '../components/InvoiceModal.jsx';
+import ShippingLabelModal from '../components/ShippingLabelModal.jsx';
 import {
   Search, ChevronDown, ChevronUp, Truck, MapPin, ShoppingBag, Clock,
   CheckCircle, Check, Navigation, XCircle, Download, FileText, CheckSquare,
   Square, RefreshCw, Send, Printer, Gift
 } from 'lucide-react';
 
-const STATUSES = ['', 'CONFIRMED', 'SHIPPING', 'DELIVERED'];
-const STATUS_COLORS = { CONFIRMED: 'info', SHIPPING: 'primary', DELIVERED: 'success' };
+const STATUSES = ['', 'CONFIRMED', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
+const STATUS_COLORS = { CONFIRMED: 'info', SHIPPING: 'primary', DELIVERED: 'success', CANCELLED: 'error' };
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [stats, setStats] = useState(null);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
-  const [paymentStatusFilter, setPaymentStatusFilter] = useState('paid');
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
@@ -45,8 +46,9 @@ export default function Orders() {
     setConfirm({ message, onConfirm });
   };
 
-  // Invoice Modal state
+  // Invoice & Shipping Label Modal state
   const [invoiceOrder, setInvoiceOrder] = useState(null);
+  const [shippingLabelOrder, setShippingLabelOrder] = useState(null);
 
   useEffect(() => { loadStats(); }, []);
   useEffect(() => { loadOrders(); }, [page, statusFilter, paymentStatusFilter, dateFilter, sortOrder]);
@@ -205,7 +207,7 @@ export default function Orders() {
       </div>
 
       {/* Alert Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16, marginBottom: 24 }}>
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === '' ? '1px solid var(--primary)' : undefined }} onClick={() => { setStatusFilter(''); setPage(1); }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3B82F6', flexShrink: 0 }}><ShoppingBag size={20} /></div>
           <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{totalOrdersCount}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{getQueueLabel()}</div></div>
@@ -221,6 +223,10 @@ export default function Orders() {
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'DELIVERED' ? '1px solid var(--success)' : undefined }} onClick={() => { setStatusFilter('DELIVERED'); setPage(1); }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(22,163,74,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16A34A', flexShrink: 0 }}><CheckCircle size={20} /></div>
           <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('DELIVERED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Delivered</div></div>
+        </div>
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, cursor: 'pointer', border: statusFilter === 'CANCELLED' ? '1px solid var(--error)' : undefined }} onClick={() => { setStatusFilter('CANCELLED'); setPage(1); }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(220,38,38,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', flexShrink: 0 }}><XCircle size={20} /></div>
+          <div><div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{getFilteredCount('CANCELLED')}</div><div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Cancelled</div></div>
         </div>
       </div>
 
@@ -375,12 +381,12 @@ export default function Orders() {
                           className="btn btn-outline btn-sm"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setInvoiceOrder(order);
+                            setShippingLabelOrder(order);
                           }}
-                          title="Generate Tax Invoice"
+                          title="Generate Shipping Label"
                           style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
                         >
-                          <FileText size={14} /> Bill
+                          <Truck size={14} /> Label
                         </button>
                       </td>
                       <td>{expanded === order._id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</td>
@@ -400,7 +406,9 @@ export default function Orders() {
                                     </div>
                                     <div>
                                       <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500 }}>{item.name}</div>
-                                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Qty: {item.quantity} · ₹{item.price?.toLocaleString('en-IN')}</div>
+                                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                        SKU: {item.product?.sku || item.sku || 'N/A'} · Qty: {item.quantity} · ₹{item.price?.toLocaleString('en-IN')}
+                                      </div>
                                     </div>
                                   </div>
                                 ))}
@@ -636,6 +644,9 @@ export default function Orders() {
           </div>
         </div>
       )}
+
+      {/* Shipping Label Modal */}
+      <ShippingLabelModal order={shippingLabelOrder} onClose={() => setShippingLabelOrder(null)} />
     </div>
   );
 }

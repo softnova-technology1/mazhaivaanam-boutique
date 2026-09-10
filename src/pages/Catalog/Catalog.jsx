@@ -648,8 +648,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     ? product.discountedPrice
                     : product.price;
 
-                  const originalMrp = product.mrpPrice || product.oldPrice || (effectivePrice < product.price ? product.price : Math.round(product.price * 1.15));
-                  const hasDiscount = originalMrp > effectivePrice;
+                  const originalMrp = (product.mrpPrice && product.mrpPrice > effectivePrice) ? product.mrpPrice : (product.oldPrice && product.oldPrice > effectivePrice) ? product.oldPrice : (effectivePrice < product.price ? product.price : null);
+                  const hasDiscount = Boolean(originalMrp && originalMrp > effectivePrice);
                   const discountPct = hasDiscount ? Math.round(((originalMrp - effectivePrice) / originalMrp) * 100) : 0;
 
                   const itemWithDiscountPrice = { ...product, price: effectivePrice, discountedPrice: effectivePrice };
@@ -668,8 +668,12 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         onClick={() => handleProductClick(itemWithDiscountPrice)}
                       >
                         <img src={product.image} alt={product.name} loading="lazy" />
-                        {product.tag && (
-                          <span className={`${styles['badge-tag']} ${getBadgeClass(product.tag)}`}>{product.tag}</span>
+                        {product.stock?.isOutOfStock ? (
+                          <span className={`${styles['badge-tag']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
+                        ) : (
+                          product.tag && (
+                            <span className={`${styles['badge-tag']} ${getBadgeClass(product.tag)}`}>{product.tag}</span>
+                          )
                         )}
                         <div
                           className={styles['share-btn']}
@@ -710,9 +714,9 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         </div>
 
                         {/* Product Description */}
-                        {product.description && (
+                        {product.shortDescription && (
                           <p className={styles['product-description']}>
-                            {product.description}
+                            {product.shortDescription}
                           </p>
                         )}
 
@@ -722,15 +726,26 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                             <span className={styles['old-price']}>{formatCurrency(originalMrp)}</span>
                           )}
                         </div>
-                        <button
-                          className={styles['add-cart-btn']}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            addToCart(itemWithDiscountPrice, 1);
-                          }}
-                        >
-                          ADD TO CART
-                        </button>
+                        {product.stock?.isOutOfStock ? (
+                          <button
+                            className={styles['add-cart-btn']}
+                            disabled
+                            style={{ backgroundColor: '#9ca3af', borderColor: '#9ca3af', color: '#fff', cursor: 'not-allowed' }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            OUT OF STOCK
+                          </button>
+                        ) : (
+                          <button
+                            className={styles['add-cart-btn']}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addToCart(itemWithDiscountPrice, 1);
+                            }}
+                          >
+                            ADD TO CART
+                          </button>
+                        )}
                       </div>
                     </div>
                   );

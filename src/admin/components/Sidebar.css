@@ -189,3 +189,27 @@
   background: var(--danger-bg);
   color: var(--danger);
 }
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+  }
+
+  .sidebar.collapsed {
+    width: 80px;
+  }
+
+  .sidebar-brand {
+    padding: 16px 14px;
+  }
+
+  .sidebar-link {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    gap: 10px;
+  }
+
+  .sidebar-user-name {
+    font-size: 0.8rem;
+  }
+}

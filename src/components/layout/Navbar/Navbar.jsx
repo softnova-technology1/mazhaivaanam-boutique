@@ -5,6 +5,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import { useWishlist } from '../../../hooks/useWishlist';
 import { getProducts } from '../../../services/api';
 import { formatCurrency } from '../../../utils/formatters';
+import { useStoreConfig } from '../../../context/StoreConfigContext';
 import styles from './Navbar.module.css';
 
 export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelectedProduct, isLimitedOfferActive = true }) => {
@@ -128,20 +129,37 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
     setIsSearchOpen(false);
   };
 
+  const storeConfig = useStoreConfig();
+
   return (
     <>
       {/* 1. announcement banner */}
-      <div className={styles.announcementBar}>
-        <div className={styles.sliderContainer}>
-          <div className={styles.slider}>
-            <div className={styles.slide}>✨ Handwoven Luxury, Delivered Worldwide.</div>
-            <div className={styles.slide}>🥻 Unveiling Authentic Kanjeevaram Heritage.</div>
-            <div className={styles.slide}>📞 Book a Personalized Video Shopping Experience.</div>
-            {/* Duplicate first slide for smooth infinite loop */}
-            <div className={styles.slide}>✨ Handwoven Luxury, Delivered Worldwide.</div>
+      {storeConfig.announcementEnabled !== false && (
+        <div 
+          className={styles.announcementBar}
+          style={{
+            backgroundColor: storeConfig.announcementBgColor || '#6B102A',
+            color: storeConfig.announcementTextColor || '#F4E4BC'
+          }}
+        >
+          <div className={styles.sliderContainer}>
+            <div className={styles.slider}>
+              <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
+                {storeConfig.announcementText1 || storeConfig.announcementText || '✨ Handwoven Luxury, Delivered Worldwide.'}
+              </div>
+              <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
+                {storeConfig.announcementText2 || storeConfig.announcementText || '🥻 Unveiling Authentic Kanjeevaram & Banarasi Heritage.'}
+              </div>
+              <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
+                {storeConfig.announcementText3 || storeConfig.announcementText || '📞 Book a Personalized Video Shopping Experience.'}
+              </div>
+              <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
+                {storeConfig.announcementText1 || storeConfig.announcementText || '✨ Handwoven Luxury, Delivered Worldwide.'}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <header className={`${styles.navbarWrapper} ${isSticky ? styles.sticky : ''}`}>
         {/* 2. Main Middle Section */}
@@ -169,11 +187,13 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
 
             {/* Logo perfectly centered */}
             <div className={styles.centerLogo} onClick={() => handleTabChange('shop')}>
-              <h1 className={styles.brandTitle}>
-                <img src="/logo.png" alt="logo" className={styles.brandLogoIcon} />
-                MAZHAI VAANAM
-              </h1>
-              <span className={styles.brandSubtitle}>HANDLOOM LUXURY</span>
+              <img src="/logo.png" alt="logo" className={styles.brandLogoIcon} />
+              <div className={styles.brandTextGroup}>
+                <h1 className={styles.brandTitle}>
+                  MAZHAI VAANAM
+                </h1>
+                <span className={styles.brandSubtitle}>HANDLOOM LUXURY</span>
+              </div>
             </div>
 
             {/* Right Side Icons */}

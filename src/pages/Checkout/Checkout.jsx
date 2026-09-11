@@ -87,7 +87,9 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     // Generate a random order ID on mount
     const num = Math.floor(100000 + Math.random() * 900000);
     setOrderId(`MV-${num}`);
+  }, []);
 
+  useEffect(() => {
     // Load saved addresses — from backend if logged in, localStorage fallback
     const loadAddresses = async () => {
       try {
@@ -95,54 +97,61 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
           const serverAddrs = await addressAPI.getAddresses();
           if (serverAddrs && serverAddrs.length > 0) {
             setSavedAddresses(serverAddrs);
-            // Addresses from server use _id
-            const defaultAddr = serverAddrs.find(a => a.isDefault);
-            const firstAddr = serverAddrs[0];
-            const selected = defaultAddr || firstAddr;
-            if (selected) {
+            const defaultAddr = serverAddrs.find(a => a.isDefault) || serverAddrs[0];
+            if (defaultAddr) {
+              const targetId = defaultAddr._id || defaultAddr.id;
+              setSelectedAddressId(targetId);
               setShowAddressForm(false);
-              setSelectedAddressId(selected._id || selected.id);
+              setFullName(defaultAddr.fullName || defaultAddr.name || '');
+              setPhone(defaultAddr.phone || '');
+              setAddressLine(defaultAddr.addressLine || '');
+              setLandmark(defaultAddr.landmark || '');
+              setCity(defaultAddr.city || '');
+              setStateName(defaultAddr.state || defaultAddr.stateName || '');
+              setPinCode(defaultAddr.pinCode || '');
             }
+            if (user.email) setEmail(prev => prev || user.email);
             return;
           }
         }
-        // Fallback: localStorage (for guests or no server addresses)
+        // Fallback: localStorage (for guests or users with no server addresses)
         const addresses = JSON.parse(localStorage.getItem('boutique_addresses') || '[]');
         setSavedAddresses(addresses);
         if (addresses.length > 0) {
           setShowAddressForm(false);
-          const defaultAddr = addresses.find(a => a.isDefault);
-          if (defaultAddr) {
-            setSelectedAddressId(defaultAddr.id);
-          } else {
-            setSelectedAddressId(addresses[0].id);
-          }
+          const defaultAddr = addresses.find(a => a.isDefault) || addresses[0];
+          const targetId = defaultAddr.id || defaultAddr._id;
+          setSelectedAddressId(targetId);
+          setFullName(defaultAddr.fullName || defaultAddr.name || '');
+          setPhone(defaultAddr.phone || '');
+          setAddressLine(defaultAddr.addressLine || '');
+          setLandmark(defaultAddr.landmark || '');
+          setCity(defaultAddr.city || '');
+          setStateName(defaultAddr.state || defaultAddr.stateName || '');
+          setPinCode(defaultAddr.pinCode || '');
+        } else if (user) {
+          // No addresses found, prefill profile info
+          setFullName(prev => prev || user.name || (user.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+          setEmail(prev => prev || user.email || '');
+          if (user.phone) setPhone(prev => prev || user.phone);
         }
       } catch (e) {
         console.error('Failed to load addresses:', e);
       }
     };
     loadAddresses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      setEmail(prev => prev || user.email || '');
-      setFullName(prev => prev || user.name || (user.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
-    }
   }, [user]);
 
   useEffect(() => {
-    if (selectedAddressId && !showAddressForm) {
+    if (selectedAddressId && !showAddressForm && savedAddresses.length > 0) {
       const addr = savedAddresses.find(a => (a._id || a.id) === selectedAddressId);
       if (addr) {
-        setFullName(addr.fullName || addr.name || user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+        setFullName(addr.fullName || addr.name || user?.name || '');
         setPhone(addr.phone || '');
         setAddressLine(addr.addressLine || '');
         setLandmark(addr.landmark || '');
         setCity(addr.city || '');
-        setStateName(addr.stateName || addr.state || '');
+        setStateName(addr.state || addr.stateName || '');
         setPinCode(addr.pinCode || '');
       }
     }
@@ -432,20 +441,34 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
       // Save new address to profile if it was entered
       if (showAddressForm && deliveryMode === 'standard') {
-        const savedAddrs = JSON.parse(localStorage.getItem('boutique_addresses') || '[]');
-        const newAddressObj = {
-          id: `addr-${Date.now()}`,
-          name: fullName,
+        const addressPayload = {
           fullName: fullName,
           addressLine: addressLine,
-          landmark: landmark,
+          landmark: landmark || '',
           city: city,
-          stateName: stateName,
           state: stateName,
           pinCode: pinCode,
           country: 'India',
           phone: phone,
-          isDefault: savedAddrs.length === 0
+          isDefault: savedAddresses.length === 0
+        };
+
+        if (user) {
+          addressAPI.createAddress(addressPayload).then(serverAddr => {
+            if (serverAddr) {
+              setSavedAddresses(prev => [serverAddr, ...prev]);
+            }
+          }).catch(err => {
+            console.error('Failed to save address to backend:', err);
+          });
+        }
+
+        const savedAddrs = JSON.parse(localStorage.getItem('boutique_addresses') || '[]');
+        const newAddressObj = {
+          id: `addr-${Date.now()}`,
+          name: fullName,
+          ...addressPayload,
+          stateName: stateName
         };
         savedAddrs.push(newAddressObj);
         localStorage.setItem('boutique_addresses', JSON.stringify(savedAddrs));
@@ -1115,12 +1138,22 @@ Thank you for choosing handloom heritage.
                   {deliveryMode === 'standard' && savedAddresses.length > 0 && !showAddressForm ? (
                     <div className={styles.addressGrid}>
                       {savedAddresses.map(addr => {
-                        const isSelected = selectedAddressId === addr.id;
+                        const addrId = addr._id || addr.id;
+                        const isSelected = selectedAddressId === addrId;
                         return (
                         <div
-                          key={addr.id}
+                          key={addrId}
                           className={`${styles.addressCard} ${isSelected ? styles.addressCardDefault : ''}`}
-                          onClick={() => setSelectedAddressId(addr.id)}
+                          onClick={() => {
+                            setSelectedAddressId(addrId);
+                            setFullName(addr.fullName || addr.name || '');
+                            setPhone(addr.phone || '');
+                            setAddressLine(addr.addressLine || '');
+                            setLandmark(addr.landmark || '');
+                            setCity(addr.city || '');
+                            setStateName(addr.state || addr.stateName || '');
+                            setPinCode(addr.pinCode || '');
+                          }}
                         >
                           {isSelected && <div className={styles.defaultBadge}>SELECTED</div>}
                           <h3 className={styles.addressName}>{addr.fullName || addr.name}</h3>
@@ -1142,7 +1175,7 @@ Thank you for choosing handloom heritage.
                       <div className={styles.addAddressBtn} onClick={() => {
                         setShowAddressForm(true);
                         setFullName(user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
-                        setPhone('');
+                        setPhone(user?.phone || '');
                         setAddressLine('');
                         setLandmark('');
                         setCity('');
@@ -1162,14 +1195,15 @@ Thank you for choosing handloom heritage.
                             className={styles.addressLinkBtn}
                             onClick={() => {
                               setShowAddressForm(false);
-                              const addr = savedAddresses.find(a => a.id === selectedAddressId);
+                              const addr = savedAddresses.find(a => (a._id || a.id) === selectedAddressId) || savedAddresses[0];
                               if (addr) {
-                                setFullName(addr.name || user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+                                setSelectedAddressId(addr._id || addr.id);
+                                setFullName(addr.fullName || addr.name || '');
                                 setPhone(addr.phone || '');
                                 setAddressLine(addr.addressLine || '');
                                 setLandmark(addr.landmark || '');
                                 setCity(addr.city || '');
-                                setStateName(addr.state || '');
+                                setStateName(addr.state || addr.stateName || '');
                                 setPinCode(addr.pinCode || '');
                               }
                             }}

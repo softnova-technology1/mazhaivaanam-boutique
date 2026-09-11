@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  User, 
-  Lock, 
-  MapPin, 
-  LogOut, 
-  HelpCircle, 
-  Phone, 
-  Mail, 
-  Plus, 
-  X, 
-  Check, 
-  ChevronDown, 
+import {
+  User,
+  Lock,
+  MapPin,
+  LogOut,
+  HelpCircle,
+  Phone,
+  Mail,
+  Plus,
+  X,
+  Check,
+  ChevronDown,
   ChevronUp,
   ShoppingBag,
   Heart,
@@ -22,7 +22,8 @@ import {
   Clock,
   ArrowRight,
   Eye,
-  EyeOff
+  EyeOff,
+  Award
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
@@ -179,21 +180,43 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     triggerToast('Profile updated successfully! ✨');
   };
 
+  const getPasswordStrength = (pwd) => {
+    if (!pwd) return { score: 0, label: '', color: '#ccc', width: '0%' };
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[!@#$%^&*(),.?":{}|<>_]/.test(pwd)) score++;
+
+    if (score <= 1) return { score: 1, label: 'Weak ⚠️', color: '#ef4444', width: '25%' };
+    if (score === 2) return { score: 2, label: 'Medium ⚡', color: '#f59e0b', width: '50%' };
+    if (score === 3) return { score: 3, label: 'Good 👍', color: '#eab308', width: '75%' };
+    return { score: 4, label: 'Strong 🔒', color: '#10b981', width: '100%' };
+  };
+
   const handlePasswordSave = async (e) => {
     e.preventDefault();
     if (!security.currentPassword || !security.newPassword || !security.confirmPassword) {
       triggerToast('Please fill all password fields.');
       return;
     }
+    if (security.newPassword.length < 8) {
+      triggerToast('Strong password requires at least 8 characters.');
+      return;
+    }
+    if (!/[A-Z]/.test(security.newPassword) || !/[a-z]/.test(security.newPassword)) {
+      triggerToast('Password must contain both uppercase (A-Z) and lowercase (a-z) letters.');
+      return;
+    }
+    if (!/\d/.test(security.newPassword) && !/[!@#$%^&*(),.?":{}|<>_]/.test(security.newPassword)) {
+      triggerToast('Password must contain at least one number (0-9) or special symbol (@#$%).');
+      return;
+    }
     if (security.newPassword !== security.confirmPassword) {
       triggerToast('New passwords do not match!');
       return;
     }
-    if (security.newPassword.length < 6) {
-      triggerToast('New password must be at least 6 characters.');
-      return;
-    }
-    
+
     try {
       await authAPI.changePassword({
         currentPassword: security.currentPassword,
@@ -324,8 +347,9 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     }
   ];
 
-      const menuItems = [
+  const menuItems = [
     { id: 'personal', label: 'Personal Info', icon: <User size={18} /> },
+    { id: 'orders', label: 'My Orders', icon: <Package size={18} /> },
     { id: 'addresses', label: 'Saved Addresses', icon: <MapPin size={18} /> },
     { id: 'security', label: 'Security Settings', icon: <Lock size={18} /> },
     { id: 'help', label: 'Help & Support', icon: <HelpCircle size={18} /> }
@@ -363,7 +387,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                 </button>
               ))}
 
-              <button 
+              <button
                 onClick={handleLogoutClick}
                 className={`${styles.logoutButton} menuLink`}
               >
@@ -375,76 +399,76 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
           {/* Main Content Area */}
           <main className={styles.contentCard}>
-            
+
             {/* TAB 1: PERSONAL INFO */}
             {activeSection === 'personal' && (
               <section className={styles.tabSection}>
                 <h3 className={styles.sectionHeader}>Personal Profile</h3>
                 <p className={styles.sectionSubtitle}>Manage your contact details and celebration reminders.</p>
                 <div className={styles.sectionDivider}></div>
-                
+
                 <form onSubmit={handleProfileSave} className={styles.formGrid}>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>First Name</label>
-                    <input 
-                      type="text" 
-                      value={profile.firstName} 
-                      onChange={(e) => setProfile({ ...profile, firstName: e.target.value })} 
-                      className={styles.formInput} 
-                      required 
+                    <input
+                      type="text"
+                      value={profile.firstName}
+                      onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
+                      className={styles.formInput}
+                      required
                     />
                   </div>
-                  
+
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Last Name</label>
-                    <input 
-                      type="text" 
-                      value={profile.lastName} 
-                      onChange={(e) => setProfile({ ...profile, lastName: e.target.value })} 
-                      className={styles.formInput} 
-                      required 
+                    <input
+                      type="text"
+                      value={profile.lastName}
+                      onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
+                      className={styles.formInput}
+                      required
                     />
                   </div>
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Email Address</label>
-                    <input 
-                      type="email" 
-                      value={profile.email} 
-                      onChange={(e) => setProfile({ ...profile, email: e.target.value })} 
-                      className={styles.formInput} 
-                      required 
+                    <input
+                      type="email"
+                      value={profile.email}
+                      onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                      className={styles.formInput}
+                      required
                     />
                   </div>
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Phone Number</label>
-                    <input 
-                      type="tel" 
-                      value={profile.phone} 
-                      onChange={(e) => setProfile({ ...profile, phone: e.target.value })} 
-                      className={styles.formInput} 
-                      required 
+                    <input
+                      type="tel"
+                      value={profile.phone}
+                      onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                      className={styles.formInput}
+                      required
                     />
                   </div>
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Birthday</label>
-                    <input 
-                      type="date" 
-                      value={profile.birthday} 
-                      onChange={(e) => setProfile({ ...profile, birthday: e.target.value })} 
-                      className={styles.formInput} 
+                    <input
+                      type="date"
+                      value={profile.birthday}
+                      onChange={(e) => setProfile({ ...profile, birthday: e.target.value })}
+                      className={styles.formInput}
                     />
                   </div>
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Anniversary / Wedding Date</label>
-                    <input 
-                      type="date" 
-                      value={profile.anniversary} 
-                      onChange={(e) => setProfile({ ...profile, anniversary: e.target.value })} 
-                      className={styles.formInput} 
+                    <input
+                      type="date"
+                      value={profile.anniversary}
+                      onChange={(e) => setProfile({ ...profile, anniversary: e.target.value })}
+                      className={styles.formInput}
                     />
                   </div>
 
@@ -480,7 +504,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                     {orders.map((order, idx) => (
-                      <div 
+                      <div
                         key={order.orderId || order._id || idx}
                         style={{
                           background: 'var(--bg-surface)',
@@ -590,14 +614,14 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
                 <div className={styles.addressGrid}>
                   {addresses.map((addr) => (
-                    <article 
-                      key={addr.id} 
+                    <article
+                      key={addr.id}
                       className={`${styles.addressCard} ${addr.isDefault ? styles.addressCardDefault : ''}`}
                     >
                       {addr.isDefault && (
                         <span className={styles.defaultBadge}>DEFAULT SHIPPING</span>
                       )}
-                      
+
                       <div>
                         <h4 className={styles.addressName}>{addr.fullName}</h4>
                         <p className={styles.addressDetails}>
@@ -611,15 +635,15 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
                       <div className={styles.addressActions}>
                         {!addr.isDefault && (
-                          <button 
-                            onClick={() => handleSetDefaultAddress(addr.id)} 
+                          <button
+                            onClick={() => handleSetDefaultAddress(addr.id)}
                             className={`${styles.addressLinkBtn} menuLink`}
                           >
                             Set Default
                           </button>
                         )}
-                        <button 
-                          onClick={() => handleDeleteAddress(addr.id)} 
+                        <button
+                          onClick={() => handleDeleteAddress(addr.id)}
                           className={`${styles.addressLinkBtn} ${styles.deleteBtn} menuLink`}
                         >
                           Delete Address
@@ -628,7 +652,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                     </article>
                   ))}
 
-                  <button 
+                  <button
                     onClick={() => setIsAddAddressOpen(true)}
                     className={`${styles.addAddressBtn} menuLink`}
                   >
@@ -650,55 +674,113 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Current Password</label>
                     <div className={styles.passwordInputContainer}>
-                      <input 
+                      <input
                         type={showPasswords.current ? "text" : "password"}
-                        placeholder="••••••••" 
+                        placeholder="••••••••"
                         value={security.currentPassword}
                         onChange={(e) => setSecurity({ ...security, currentPassword: e.target.value })}
-                        className={styles.formInput} 
+                        className={styles.formInput}
                         required
                       />
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className={styles.passwordToggleBtn}
-                        onClick={() => setShowPasswords({...showPasswords, current: !showPasswords.current})}
+                        onClick={() => setShowPasswords({ ...showPasswords, current: !showPasswords.current })}
                       >
                         {showPasswords.current ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>New Password</label>
+                    <label className={styles.formLabel}>New Password *</label>
                     <div className={styles.passwordInputContainer}>
-                      <input 
+                      <input
                         type={showPasswords.new ? "text" : "password"}
-                        placeholder="Minimum 6 characters" 
+                        placeholder="e.g. Mazhai@2026"
                         value={security.newPassword}
                         onChange={(e) => setSecurity({ ...security, newPassword: e.target.value })}
-                        className={styles.formInput} 
+                        className={styles.formInput}
                         required
                       />
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className={styles.passwordToggleBtn}
-                        onClick={() => setShowPasswords({...showPasswords, new: !showPasswords.new})}
+                        onClick={() => setShowPasswords({ ...showPasswords, new: !showPasswords.new })}
                       >
                         {showPasswords.new ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
+
+                    {/* Live Password Strength Meter */}
+                    {security.newPassword && (
+                      <div style={{ marginTop: 10 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 600, color: getPasswordStrength(security.newPassword).color, marginBottom: 4 }}>
+                          <span>Password Strength:</span>
+                          <span>{getPasswordStrength(security.newPassword).label}</span>
+                        </div>
+                        <div style={{ height: 4, width: '100%', background: 'rgba(200, 163, 77, 0.2)', borderRadius: 2, overflow: 'hidden' }}>
+                          <div style={{ height: '100%', width: getPasswordStrength(security.newPassword).width, background: getPasswordStrength(security.newPassword).color, transition: 'all 0.3s ease' }} />
+                        </div>
+
+                        {/* Strength Requirement Checklist */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8, fontSize: '0.72rem' }}>
+                          <span style={{ color: security.newPassword.length >= 8 ? '#10b981' : '#8C886B', display: 'flex', alignItems: 'center', gap: 6, fontWeight: security.newPassword.length >= 8 ? 600 : 400 }}>
+                            {security.newPassword.length >= 8 ? <Check size={13} color="#10b981" /> : '•'} At least 8 characters
+                          </span>
+                          <span style={{ color: (/[a-z]/.test(security.newPassword) && /[A-Z]/.test(security.newPassword)) ? '#10b981' : '#8C886B', display: 'flex', alignItems: 'center', gap: 6, fontWeight: (/[a-z]/.test(security.newPassword) && /[A-Z]/.test(security.newPassword)) ? 600 : 400 }}>
+                            {(/[a-z]/.test(security.newPassword) && /[A-Z]/.test(security.newPassword)) ? <Check size={13} color="#10b981" /> : '•'} Contains Uppercase (A-Z) &amp; Lowercase (a-z)
+                          </span>
+                          <span style={{ color: (/\d/.test(security.newPassword) || /[!@#$%^&*(),.?":{}|<>_]/.test(security.newPassword)) ? '#10b981' : '#8C886B', display: 'flex', alignItems: 'center', gap: 6, fontWeight: (/\d/.test(security.newPassword) || /[!@#$%^&*(),.?":{}|<>_]/.test(security.newPassword)) ? 600 : 400 }}>
+                            {(/\d/.test(security.newPassword) || /[!@#$%^&*(),.?":{}|<>_]/.test(security.newPassword)) ? <Check size={13} color="#10b981" /> : '•'} Includes Number (0-9) or Symbol (@#$%)
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Confirm New Password</label>
-                    <input 
-                      type="password"
-                      placeholder="Confirm new password" 
-                      value={security.confirmPassword}
-                      onChange={(e) => setSecurity({ ...security, confirmPassword: e.target.value })}
-                      className={styles.formInput} 
-                      required
-                    />
+                    <label className={styles.formLabel}>Confirm New Password *</label>
+                    <div className={styles.passwordInputContainer}>
+                      <input
+                        type={showPasswords.confirm ? "text" : "password"}
+                        placeholder="Re-enter new password"
+                        value={security.confirmPassword}
+                        onChange={(e) => setSecurity({ ...security, confirmPassword: e.target.value })}
+                        className={styles.formInput}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className={styles.passwordToggleBtn}
+                        onClick={() => setShowPasswords({ ...showPasswords, confirm: !showPasswords.confirm })}
+                      >
+                        {showPasswords.confirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
+
+                    {/* Live Password Match Status */}
+                    {security.confirmPassword && (
+                      <div style={{
+                        marginTop: 8,
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        color: security.newPassword === security.confirmPassword ? '#10b981' : '#ef4444',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6
+                      }}>
+                        {security.newPassword === security.confirmPassword ? (
+                          <>
+                            <Check size={14} color="#10b981" /> Passwords match!
+                          </>
+                        ) : (
+                          <>
+                            <X size={14} color="#ef4444" /> Passwords do not match
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className={`${styles.buttonRow} md:col-span-2`}>
@@ -736,13 +818,13 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                     <a href="mailto:concierge@mazhaivaanam.com" className={styles.widgetLink}>Send Email</a>
                   </div>
 
-             </div>
+                </div>
 
                 <div className={styles.supportSplitGrid}>
                   {/* Styling Ticket Form */}
                   <div>
                     <h4 className={styles.subSectionTitle} style={{ marginTop: 0 }}>Submit styling query</h4>
-                    
+
                     {supportSubmitted ? (
                       <div className={styles.successMessage}>
                         <Check size={16} />
@@ -752,9 +834,9 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                       <form onSubmit={handleSupportSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div className={styles.formGroup}>
                           <label className={styles.formLabel}>Topic</label>
-                          <select 
-                            value={supportMessage.topic} 
-                            onChange={(e) => setSupportMessage({ ...supportMessage, topic: e.target.value })} 
+                          <select
+                            value={supportMessage.topic}
+                            onChange={(e) => setSupportMessage({ ...supportMessage, topic: e.target.value })}
                             className={styles.formInput}
                             style={{ border: 'none', borderBottom: '1px solid rgba(200, 163, 77, 0.4)', borderRadius: 0, padding: '10px 0', fontSize: '0.9rem' }}
                           >
@@ -767,11 +849,11 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
                         <div className={styles.formGroup}>
                           <label className={styles.formLabel}>Subject</label>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             placeholder="Brief summary of your query"
-                            value={supportMessage.subject} 
-                            onChange={(e) => setSupportMessage({ ...supportMessage, subject: e.target.value })} 
+                            value={supportMessage.subject}
+                            onChange={(e) => setSupportMessage({ ...supportMessage, subject: e.target.value })}
                             className={styles.formInput}
                             required
                           />
@@ -779,11 +861,11 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
                         <div className={styles.formGroup}>
                           <label className={styles.formLabel}>Message details</label>
-                          <textarea 
-                            rows="4" 
+                          <textarea
+                            rows="4"
                             placeholder="Describe your request..."
-                            value={supportMessage.message} 
-                            onChange={(e) => setSupportMessage({ ...supportMessage, message: e.target.value })} 
+                            value={supportMessage.message}
+                            onChange={(e) => setSupportMessage({ ...supportMessage, message: e.target.value })}
                             className={styles.formInput}
                             style={{ resize: 'none' }}
                             required
@@ -802,14 +884,14 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                   {/* FAQs list */}
                   <div>
                     <h4 className={styles.subSectionTitle} style={{ marginTop: 0 }}>Fabric & Loom FAQs</h4>
-                    
+
                     <div className={styles.faqSection}>
                       {faqs.map((faq, index) => {
                         const isOpen = activeFaq === index;
                         return (
                           <div key={index} className={styles.faqItem}>
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               onClick={() => setActiveFaq(isOpen ? null : index)}
                               className={`${styles.faqQuestion} menuLink`}
                             >
@@ -840,7 +922,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <h3 className={styles.sectionHeader} style={{ margin: 0, fontSize: '1.4rem' }}>Add Delivery Address</h3>
-              <button 
+              <button
                 onClick={() => setIsAddAddressOpen(false)}
                 className={`${styles.modalCloseBtn} menuLink`}
               >
@@ -851,8 +933,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
             <form onSubmit={handleAddAddressSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Full Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newAddress.fullName}
                   onChange={(e) => setNewAddress({ ...newAddress, fullName: e.target.value })}
                   placeholder="e.g. Jane Doe"
@@ -863,8 +945,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Street Address / Suite / Apartment</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newAddress.addressLine}
                   onChange={(e) => setNewAddress({ ...newAddress, addressLine: e.target.value })}
                   placeholder="Avenue details, block number"
@@ -875,8 +957,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Landmark (Optional)</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newAddress.landmark}
                   onChange={(e) => setNewAddress({ ...newAddress, landmark: e.target.value })}
                   placeholder="e.g. Near City Mall"
@@ -887,8 +969,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
               <div className={styles.formGrid} style={{ gap: '20px', gridTemplateColumns: '1fr 1fr' }}>
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>City</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={newAddress.city}
                     onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
                     placeholder="e.g. Chennai"
@@ -899,8 +981,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>State</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={newAddress.stateName}
                     onChange={(e) => setNewAddress({ ...newAddress, stateName: e.target.value })}
                     placeholder="e.g. Tamil Nadu"
@@ -913,8 +995,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
               <div className={styles.formGrid} style={{ gap: '20px', gridTemplateColumns: '1fr 1fr' }}>
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>Postal / Pin Code</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={newAddress.pinCode}
                     onChange={(e) => setNewAddress({ ...newAddress, pinCode: e.target.value })}
                     placeholder="e.g. 600006"
@@ -925,8 +1007,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
                 <div className={styles.formGroup}>
                   <label className={styles.formLabel}>Country</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={newAddress.country}
                     onChange={(e) => setNewAddress({ ...newAddress, country: e.target.value })}
                     className={styles.formInput}
@@ -937,8 +1019,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Phone Number for Delivery</label>
-                <input 
-                  type="tel" 
+                <input
+                  type="tel"
                   value={newAddress.phone}
                   onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
                   placeholder="10-digit mobile number"
@@ -949,8 +1031,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
               <div style={{ marginTop: '8px' }}>
                 <label className={styles.checkboxLabel}>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={newAddress.isDefault}
                     onChange={(e) => setNewAddress({ ...newAddress, isDefault: e.target.checked })}
                     style={{ cursor: 'pointer' }}
@@ -960,15 +1042,15 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
               </div>
 
               <div className={styles.modalFooter}>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsAddAddressOpen(false)}
                   className={`${styles.cancelBtn} menuLink`}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className={`${styles.submitBtn} menuLink`}
                 >
                   Save Address
@@ -981,9 +1063,9 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
       {/* 3. Tax Invoice Modal View */}
       {invoiceOrder && (
-        <InvoiceModal 
-          order={invoiceOrder} 
-          onClose={() => setInvoiceOrder(null)} 
+        <InvoiceModal
+          order={invoiceOrder}
+          onClose={() => setInvoiceOrder(null)}
         />
       )}
     </div>

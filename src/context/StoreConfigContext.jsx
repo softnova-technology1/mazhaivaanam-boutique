@@ -12,6 +12,13 @@ const DEFAULT_CONFIG = {
   facebookUrl: 'https://www.facebook.com/profile.php?id=61569890920943',
   instagramUrl: 'https://www.instagram.com/mazhaivaanam',
   youtubeUrl: 'https://www.youtube.com/@mazhaivaanam',
+  announcementText1: '✨ Handwoven Luxury, Delivered Worldwide.',
+  announcementText2: '🥻 Unveiling Authentic Kanjeevaram & Banarasi Heritage.',
+  announcementText3: '📞 Book a Personalized Video Shopping Experience.',
+  announcementText: '✨ Handwoven Luxury, Delivered Worldwide.',
+  announcementBgColor: '#6B102A',
+  announcementTextColor: '#F4E4BC',
+  announcementEnabled: true,
   convenienceFee: 2,
   giftWrapPrice: 499,
 };

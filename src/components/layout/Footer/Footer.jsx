@@ -87,7 +87,19 @@ export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
 
         <div className={styles['footer-bottom']}>
           <div className={`container ${styles['footer-bottom-container']}`}>
-            <p> <b> Powered by Softnova Technology Pvt ltd &copy; {new Date().getFullYear()} Mazhai Vaanam. All rights reserved.</b></p>
+            <p>
+              <b>
+                Powered by{' '}
+                <a
+                  href="https://softnovatech.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Softnova Technology Pvt ltd
+                </a>{' '}
+                &copy; {new Date().getFullYear()} Mazhai Vaanam. All rights reserved.
+              </b>
+            </p>
           </div>
         </div>
       </div>

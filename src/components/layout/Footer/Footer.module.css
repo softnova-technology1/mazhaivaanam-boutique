@@ -167,6 +167,18 @@
   text-align: center;
 }
 
+.footer-bottom a {
+  color: #ffffff;
+  text-decoration: none;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.footer-bottom a:hover {
+  color: #FFBEA2;
+  opacity: 0.9;
+}
+
 /* Responsive Rules */
 @media (max-width: 1024px) {
   .footer-container {

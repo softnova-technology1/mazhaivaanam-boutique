@@ -1,14 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useCart } from '../../hooks/useCart';
-import { getBadgeClass } from '../../utils/badgeHelper';
-import { Heart, Star, TrendingDown, ChevronLeft, ChevronRight, Trash2, ArrowRight, Sparkles, X } from 'lucide-react';
+import { getProducts } from '../../services/api';
+import { Heart, TrendingDown, ArrowRight, Sparkles, X, Award, Truck, Video, RotateCcw } from 'lucide-react';
 import styles from './Wishlist.module.css';
 
 export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
   const { wishlist: wishlistItems, removeFromWishlist } = useWishlist();
   const [toastMessage, setToastMessage] = useState('');
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
+
+  useEffect(() => {
+    getProducts({ limit: 12 })
+      .then(res => {
+        if (res && res.products && res.products.length > 0) {
+          setRecommendedProducts(res.products);
+        }
+      })
+      .catch(err => console.error('Error fetching recommended products:', err));
+  }, []);
 
   const handleRemoveFromWishlist = (productId, productName) => {
     removeFromWishlist(productId);
@@ -37,12 +48,12 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0
-    }).format(val);
+    }).format(val || 0);
   };
 
   // Calculations for stats
   const totalItems = wishlistItems.length;
-  const wishlistValue = wishlistItems.reduce((sum, item) => sum + item.price, 0);
+  const wishlistValue = wishlistItems.reduce((sum, item) => sum + (item.price || 0), 0);
   const priceDropsCount = wishlistItems.filter(item => item.oldPrice && item.oldPrice > item.price).length;
 
   // Star positions for background decoration
@@ -56,74 +67,6 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
     { left: '55.0%', top: '90%', size: 3, isDot: true }, { left: '88.33%', top: '90%', size: 3, isDot: true }
   ];
 
-  // Recommended Products Data (from mockup)
-  const recommendedProducts = [
-    {
-      id: 'rec-1',
-      name: "Linen Dusk Gold",
-      price: 18500,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAlSHhJ16hl5EXAAvsrKn7qGHkQIZeIxXDArt4m-w5ge0gAFDtEp8WpEYeMU-S6QA1p9hbjlCWFEScPwBxWbbSK-XnVJP6dhSs5aBMxxwZr9IDpq8RTDuLJtXQ39vLCgmq_BCVYQRlpv-eA43Y78QXTxlkFmwfj2ASY-43oWi405scyVuAOS9bSbvhXhTU3gtApTW-RFvcVqrK0N35lSUMMUnFugxKiVMyuVL6KeT9Bity9qG29Gizk",
-      category: "Linen Handloom",
-      fabric: "Linen",
-      color: "#DAA520",
-      description: "Fine organic linen saree detailed with beautiful metallic gold zari weave boundaries."
-    },
-    {
-      id: 'rec-2',
-      name: "Emerald Forest Silk",
-      price: 56000,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAqQ9uAJu2HmdCjmYdCKPGkkqo0SgpPpoAT0B2GHJgoBQ2tvHtAFUil77pTTxNoqMEGZmWkNLbnFTOXgpAsn7Isu3egWgAg5kUJ8D6ST8jRYjKdI6e1KM2da_B1v-Tt5DZsig4n6xkblQ1uGatsL8ELC8c4OezyMPukfQhQI-4XKwGINQSbrpWmq--hSxxAzpDDGisG324N8NLB_qmTUfglz26AmXJssTwEjzSDldkAjyhEn5b-Zaur",
-      category: "Silk Saree",
-      fabric: "Pure Silk",
-      color: "#004D40",
-      rating: 4.9,
-      description: "Deep forest emerald green pure Kanchipuram silk detailed with antique style zari borders."
-    },
-    {
-      id: 'rec-3',
-      name: "Twilight Banarasi",
-      price: 92000,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCiJugKfXFDlCKbEegEB33rTbyvDuGUg8Z-JSxJg8KXVRBHamyuMkcZBc9yWqq44xNiFQu0HFnmEOLqMOUZiy2jNz90pNZghSvAgsaISsgrmyEfXlrJIdLboKMOmNRCvckQdougWJwNqXNAp9IsEIIGXceQwz-n-UUp_xRmAGt_vWAuGmKW2Xkf-QhiTc2aXX-7JVQoH9q1BlLYm-5PgtK7hqmmAFuYzCSbasK2JknNwbkKMum49dB6",
-      category: "Banarasi Silk",
-      fabric: "Pure Silk",
-      color: "#1A237E",
-      rating: 5.0,
-      description: "Atmospheric royal blue Banarasi silk saree woven with real silver threads."
-    },
-    {
-      id: 'rec-4',
-      name: "Royal Ivory Heritage",
-      price: 42500,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCzVvpAjotKSrt4LyLKgVej-NdCHOwz1DJCW3qLZ4Hh2eVjvwJK95t0WkF6WQ7eagxge5fW5TYYcmcMhpwnjHO__yAoZh_tV2JN7JblQyCHCcWNrF0fkV6FiEoxgiSyNzRZUyj1TWnsPVN3OYGGqNTsu_VVhHOwpZNHDzvLGpNpauz5Q3Vf2dwpdiH0y6AX_ELy6BxeoSv-FGXs9XN_HUk5wDaBQtOgKwTJvf81M1m7aJ3ppkdqeVRM",
-      category: "Pure Silk",
-      fabric: "Pure Silk",
-      color: "#FFF9E3",
-      rating: 4.7,
-      description: "Regal ivory cream silk saree showing traditional motifs in metallic gold zari threads."
-    },
-    {
-      id: 'rec-5',
-      name: "Ruby Petal Silk",
-      price: 13000,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-hN0onELnDgdOswyfAzJdw98YnefT7Zi-Dt0g7IxzqYuKK0TaBE4ZTit86sthNhhHWaETP5U6EPkJdQ2TF8NiA7csqXaXCMDhY3VfyoT7yodibzxkenJWfVDdPFIj9YQwTe_B2qlA3e4Sg8KUXPv4QX9GkevPmAgmVVpnY1xGSJkIONEBGz60tPRpNkxygpulKi7xC5gVJ_NCnFJG5nHKVTU98HQAfzC7nM8QYjmgbIyBBYSsnJFz",
-      category: "Silk",
-      fabric: "Pure Silk",
-      color: "#6B102A",
-      rating: 4.9,
-      description: "Elegant ruby red handwoven pure silk saree adorned with heritage gold zari borders and temple motifs."
-    },
-    {
-      id: 'rec-6',
-      name: "Sapphire Dream",
-      price: 28500,
-      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCiJugKfXFDlCKbEegEB33rTbyvDuGUg8Z-JSxJg8KXVRBHamyuMkcZBc9yWqq44xNiFQu0HFnmEOLqMOUZiy2jNz90pNZghSvAgsaISsgrmyEfXlrJIdLboKMOmNRCvckQdougWJwNqXNAp9IsEIIGXceQwz-n-UUp_xRmAGt_vWAuGmKW2Xkf-QhiTc2aXX-7JVQoH9q1BlLYm-5PgtK7hqmmAFuYzCSbasK2JknNwbkKMum49dB6",
-      category: "Pure Kanjivaram",
-      fabric: "Pure Silk",
-      color: "#0F52BA",
-      description: "Breathtaking sapphire blue silk draped with authentic silver and gold threads."
-    }
-  ];
-
   return (
     <div className={styles['wishlist-page-container']}>
       {/* Toast notifications */}
@@ -133,153 +76,150 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
         </div>
       )}
 
-
       {/* Main padded content container */}
       <div className={styles['wishlist-content-wrapper']}>
 
-      {/* Statistics section */}
-      <section className={styles['stats-section']}>
-
-        <div className={styles['stats-card']}>
-          <div className={styles['stats-fill-wave']}></div>
-          <div className={styles['stats-icon-badge']}>
-            <Heart size={18} className={styles['stats-icon']} />
-          </div>
-          <span className={styles['stats-lbl']}>TOTAL ITEMS</span>
-          <span className={styles['stats-val']}>{totalItems.toString().padStart(2, '0')}</span>
-        </div>
-        <div className={styles['stats-card']}>
-          <div className={styles['stats-fill-wave']}></div>
-          <div className={styles['stats-icon-badge']}>
-            <Sparkles size={18} className={styles['stats-icon']} />
-          </div>
-          <span className={styles['stats-lbl']}>WISHLIST VALUE</span>
-          <span className={styles['stats-val']}>{formatCurrency(wishlistValue)}</span>
-        </div>
-        <div className={styles['stats-card']}>
-          <div className={styles['stats-fill-wave']}></div>
-          <div className={styles['stats-icon-badge']}>
-            <TrendingDown size={18} className={styles['stats-icon']} />
-          </div>
-          <span className={styles['stats-lbl']}>PRICE DROPS</span>
-          <span className={styles['stats-val']}>{priceDropsCount.toString().padStart(2, '0')}</span>
-        </div>
-
-        {/* Interactive Stars Layer */}
-        <div className={styles['sparkle-stars-layer']}>
-          {starPositions.map((pos, i) => (
-            <div 
-              key={i} 
-              className={`${styles['interactive-star']} ${pos.isDot ? styles['is-dot'] : ''}`}
-              style={{ left: pos.left, top: pos.top, width: pos.size, height: pos.size }}
-            >
-              {!pos.isDot && (
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 0L13.5 8.5L22 10L13.5 11.5L12 20L10.5 11.5L2 10L10.5 8.5L12 0Z" fill="#b5893d"/>
-                </svg>
-              )}
+        {/* Statistics section */}
+        <section className={styles['stats-section']}>
+          <div className={styles['stats-card']}>
+            <div className={styles['stats-fill-wave']}></div>
+            <div className={styles['stats-icon-badge']}>
+              <Heart size={18} className={styles['stats-icon']} />
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Main Wishlist Grid */}
-      <section className={styles['main-grid-section']}>
-        <div className={styles['section-heading-bar']}>
-          <h3>Handpicked Favorites</h3>
-        </div>
-
-        {wishlistItems.length === 0 ? (
-          <div className={styles['empty-fallback-box']}>
-            <Heart size={48} strokeWidth={1} className={styles['empty-heart']} />
-            <h4>Your Collection is Empty</h4>
-            <p>Begin curating your dream trousseau by adding your favorite handwoven sarees from our catalog.</p>
-            <button 
-              className={styles['explore-weaves-btn']}
-              onClick={() => setCurrentTab('catalog')}
-            >
-              EXPLORE OUR WEAVES
-            </button>
+            <span className={styles['stats-lbl']}>TOTAL ITEMS</span>
+            <span className={styles['stats-val']}>{totalItems.toString().padStart(2, '0')}</span>
           </div>
-        ) : (
-          <div className={styles['wishlist-grid']}>
-            {wishlistItems.map((item) => {
-              const hasDrop = item.oldPrice && item.oldPrice > item.price;
-              const savings = hasDrop ? item.oldPrice - item.price : 0;
-              
-              return (
-                <div key={item.id} className={styles['product-card']}>
-                  {/* Remove Close Button - Top Right */}
-                  <button 
-                    className={styles['remove-card-btn']} 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemoveFromWishlist(item.id, item.name);
-                    }}
-                    title="Remove from Wishlist"
-                  >
-                    <X size={15} />
-                  </button>
-
-                  <div className={styles['product-image-container']} onClick={() => handleProductClick(item)}>
-                    {hasDrop && <div className={styles['discount-badge']}>{Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)}% OFF</div>}
-                    <img src={item.image} alt={item.name} className={styles['product-image']} />
-                  </div>
-                  <div className={styles['product-info']}>
-                    <h3 className={styles['product-name']} onClick={() => handleProductClick(item)}>
-                      {item.name} | {item.id.toUpperCase()}
-                    </h3>
-                    <p className={styles['product-desc']}>{item.description || 'Elegant handcrafted saree perfect for special occasions.'}</p>
-                    
-                    <div className={styles['product-price-row']}>
-                      <span className={styles['current-price']}>{formatCurrency(item.price)}</span>
-                      {hasDrop && <span className={styles['old-price']}>{formatCurrency(item.oldPrice)}</span>}
-                    </div>
-                    <div 
-                      role="button" 
-                      className={styles['prebook-btn']} 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(item);
-                      }}
-                    >
-                      ADD TO BAG
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className={styles['stats-card']}>
+            <div className={styles['stats-fill-wave']}></div>
+            <div className={styles['stats-icon-badge']}>
+              <Sparkles size={18} className={styles['stats-icon']} />
+            </div>
+            <span className={styles['stats-lbl']}>WISHLIST VALUE</span>
+            <span className={styles['stats-val']}>{formatCurrency(wishlistValue)}</span>
           </div>
-        )}
-      </section>
+          <div className={styles['stats-card']}>
+            <div className={styles['stats-fill-wave']}></div>
+            <div className={styles['stats-icon-badge']}>
+              <TrendingDown size={18} className={styles['stats-icon']} />
+            </div>
+            <span className={styles['stats-lbl']}>PRICE DROPS</span>
+            <span className={styles['stats-val']}>{priceDropsCount.toString().padStart(2, '0')}</span>
+          </div>
 
-
-
-      {/* Recommended Carousel */}
-      <section className={styles['recommended-section']}>
-        <div className={styles['recommended-header']}>
-          <h3>Recommended For You</h3>
-        </div>
-
-        <div className={styles['marquee-wrapper']}>
-          <div className={styles['recommended-grid']}>
-            {[...recommendedProducts, ...recommendedProducts].map((rec, index) => (
-              <div key={`${rec.id}-${index}`} className={styles['rec-card']}>
-              <div className={styles['rec-image-box']}>
-                <img 
-                  src={rec.image} 
-                  alt={rec.name} 
-                  className={styles['rec-img']}
-                  onClick={() => handleProductClick(rec)}
-                />
+          {/* Interactive Stars Layer */}
+          <div className={styles['sparkle-stars-layer']}>
+            {starPositions.map((pos, i) => (
+              <div 
+                key={i} 
+                className={`${styles['interactive-star']} ${pos.isDot ? styles['is-dot'] : ''}`}
+                style={{ left: pos.left, top: pos.top, width: pos.size, height: pos.size }}
+              >
+                {!pos.isDot && (
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 0L13.5 8.5L22 10L13.5 11.5L12 20L10.5 11.5L2 10L10.5 8.5L12 0Z" fill="#b5893d"/>
+                  </svg>
+                )}
               </div>
-              <h5 onClick={() => handleProductClick(rec)}>{rec.name}</h5>
-              <p className={styles['rec-price']}>{formatCurrency(rec.price)}</p>
-            </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Main Wishlist Grid */}
+        <section className={styles['main-grid-section']}>
+          <div className={styles['section-heading-bar']}>
+            <h3>Handpicked Favorites</h3>
+          </div>
+
+          {wishlistItems.length === 0 ? (
+            <div className={styles['empty-fallback-box']}>
+              <Heart size={48} strokeWidth={1} className={styles['empty-heart']} />
+              <h4>Your Collection is Empty</h4>
+              <p>Begin curating your dream trousseau by adding your favorite handwoven sarees from our catalog.</p>
+              <button 
+                className={styles['explore-weaves-btn']}
+                onClick={() => setCurrentTab('catalog')}
+              >
+                EXPLORE OUR WEAVES
+              </button>
+            </div>
+          ) : (
+            <div className={styles['wishlist-grid']}>
+              {wishlistItems.map((item) => {
+                const hasDrop = item.oldPrice && item.oldPrice > item.price;
+                
+                return (
+                  <div key={item.id || item._id} className={styles['product-card']}>
+                    {/* Remove Close Button - Top Right */}
+                    <button 
+                      className={styles['remove-card-btn']} 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveFromWishlist(item.id || item._id, item.name);
+                      }}
+                      title="Remove from Wishlist"
+                    >
+                      <X size={15} />
+                    </button>
+
+                    <div className={styles['product-image-container']} onClick={() => handleProductClick(item)}>
+                      {hasDrop && <div className={styles['discount-badge']}>{Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)}% OFF</div>}
+                      <img src={item.image || item.images?.[0]?.url || '/Images/saree1.png'} alt={item.name} className={styles['product-image']} />
+                    </div>
+                    <div className={styles['product-info']}>
+                      <h3 className={styles['product-name']} onClick={() => handleProductClick(item)}>
+                        {item.name}
+                      </h3>
+                      <p className={styles['product-desc']}>{item.description || item.shortDescription || 'Elegant handcrafted saree perfect for special occasions.'}</p>
+                      
+                      <div className={styles['product-price-row']}>
+                        <span className={styles['current-price']}>{formatCurrency(item.price)}</span>
+                        {hasDrop && <span className={styles['old-price']}>{formatCurrency(item.oldPrice)}</span>}
+                      </div>
+                      <div 
+                        role="button" 
+                        className={styles['prebook-btn']} 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(item);
+                        }}
+                      >
+                        ADD TO BAG
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* Recommended Carousel */}
+        {recommendedProducts.length > 0 && (
+          <section className={styles['recommended-section']}>
+            <div className={styles['recommended-header']}>
+              <h3>Recommended For You</h3>
+            </div>
+
+            <div className={styles['marquee-wrapper']}>
+              <div className={styles['recommended-grid']}>
+                {[...recommendedProducts, ...recommendedProducts].map((rec, index) => (
+                  <div key={`${rec.id || rec._id}-${index}`} className={styles['rec-card']}>
+                    <div className={styles['rec-image-box']}>
+                      <img 
+                        src={rec.image || rec.images?.[0]?.url || '/Images/saree1.png'} 
+                        alt={rec.name} 
+                        className={styles['rec-img']}
+                        onClick={() => handleProductClick(rec)}
+                      />
+                    </div>
+                    <h5 onClick={() => handleProductClick(rec)}>{rec.name}</h5>
+                    <p className={styles['rec-price']}>{formatCurrency(rec.price)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
       </div> {/* Closing wishlist-content-wrapper */}
 
@@ -302,6 +242,50 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
           </button>
         </div>
       </section>
+
+      {/* Trust & Heritage Service Badges Section */}
+      <section className={styles['trust-badges-section']}>
+        <div className={styles['trust-badges-header']}>
+          <span className={styles['trust-subtitle']}>THE MAZHAI VAANAM ASSURANCE</span>
+          <h3>Heritage Service &amp; Quality Guarantee</h3>
+        </div>
+
+        <div className={styles['trust-badges-container']}>
+          <div className={styles['trust-badge-card']}>
+            <div className={styles['trust-badge-icon-box']}>
+              <Award size={26} className={styles['trust-badge-icon']} />
+            </div>
+            <h4>100% Silk Mark Certified</h4>
+            <p>Authentic pure Kanchipuram &amp; Banarasi silk handwoven by master heritage weavers.</p>
+          </div>
+
+          <div className={styles['trust-badge-card']}>
+            <div className={styles['trust-badge-icon-box']}>
+              <Truck size={26} className={styles['trust-badge-icon']} />
+            </div>
+            <h4>Free Insured Shipping</h4>
+            <p>Complimentary express shipping across India and fully insured global delivery.</p>
+          </div>
+
+          <div className={styles['trust-badge-card']}>
+            <div className={styles['trust-badge-icon-box']}>
+              <Video size={26} className={styles['trust-badge-icon']} />
+            </div>
+            <h4>Live Video Shopping</h4>
+            <p>Schedule a personalized 1-on-1 video call to view sarees live with our stylists.</p>
+          </div>
+
+          <div className={styles['trust-badge-card']}>
+            <div className={styles['trust-badge-icon-box']}>
+              <RotateCcw size={26} className={styles['trust-badge-icon']} />
+            </div>
+            <h4>Hassle-Free 7-Day Returns</h4>
+            <p>Easy 7-day return and exchange policy for complete confidence in your purchase.</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
+
+export default Wishlist;

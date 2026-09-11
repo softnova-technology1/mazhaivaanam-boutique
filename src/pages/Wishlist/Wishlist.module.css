@@ -1667,3 +1667,123 @@
     margin-bottom: 0 !important;
   }
 }
+
+/* Trust & Heritage Badges Section */
+.trust-badges-section {
+  padding: 64px 40px;
+  background-color: #FAF9F6;
+  border-top: 1px solid var(--border-color, #E9DDC7);
+  text-align: center;
+}
+
+.trust-badges-header {
+  margin-bottom: 40px;
+}
+
+.trust-subtitle {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #D4AF37;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.trust-badges-header h3 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--primary, #2D3326);
+  margin: 0;
+  font-weight: 400;
+}
+
+.trust-badges-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.trust-badge-card {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.trust-badge-card:hover {
+  transform: translateY(-5px);
+  border-color: #D4AF37;
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+}
+
+.trust-badge-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #FAF6ED;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: transform 0.3s ease;
+}
+
+.trust-badge-card:hover .trust-badge-icon-box {
+  transform: scale(1.08);
+  background: #D4AF37;
+}
+
+.trust-badge-icon {
+  color: #D4AF37;
+  transition: color 0.3s ease;
+}
+
+.trust-badge-card:hover .trust-badge-icon {
+  color: #ffffff;
+}
+
+.trust-badge-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: #2D3326;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+.trust-badge-card p {
+  font-size: 12.5px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 992px) {
+  .trust-badges-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .trust-badges-section {
+    padding: 36px 16px;
+  }
+  .trust-badges-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .trust-badge-card {
+    padding: 20px 16px;
+  }
+}
+

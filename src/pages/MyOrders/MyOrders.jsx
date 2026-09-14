@@ -21,10 +21,35 @@ const DUMMY_ORDERS = [];
 
 const getStatusStepIndex = (status) => {
   switch (status?.toUpperCase()) {
-    case 'CONFIRMED': return 1;
-    case 'SHIPPING': return 2;
-    case 'DELIVERED': return 3;
+    case 'CONFIRMED': case 'PENDING': case 'PROCESSING': return 1;
+    case 'PACKING': return 2;
+    case 'SHIPPING': return 3;
+    case 'DELIVERED': return 4;
     default: return 1;
+  }
+};
+
+const getStatusBadgeLabel = (status, deliveryMode) => {
+  const s = String(status || '').toUpperCase();
+  const isPickup = deliveryMode === 'pickup';
+  if (isPickup) {
+    switch (s) {
+      case 'CONFIRMED': return 'CONFIRMED';
+      case 'PACKING': return 'PACKING SAREE';
+      case 'SHIPPING': return 'READY AT STORE';
+      case 'DELIVERED': return 'PICKED UP';
+      case 'CANCELLED': return 'CANCELLED';
+      default: return s;
+    }
+  } else {
+    switch (s) {
+      case 'CONFIRMED': return 'CONFIRMED';
+      case 'PACKING': return 'PACKED & QC';
+      case 'SHIPPING': return 'IN TRANSIT';
+      case 'DELIVERED': return 'DELIVERED';
+      case 'CANCELLED': return 'CANCELLED';
+      default: return s;
+    }
   }
 };
 
@@ -55,54 +80,75 @@ export const MyOrders = ({ setCurrentTab }) => {
     const saved = localStorage.getItem('boutique_orders');
     const localOrders = saved ? JSON.parse(saved) : [];
 
+    const sanitizeOrder = (o) => {
+      const items = (o.items || []).map(i => ({
+        id: i.product?._id || i.product || i.id,
+        name: i.name,
+        price: i.price,
+        mrpPrice: i.mrpPrice,
+        oldPrice: i.oldPrice,
+        fabric: i.fabric || 'Pure Silk',
+        image: i.image || '/Images/placeholder.svg',
+        quantity: i.quantity || 1,
+      }));
+
+      const subtotal = o.subtotal || items.reduce((sum, i) => sum + (i.price * (i.quantity || 1)), 0);
+      const hasItemDiscounts = items.some(i => (i.mrpPrice && i.mrpPrice > i.price) || (i.oldPrice && i.oldPrice > i.price));
+
+      const mrpTotal = hasItemDiscounts 
+        ? (o.mrpTotal || items.reduce((sum, i) => sum + ((i.mrpPrice || i.oldPrice || i.price) * i.quantity), 0))
+        : subtotal;
+
+      const couponDisc = o.couponDiscount || 0;
+      const festivalDisc = o.discount || 0;
+      const totalSavings = hasItemDiscounts
+        ? Math.max(0, mrpTotal - subtotal + couponDisc + festivalDisc)
+        : (couponDisc + festivalDisc);
+
+      return {
+        orderId: o.orderId,
+        placedOnDate: o.placedOnDate || new Date(o.createdAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+        createdAt: o.createdAt,
+        status: o.status?.toUpperCase() || 'PROCESSING',
+        paymentStatus: o.paymentStatus || 'paid',
+        paymentMethod: o.paymentMethod || 'online',
+        shippingAddress: o.shippingAddress,
+        courier: o.courier || '',
+        trackingNumber: o.trackingNumber || '',
+        mrpTotal,
+        subtotal,
+        totalSavings,
+        finalAmount: o.finalAmount || o.totalAmount || subtotal,
+        shippingFee: o.shippingFee || 0,
+        convenienceFee: o.convenienceFee || 0,
+        giftPackCharge: o.giftPackCharge || 0,
+        giftPackaging: o.giftPackaging || (o.giftPackCharge > 0) || false,
+        giftMessage: o.giftMessage || '',
+        discount: festivalDisc,
+        couponDiscount: couponDisc,
+        couponCode: o.couponCode || '',
+        deliveryMode: o.deliveryMode || 'standard',
+        items
+      };
+    };
+
     const token = localStorage.getItem('boutique_token');
     if (token) {
       orderAPI.getMyOrders()
         .then(dbOrders => {
           if (dbOrders && dbOrders.length > 0) {
-            const normalized = dbOrders.map(o => ({
-              orderId: o.orderId,
-              placedOnDate: new Date(o.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-              createdAt: o.createdAt,
-              status: o.status?.toUpperCase() || 'PROCESSING',
-              paymentStatus: o.paymentStatus || 'paid',
-              paymentMethod: o.paymentMethod || 'online',
-              shippingAddress: o.shippingAddress,
-              courier: o.courier || '',
-              trackingNumber: o.trackingNumber || '',
-              mrpTotal: o.mrpTotal || o.totalAmount,
-              subtotal: o.subtotal || o.totalAmount,
-              totalSavings: o.totalSavings || o.discountAmount || 0,
-              finalAmount: o.totalAmount,
-              shippingFee: o.shippingFee || 0,
-              convenienceFee: o.convenienceFee || 0,
-              giftPackCharge: o.giftPackCharge || 0,
-              giftPackaging: o.giftPackaging || (o.giftPackCharge > 0) || false,
-              giftMessage: o.giftMessage || '',
-              discount: o.discount || 0,
-              couponDiscount: o.couponDiscount || 0,
-              couponCode: o.couponCode || '',
-              deliveryMode: o.deliveryMode || 'standard',
-              items: (o.items || []).map(i => ({
-                id: i.product?._id || i.product,
-                name: i.name,
-                price: i.price,
-                fabric: i.fabric || 'Pure Silk',
-                image: i.image || '/Images/placeholder.svg',
-                quantity: i.quantity || 1,
-              }))
-            }));
+            const normalized = dbOrders.map(sanitizeOrder);
             const dbOrderIds = new Set(normalized.map(o => o.orderId));
-            const uniqueLocalOrders = localOrders.filter(o => !dbOrderIds.has(o.orderId));
+            const uniqueLocalOrders = localOrders.filter(o => !dbOrderIds.has(o.orderId)).map(sanitizeOrder);
             setOrders([...normalized, ...uniqueLocalOrders]);
           } else {
-            setOrders([...localOrders]);
+            setOrders(localOrders.map(sanitizeOrder));
           }
         })
-        .catch(() => setOrders([...localOrders]))
+        .catch(() => setOrders(localOrders.map(sanitizeOrder)))
         .finally(() => setLoading(false));
     } else {
-      setOrders([...localOrders]);
+      setOrders(localOrders.map(sanitizeOrder));
       setLoading(false);
     }
   }, []);
@@ -212,6 +258,19 @@ export const MyOrders = ({ setCurrentTab }) => {
                 const isDelivered = order.status === 'DELIVERED';
                 const isExpanded = expandedOrderIds.includes(order.orderId);
                 const currentStepIndex = getStatusStepIndex(order.status);
+                const isPickup = order.deliveryMode === 'pickup';
+
+                const timelineSteps = isPickup ? [
+                  { label: 'CONFIRMED', step: 1 },
+                  { label: 'PACKING SAREE', step: 2 },
+                  { label: 'READY AT STORE', step: 3 },
+                  { label: 'PICKED UP', step: 4 }
+                ] : [
+                  { label: 'CONFIRMED', step: 1 },
+                  { label: 'PACKED & QC', step: 2 },
+                  { label: 'IN TRANSIT', step: 3 },
+                  { label: 'DELIVERED', step: 4 }
+                ];
 
                 return (
                   <article key={order.orderId} className={`${styles.orderCard} ${isExpanded ? styles.expandedCard : ''}`}>
@@ -258,7 +317,7 @@ export const MyOrders = ({ setCurrentTab }) => {
                                 </span>
                               )}
                               <span className={`${styles.statusBadge} ${isDelivered ? styles.deliveredBadge : styles.transitBadge}`}>
-                                {order.status}
+                                {getStatusBadgeLabel(order.status, order.deliveryMode)}
                               </span>
                               <svg 
                                 xmlns="http://www.w3.org/2000/svg" 
@@ -302,11 +361,7 @@ export const MyOrders = ({ setCurrentTab }) => {
                     <div className={styles.timelineWrapper}>
                       <div className={styles.timelineLine}></div>
                       <div className={styles.timelineNodesRow}>
-                        {[
-                          { label: 'CONFIRMED', step: 1 },
-                          { label: 'SHIPPING', step: 2 },
-                          { label: 'DELIVERED', step: 3 }
-                        ].map((stepObj) => {
+                        {timelineSteps.map((stepObj) => {
                           const isActive = stepObj.step <= currentStepIndex;
                           const isCurrent = stepObj.step === currentStepIndex;
 

@@ -16,17 +16,30 @@ const DEFAULT_CONFIG = {
   announcementText2: '🥻 Unveiling Authentic Kanjeevaram & Banarasi Heritage.',
   announcementText3: '📞 Book a Personalized Video Shopping Experience.',
   announcementText: '✨ Handwoven Luxury, Delivered Worldwide.',
-  announcementBgColor: '#6B102A',
+  announcementBgColor: '#4F4E22',
   announcementTextColor: '#F4E4BC',
   announcementEnabled: true,
   convenienceFee: 2,
   giftWrapPrice: 499,
 };
 
+const getInitialConfig = () => {
+  try {
+    const cached = localStorage.getItem('mv_store_config');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      return { ...DEFAULT_CONFIG, ...parsed };
+    }
+  } catch (e) {
+    console.error('Failed to parse cached store config', e);
+  }
+  return DEFAULT_CONFIG;
+};
+
 const StoreConfigContext = createContext(DEFAULT_CONFIG);
 
 export function StoreConfigProvider({ children }) {
-  const [config, setConfig] = useState(DEFAULT_CONFIG);
+  const [config, setConfig] = useState(getInitialConfig);
 
   useEffect(() => {
     fetch(`${API_BASE}/store/config`)
@@ -34,10 +47,13 @@ export function StoreConfigProvider({ children }) {
       .then((data) => {
         if (data?.success && data?.data) {
           setConfig(data.data);
+          try {
+            localStorage.setItem('mv_store_config', JSON.stringify(data.data));
+          } catch (e) {}
         }
       })
       .catch(() => {
-        // Silently fall back to defaults
+        // Silently fall back to cached / default config
       });
   }, []);
 

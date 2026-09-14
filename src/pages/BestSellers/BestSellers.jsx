@@ -4,6 +4,7 @@ import { getBadgeClass } from '../../utils/badgeHelper';
 import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star, Share2, Loader2 } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useWishlist } from '../../hooks/useWishlist';
+import { OfferTimerBadge } from '../../components/common/OfferTimerBadge/OfferTimerBadge';
 import styles from './BestSellers.module.css';
 
 export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
@@ -150,15 +151,30 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
             </div>
             
             <div className={styles['sidebar-product-list']}>
-              {liveBestSellers.slice(0, 3).map(prod => (
-                <div key={prod.id} className={styles['sidebar-product-card']} onClick={() => handleProductClick(prod)}>
-                  <img src={prod.image} alt={prod.name} loading="lazy" />
-                  <div className={styles['sidebar-product-info']}>
-                    <h5>{prod.name}</h5>
-                    <span className={styles['sidebar-price']}>₹{prod.price.toLocaleString('en-IN')}</span>
+              {liveBestSellers.slice(0, 3).map(prod => {
+                const effPrice = (prod.discountActive && prod.discountedPrice) || (prod.discountedPrice && prod.discountedPrice < prod.price)
+                  ? prod.discountedPrice
+                  : prod.price;
+                const origMrp = (prod.mrpPrice && prod.mrpPrice > effPrice) ? prod.mrpPrice : (prod.oldPrice && prod.oldPrice > effPrice) ? prod.oldPrice : (effPrice < prod.price ? prod.price : null);
+                const hasDisc = Boolean(origMrp && origMrp > effPrice);
+
+                return (
+                  <div key={prod.id || prod._id} className={styles['sidebar-product-card']} onClick={() => handleProductClick({ ...prod, price: effPrice })}>
+                    <img src={prod.image} alt={prod.name} loading="lazy" />
+                    <div className={styles['sidebar-product-info']}>
+                      <h5>{prod.name}</h5>
+                      <span className={styles['sidebar-price']}>
+                        ₹{effPrice.toLocaleString('en-IN')}
+                        {hasDisc && (
+                          <span style={{ textDecoration: 'line-through', color: '#94a3b8', marginLeft: 6, fontSize: '11px', fontWeight: 400 }}>
+                            ₹{origMrp.toLocaleString('en-IN')}
+                          </span>
+                        )}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Promo banner */}
@@ -234,19 +250,33 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
           {/* PRODUCT GRID */}
           <div className={`${styles['product-grid']} ${styles[`grid-${gridView}`]}`}>
             {visibleProducts.map((product) => {
-              const hasDiscount = product.oldPrice && product.oldPrice > product.price;
-              const discountPercentage = hasDiscount ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
+              const effectivePrice = (product.discountActive && product.discountedPrice) || (product.discountedPrice && product.discountedPrice < product.price)
+                ? product.discountedPrice
+                : product.price;
+
+              const originalMrp = (product.mrpPrice && product.mrpPrice > effectivePrice) ? product.mrpPrice : (product.oldPrice && product.oldPrice > effectivePrice) ? product.oldPrice : (effectivePrice < product.price ? product.price : null);
+              const hasDiscount = Boolean(originalMrp && originalMrp > effectivePrice);
+              const discountPct = hasDiscount ? Math.round(((originalMrp - effectivePrice) / originalMrp) * 100) : 0;
+              const itemToPass = { ...product, price: effectivePrice, discountedPrice: effectivePrice };
               
               return (
                 <div 
-                  key={product.id} 
+                  key={product.id || product._id} 
                   className={`${styles['product-card']} ${gridView === 'list' ? styles['list-card'] : ''}`}
-                  onClick={() => handleProductClick(product)}
+                  onClick={() => handleProductClick(itemToPass)}
                 >
                   <div className={styles['product-image-container']}>
                     <img src={product.image} alt={product.name} loading="lazy" className={styles['product-image']} />
                     
-                    <span className={`${styles['bestseller-badge']} ${getBadgeClass('BESTSELLER')}`}>BESTSELLER</span>
+                    {product.stock?.isOutOfStock ? (
+                      <span className={`${styles['bestseller-badge']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
+                    ) : (
+                      <OfferTimerBadge
+                        endDate={product.discountEndDate || product.discount?.endDate || product.limitedOfferEntry?.endDate}
+                        fallbackLabel={product.discountLabel || product.discount?.label || product.tag || 'BESTSELLER'}
+                        className={styles['bestseller-badge']}
+                      />
+                    )}
                     
                     <div 
                       className={styles['share-btn']}
@@ -282,19 +312,19 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                       <h3 className={styles['product-title']}>{product.name}</h3>
                     </div>
 
-                    <p className={styles['product-desc']}>{product.description}</p>
+                    <p className={styles['product-desc']}>{product.shortDescription || product.description}</p>
 
                     <div className={styles['price-row']}>
                       <span className={styles['current-price']}>
-                        ₹{product.price.toLocaleString('en-IN')}
+                        ₹{effectivePrice.toLocaleString('en-IN')}
                       </span>
                       {hasDiscount && (
                         <>
                           <span className={styles['old-price']}>
-                            ₹{product.oldPrice.toLocaleString('en-IN')}
+                            ₹{originalMrp.toLocaleString('en-IN')}
                           </span>
                           <span className={styles['discount-pill']}>
-                            {discountPercentage}% OFF
+                            {discountPct}% OFF
                           </span>
                         </>
                       )}
@@ -304,7 +334,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                       className={styles['cart-btn']}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleAddToCart(product);
+                        handleAddToCart(itemToPass);
                       }}
                     >
                       ADD TO CART

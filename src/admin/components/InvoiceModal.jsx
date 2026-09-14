@@ -1,6 +1,39 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Printer, Download, X, CheckCircle, Package } from 'lucide-react';
+
+function InvoiceItemImage({ item }) {
+  const getSafeImage = () => {
+    const raw = item?.image 
+      || item?.images?.[0]?.url 
+      || (typeof item?.images?.[0] === 'string' ? item?.images[0] : null)
+      || item?.product?.image 
+      || item?.product?.images?.[0]?.url 
+      || (typeof item?.product?.images?.[0] === 'string' ? item?.product?.images[0] : null);
+
+    if (raw && typeof raw === 'string' && !raw.startsWith('blob:') && !raw.includes('placeholder')) {
+      if (raw.startsWith('http') || raw.startsWith('/Images') || raw.startsWith('data:')) {
+        return raw;
+      }
+    }
+    return '/Images/saree12.png';
+  };
+
+  const [imgSrc, setImgSrc] = useState(getSafeImage());
+
+  return (
+    <img 
+      src={imgSrc} 
+      alt="" 
+      style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 6, display: 'block', margin: '0 auto', border: '1px solid #cbd5e1', background: '#f8fafc' }}
+      onError={() => {
+        if (imgSrc !== '/Images/saree12.png') {
+          setImgSrc('/Images/saree12.png');
+        }
+      }}
+    />
+  );
+}
 
 function numberToWords(num) {
   const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
@@ -27,11 +60,30 @@ export default function InvoiceModal({ order, onClose }) {
     year: 'numeric',
   });
 
-  const subtotal = order.items?.reduce((sum, it) => sum + (it.price * (it.quantity || 1)), 0) || order.totalAmount || 0;
+  const subtotal = order.subtotal || order.items?.reduce((sum, it) => sum + ((it.price || 0) * (it.quantity || 1)), 0) || order.totalAmount || 0;
   const couponDiscount = order.couponDiscount || 0;
-  const shippingFee = order.shippingFee || 0;
-  const giftPackCharge = order.giftPackaging ? (order.giftPackCharge || 499) : 0;
-  const grandTotal = order.totalAmount || subtotal;
+  let giftPackCharge = order.giftPackCharge !== undefined && order.giftPackCharge !== null && order.giftPackCharge > 0
+    ? order.giftPackCharge
+    : order.giftPackAddon !== undefined && order.giftPackAddon !== null && order.giftPackAddon > 0
+    ? order.giftPackAddon
+    : (order.giftPackaging ? 60 : 0);
+  const convenienceFee = order.convenienceFee !== undefined && order.convenienceFee !== null
+    ? order.convenienceFee
+    : 2;
+
+  let baseBreakdownSum = subtotal - couponDiscount + giftPackCharge + convenienceFee;
+  const grandTotal = order.finalAmount || order.totalAmount || baseBreakdownSum;
+  let shippingFee = (order.shippingFee !== undefined && order.shippingFee !== null && order.shippingFee > 0) ? order.shippingFee : 0;
+
+  if (grandTotal > baseBreakdownSum && order.deliveryMode !== 'pickup') {
+    const diff = grandTotal - baseBreakdownSum;
+    if (giftPackCharge === 0 && diff >= 120) {
+      giftPackCharge = 60;
+      shippingFee = diff - 60;
+    } else if (shippingFee === 0) {
+      shippingFee = diff;
+    }
+  }
   
   // Saree standard GST rate in India is 5% (2.5% CGST + 2.5% SGST)
   const taxableAmount = Math.round(grandTotal / 1.05);
@@ -134,8 +186,8 @@ export default function InvoiceModal({ order, onClose }) {
                 <div>Invoice No: <strong>{invoiceNumber}</strong></div>
                 <div>Invoice Date: <strong>{invoiceDate}</strong></div>
                 <div>Order ID: <strong>{order.orderId || order._id}</strong></div>
-                <div>Payment Mode: <strong style={{ textTransform: 'uppercase' }}>{order.paymentMethod || 'Prepaid / Online'}</strong></div>
-                <div>Status: <strong style={{ color: order.paymentStatus === 'paid' ? '#16a34a' : '#ea580c' }}>{order.paymentStatus?.toUpperCase()}</strong></div>
+                <div>Payment Mode: <strong style={{ textTransform: 'uppercase' }}>{order.paymentMethod ? order.paymentMethod.toUpperCase() : 'PREPAID / ONLINE'}</strong></div>
+                <div>Status: <strong style={{ color: (order.paymentStatus === 'paid' || order.status === 'CONFIRMED' || order.status === 'IN TRANSIT' || order.status === 'DELIVERED') ? '#16a34a' : '#ea580c' }}>{(order.paymentStatus || order.status || 'PAID').toUpperCase()}</strong></div>
               </div>
             </div>
           </div>
@@ -147,11 +199,11 @@ export default function InvoiceModal({ order, onClose }) {
                 BILLED TO / CUSTOMER
               </div>
               <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#0f172a' }}>
-                {order.shippingAddress?.fullName || `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim() || 'Valued Customer'}
+                {order.fullName || order.shippingAddress?.fullName || (order.user ? `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() : '') || 'Valued Customer'}
               </div>
               <div style={{ fontSize: '0.82rem', color: '#475569', lineHeight: 1.5, marginTop: 4 }}>
-                Email: {order.user?.email || order.shippingAddress?.email || 'N/A'}<br />
-                Phone: {order.shippingAddress?.phone || order.user?.phone || 'N/A'}
+                Email: {order.email || order.shippingAddress?.email || order.user?.email || 'N/A'}<br />
+                Phone: {order.phone || order.shippingAddress?.phone || order.user?.phone || 'N/A'}
               </div>
             </div>
 
@@ -160,7 +212,11 @@ export default function InvoiceModal({ order, onClose }) {
                 SHIPPED TO / DELIVERY ADDRESS
               </div>
               <div style={{ fontSize: '0.82rem', color: '#334155', lineHeight: 1.5 }}>
-                {order.shippingAddress?.addressLine1 || order.shippingAddress?.addressLine ? (
+                {order.deliveryMode === 'pickup' || !order.shippingAddress?.addressLine || order.shippingAddress?.addressLine === '-' || order.shippingAddress?.addressLine1 === '-' ? (
+                  <>
+                    Self Store Pickup (In-Store Pickup)
+                  </>
+                ) : (
                   <>
                     {order.shippingAddress.addressLine1 || order.shippingAddress.addressLine}<br />
                     {order.shippingAddress.landmark && `${order.shippingAddress.landmark}, `}
@@ -170,8 +226,6 @@ export default function InvoiceModal({ order, onClose }) {
                     {(order.shippingAddress.postalCode || order.shippingAddress.pinCode) && `- ${order.shippingAddress.postalCode || order.shippingAddress.pinCode}`}<br />
                     Country: India
                   </>
-                ) : (
-                  <span style={{ fontWeight: 600, color: '#0f172a' }}>Store Pickup</span>
                 )}
               </div>
             </div>
@@ -195,11 +249,7 @@ export default function InvoiceModal({ order, onClose }) {
                 <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
                   <td style={{ padding: '12px', textAlign: 'center', color: '#64748b' }}>{idx + 1}</td>
                   <td style={{ padding: '8px', textAlign: 'center' }}>
-                    {item.image ? (
-                      <img src={item.image} alt={item.name} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4, display: 'block', margin: '0 auto' }} />
-                    ) : (
-                      <div style={{ width: 40, height: 40, background: '#f1f5f9', borderRadius: 4, margin: '0 auto' }}></div>
-                    )}
+                    <InvoiceItemImage item={item} />
                   </td>
                   <td style={{ padding: '12px' }}>
                     <div style={{ fontWeight: 600, color: '#0f172a' }}>{item.name}</div>
@@ -217,7 +267,7 @@ export default function InvoiceModal({ order, onClose }) {
           </table>
 
           {/* Tax Breakdown & Totals */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24, marginBottom: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24, marginBottom: 16 }}>
             {/* GST Summary & Amount in Words */}
             <div style={{ padding: 14, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: '0.8rem' }}>
               <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: 6 }}>GST Tax Breakdown (5% Apparel Rate):</div>
@@ -257,15 +307,14 @@ export default function InvoiceModal({ order, onClose }) {
                   {shippingFee > 0 ? `₹${shippingFee.toLocaleString('en-IN')}` : 'FREE'}
                 </span>
               </div>
-              {giftPackCharge > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
+                <span style={{ color: '#64748b' }}>Convenience Fee:</span>
+                <span style={{ fontWeight: 600 }}>₹{convenienceFee.toLocaleString('en-IN')}</span>
+              </div>
+              {(order.giftPackaging || giftPackCharge > 0) && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
                   <span style={{ color: '#64748b' }}>🎁 Gift Packaging:</span>
                   <span style={{ fontWeight: 600 }}>₹{giftPackCharge.toLocaleString('en-IN')}</span>
-                </div>
-              )}
-              {order.giftMessage && (
-                <div style={{ padding: '6px 0 6px', borderBottom: '1px solid #f1f5f9', fontSize: '0.78rem', color: '#6B102A', fontStyle: 'italic' }}>
-                  🎁 Gift message: "{order.giftMessage}"
                 </div>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderTop: '2px solid #0f172a', marginTop: 8, fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>
@@ -274,6 +323,18 @@ export default function InvoiceModal({ order, onClose }) {
               </div>
             </div>
           </div>
+
+          {/* Full Width Gift Card Message */}
+          {order.giftMessage && (
+            <div style={{ padding: '12px 16px', background: '#fffbeb', borderRadius: 8, border: '1px solid #fde68a', marginBottom: 20, width: '100%', boxSizing: 'border-box' }}>
+              <div style={{ fontWeight: 700, color: '#b45309', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem' }}>
+                <span>🎁</span> GIFT CARD MESSAGE:
+              </div>
+              <div style={{ color: '#78350f', fontStyle: 'italic', fontSize: '0.88rem', lineHeight: 1.5, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                "{order.giftMessage.replace(/^["']+|["']+$/g, '')}"
+              </div>
+            </div>
+          )}
 
           {/* Footer & Signature */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: 20, marginTop: 30, fontSize: '0.75rem', color: '#64748b' }}>

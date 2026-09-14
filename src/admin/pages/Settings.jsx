@@ -77,16 +77,25 @@ export default function Settings() {
         giftWrapPrice: Number(config.giftWrapPrice),
       });
       setSaved(true);
+      
+      let tabName = 'Store Settings';
+      if (activeTab === 'announcement') tabName = 'Announcement Bar';
+      else if (activeTab === 'general') tabName = 'General Store Details';
+      else if (activeTab === 'social') tabName = 'Social Media Links';
+      else if (activeTab === 'fees') tabName = 'Fees & Charges';
+
       setToast({
         type: 'success',
-        message: '🎉 Announcement Bar & Settings saved successfully!'
+        message: `🎉 ${tabName} saved successfully!`
       });
       setTimeout(() => setSaved(false), 4000);
+      setTimeout(() => setToast(null), 4500);
     } catch (err) {
       setToast({
         type: 'error',
         message: `❌ Not Saved: ${err.response?.data?.message || err.message || 'Failed to save settings. Please try again.'}`
       });
+      setTimeout(() => setToast(null), 6000);
     }
     setSaving(false);
   };
@@ -100,7 +109,69 @@ export default function Settings() {
   ];
 
   return (
-    <div className="page-container" style={{ paddingBottom: '80px' }}>
+    <div className="page-container" style={{ paddingBottom: '80px', position: 'relative' }}>
+      {/* Floating Side Toast Notification (Pops up from Top-Right Corner) */}
+      {toast && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '24px',
+            right: '24px',
+            zIndex: 99999,
+            padding: '16px 22px',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            background: toast.type === 'success' 
+              ? 'linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%)' 
+              : 'linear-gradient(135deg, #5c1d24 0%, #842029 100%)',
+            color: '#ffffff',
+            borderLeft: `6px solid ${toast.type === 'success' ? '#52b788' : '#ea868f'}`,
+            boxShadow: '0 14px 36px rgba(0,0,0,0.3)',
+            fontWeight: '600',
+            fontSize: '0.92rem',
+            animation: 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            minWidth: '320px',
+            maxWidth: '460px'
+          }}
+        >
+          {toast.type === 'success' ? (
+            <CheckCircle2 size={24} style={{ color: '#52b788', flexShrink: 0 }} />
+          ) : (
+            <AlertCircle size={24} style={{ color: '#ea868f', flexShrink: 0 }} />
+          )}
+          <span style={{ flex: 1, lineHeight: 1.4 }}>{toast.message}</span>
+          <button
+            onClick={() => setToast(null)}
+            style={{ 
+              background: 'transparent', 
+              border: 'none', 
+              color: 'rgba(255,255,255,0.7)', 
+              cursor: 'pointer', 
+              fontSize: '1.2rem', 
+              fontWeight: 'bold', 
+              padding: '0 4px', 
+              lineHeight: 1 
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+      <style>{`
+        @keyframes slideInRight {
+          from {
+            transform: translateX(120%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
+
       <div className="page-header" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h2 className="page-title">Store Settings</h2>
@@ -154,42 +225,6 @@ export default function Settings() {
             </div>
           ) : (
             <div className="card">
-              {/* Notification Banner (Saved / Error Message) */}
-              {toast && (
-                <div
-                  style={{
-                    marginBottom: '20px',
-                    padding: '14px 18px',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '12px',
-                    background: toast.type === 'success' ? '#1b4332' : '#5c1d24',
-                    color: '#ffffff',
-                    border: `1px solid ${toast.type === 'success' ? '#2d6a4f' : '#842029'}`,
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                    fontWeight: '500',
-                    fontSize: '0.9rem',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    {toast.type === 'success' ? (
-                      <CheckCircle2 size={20} style={{ color: '#52b788', flexShrink: 0 }} />
-                    ) : (
-                      <AlertCircle size={20} style={{ color: '#ea868f', flexShrink: 0 }} />
-                    )}
-                    <span>{toast.message}</span>
-                  </div>
-                  <button
-                    onClick={() => setToast(null)}
-                    style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 'bold', padding: '0 4px' }}
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-
               {/* Announcement Bar Tab */}
               {activeTab === 'announcement' && (
                 <div>

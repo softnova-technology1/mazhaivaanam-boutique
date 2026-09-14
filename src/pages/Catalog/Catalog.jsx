@@ -5,6 +5,7 @@ import { formatCurrency } from '../../utils/formatters';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X, Loader2 } from 'lucide-react';
 import { getProducts, getFabrics } from '../../services/api';
+import { OfferTimerBadge } from '../../components/common/OfferTimerBadge/OfferTimerBadge';
 import styles from './Catalog.module.css';
 
 // Export empty fallback for backward compatibility
@@ -24,7 +25,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedFabric, setSelectedFabric] = useState('All');
   const [selectedAvailability, setSelectedAvailability] = useState('All');
-  const [maxPrice, setMaxPrice] = useState(50000);
+  const [maxPrice, setMaxPrice] = useState(500000);
   const [selectedSort, setSelectedSort] = useState('featured');
   const { wishlist, toggleWishlist } = useWishlist();
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -49,32 +50,40 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     };
   }, [isMobileFilterOpen]);
 
-  // Initial fetch from MongoDB API and fabrics
-  useEffect(() => {
-    let isMounted = true;
+  const fetchCatalogData = () => {
     setLoading(true);
     Promise.all([
-      getProducts({ limit: 100 }),
+      getProducts({ limit: 200 }),
       getFabrics()
     ]).then(([prodRes, fabList]) => {
-      if (isMounted) {
-        const now = new Date();
-        const list = (prodRes.products || []).filter(p => {
-          // Hide products where limited offer has expired
-          const lo = p.limitedOfferEntry;
-          if (lo && lo.isActive && lo.endDate && new Date(lo.endDate) < now) return false;
-          return true;
-        });
-        setMasterProducts(list);
-        setProducts(list);
-        setFabrics(fabList || []);
-        setLoading(false);
-      }
+      const now = new Date();
+      const list = (prodRes.products || []).filter(p => {
+        // Hide products where limited offer has expired
+        const lo = p.limitedOfferEntry;
+        if (lo && lo.isActive && lo.endDate && new Date(lo.endDate) < now) return false;
+        return true;
+      });
+
+      const highestPrice = list.reduce((max, item) => Math.max(max, item.price || 0), 500000);
+      setMaxPrice(highestPrice);
+
+      setMasterProducts(list);
+      setProducts(list);
+      setFabrics(fabList || []);
+      setLoading(false);
     }).catch(err => {
       console.error('Failed to load data from API:', err);
-      if (isMounted) setLoading(false);
+      setLoading(false);
     });
-    return () => { isMounted = false; };
+  };
+
+  // Initial fetch from MongoDB API and fabrics
+  useEffect(() => {
+    fetchCatalogData();
+    window.addEventListener('product-updated', fetchCatalogData);
+    return () => {
+      window.removeEventListener('product-updated', fetchCatalogData);
+    };
   }, []);
 
   useEffect(() => {
@@ -671,9 +680,11 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         {product.stock?.isOutOfStock ? (
                           <span className={`${styles['badge-tag']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
                         ) : (
-                          product.tag && (
-                            <span className={`${styles['badge-tag']} ${getBadgeClass(product.tag)}`}>{product.tag}</span>
-                          )
+                          <OfferTimerBadge
+                            endDate={product.discountEndDate || product.discount?.endDate || product.limitedOfferEntry?.endDate}
+                            fallbackLabel={product.discountLabel || product.discount?.label || product.tag}
+                            className={styles['badge-tag']}
+                          />
                         )}
                         <div
                           className={styles['share-btn']}
@@ -723,7 +734,12 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         <div className={styles['price-row']}>
                           <span className={styles['current-price']}>{formatCurrency(effectivePrice)}</span>
                           {hasDiscount && (
-                            <span className={styles['old-price']}>{formatCurrency(originalMrp)}</span>
+                            <>
+                              <span className={styles['old-price']}>{formatCurrency(originalMrp)}</span>
+                              <span className={styles['discount-pill']}>
+                                {discountPct}% OFF
+                              </span>
+                            </>
                           )}
                         </div>
                         {product.stock?.isOutOfStock ? (

@@ -129,6 +129,7 @@ export const reviewAPI = {
 export const contactAPI = {
   getAll: (status = '') => request(`/admin/inquiries${status ? '?status=' + status : ''}`),
   reply: (id, reply) => request(`/admin/inquiries/${id}/reply`, { method: 'PUT', body: { reply } }),
+  delete: (id) => request(`/admin/inquiries/${id}`, { method: 'DELETE' }),
 };
 
 // ====== UPLOAD ======

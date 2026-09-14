@@ -112,10 +112,18 @@ export default function ShippingLabelModal({ order, onClose }) {
                 <div className={styles.sectionTitle}>To:</div>
                 <div className={styles.addressText}>
                   <div className={styles.customerName}>{customerName}</div>
-                  {addressLine}<br />
-                  {landmark && <>{landmark}<br /></>}
-                  {city}, {state} {pincode}<br />
-                  India<br />
+                  {order.deliveryMode === 'pickup' || !addressLine || addressLine === '-' ? (
+                    <>
+                      Self Store Pickup (In-Store Pickup)<br />
+                    </>
+                  ) : (
+                    <>
+                      {addressLine}<br />
+                      {landmark && <>{landmark}<br /></>}
+                      {city}, {state} {pincode}<br />
+                      India<br />
+                    </>
+                  )}
                   T: +91 {phone}
                 </div>
               </div>

@@ -6,11 +6,11 @@ import ShippingLabelModal from '../components/ShippingLabelModal.jsx';
 import {
   Search, ChevronDown, ChevronUp, Truck, MapPin, ShoppingBag, Clock,
   CheckCircle, Check, Navigation, XCircle, Download, FileText, CheckSquare,
-  Square, RefreshCw, Send, Printer, Gift
+  Square, RefreshCw, Send, Printer, Gift, X
 } from 'lucide-react';
 
-const STATUSES = ['', 'CONFIRMED', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
-const STATUS_COLORS = { CONFIRMED: 'info', SHIPPING: 'primary', DELIVERED: 'success', CANCELLED: 'error' };
+const STATUSES = ['', 'CONFIRMED', 'PACKING', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
+const STATUS_COLORS = { CONFIRMED: 'info', PACKING: 'warning', SHIPPING: 'primary', DELIVERED: 'success', CANCELLED: 'error' };
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -49,6 +49,7 @@ export default function Orders() {
   // Invoice & Shipping Label Modal state
   const [invoiceOrder, setInvoiceOrder] = useState(null);
   const [shippingLabelOrder, setShippingLabelOrder] = useState(null);
+  const [selectedGiftMessage, setSelectedGiftMessage] = useState(null);
 
   useEffect(() => { loadStats(); }, []);
   useEffect(() => { loadOrders(); }, [page, statusFilter, paymentStatusFilter, dateFilter, sortOrder]);
@@ -82,7 +83,10 @@ export default function Orders() {
   };
 
   const handleStatusUpdate = async (orderId) => {
-    if (updateForm.status === 'SHIPPING') {
+    const targetOrder = orders.find(o => o.orderId === orderId || o._id === orderId);
+    const isPickupOrder = targetOrder?.deliveryMode === 'pickup';
+
+    if (updateForm.status === 'SHIPPING' && !isPickupOrder) {
       if (!updateForm.trackingNumber.trim()) {
         showToast('Tracking number is required when marking as SHIPPING.', 'warning');
         return;
@@ -94,6 +98,29 @@ export default function Orders() {
     }
     try {
       await orderAPI.updateStatus(orderId, updateForm);
+
+      // LocalStorage sync for instant client-side update
+      try {
+        const saved = localStorage.getItem('boutique_orders');
+        if (saved) {
+          const list = JSON.parse(saved);
+          const updatedList = list.map(item => {
+            if (item.orderId === orderId || item._id === orderId || (targetOrder && item.orderId === targetOrder.orderId)) {
+              return {
+                ...item,
+                status: updateForm.status,
+                courier: updateForm.courier || item.courier,
+                trackingNumber: updateForm.trackingNumber || item.trackingNumber
+              };
+            }
+            return item;
+          });
+          localStorage.setItem('boutique_orders', JSON.stringify(updatedList));
+        }
+      } catch (e) {
+        console.error('LocalStorage sync error:', e);
+      }
+
       showToast('Order status updated successfully!', 'success');
       setExpanded(null);
       loadOrders();
@@ -374,7 +401,13 @@ export default function Orders() {
                       </td>
                       <td style={{ fontWeight: 600 }}>₹{order.totalAmount?.toLocaleString('en-IN')}</td>
                       <td><span className={`badge ${order.paymentStatus === 'paid' ? 'badge-success' : order.paymentStatus === 'failed' ? 'badge-danger' : 'badge-warning'}`}>{order.paymentStatus}</span></td>
-                      <td><span className={`badge badge-${STATUS_COLORS[order.status] || 'neutral'}`}>{order.status}</span></td>
+                      <td>
+                        <span className={`badge badge-${STATUS_COLORS[order.status] || 'neutral'}`}>
+                          {order.deliveryMode === 'pickup'
+                            ? (order.status === 'SHIPPING' ? 'READY AT STORE 🏪' : order.status === 'DELIVERED' ? 'PICKED UP 🎉' : order.status === 'PACKING' ? 'PACKING SAREE 📦' : order.status)
+                            : (order.status === 'SHIPPING' ? 'IN TRANSIT 🚚' : order.status)}
+                        </span>
+                      </td>
                       <td style={{ color: 'var(--text-muted)' }}>{new Date(order.createdAt).toLocaleDateString('en-IN')}</td>
                       <td style={{ textAlign: 'right' }}>
                         <button
@@ -416,28 +449,71 @@ export default function Orders() {
                                 {/* Gift Packaging — shown directly under items */}
                                 {order.giftPackaging && (
                                   <div style={{
-                                    marginTop: 12,
-                                    padding: '10px 14px',
+                                    marginTop: 10,
+                                    padding: '10px 12px',
                                     background: 'rgba(200, 163, 77, 0.12)',
-                                    border: '1px solid rgba(200, 163, 77, 0.5)',
+                                    border: '1px solid rgba(200, 163, 77, 0.4)',
                                     borderRadius: 8,
                                     display: 'flex',
                                     alignItems: 'flex-start',
-                                    gap: 10
+                                    gap: 10,
+                                    width: '100%',
+                                    maxWidth: '300px',
+                                    boxSizing: 'border-box',
+                                    overflow: 'hidden'
                                   }}>
                                     <Gift size={18} color="#C8A34D" style={{ flexShrink: 0, marginTop: 1 }} />
-                                    <div>
-                                      <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#C8A34D', marginBottom: 2 }}>
-                                        🎁 GIFT PACKAGING REQUESTED
-                                      </div>
+                                    <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
                                       {order.giftMessage ? (
-                                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
-                                          "{order.giftMessage}"
-                                        </div>
+                                        (() => {
+                                          const rawMsg = order.giftMessage.replace(/^["']+|["']+$/g, '');
+                                          const isLong = rawMsg.length > 40;
+                                          const truncated = isLong ? rawMsg.substring(0, 40) + '...' : rawMsg;
+                                          return (
+                                            <>
+                                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
+                                                <div style={{ fontWeight: 700, fontSize: '0.78rem', color: '#C8A34D', whiteSpace: 'nowrap' }}>
+                                                  🎁 GIFT PACKAGING REQUESTED
+                                                </div>
+                                                <button
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setSelectedGiftMessage({
+                                                      orderId: order.orderId,
+                                                      message: rawMsg,
+                                                      customer: order.shippingAddress?.fullName || (order.user ? `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() : '')
+                                                    });
+                                                  }}
+                                                  style={{
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    color: '#C8A34D',
+                                                    fontWeight: 700,
+                                                    cursor: 'pointer',
+                                                    fontSize: '0.75rem',
+                                                    textDecoration: 'underline',
+                                                    padding: 0,
+                                                    flexShrink: 0
+                                                  }}
+                                                >
+                                                  ..more
+                                                </button>
+                                              </div>
+                                              <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', fontStyle: 'italic', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                                                "{truncated}"
+                                              </div>
+                                            </>
+                                          );
+                                        })()
                                       ) : (
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                          No message provided
-                                        </div>
+                                        <>
+                                          <div style={{ fontWeight: 700, fontSize: '0.78rem', color: '#C8A34D', marginBottom: 2 }}>
+                                            🎁 GIFT PACKAGING REQUESTED
+                                          </div>
+                                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                            No message provided
+                                          </div>
+                                        </>
                                       )}
                                       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>
                                         Packaging charge: ₹{order.giftPackCharge || 499}
@@ -450,14 +526,39 @@ export default function Orders() {
                               {/* Address */}
                               <div>
                                 <h4 style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                                  <MapPin size={14} style={{ display: 'inline', verticalAlign: -2 }} /> Shipping Address
+                                  <MapPin size={14} style={{ display: 'inline', verticalAlign: -2 }} /> 
+                                  {order.deliveryMode === 'pickup' ? 'Delivery Mode / Pickup Info' : 'Shipping Address'}
                                 </h4>
                                 <div style={{ fontSize: '0.85rem', lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-                                  <strong>{order.shippingAddress?.fullName}</strong><br/>
-                                  {order.shippingAddress?.addressLine1 || order.shippingAddress?.addressLine}<br/>
-                                  {order.shippingAddress?.landmark && <>{order.shippingAddress.landmark}<br/></>}
-                                  {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.postalCode || order.shippingAddress?.pinCode}<br/>
-                                  📞 {order.shippingAddress?.phone}
+                                  <strong>{order.shippingAddress?.fullName || (order.user ? `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() : 'Customer')}</strong><br/>
+                                  {order.deliveryMode === 'pickup' || !order.shippingAddress?.addressLine || order.shippingAddress?.addressLine === '-' || order.shippingAddress?.addressLine1 === '-' ? (
+                                    <div style={{ margin: '4px 0 6px' }}>
+                                      <span style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: 4,
+                                        padding: '3px 10px',
+                                        background: 'rgba(79, 78, 34, 0.12)',
+                                        border: '1px solid #4F4E22',
+                                        color: '#4F4E22',
+                                        borderRadius: 12,
+                                        fontSize: '0.78rem',
+                                        fontWeight: 700
+                                      }}>
+                                        🏪 SELF STORE PICKUP (In-Store Pickup)
+                                      </span>
+                                      <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: 2 }}>
+                                        Customer will pick up directly from store.
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      {order.shippingAddress?.addressLine1 || order.shippingAddress?.addressLine}<br/>
+                                      {order.shippingAddress?.landmark && <>{order.shippingAddress.landmark}<br/></>}
+                                      {order.shippingAddress?.city && `${order.shippingAddress.city}, `}{order.shippingAddress?.state} {order.shippingAddress?.postalCode || order.shippingAddress?.pinCode ? `- ${order.shippingAddress.postalCode || order.shippingAddress?.pinCode}` : ''}<br/>
+                                    </>
+                                  )}
+                                  {order.shippingAddress?.phone && <div>📞 {order.shippingAddress.phone}</div>}
                                 </div>
                               </div>
 
@@ -476,11 +577,27 @@ export default function Orders() {
                                   </button>
                                 </div>
                                 <select className="form-select" style={{ marginBottom: 8 }} value={updateForm.status} onChange={e => setUpdateForm(f => ({ ...f, status: e.target.value }))}>
-                                  {STATUSES.filter(Boolean).map(s => <option key={s} value={s}>{s}</option>)}
+                                  {order.deliveryMode === 'pickup' ? (
+                                    <>
+                                      <option value="CONFIRMED">1. CONFIRMED (Order Placed)</option>
+                                      <option value="PACKING">2. PACKING SAREE (Preparing Box)</option>
+                                      <option value="SHIPPING">3. READY AT STORE (Peravurani Boutique)</option>
+                                      <option value="DELIVERED">4. PICKED UP (Completed by Customer)</option>
+                                      <option value="CANCELLED">CANCELLED</option>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <option value="CONFIRMED">1. CONFIRMED (Order Placed)</option>
+                                      <option value="PACKING">2. PACKED & QC (Packaging Completed)</option>
+                                      <option value="SHIPPING">3. IN TRANSIT (Handed to Courier)</option>
+                                      <option value="DELIVERED">4. DELIVERED (Delivered to Doorstep)</option>
+                                      <option value="CANCELLED">CANCELLED</option>
+                                    </>
+                                  )}
                                 </select>
 
-                                {/* Tracking & Courier — visible & required only when SHIPPING */}
-                                {updateForm.status === 'SHIPPING' && (
+                                {/* Tracking & Courier — visible & required only when SHIPPING for home delivery */}
+                                {updateForm.status === 'SHIPPING' && order.deliveryMode !== 'pickup' && (
                                   <>
                                     <div style={{ position: 'relative', marginBottom: 8 }}>
                                       <input
@@ -507,8 +624,22 @@ export default function Orders() {
                                   </>
                                 )}
 
-                                <input className="form-input" placeholder="Status note (optional)" style={{ marginBottom: 10 }} value={updateForm.note} onChange={e => setUpdateForm(f => ({ ...f, note: e.target.value }))} />
-                                <button className="btn btn-primary btn-sm" onClick={() => handleStatusUpdate(order.orderId || order._id)}>Save Updates</button>
+                                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 4 }}>
+                                  <input
+                                    className="form-input"
+                                    placeholder="Status note (optional)"
+                                    style={{ flex: 1, minWidth: 0, margin: 0 }}
+                                    value={updateForm.note}
+                                    onChange={e => setUpdateForm(f => ({ ...f, note: e.target.value }))}
+                                  />
+                                  <button
+                                    className="btn btn-primary btn-sm"
+                                    style={{ flexShrink: 0, whiteSpace: 'nowrap' }}
+                                    onClick={() => handleStatusUpdate(order.orderId || order._id)}
+                                  >
+                                    Save Updates
+                                  </button>
+                                </div>
                               </div>
                             </div>
 
@@ -568,6 +699,86 @@ export default function Orders() {
           order={invoiceOrder}
           onClose={() => setInvoiceOrder(null)}
         />
+      )}
+
+      {/* Full Gift Message Modal */}
+      {selectedGiftMessage && (
+        <div className="modal-overlay" onClick={() => setSelectedGiftMessage(null)} style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.65)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          backdropFilter: 'blur(3px)'
+        }}>
+          <div onClick={e => e.stopPropagation()} style={{
+            background: '#ffffff',
+            borderRadius: 12,
+            padding: '24px 28px',
+            maxWidth: 500,
+            width: '90%',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
+            border: '1px solid rgba(200, 163, 77, 0.3)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#C8A34D', fontWeight: 700, fontSize: '1rem' }}>
+                <Gift size={20} />
+                Full Gift Card Message
+              </div>
+              <button
+                onClick={() => setSelectedGiftMessage(null)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: 12 }}>
+              Order: <strong style={{ color: '#0f172a' }}>#{selectedGiftMessage.orderId}</strong>
+              {selectedGiftMessage.customer && <> • Customer: <strong style={{ color: '#0f172a' }}>{selectedGiftMessage.customer}</strong></>}
+            </div>
+
+            <div style={{
+              padding: '14px 16px',
+              background: '#FFFBEB',
+              border: '1px solid #FDE68A',
+              borderRadius: 8,
+              color: '#78350F',
+              fontStyle: 'italic',
+              fontSize: '0.88rem',
+              lineHeight: 1.5,
+              wordBreak: 'break-word',
+              whiteSpace: 'pre-wrap',
+              maxHeight: 280,
+              overflowY: 'auto'
+            }}>
+              "{selectedGiftMessage.message}"
+            </div>
+
+            <div style={{ marginTop: 20, textAlign: 'right' }}>
+              <button
+                onClick={() => setSelectedGiftMessage(null)}
+                style={{
+                  padding: '8px 20px',
+                  background: '#6B102A',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: 6,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: '0.85rem'
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* ── Toast Notification ── */}

@@ -4,6 +4,7 @@ import { useCart } from '../../../hooks/useCart';
 import { useWishlist } from '../../../hooks/useWishlist';
 import { formatCurrency } from '../../../utils/formatters';
 import { getBadgeClass } from '../../../utils/badgeHelper';
+import { OfferTimerBadge } from '../../common/OfferTimerBadge/OfferTimerBadge';
 import styles from './ProductCard.module.css';
 
 export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTab }) => {
@@ -65,6 +66,9 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
   
   const displayImage = (typeof image === 'string' && image.trim() !== '') ? image : '/Images/placeholder.svg';
 
+  const fallbackTag = product.discountLabel || product.discount?.label || (isNew ? 'NEW ARRIVAL' : (isLimited ? 'LIMITED EDITION' : tag));
+  const endDate = product.discountEndDate || product.discount?.endDate || product.limitedOfferEntry?.endDate;
+
   return (
     <div className={styles['product-card']} onClick={handleCardClick}>
       <div className={styles['image-container']}>
@@ -79,12 +83,15 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
         />
 
         {/* Status badges */}
-        {product.stock?.isOutOfStock && (
+        {product.stock?.isOutOfStock ? (
           <span className={`${styles['badge-tag']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
+        ) : (
+          <OfferTimerBadge
+            endDate={endDate}
+            fallbackLabel={fallbackTag}
+            className={styles['badge-tag']}
+          />
         )}
-        {!product.stock?.isOutOfStock && isNew && <span className={`${styles['badge-tag']} ${getBadgeClass('NEW ARRIVAL')}`}>NEW ARRIVAL</span>}
-        {!product.stock?.isOutOfStock && isLimited && <span className={`${styles['badge-tag']} ${getBadgeClass('LIMITED EDITION')}`}>LIMITED EDITION</span>}
-        {!product.stock?.isOutOfStock && tag && <span className={`${styles['badge-tag']} ${getBadgeClass(tag)}`}>{tag}</span>}
 
         {/* Share Button */}
         <div 

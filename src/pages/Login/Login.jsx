@@ -33,6 +33,15 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
     setIsRegistering(initialIsRegistering);
   }, [initialIsRegistering]);
 
+  // Strong password metrics
+  const passMinLength = password.length >= 8;
+  const passHasUpper = /[A-Z]/.test(password);
+  const passHasLower = /[a-z]/.test(password);
+  const passHasNumber = /\d/.test(password);
+  const passHasSpecial = /[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+  const isPasswordStrong = passMinLength && passHasUpper && passHasLower && passHasNumber && passHasSpecial;
+  const strengthScore = [passMinLength, passHasUpper, passHasLower, passHasNumber, passHasSpecial].filter(Boolean).length;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -54,8 +63,8 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
         setError('Please enter a valid mobile number.');
         return;
       }
-      if (password.length < 6) {
-        setError('Password must be at least 6 characters long.');
+      if (!isPasswordStrong) {
+        setError('Please create a strong password that meets all 5 security requirements below.');
         return;
       }
     }
@@ -275,6 +284,52 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+
+            {/* Live Strong Password Requirements Checklist (for Register mode) */}
+            {isRegistering && password.length > 0 && (
+              <div style={{ marginTop: '12px', padding: '12px 14px', background: 'var(--bg-secondary, rgba(0,0,0,0.03))', borderRadius: '8px', border: '1px solid var(--border-color, #e0e0e0)' }}>
+                {/* Strength Meter Bar */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', letterSpacing: '0.5px', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                    Password Strength:
+                  </span>
+                  <span style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    color: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#e65100' : '#c62828'
+                  }}>
+                    {strengthScore === 5 ? '💪 Strong Password' : strengthScore >= 3 ? '⚠️ Medium Strength' : '❌ Weak Password'}
+                  </span>
+                </div>
+                <div style={{ width: '100%', height: '4px', background: '#e0e0e0', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' }}>
+                  <div style={{
+                    height: '100%',
+                    width: `${(strengthScore / 5) * 100}%`,
+                    background: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#f57c00' : '#d32f2f',
+                    transition: 'all 0.3s ease'
+                  }} />
+                </div>
+
+                {/* Requirements List */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '0.75rem' }}>
+                  <div style={{ color: passMinLength ? '#2e7d32' : '#888', fontWeight: passMinLength ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>{passMinLength ? '✅' : '⚪'}</span> 8+ Characters
+                  </div>
+                  <div style={{ color: passHasUpper ? '#2e7d32' : '#888', fontWeight: passHasUpper ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>{passHasUpper ? '✅' : '⚪'}</span> 1 Uppercase (A-Z)
+                  </div>
+                  <div style={{ color: passHasLower ? '#2e7d32' : '#888', fontWeight: passHasLower ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>{passHasLower ? '✅' : '⚪'}</span> 1 Lowercase (a-z)
+                  </div>
+                  <div style={{ color: passHasNumber ? '#2e7d32' : '#888', fontWeight: passHasNumber ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span>{passHasNumber ? '✅' : '⚪'}</span> 1 Number (0-9)
+                  </div>
+                  <div style={{ color: passHasSpecial ? '#2e7d32' : '#888', fontWeight: passHasSpecial ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px', gridColumn: 'span 2' }}>
+                    <span>{passHasSpecial ? '✅' : '⚪'}</span> 1 Special Symbol (@$!%*?&#)
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}

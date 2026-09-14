@@ -94,7 +94,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
     ? activeProduct.discountedPrice
     : activeProduct.price;
 
-  const boutiquePrice = (activeProduct.mrpPrice || activeProduct.oldPrice || Math.round(activeProduct.price * 1.15)) * quantity;
+  const boutiquePrice = (activeProduct.mrpPrice || activeProduct.oldPrice || activeProduct.price) * quantity;
   const finalPrice = effectiveProductPrice * quantity;
   const totalSavings = boutiquePrice - finalPrice;
   const totalDiscountPct = boutiquePrice > 0 ? Math.round((totalSavings / boutiquePrice) * 100) : 0;
@@ -365,7 +365,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                 <>
                   <div className={styles['price-card-row']}>
                     <span>Original Retail Value</span>
-                    <span className={styles['old-price-slashed']}>{formatCurrency((activeProduct.oldPrice || Math.round(activeProduct.price * 1.15)) * quantity)}</span>
+                    <span className={styles['old-price-slashed']}>{formatCurrency((activeProduct.mrpPrice || activeProduct.oldPrice || activeProduct.price) * quantity)}</span>
                   </div>
                   <div className={styles['price-card-row']}>
                     <span style={{ color: '#C55A44', fontWeight: 'bold' }}>Special Pre-Order Offer</span>

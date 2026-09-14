@@ -135,7 +135,7 @@ export const Cart = ({ setCurrentTab }) => {
   ];
 
   // Dynamic calculations
-  const mrpTotal = cart.reduce((sum, item) => sum + (item.oldPrice || Math.round(item.price * 1.15)) * item.quantity, 0);
+  const mrpTotal = cart.reduce((sum, item) => sum + (item.mrpPrice || item.oldPrice || item.price) * item.quantity, 0);
   const subtotal = cartTotal;
   const exclusivePricingSavings = mrpTotal - subtotal;
   const festivalPct = 0; // festival discount removed
@@ -311,12 +311,14 @@ export const Cart = ({ setCurrentTab }) => {
 
                 {/* Price Breakdown */}
                 <div className={styles.priceBreakdown}>
+                  {mrpTotal > subtotal && (
+                    <div className={styles.priceRow}>
+                      <span>Subtotal (MRP)</span>
+                      <span className={styles.priceValue}>{formatCurrency(mrpTotal)}</span>
+                    </div>
+                  )}
                   <div className={styles.priceRow}>
-                    <span>Subtotal (MRP)</span>
-                    <span className={styles.priceValue}>{formatCurrency(mrpTotal)}</span>
-                  </div>
-                  <div className={styles.priceRow}>
-                    <span>Exclusive Pricing</span>
+                    <span>{mrpTotal > subtotal ? 'Exclusive Pricing' : 'Subtotal'}</span>
                     <span className={styles.priceValue}>{formatCurrency(subtotal)}</span>
                   </div>
                   {festivalDiscount > 0 && (
@@ -343,10 +345,12 @@ export const Cart = ({ setCurrentTab }) => {
                   </div>
                 </div>
 
-                {/* Savings Badge */}
-                <div className={styles.savingsBadge}>
-                  <p className={styles.savingsText}>Total Savings: {formatCurrency(totalSavings)}</p>
-                </div>
+                {/* Savings Badge (only when savings exist) */}
+                {totalSavings > 0 && (
+                  <div className={styles.savingsBadge}>
+                    <p className={styles.savingsText}>Total Savings: {formatCurrency(totalSavings)}</p>
+                  </div>
+                )}
 
                 {/* Total block */}
                 <div className={styles.totalBlock}>

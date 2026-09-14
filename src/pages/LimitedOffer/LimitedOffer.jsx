@@ -52,7 +52,7 @@ function OfferCountdownBadge({ endDate }) {
 }
 
 // ─── Timed Product Card ───────────────────────────────────────────────────────
-function TimedProductCard({ product, onView, onBuy, isCarousel }) {
+function TimedProductCard({ product, onView, onBuy, isCarousel, hideTag = false }) {
   const now = new Date();
   const endDate = product.limitedOfferEntry?.endDate;
   const isExpired = endDate ? new Date(endDate) < now : false;
@@ -91,7 +91,7 @@ function TimedProductCard({ product, onView, onBuy, isCarousel }) {
           onMouseLeave={e => e.currentTarget.style.transform = ''} />
 
         {/* Tag badge top-left */}
-        {tag && (
+        {!hideTag && tag && (
           <div style={{
             position: 'absolute', top: 8, left: 8,
             background: '#D4AF37', color: '#fff', borderRadius: 4,
@@ -656,6 +656,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
                     onView={handleViewProduct}
                     onBuy={handleBuyProduct}
                     isCarousel={false}
+                    hideTag={true}
                   />
                 ))}
               </div>
@@ -711,6 +712,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
                   onView={handleViewProduct}
                   onBuy={handleBuyProduct}
                   isCarousel={true}
+                  hideTag={true}
                 />
               ))
             ) : (

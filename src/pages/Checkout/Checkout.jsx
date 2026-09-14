@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import styles from './Checkout.module.css';
 import { useStoreConfig } from '../../context/StoreConfigContext';
+import InvoiceModal from '../../components/common/InvoiceModal/InvoiceModal';
 
 export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutItem }) => {
   const { cart, cartTotal, clearCart, updateQuantity } = useCart();
@@ -73,6 +74,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponMsg, setCouponMsg] = useState({ type: '', text: '' });
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
 
   // Order Confirmation & Submission States
   const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -180,7 +182,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   };
 
   // Price calculations - Strict balance: MRP - Total Savings + Fees = Final Payable
-  const GIFT_WRAP_PRICE = 499;
+  const GIFT_WRAP_PRICE = Number(storeConfig?.giftWrapPrice) || 499;
   const DEFAULT_SAREE_WEIGHT_KG = 0.5;
 
   // Weight-based shipping rate table (same as backend shipping.js)
@@ -219,7 +221,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   };
 
   // mrpPrice from DB = original MRP; item.price = effective (post-discount) price
-  const mrpTotal = checkoutItems.reduce((sum, item) => sum + (item.mrpPrice || item.oldPrice || Math.round(item.price * 1.15)) * (item.quantity || 1), 0);
+  const mrpTotal = checkoutItems.reduce((sum, item) => sum + (item.mrpPrice || item.oldPrice || item.price) * (item.quantity || 1), 0);
   const subtotal = directCheckoutItem
     ? (directCheckoutItem.price * (directCheckoutItem.quantity || 1))
     : cartTotal;
@@ -232,7 +234,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
 
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
-  const convenienceFee = checkoutItems.length > 0 ? 2 : 0;
+  const convenienceFee = checkoutItems.length > 0 ? (storeConfig?.convenienceFee !== undefined && storeConfig?.convenienceFee !== null ? Number(storeConfig?.convenienceFee) : 2) : 0;
   const shippingFee = calcShippingFee(checkoutItems, deliveryMode);
   const shippingLabel = getShippingLabel(checkoutItems, deliveryMode);
   const totalFees = giftPackAddon + convenienceFee + shippingFee;
@@ -419,9 +421,18 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       couponDiscount,
       giftPackAddon,
       shippingFee,
-      items: [...checkoutItems],
+      items: checkoutItems.map(item => {
+        let img = item.image;
+        if (!img || typeof img !== 'string' || img.startsWith('blob:') || img.includes('placeholder')) {
+          img = item.images?.[0]?.url || (typeof item.images?.[0] === 'string' ? item.images[0] : null);
+        }
+        if (!img || typeof img !== 'string' || img.startsWith('blob:') || img.includes('placeholder')) {
+          img = '/Images/saree12.png';
+        }
+        return { ...item, image: img };
+      }),
       placedOnDate: getFormattedDate(0),
-      arrivalRange: `${getFormattedDate(6)} — ${getFormattedDate(9)}`
+      arrivalRange: `${getFormattedDate(5)} — ${getFormattedDate(7)}`
     };
 
     const finalizeSuccessOrder = (finalOrderId) => {
@@ -575,42 +586,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   const handleInvoiceDownload = () => {
     if (!orderCache) return;
-    const txtContent = `
-=========================================
-      MAZHAI VAANAM - INVOICE
-=========================================
-Order ID: ${orderCache.orderId}
-Date: ${orderCache.placedOnDate}
-Customer Name: ${orderCache.fullName}
-Email: ${orderCache.email}
-Phone: ${orderCache.phone}
-Shipping Address: 
-  ${orderCache.addressLine},
-  ${orderCache.city}, ${orderCache.stateName} - ${orderCache.pinCode}
-
------------------------------------------
-ITEMS ORDERED:
-${orderCache.items.map(item => `- ${item.name} (Qty: ${item.quantity}) - ${formatCurrency(item.price * item.quantity)}`).join('\n')}
-
------------------------------------------
-BILLING DETAILS:
-Subtotal (MRP): ${formatCurrency(orderCache.mrpTotal)}
-Exclusive Member Price: ${formatCurrency(orderCache.subtotal)}
-Festival Discount: -${formatCurrency(orderCache.festivalDiscount)}
-Gift Wrap Packaging: +${formatCurrency(orderCache.giftPackAddon)}
-${orderCache.deliveryMode === 'pickup' ? 'Self Pickup' : 'Standard Shipping'}: ${orderCache.deliveryMode === 'pickup' ? 'FREE' : '+' + formatCurrency(orderCache.shippingFee)}
-FINAL AMOUNT PAID: ${formatCurrency(orderCache.finalAmount)}
------------------------------------------
-Thank you for choosing handloom heritage.
-=========================================
-    `;
-    const element = document.createElement("a");
-    const file = new Blob([txtContent], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = `Invoice-${orderCache.orderId}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    setShowInvoiceModal(true);
   };
 
   // Trust & Guarantee Badges Block for Left Side Empty Space
@@ -697,9 +673,9 @@ Thank you for choosing handloom heritage.
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginTop: 4 }}>
-                {(item.oldPrice || Math.round(item.price * 1.15)) > item.price && (
+                {((item.mrpPrice || item.oldPrice) && (item.mrpPrice || item.oldPrice) > item.price) && (
                   <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textDecoration: 'line-through' }}>
-                    {formatCurrency((item.oldPrice || Math.round(item.price * 1.15)) * (item.quantity || 1))}
+                    {formatCurrency((item.mrpPrice || item.oldPrice) * (item.quantity || 1))}
                   </span>
                 )}
                 <span className={styles.previewPrice}>{formatCurrency(item.price * (item.quantity || 1))}</span>
@@ -794,13 +770,15 @@ Thank you for choosing handloom heritage.
       {/* Clean Price Breakdown — no dropdown, no savings row */}
       <div className={styles.priceBreakdown}>
 
-        {/* Subtotal row: MRP crossed + member price */}
+        {/* Subtotal row: MRP crossed (only if discount exists) + subtotal price */}
         <div className={styles.priceRow}>
           <span>Subtotal</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-              {formatCurrency(mrpTotal)}
-            </span>
+            {mrpTotal > subtotal && (
+              <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                {formatCurrency(mrpTotal)}
+              </span>
+            )}
             <span style={{ fontWeight: 700, color: 'var(--text-main)' }}>
               {formatCurrency(subtotal)}
             </span>
@@ -826,7 +804,7 @@ Thank you for choosing handloom heritage.
         {/* Convenience Fee */}
         <div className={styles.priceRow}>
           <span>Convenience Fee</span>
-          <span>₹2</span>
+          <span>{formatCurrency(convenienceFee)}</span>
         </div>
 
         {/* Gift packaging — only when selected */}
@@ -941,9 +919,16 @@ Thank you for choosing handloom heritage.
                 <div className={styles.invoiceQuickInfo}>
                   <div className={styles.arrivalInfo}>
                     <h3 className={styles.arrivalTitle}>Expected Arrival</h3>
-                    <div className={styles.arrivalDetails}>
-                      <Calendar size={18} className={styles.arrivalIcon} />
-                      <p>{orderCache.arrivalRange}</p>
+                    <div className={styles.arrivalDetails} style={{ alignItems: 'flex-start' }}>
+                      <Calendar size={18} className={styles.arrivalIcon} style={{ marginTop: 2 }} />
+                      <div>
+                        <p style={{ fontWeight: 700, color: 'var(--primary)', fontSize: '1.05rem', margin: 0, lineHeight: 1.2 }}>
+                          {orderCache.deliveryMode === 'pickup' ? '5 To 7 Days Delivery' : '5 – 7 Days Delivery'}
+                        </p>
+                        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '4px 0 0 0', fontWeight: 500 }}>
+                          ({orderCache.arrivalRange})
+                        </p>
+                      </div>
                     </div>
                   </div>
 
@@ -1060,7 +1045,7 @@ Thank you for choosing handloom heritage.
                       </div>
                       <div className={styles.orderedItemDetails}>
                         <p className={styles.orderedItemColName}>
-                          {item.category === 'Banarasi' ? 'Royal Heritage Collection' : 'Prakriti Series'}
+                          {item.category ? item.category : 'Handcrafted Atelier Series'}
                         </p>
                         <h4>{item.name}</h4>
                         <p className={styles.orderedItemQty}>Qty: {item.quantity.toString().padStart(2, '0')} | Size: Standard</p>
@@ -1071,28 +1056,50 @@ Thank you for choosing handloom heritage.
 
                 {/* Price list */}
                 <div className={styles.successPriceBreakdown}>
-                  <div className={styles.successPriceRow}>
-                    <span>Maximum Retail Price (MRP)</span>
-                    <span className={styles.mrpText}>{formatCurrency(orderCache.mrpTotal)}</span>
-                  </div>
-                  <div className={styles.successPriceRow} style={{ color: 'var(--primary)', fontWeight: '500' }}>
-                    <span>Exclusive Atelier Price</span>
-                    <span>{formatCurrency(orderCache.subtotal)}</span>
-                  </div>
-                  <div className={styles.successDiscountRow}>
-                    <span>Festival Privilege Discount</span>
-                    <span>-{formatCurrency(orderCache.festivalDiscount)}</span>
-                  </div>
+                  {orderCache.mrpTotal > orderCache.subtotal ? (
+                    <>
+                      <div className={styles.successPriceRow}>
+                        <span>Maximum Retail Price (MRP)</span>
+                        <span className={styles.mrpText}>{formatCurrency(orderCache.mrpTotal)}</span>
+                      </div>
+                      <div className={styles.successPriceRow} style={{ color: 'var(--primary)', fontWeight: '500' }}>
+                        <span>Exclusive Atelier Price</span>
+                        <span>{formatCurrency(orderCache.subtotal)}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className={styles.successPriceRow}>
+                      <span>Subtotal</span>
+                      <span style={{ fontWeight: 600 }}>{formatCurrency(orderCache.subtotal)}</span>
+                    </div>
+                  )}
+
+                  {orderCache.festivalDiscount > 0 && (
+                    <div className={styles.successDiscountRow}>
+                      <span>Festival Privilege Discount</span>
+                      <span>-{formatCurrency(orderCache.festivalDiscount)}</span>
+                    </div>
+                  )}
+
+                  {orderCache.couponDiscount > 0 && (
+                    <div className={styles.successDiscountRow}>
+                      <span>Coupon Discount {orderCache.couponCode ? `(${orderCache.couponCode})` : ''}</span>
+                      <span>-{formatCurrency(orderCache.couponDiscount)}</span>
+                    </div>
+                  )}
+
                   <div className={styles.successPriceRow}>
                     <span>Convenient Fees</span>
-                    <span>₹2</span>
+                    <span>{formatCurrency(orderCache.convenienceFee !== undefined ? orderCache.convenienceFee : 2)}</span>
                   </div>
+
                   {orderCache.giftPackaging && (
                     <div className={styles.successPriceRow}>
-                      <span>Luxury Packaging Addon</span>
+                      <span>Gift Packaging</span>
                       <span>{formatCurrency(GIFT_WRAP_PRICE)}</span>
                     </div>
                   )}
+
                   <div className={styles.successPriceRow}>
                     <span>{orderCache.deliveryMode === 'pickup' ? 'Self Pickup' : 'Standard Shipping'}</span>
                     <span>{orderCache.deliveryMode === 'pickup' ? 'FREE' : formatCurrency(orderCache.shippingFee)}</span>
@@ -1107,11 +1114,13 @@ Thank you for choosing handloom heritage.
                   </div>
                 </div>
 
-                {/* Savings Badge */}
-                <div className={styles.successSavingsHighlight}>
-                  <Award size={18} className={styles.savingsIconSymbol} />
-                  <p>You Saved {formatCurrency(orderCache.totalSavings)}</p>
-                </div>
+                {/* Savings Badge — only shown if there are actual savings */}
+                {orderCache.totalSavings > 0 && (
+                  <div className={styles.successSavingsHighlight}>
+                    <Award size={18} className={styles.savingsIconSymbol} />
+                    <p>You Saved {formatCurrency(orderCache.totalSavings)}</p>
+                  </div>
+                )}
 
                 {/* Secure Badge */}
                 <div className={styles.successSecureVerification}>
@@ -1141,36 +1150,37 @@ Thank you for choosing handloom heritage.
                         const addrId = addr._id || addr.id;
                         const isSelected = selectedAddressId === addrId;
                         return (
-                        <div
-                          key={addrId}
-                          className={`${styles.addressCard} ${isSelected ? styles.addressCardDefault : ''}`}
-                          onClick={() => {
-                            setSelectedAddressId(addrId);
-                            setFullName(addr.fullName || addr.name || '');
-                            setPhone(addr.phone || '');
-                            setAddressLine(addr.addressLine || '');
-                            setLandmark(addr.landmark || '');
-                            setCity(addr.city || '');
-                            setStateName(addr.state || addr.stateName || '');
-                            setPinCode(addr.pinCode || '');
-                          }}
-                        >
-                          {isSelected && <div className={styles.defaultBadge}>SELECTED</div>}
-                          <h3 className={styles.addressName}>{addr.fullName || addr.name}</h3>
-                          <div className={styles.addressDetails}>
-                            <p>{addr.addressLine}</p>
-                            {addr.landmark && <p>Landmark: {addr.landmark}</p>}
-                            <p>{addr.city}, {addr.stateName || addr.state} - {addr.pinCode}</p>
-                            <p>{addr.country || 'India'}</p>
-                            <p>Phone: {addr.phone}</p>
+                          <div
+                            key={addrId}
+                            className={`${styles.addressCard} ${isSelected ? styles.addressCardDefault : ''}`}
+                            onClick={() => {
+                              setSelectedAddressId(addrId);
+                              setFullName(addr.fullName || addr.name || '');
+                              setPhone(addr.phone || '');
+                              setAddressLine(addr.addressLine || '');
+                              setLandmark(addr.landmark || '');
+                              setCity(addr.city || '');
+                              setStateName(addr.state || addr.stateName || '');
+                              setPinCode(addr.pinCode || '');
+                            }}
+                          >
+                            {isSelected && <div className={styles.defaultBadge}>SELECTED</div>}
+                            <h3 className={styles.addressName}>{addr.fullName || addr.name}</h3>
+                            <div className={styles.addressDetails}>
+                              <p>{addr.addressLine}</p>
+                              {addr.landmark && <p>Landmark: {addr.landmark}</p>}
+                              <p>{addr.city}, {addr.stateName || addr.state} - {addr.pinCode}</p>
+                              <p>{addr.country || 'India'}</p>
+                              <p>Phone: {addr.phone}</p>
+                            </div>
+                            <div className={styles.addressActions}>
+                              <button type="button" className={`${styles.addressLinkBtn} ${isSelected ? '' : styles.deleteBtn}`}>
+                                {isSelected ? 'SELECTED' : 'SELECT'}
+                              </button>
+                            </div>
                           </div>
-                          <div className={styles.addressActions}>
-                            <button type="button" className={`${styles.addressLinkBtn} ${isSelected ? '' : styles.deleteBtn}`}>
-                              {isSelected ? 'SELECTED' : 'SELECT'}
-                            </button>
-                          </div>
-                        </div>
-                      )})}
+                        )
+                      })}
 
                       <div className={styles.addAddressBtn} onClick={() => {
                         setShowAddressForm(true);
@@ -1392,7 +1402,7 @@ Thank you for choosing handloom heritage.
                       />
                       <div className={styles.deliveryInfo}>
                         <span className={styles.deliveryOptionTitle}>Self Pickup</span>
-                        <p className={styles.deliveryOptionSubtitle}>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
+                        <p className={styles.deliveryOptionSubtitle}>ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
                       </div>
                       <span className={styles.deliveryCost}>FREE</span>
                     </label>
@@ -1474,12 +1484,12 @@ Thank you for choosing handloom heritage.
                           value={giftMessage}
                           onChange={e => setGiftMessage(e.target.value)}
                           className={styles.formInput}
-                          maxLength={120}
+                          maxLength={250}
                         />
-                        <label className={styles.formLabel}>Gift Message (optional, max 120 chars)</label>
+                        <label className={styles.formLabel}>Gift Message (optional, max 250 chars)</label>
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'right', marginTop: 4 }}>
-                        {giftMessage.length}/120
+                        {giftMessage.length}/250
                       </div>
                     </div>
                   )}
@@ -1578,6 +1588,14 @@ Thank you for choosing handloom heritage.
             }
           </div>
         </div>
+      )}
+
+      {/* Tax Invoice Modal popup on Invoice button click */}
+      {showInvoiceModal && orderCache && (
+        <InvoiceModal
+          order={orderCache}
+          onClose={() => setShowInvoiceModal(false)}
+        />
       )}
     </div>
   );

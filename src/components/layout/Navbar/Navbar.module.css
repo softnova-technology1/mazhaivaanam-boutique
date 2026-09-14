@@ -9,9 +9,8 @@
 
 /* Announcement top bar */
 .announcementBar {
-  background-color: var(--primary-dark);
-  /* Luxury Burgundy */
-  color: var(--bg-main);
+  background-color: #4F4E22;
+  color: #F4E4BC;
   height: 35px;
   display: flex;
   align-items: center;

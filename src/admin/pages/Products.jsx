@@ -253,6 +253,7 @@ export default function Products() {
       }
       setModal({ open: false, product: null });
       loadProducts();
+      window.dispatchEvent(new Event('product-updated'));
     } catch (err) {
       showToast(err.message || 'Error saving product', 'error');
     }

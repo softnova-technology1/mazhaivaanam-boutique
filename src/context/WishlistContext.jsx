@@ -58,8 +58,13 @@ export const WishlistProvider = ({ children }) => {
 
   useEffect(() => {
     const handleSyncEvent = () => fetchDbWishlist();
+    const handleClearEvent = () => setWishlist([]);
     window.addEventListener('sync-wishlist-complete', handleSyncEvent);
-    return () => window.removeEventListener('sync-wishlist-complete', handleSyncEvent);
+    window.addEventListener('clear-wishlist', handleClearEvent);
+    return () => {
+      window.removeEventListener('sync-wishlist-complete', handleSyncEvent);
+      window.removeEventListener('clear-wishlist', handleClearEvent);
+    };
   }, [fetchDbWishlist]);
 
   const toggleWishlist = async (product) => {

@@ -13,7 +13,8 @@ export function normalizeProduct(p) {
   const categoryName = typeof p.category === 'object' ? p.category?.name : (p.category || 'Handloom Sarees');
   const categorySlug = typeof p.category === 'object' ? p.category?.slug : (p.categorySlug || '');
 
-  const discountLabel = p.preorderDiscount || (p.discountActive ? `${p.discount?.value}%` : '');
+  const customLabel = p.discount?.label || '';
+  const discountLabel = customLabel || p.preorderDiscount || (p.discountActive ? `${p.discount?.value}% OFF` : '');
   const isHundredPercentOff = typeof discountLabel === 'string' && discountLabel.replace(/\s+/g, '').toLowerCase().includes('100%');
 
   return {
@@ -41,6 +42,9 @@ export function normalizeProduct(p) {
     weaver: p.preorderWeaver || 'Master Weaver',
     estimatedDays: p.preorderEstimatedDays ?? '',
     discount: discountLabel,
+    discountLabel: p.discount?.label || customLabel || '',
+    discountEndDate: p.discount?.endDate || p.limitedOfferEntry?.endDate || p.discountEndDate || p.endDate || null,
+    discountActive: p.discount?.isActive !== undefined ? p.discount.isActive : (p.discountActive || false),
   };
 }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { offerAPI, uploadAPI, productAPI, categoryAPI, fabricAPI } from '../api/api.js';
-import { Sparkles, Clock, Gift, Layers, Disc, Save, CheckCircle, RefreshCw, Upload, Package, Trash2, Edit2, Edit3, Plus, X, Search } from 'lucide-react';
+import { Sparkles, Clock, Gift, Layers, Disc, Save, CheckCircle, RefreshCw, Upload, Package, Trash2, Edit2, Edit3, Plus, X, Search, FileSpreadsheet } from 'lucide-react';
+import { parseImportFile, downloadSampleImportTemplate } from '../utils/importParser.js';
 
 const ImageUploaderInput = ({ label, value, onChange }) => {
   const [uploading, setUploading] = useState(false);
@@ -190,6 +191,9 @@ export default function LimitedOfferAdmin() {
   
   // Edit Offer Modal State
   const [editModal, setEditModal] = useState({ open: false, section: null, product: null, endDate: '', offerLabel: '' });
+  const [deleteModal, setDeleteModal] = useState({ open: false, section: null, product: null });
+  const [bulkDeleteModal, setBulkDeleteModal] = useState({ open: false });
+  const [selectedOfferRowKeys, setSelectedOfferRowKeys] = useState([]);
   const [activeTab, setActiveTab] = useState('hero');
   const [selectedSectionSlot, setSelectedSectionSlot] = useState(1);
 
@@ -247,6 +251,85 @@ export default function LimitedOfferAdmin() {
   // Edit section
   const [editSectionId, setEditSectionId] = useState(null);
   const [editSectionForm, setEditSectionForm] = useState({});
+
+  // Excel Bulk Import Modal states
+  const [showExcelModal, setShowExcelModal] = useState(false);
+  const [excelFile, setExcelFile] = useState(null);
+  const [excelImporting, setExcelImporting] = useState(false);
+  const [excelStatusMsg, setExcelStatusMsg] = useState('');
+  const [excelOfferTitle, setExcelOfferTitle] = useState('');
+  const [excelOfferEndDate, setExcelOfferEndDate] = useState(new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16));
+
+  const openExcelImportModal = (slotNum) => {
+    setSelectedSectionSlot(slotNum);
+    setExcelFile(null);
+    setExcelStatusMsg('');
+    setExcelOfferTitle(slotNum === 1 ? 'Exclusive Offers' : 'Buy 2 Get 1 Gallery');
+    setExcelOfferEndDate(new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16));
+    setShowExcelModal(true);
+  };
+
+  const handleExecuteExcelImport = async () => {
+    if (!excelFile) {
+      alert('Please select an Excel (.xlsx / .xls) or CSV file.');
+      return;
+    }
+    if (!excelOfferEndDate) {
+      alert('Please select an offer end date and time.');
+      return;
+    }
+
+    setExcelImporting(true);
+    try {
+      setExcelStatusMsg('Reading and parsing Excel file...');
+      const parsedProducts = await parseImportFile(excelFile, (current, total, msg) => {
+        setExcelStatusMsg(msg);
+      });
+
+      if (!parsedProducts || parsedProducts.length === 0) {
+        alert('No valid products found in Excel file.');
+        setExcelImporting(false);
+        return;
+      }
+
+      setExcelStatusMsg(`Uploading & creating ${parsedProducts.length} product(s) in database...`);
+
+      const res = await productAPI.bulkImport(parsedProducts);
+      const createdProds = res?.data?.data?.products || res?.data?.products || (Array.isArray(res?.data?.data) ? res.data.data : (Array.isArray(res?.data) ? res.data : []));
+
+      setExcelStatusMsg(`Adding products to Limited Offer Slot ${selectedSectionSlot}...`);
+      let addedCount = 0;
+
+      if (Array.isArray(createdProds) && createdProds.length > 0) {
+        for (const prod of createdProds) {
+          const pId = prod._id || prod.id;
+          if (pId) {
+            const secRes = await offerAPI.createSection({
+              name: excelOfferTitle || (selectedSectionSlot === 1 ? 'Exclusive Offers' : 'Buy 2 Get 1 Gallery'),
+              slot: selectedSectionSlot,
+              endDate: excelOfferEndDate,
+              startDate: null,
+            });
+            const secId = secRes?.data?._id || secRes?._id || secRes?.data?.data?._id;
+            if (secId) {
+              await offerAPI.addProductToSection(secId, pId);
+              addedCount++;
+            }
+          }
+        }
+      }
+
+      setToastMsg(`Successfully imported ${addedCount} product(s) from Excel & added to Offer Slot ${selectedSectionSlot}!`);
+      setTimeout(() => setToastMsg(''), 4500);
+      setShowExcelModal(false);
+      setExcelFile(null);
+      await loadSections();
+    } catch (err) {
+      console.error('Excel Import Error:', err);
+      alert(err.message || 'Failed to import products from Excel file');
+    }
+    setExcelImporting(false);
+  };
   // Product picker per section
   const [addingProductTo, setAddingProductTo] = useState(null); // sectionId
   const [productSearch, setProductSearch] = useState('');
@@ -642,15 +725,16 @@ export default function LimitedOfferAdmin() {
     setSectionSaving(false);
   };
 
-  const handleDeleteSection = async (sectionId, name) => {
-    if (!window.confirm(`Delete offer section "${name}"? Products will NOT be deleted.`)) return;
+  const handleDeleteSection = async (sectionId) => {
     setSectionSaving(true);
     try {
       await offerAPI.deleteSection(sectionId);
-      setToastMsg('Section deleted.');
+      setToastMsg('Offer entry deleted successfully!');
       setTimeout(() => setToastMsg(''), 3500);
       await loadSections();
-    } catch (err) { alert(err.message); }
+    } catch (err) {
+      alert(err.message || 'Failed to delete offer entry');
+    }
     setSectionSaving(false);
   };
 
@@ -678,6 +762,69 @@ export default function LimitedOfferAdmin() {
       await offerAPI.updateSection(secIdToUpdate, { isActive: !section.isActive });
       await loadSections();
     } catch (err) { alert(err.message); }
+    setSectionSaving(false);
+  };
+
+  const handleBulkToggleActive = async (targetActive) => {
+    if (selectedOfferRowKeys.length === 0) return;
+    setSectionSaving(true);
+    try {
+      const currentSlotSections = sections.filter(s => Number(s.slot || 1) === selectedSectionSlot);
+      const visibleRowItems = currentSlotSections.flatMap(sec => {
+        const products = sec.productIds || [];
+        if (products.length === 0) return [{ sec, product: null, key: `${sec._id}_none` }];
+        return products.map((p, idx) => ({ sec, product: p, key: `${sec._id}_${p._id || p.id || idx}` }));
+      });
+
+      const targetItems = visibleRowItems.filter(item => selectedOfferRowKeys.includes(item.key));
+      
+      let updatedCount = 0;
+      for (const item of targetItems) {
+        if (item.sec) {
+          await offerAPI.updateSection(item.sec._id, { isActive: targetActive });
+          updatedCount++;
+        }
+      }
+
+      setToastMsg(`${updatedCount} offer entry(ies) ${targetActive ? 'resumed' : 'paused'} successfully!`);
+      setTimeout(() => setToastMsg(''), 3500);
+      setSelectedOfferRowKeys([]);
+      await loadSections();
+    } catch (err) {
+      alert(err.message || 'Failed to update selected offers');
+    }
+    setSectionSaving(false);
+  };
+
+  const handleBulkDeleteExecute = async () => {
+    if (selectedOfferRowKeys.length === 0) return;
+    setSectionSaving(true);
+    try {
+      const currentSlotSections = sections.filter(s => Number(s.slot || 1) === selectedSectionSlot);
+      const visibleRowItems = currentSlotSections.flatMap(sec => {
+        const products = sec.productIds || [];
+        if (products.length === 0) return [{ sec, product: null, key: `${sec._id}_none` }];
+        return products.map((p, idx) => ({ sec, product: p, key: `${sec._id}_${p._id || p.id || idx}` }));
+      });
+
+      const targetItems = visibleRowItems.filter(item => selectedOfferRowKeys.includes(item.key));
+      
+      let deletedCount = 0;
+      for (const item of targetItems) {
+        if (item.sec) {
+          await offerAPI.deleteSection(item.sec._id);
+          deletedCount++;
+        }
+      }
+
+      setToastMsg(`${deletedCount} offer entry(ies) deleted permanently!`);
+      setTimeout(() => setToastMsg(''), 3500);
+      setSelectedOfferRowKeys([]);
+      setBulkDeleteModal({ open: false });
+      await loadSections();
+    } catch (err) {
+      alert(err.message || 'Failed to delete selected offer entries');
+    }
     setSectionSaving(false);
   };
 
@@ -1331,6 +1478,14 @@ export default function LimitedOfferAdmin() {
                 <button
                   type="button"
                   className="btn btn-outline"
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, padding: '10px 18px', background: '#ecfdf5', borderColor: '#a7f3d0', color: '#047857', fontWeight: 700 }}
+                  onClick={() => openExcelImportModal(selectedSectionSlot)}
+                >
+                  <FileSpreadsheet size={16} /> Bulk Upload Excel to Offer
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline"
                   style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, padding: '10px 18px', background: '#faf9f6', fontWeight: 600 }}
                   onClick={() => openProductPicker(selectedSectionSlot)}
                 >
@@ -1356,165 +1511,273 @@ export default function LimitedOfferAdmin() {
                 <div style={{ fontWeight: 600, marginBottom: 6 }}>No Products Added in Slot {selectedSectionSlot} Yet</div>
                 <div style={{ fontSize: '0.85rem' }}>Click "Add Product to {selectedSectionSlot === 1 ? 'Exclusive Offers' : 'Buy 2 Get 1 Gallery'}" above to add sarees.</div>
               </div>
-            ) : (
-              <div className="table-responsive" style={{ overflowX: 'auto', background: '#fff', borderRadius: 12, border: '1px solid var(--border-color)', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>
-                <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
-                  <thead>
-                    <tr style={{ background: '#FAF9F6', borderBottom: '2px solid var(--border-color)' }}>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Saree / Product</th>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Offer Label</th>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Offer End Date & Timer</th>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Status</th>
-                      <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', textAlign: 'right', whiteSpace: 'nowrap' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sections.filter(s => Number(s.slot || 1) === selectedSectionSlot).flatMap(sec => {
-                      const products = sec.productIds || [];
-                      if (products.length === 0) {
-                        return [{ sec, product: null }];
-                      }
-                      return products.map(p => ({ sec, product: p }));
-                    }).map(({ sec, product }, idx) => {
-                      const now = new Date();
-                      const end = new Date(sec.endDate);
-                      const isExpired = end < now;
-                      const statusColor = !sec.isActive ? '#9ca3af' : isExpired ? '#dc2626' : '#16a34a';
-                      const statusBadge = !sec.isActive ? '⚫ Paused' : isExpired ? '🔴 Expired' : '🟢 Active';
-                      const isEditingTime = editSectionId === sec._id;
+            ) : ((() => {
+              const currentSlotSections = sections.filter(s => Number(s.slot || 1) === selectedSectionSlot);
+              const currentSlotRowItems = currentSlotSections.flatMap(sec => {
+                const products = sec.productIds || [];
+                if (products.length === 0) return [{ sec, product: null, key: `${sec._id}_none` }];
+                return products.map((p, idx) => ({ sec, product: p, key: `${sec._id}_${p._id || p.id || idx}` }));
+              });
+              const allCurrentSlotKeys = currentSlotRowItems.map(item => item.key);
+              const isAllSlotSelected = allCurrentSlotKeys.length > 0 && allCurrentSlotKeys.every(k => selectedOfferRowKeys.includes(k));
 
-                      return (
-                        <tr key={`${sec._id}-${product?._id || idx}`} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background 0.12s' }}>
-                          {/* Saree / Product Column */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
-                            {product ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
-                                <img 
-                                  src={product.images?.[0]?.url || '/Images/saree1.png'} 
-                                  alt={product.name} 
-                                  style={{ width: 38, height: 50, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border-color)' }} 
-                                />
-                                <div>
-                                  <div style={{ fontWeight: 700, color: '#2D3326', fontSize: '0.86rem', whiteSpace: 'nowrap' }}>{product.name}</div>
-                                  <div style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700, marginTop: 2, whiteSpace: 'nowrap' }}>
-                                    ₹{product.price?.toLocaleString('en-IN')}
-                                    {product.mrpPrice > product.price && (
-                                      <span style={{ textDecoration: 'line-through', color: '#94a3b8', marginLeft: 6, fontSize: '0.72rem', fontWeight: 400 }}>
-                                        ₹{product.mrpPrice?.toLocaleString('en-IN')}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            ) : (
-                              <span style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>No product attached</span>
-                            )}
-                          </td>
+              return (
+                <div>
+                  {/* Multi-Select Bulk Actions Bar */}
+                  {selectedOfferRowKeys.length > 0 && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '12px 18px',
+                      marginBottom: 16,
+                      background: '#FAF5EA',
+                      border: '1.5px solid #D4AF37',
+                      borderRadius: 10,
+                      boxShadow: '0 4px 12px rgba(212,175,55,0.12)',
+                      flexWrap: 'wrap',
+                      gap: 12
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700, color: 'var(--primary)', fontSize: '0.9rem' }}>
+                        <CheckCircle size={18} color="#D4AF37" />
+                        <span>{selectedOfferRowKeys.length} offer item(s) selected</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          className="btn"
+                          style={{ padding: '7px 14px', fontSize: '0.8rem', background: '#fef3c7', border: '1px solid #fcd34d', color: '#92400e', fontWeight: 700, borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
+                          onClick={() => handleBulkToggleActive(false)}
+                          disabled={sectionSaving}
+                        >
+                          ⏸ Pause Selected ({selectedOfferRowKeys.length})
+                        </button>
+                        <button
+                          type="button"
+                          className="btn"
+                          style={{ padding: '7px 14px', fontSize: '0.8rem', background: '#dcfce7', border: '1px solid #86efac', color: '#166534', fontWeight: 700, borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
+                          onClick={() => handleBulkToggleActive(true)}
+                          disabled={sectionSaving}
+                        >
+                          ▶ Resume Selected ({selectedOfferRowKeys.length})
+                        </button>
+                        <button
+                          type="button"
+                          className="btn"
+                          style={{ padding: '7px 14px', fontSize: '0.8rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#dc2626', fontWeight: 700, borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
+                          onClick={() => setBulkDeleteModal({ open: true })}
+                          disabled={sectionSaving}
+                        >
+                          <Trash2 size={14} /> Delete Selected ({selectedOfferRowKeys.length})
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline"
+                          style={{ padding: '7px 12px', fontSize: '0.8rem', background: '#fff', color: '#64748b' }}
+                          onClick={() => setSelectedOfferRowKeys([])}
+                        >
+                          Clear Selection
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
-                          {/* Offer Label Column */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', fontWeight: 600, color: '#334155', whiteSpace: 'nowrap' }}>
-                            <span style={{ background: '#f5f0e8', color: 'var(--primary)', padding: '4px 10px', borderRadius: 6, fontSize: '0.8rem', fontWeight: 700, display: 'inline-block', whiteSpace: 'nowrap' }}>
-                              {sec.name}
-                            </span>
-                          </td>
-
-                          {/* Offer End Date & Timer Column */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
-                            {isEditingTime ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
-                                <input 
-                                  type="datetime-local" 
-                                  className="form-input" 
-                                  style={{ padding: '4px 8px', fontSize: '0.8rem' }}
-                                  value={editSectionForm.endDate ?? end.toISOString().slice(0, 16)} 
-                                  onChange={e => setEditSectionForm(f => ({ ...f, endDate: e.target.value }))} 
-                                />
-                                <button type="button" className="btn btn-primary" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => handleUpdateSection(sec._id)} disabled={sectionSaving}>Save</button>
-                                <button type="button" className="btn btn-outline" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => setEditSectionId(null)}>X</button>
-                              </div>
-                            ) : (
-                              <div style={{ whiteSpace: 'nowrap' }}>
-                                <div style={{ fontWeight: 600, fontSize: '0.84rem', whiteSpace: 'nowrap' }}>
-                                  {end.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                                </div>
-                                <div style={{ fontSize: '0.76rem', color: isExpired ? '#dc2626' : '#d97706', fontWeight: 700, marginTop: 2, whiteSpace: 'nowrap' }}>
-                                  {isExpired ? '🔴 Time Expired' : `⏱ Active Countdown`}
-                                </div>
-                              </div>
-                            )}
-                          </td>
-
-                          {/* Status Badge */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
-                            <span style={{ 
-                              background: `${statusColor}18`, 
-                              color: statusColor, 
-                              border: `1px solid ${statusColor}40`, 
-                              padding: '4px 12px', 
-                              borderRadius: 20, 
-                              fontWeight: 700, 
-                              fontSize: '0.78rem',
-                              whiteSpace: 'nowrap'
-                            }}>
-                              {statusBadge}
-                            </span>
-                          </td>
-
-                          {/* Actions Column */}
-                          <td style={{ padding: '12px 16px', verticalAlign: 'middle', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'nowrap', alignItems: 'center', whiteSpace: 'nowrap' }}>
-                              {product && (
-                                <button 
-                                  type="button" 
-                                  style={{ padding: '5px 10px', fontSize: '0.78rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#dc2626', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, whiteSpace: 'nowrap' }}
-                                  onClick={() => {
-                                    const pId = product._id || (typeof product === 'string' ? product : null);
-                                    handleRemoveProductFromSection(sec._id, pId, product.name || 'Saree');
-                                  }}
-                                  disabled={sectionSaving}
-                                  title="Remove product from this offer section"
-                                >
-                                  <X size={13} /> Remove Saree
-                                </button>
-                              )}
-
-                              <button 
-                                type="button" 
-                                className="btn btn-outline" 
-                                style={{ padding: '5px 10px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 4, background: '#fff8e6', borderColor: '#D4AF37', color: '#B38A4A', fontWeight: 700 }}
-                                onClick={() => {
-                                  const dateVal = sec.endDate ? new Date(new Date(sec.endDate).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
-                                  setEditModal({
-                                    open: true,
-                                    section: sec,
-                                    product: product,
-                                    endDate: dateVal,
-                                    offerLabel: product ? (product.limitedOfferEntry?.offerLabel || sec.name) : sec.name
-                                  });
-                                }}
-                                disabled={sectionSaving}
-                                title="Edit Offer Label and End Date"
-                              >
-                                <Edit3 size={13} /> Edit
-                              </button>
-
-                              <button 
-                                type="button" 
-                                style={{ padding: '5px 10px', fontSize: '0.78rem', background: sec.isActive ? '#fef3c7' : '#dcfce7', border: '1px solid', borderColor: sec.isActive ? '#fcd34d' : '#86efac', color: sec.isActive ? '#92400e' : '#166534', borderRadius: 6, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}
-                                onClick={() => handleToggleSectionActive(sec, product)}
-                                disabled={sectionSaving}
-                              >
-                                {sec.isActive ? 'Pause' : 'Resume'}
-                              </button>
-                            </div>
-                          </td>
+                  <div className="table-responsive" style={{ overflowX: 'auto', background: '#fff', borderRadius: 12, border: '1px solid var(--border-color)', boxShadow: '0 2px 10px rgba(0,0,0,0.03)' }}>
+                    <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+                      <thead>
+                        <tr style={{ background: '#FAF9F6', borderBottom: '2px solid var(--border-color)' }}>
+                          <th style={{ width: 44, padding: '14px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                            <input
+                              type="checkbox"
+                              checked={isAllSlotSelected}
+                              onChange={() => {
+                                if (isAllSlotSelected) {
+                                  setSelectedOfferRowKeys(prev => prev.filter(k => !allCurrentSlotKeys.includes(k)));
+                                } else {
+                                  setSelectedOfferRowKeys(prev => Array.from(new Set([...prev, ...allCurrentSlotKeys])));
+                                }
+                              }}
+                              style={{ width: 16, height: 16, cursor: 'pointer', accentColor: 'var(--primary)' }}
+                              title="Select All"
+                            />
+                          </th>
+                          <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Saree / Product</th>
+                          <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Offer Label</th>
+                          <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Offer End Date & Timer</th>
+                          <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>Status</th>
+                          <th style={{ padding: '14px 16px', fontWeight: 700, color: 'var(--primary)', textAlign: 'right', whiteSpace: 'nowrap' }}>Actions</th>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                      </thead>
+                      <tbody>
+                        {currentSlotRowItems.map(({ sec, product, key }) => {
+                          const now = new Date();
+                          const end = new Date(sec.endDate);
+                          const isExpired = end < now;
+                          const statusColor = !sec.isActive ? '#9ca3af' : isExpired ? '#dc2626' : '#16a34a';
+                          const statusBadge = !sec.isActive ? '⚫ Paused' : isExpired ? '🔴 Expired' : '🟢 Active';
+                          const isEditingTime = editSectionId === sec._id;
+                          const isRowSelected = selectedOfferRowKeys.includes(key);
+
+                          return (
+                            <tr key={key} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background 0.12s', background: isRowSelected ? '#fffcf0' : 'transparent' }}>
+                              <td style={{ width: 44, padding: '12px 12px', textAlign: 'center', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={isRowSelected}
+                                  onChange={() => {
+                                    if (isRowSelected) {
+                                      setSelectedOfferRowKeys(prev => prev.filter(k => k !== key));
+                                    } else {
+                                      setSelectedOfferRowKeys(prev => [...prev, key]);
+                                    }
+                                  }}
+                                  style={{ width: 16, height: 16, cursor: 'pointer', accentColor: 'var(--primary)' }}
+                                />
+                              </td>
+
+                              {/* Saree / Product Column */}
+                              <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
+                                {product ? (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
+                                    <img 
+                                      src={product.images?.[0]?.url || '/Images/saree1.png'} 
+                                      alt={product.name} 
+                                      style={{ width: 38, height: 50, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border-color)' }} 
+                                    />
+                                    <div>
+                                      <div style={{ fontWeight: 700, color: '#2D3326', fontSize: '0.86rem', whiteSpace: 'nowrap' }}>{product.name}</div>
+                                      <div style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700, marginTop: 2, whiteSpace: 'nowrap' }}>
+                                        ₹{product.price?.toLocaleString('en-IN')}
+                                        {product.mrpPrice > product.price && (
+                                          <span style={{ textDecoration: 'line-through', color: '#94a3b8', marginLeft: 6, fontSize: '0.72rem', fontWeight: 400 }}>
+                                            ₹{product.mrpPrice?.toLocaleString('en-IN')}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <span style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>No product attached</span>
+                                )}
+                              </td>
+
+                              {/* Offer Label Column */}
+                              <td style={{ padding: '12px 16px', verticalAlign: 'middle', fontWeight: 600, color: '#334155', whiteSpace: 'nowrap' }}>
+                                <span style={{ background: '#f5f0e8', color: 'var(--primary)', padding: '4px 10px', borderRadius: 6, fontSize: '0.8rem', fontWeight: 700, display: 'inline-block', whiteSpace: 'nowrap' }}>
+                                  {sec.name}
+                                </span>
+                              </td>
+
+                              {/* Offer End Date & Timer Column */}
+                              <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
+                                {isEditingTime ? (
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
+                                    <input 
+                                      type="datetime-local" 
+                                      className="form-input" 
+                                      style={{ padding: '4px 8px', fontSize: '0.8rem' }}
+                                      value={editSectionForm.endDate ?? end.toISOString().slice(0, 16)} 
+                                      onChange={e => setEditSectionForm(f => ({ ...f, endDate: e.target.value }))} 
+                                    />
+                                    <button type="button" className="btn btn-primary" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => handleUpdateSection(sec._id)} disabled={sectionSaving}>Save</button>
+                                    <button type="button" className="btn btn-outline" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => setEditSectionId(null)}>X</button>
+                                  </div>
+                                ) : (
+                                  <div style={{ whiteSpace: 'nowrap' }}>
+                                    <div style={{ fontWeight: 600, fontSize: '0.84rem', whiteSpace: 'nowrap' }}>
+                                      {end.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                    </div>
+                                    <div style={{ fontSize: '0.76rem', color: isExpired ? '#dc2626' : '#d97706', fontWeight: 700, marginTop: 2, whiteSpace: 'nowrap' }}>
+                                      {isExpired ? '🔴 Time Expired' : `⏱ Active Countdown`}
+                                    </div>
+                                  </div>
+                                )}
+                              </td>
+
+                              {/* Status Badge */}
+                              <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
+                                <span style={{ 
+                                  background: `${statusColor}18`, 
+                                  color: statusColor, 
+                                  border: `1px solid ${statusColor}40`, 
+                                  padding: '4px 12px', 
+                                  borderRadius: 20, 
+                                  fontWeight: 700, 
+                                  fontSize: '0.78rem',
+                                  whiteSpace: 'nowrap'
+                                }}>
+                                  {statusBadge}
+                                </span>
+                              </td>
+
+                              {/* Actions Column */}
+                              <td style={{ padding: '12px 16px', verticalAlign: 'middle', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                                <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'nowrap', alignItems: 'center', whiteSpace: 'nowrap' }}>
+                                  {product && (
+                                    <button 
+                                      type="button" 
+                                      style={{ padding: '5px 10px', fontSize: '0.78rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#dc2626', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, whiteSpace: 'nowrap' }}
+                                      onClick={() => {
+                                        const pId = product._id || (typeof product === 'string' ? product : null);
+                                        handleRemoveProductFromSection(sec._id, pId, product.name || 'Saree');
+                                      }}
+                                      disabled={sectionSaving}
+                                      title="Remove product from this offer section"
+                                    >
+                                      <X size={13} /> Remove Saree
+                                    </button>
+                                  )}
+
+                                  <button 
+                                    type="button" 
+                                    className="btn btn-outline" 
+                                    style={{ padding: '5px 10px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 4, background: '#fff8e6', borderColor: '#D4AF37', color: '#B38A4A', fontWeight: 700 }}
+                                    onClick={() => {
+                                      const dateVal = sec.endDate ? new Date(new Date(sec.endDate).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
+                                      setEditModal({
+                                        open: true,
+                                        section: sec,
+                                        product: product,
+                                        endDate: dateVal,
+                                        offerLabel: product ? (product.limitedOfferEntry?.offerLabel || sec.name) : sec.name
+                                      });
+                                    }}
+                                    disabled={sectionSaving}
+                                    title="Edit Offer Label and End Date"
+                                  >
+                                    <Edit3 size={13} /> Edit
+                                  </button>
+
+                                  <button 
+                                    type="button" 
+                                    style={{ padding: '5px 10px', fontSize: '0.78rem', background: sec.isActive ? '#fef3c7' : '#dcfce7', border: '1px solid', borderColor: sec.isActive ? '#fcd34d' : '#86efac', color: sec.isActive ? '#92400e' : '#166534', borderRadius: 6, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}
+                                    onClick={() => handleToggleSectionActive(sec, product)}
+                                    disabled={sectionSaving}
+                                  >
+                                    {sec.isActive ? 'Pause' : 'Resume'}
+                                  </button>
+
+                                  <button 
+                                    type="button" 
+                                    className="btn btn-outline" 
+                                    style={{ padding: '5px 10px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 4, background: '#fee2e2', borderColor: '#fca5a5', color: '#dc2626', fontWeight: 700, borderRadius: 6, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                                    onClick={() => setDeleteModal({ open: true, section: sec, product: product })}
+                                    disabled={sectionSaving}
+                                    title="Permanently Delete Offer Entry"
+                                  >
+                                    <Trash2 size={13} /> Delete
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })())}
           </div>
         )}
 
@@ -2240,6 +2503,261 @@ export default function LimitedOfferAdmin() {
               >
                 {sectionSaving ? <RefreshCw className="spinner" size={16} /> : <Save size={16} />}
                 {sectionSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Popup Modal */}
+      {deleteModal.open && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10000,
+          background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(5px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: 16, width: '100%', maxWidth: 480,
+            padding: '24px 28px', boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+            animation: 'modalSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: '50%', background: '#fee2e2',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', flexShrink: 0
+              }}>
+                <Trash2 size={22} />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700, color: '#1e293b' }}>
+                  Delete Offer Entry?
+                </h3>
+                <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b' }}>
+                  Are you sure you want to permanently delete this offer item from Limited Offer Manager?
+                </p>
+              </div>
+            </div>
+
+            {deleteModal.product ? (
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, padding: 14, marginBottom: 20 }}>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  {deleteModal.product.images?.[0]?.url && (
+                    <img src={deleteModal.product.images[0].url} alt="" style={{ width: 44, height: 56, objectFit: 'cover', borderRadius: 6 }} />
+                  )}
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#0f172a' }}>{deleteModal.product.name}</div>
+                    <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: 2 }}>
+                      Offer Label: <span style={{ fontWeight: 600, color: 'var(--primary)' }}>{deleteModal.section?.name}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, padding: 14, marginBottom: 20, fontSize: '0.86rem', color: '#475569' }}>
+                Offer Label: <strong style={{ color: '#0f172a' }}>{deleteModal.section?.name}</strong>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => setDeleteModal({ open: false, section: null, product: null })}
+                style={{ padding: '8px 18px', fontSize: '0.85rem' }}
+                disabled={sectionSaving}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ background: '#dc2626', borderColor: '#dc2626', color: '#fff', padding: '8px 20px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700 }}
+                onClick={async () => {
+                  if (deleteModal.section?._id) {
+                    await handleDeleteSection(deleteModal.section._id);
+                  }
+                  setDeleteModal({ open: false, section: null, product: null });
+                }}
+                disabled={sectionSaving}
+              >
+                <Trash2 size={15} /> Confirm Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Confirmation Popup Modal */}
+      {bulkDeleteModal.open && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10000,
+          background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(5px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: 16, width: '100%', maxWidth: 440,
+            padding: '24px 28px', boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+            animation: 'modalSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)', border: '1px solid #fee2e2'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: '50%', background: '#fee2e2',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', flexShrink: 0
+              }}>
+                <Trash2 size={22} />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700, color: '#991b1b' }}>
+                  Delete Selected Offers?
+                </h3>
+                <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b' }}>
+                  Bulk Delete Confirmation
+                </p>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.88rem', color: '#374151', lineHeight: 1.5, marginBottom: 20 }}>
+              Are you sure you want to permanently delete <strong>{selectedOfferRowKeys.length} selected offer item(s)</strong> from this slot table? This action cannot be undone.
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => setBulkDeleteModal({ open: false })}
+                style={{ padding: '8px 18px', fontSize: '0.85rem' }}
+                disabled={sectionSaving}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ background: '#dc2626', borderColor: '#dc2626', color: '#fff', padding: '8px 20px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700 }}
+                onClick={handleBulkDeleteExecute}
+                disabled={sectionSaving}
+              >
+                {sectionSaving ? <RefreshCw className="spinner" size={15} /> : <Trash2 size={15} />}
+                {sectionSaving ? 'Deleting...' : `Delete ${selectedOfferRowKeys.length} Offers`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Excel Bulk Import Modal */}
+      {showExcelModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 10000,
+          background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(5px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: 16, width: '100%', maxWidth: 540,
+            padding: '24px 28px', boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+            animation: 'modalSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)', border: '1px solid #a7f3d0'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '1px solid #f1f5f9', paddingBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#047857' }}>
+                  <FileSpreadsheet size={22} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#064e3b' }}>
+                    Bulk Upload Sarees via Excel
+                  </h3>
+                  <span style={{ fontSize: '0.78rem', color: '#047857', fontWeight: 600 }}>
+                    Slot {selectedSectionSlot} ({selectedSectionSlot === 1 ? 'Exclusive Offers Grid' : 'Buy 2 Get 1 Gallery'})
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowExcelModal(false)}
+                disabled={excelImporting}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', padding: 4 }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <label className="form-label" style={{ margin: 0, fontSize: '0.82rem', fontWeight: 700 }}>Select Excel or CSV File</label>
+                <button
+                  type="button"
+                  style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer', textDecoration: 'underline' }}
+                  onClick={() => downloadSampleImportTemplate()}
+                >
+                  📥 Download Sample Excel Template
+                </button>
+              </div>
+
+              <input
+                type="file"
+                accept=".xlsx, .xls, .csv"
+                className="form-input"
+                style={{ padding: '8px 12px', fontSize: '0.85rem' }}
+                onChange={(e) => setExcelFile(e.target.files?.[0] || null)}
+                disabled={excelImporting}
+              />
+              {excelFile && (
+                <div style={{ marginTop: 6, fontSize: '0.78rem', color: '#047857', fontWeight: 600 }}>
+                  Selected: {excelFile.name} ({(excelFile.size / 1024).toFixed(1)} KB)
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 16 }}>
+              <div>
+                <label className="form-label" style={{ fontSize: '0.82rem', fontWeight: 700 }}>Offer Badge / Title</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={excelOfferTitle}
+                  onChange={(e) => setExcelOfferTitle(e.target.value)}
+                  placeholder="e.g. Exclusive Offers"
+                  disabled={excelImporting}
+                />
+              </div>
+              <div>
+                <label className="form-label" style={{ fontSize: '0.82rem', fontWeight: 700 }}>Offer End Date & Time</label>
+                <input
+                  type="datetime-local"
+                  className="form-input"
+                  value={excelOfferEndDate}
+                  onChange={(e) => setExcelOfferEndDate(e.target.value)}
+                  disabled={excelImporting}
+                />
+              </div>
+            </div>
+
+            {excelStatusMsg && (
+              <div style={{ padding: '10px 14px', borderRadius: 8, background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', fontSize: '0.82rem', fontWeight: 600, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <RefreshCw className="spinner" size={15} color="#166534" />
+                <span>{excelStatusMsg}</span>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, paddingTop: 12, borderTop: '1px solid #f1f5f9' }}>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => setShowExcelModal(false)}
+                disabled={excelImporting}
+                style={{ padding: '8px 18px', fontSize: '0.85rem' }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ background: '#047857', borderColor: '#047857', color: '#fff', padding: '8px 22px', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}
+                onClick={handleExecuteExcelImport}
+                disabled={excelImporting || !excelFile}
+              >
+                {excelImporting ? <RefreshCw className="spinner" size={16} /> : <FileSpreadsheet size={16} />}
+                {excelImporting ? 'Importing...' : 'Upload & Add to Offer'}
               </button>
             </div>
           </div>

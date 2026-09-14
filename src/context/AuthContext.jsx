@@ -106,7 +106,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('boutique_profile');
     localStorage.removeItem('boutique_addresses');
     localStorage.removeItem('boutique_cart');
+    localStorage.removeItem('boutique_cart_expiry');
+    localStorage.removeItem('boutique_wishlist');
+    localStorage.removeItem('boutique_wishlist_expiry');
     window.dispatchEvent(new Event('clear-cart'));
+    window.dispatchEvent(new Event('clear-wishlist'));
     localStorage.removeItem('mv_admin_token');
     localStorage.removeItem('mv_admin_refresh');
   };

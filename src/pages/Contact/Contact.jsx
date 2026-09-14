@@ -23,11 +23,49 @@ export const Contact = ({ setCurrentTab }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [subject, setSubject] = useState('GENERAL INQUIRY');
+  const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [attachments, setAttachments] = useState([]);
+  const [fileUploading, setFileUploading] = useState(false);
 
   // Accordion indices state
   const [activeFaq, setActiveFaq] = useState(null);
+
+  const handleFileSelect = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    setFileUploading(true);
+    const filePromises = files.map(file => {
+      return new Promise((resolve) => {
+        if (file.size > 8 * 1024 * 1024) {
+          alert(`File "${file.name}" exceeds 8MB size limit.`);
+          resolve(null);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve({
+            url: reader.result,
+            name: file.name,
+            fileType: file.type || (file.name.endsWith('.pdf') ? 'application/pdf' : 'image/png'),
+            size: file.size
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(filePromises).then(results => {
+      const validFiles = results.filter(Boolean);
+      setAttachments(prev => [...prev, ...validFiles]);
+      setFileUploading(false);
+    });
+  };
+
+  const removeAttachment = (index) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleConciergeSubmit = async (e) => {
     e.preventDefault();
@@ -42,14 +80,17 @@ export const Contact = ({ setCurrentTab }) => {
         name,
         email,
         phone,
-        subject,
-        message
+        subject: subject.trim() || 'General Inquiry',
+        message,
+        attachments
       });
       setFormSubmitted(true);
       setName('');
       setEmail('');
       setPhone('');
+      setSubject('');
       setMessage('');
+      setAttachments([]);
       setTimeout(() => {
         setFormSubmitted(false);
       }, 5000);
@@ -62,7 +103,9 @@ export const Contact = ({ setCurrentTab }) => {
         setName('');
         setEmail('');
         setPhone('');
+        setSubject('');
         setMessage('');
+        setAttachments([]);
       }, 4000);
     } finally {
       setIsSubmitting(false);
@@ -185,25 +228,25 @@ export const Contact = ({ setCurrentTab }) => {
                   type="tel"
                   placeholder=" "
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
                   className={styles.formInput}
                   id="phoneInput"
+                  maxLength={10}
+                  inputMode="numeric"
                 />
                 <label className={styles.formLabel}>PHONE / WHATSAPP NUMBER</label>
               </div>
 
               <div className={styles.floatingInputBlock}>
-                <select
+                <input
+                  type="text"
+                  placeholder=" "
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className={styles.formSelect}
-                >
-                  <option value="GENERAL INQUIRY">GENERAL INQUIRY</option>
-                  <option value="BRIDAL CONSULTATION">BRIDAL CONSULTATION</option>
-                  <option value="PRESS &amp; MEDIA">PRESS &amp; MEDIA</option>
-                  <option value="CAREERS">CAREERS</option>
-                </select>
-                <label className={styles.selectLabelHeader}>SUBJECT</label>
+                  className={styles.formInput}
+                  id="subjectInput"
+                />
+                <label className={styles.formLabel}>SUBJECT</label>
               </div>
 
               <div className={styles.floatingInputBlock}>
@@ -220,11 +263,70 @@ export const Contact = ({ setCurrentTab }) => {
               </div>
 
               <div className={styles.attachmentWrapper}>
-                <label className={styles.attachmentBtnLabel}>
+                <label className={styles.attachmentBtnLabel} style={{ opacity: fileUploading ? 0.7 : 1, cursor: fileUploading ? 'wait' : 'pointer' }}>
                   <Paperclip size={16} className={styles.attachmentIcon} />
-                  <span>ATTACH REFERENCE STYLES</span>
-                  <input type="file" className={styles.hiddenFileInput} onChange={() => triggerToast("Styles uploaded successfully!")} />
+                  <span>{fileUploading ? 'PROCESSING FILE...' : 'ATTACH REFERENCE STYLES (IMAGE / PDF)'}</span>
+                  <input 
+                    type="file" 
+                    accept="image/*,application/pdf"
+                    multiple
+                    className={styles.hiddenFileInput} 
+                    onChange={handleFileSelect} 
+                    disabled={fileUploading}
+                  />
                 </label>
+
+                {/* File Attachment Chips List */}
+                {attachments.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 14 }}>
+                    {attachments.map((att, idx) => {
+                      const isPdf = att.fileType?.includes('pdf') || att.name.toLowerCase().endsWith('.pdf');
+
+                      return (
+                        <div key={idx} style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          background: '#faf5ea',
+                          border: '1px solid #C8A34D',
+                          borderRadius: 20,
+                          padding: '6px 14px',
+                          fontSize: '0.8rem',
+                          color: '#490017',
+                          fontWeight: 600,
+                          boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
+                        }}>
+                          {isPdf ? (
+                            <span>📄 {att.name}</span>
+                          ) : (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                              {att.url && <img src={att.url} alt="" style={{ width: 22, height: 22, borderRadius: 4, objectFit: 'cover', border: '1px solid #C8A34D' }} />}
+                              🖼️ {att.name}
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeAttachment(idx)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              color: '#dc2626',
+                              cursor: 'pointer',
+                              fontWeight: 700,
+                              marginLeft: 4,
+                              padding: '0 2px',
+                              fontSize: '0.9rem',
+                              lineHeight: 1
+                            }}
+                            title="Remove attachment"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               <button type="submit" className={styles.submitMessageBtn}>

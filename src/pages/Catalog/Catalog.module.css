@@ -982,6 +982,7 @@
   max-width: 260px;
   margin: 0 auto;
   width: 100%;
+  /* overflow: hidden; */
 }
 
 .product-card:hover {
@@ -1087,6 +1088,9 @@
   flex-direction: column;
   align-items: flex-start;
   flex-grow: 1;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .title-row {
@@ -1139,6 +1143,8 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-align: left;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .price-row {
@@ -1161,6 +1167,16 @@
   font-size: 13px;
   color: var(--text-muted);
   text-decoration: line-through;
+}
+
+.discount-pill {
+  font-size: 10px;
+  background-color: #fcece8;
+  color: #d14d3b;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .add-cart-btn {

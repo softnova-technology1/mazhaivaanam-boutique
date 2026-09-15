@@ -261,6 +261,18 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
   const [spinCoupon, setSpinCoupon] = useState(null);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [showSpinWheelModal, setShowSpinWheelModal] = useState(false);
+  const [hasShownWheel, setHasShownWheel] = useState(false);
+
+  useEffect(() => {
+    if (config.spinningWheelSection?.isActive !== false && !hasShownWheel) {
+      const timer = setTimeout(() => {
+        setShowSpinWheelModal(true);
+        setHasShownWheel(true);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [config.spinningWheelSection?.isActive, hasShownWheel]);
 
   // View All Offers State
   const [showAllOffers, setShowAllOffers] = useState(false);
@@ -769,91 +781,107 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
           </div>
         </section>
 
-        {/* Lucky Draw Spinning Wheel Section */}
-        {config.spinningWheelSection?.isActive !== false && (
-          <section className="pt-8 md:pt-16 pb-16 px-3 sm:px-6 md:px-margin-desktop max-w-container-max mx-auto">
-          <div className="bg-[#FDFBF7] rounded-3xl border border-[#D4AF37]/30 shadow-[0_15px_40px_rgba(0,0,0,0.05)] p-5 sm:p-8 md:p-14 overflow-hidden relative">
-            <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center relative z-10">
-              <div>
-                <h3 className="font-display-lg text-2xl sm:text-4xl md:text-[48px] text-[#2D3326] mb-3 md:mb-5 leading-tight">{config.spinningWheelSection.title}</h3>
-                <p className="text-[#2D3326]/80 text-xs sm:text-base mb-5 md:mb-8 font-normal leading-relaxed max-w-lg">{config.spinningWheelSection.description}</p>
-                
-                <ul className="space-y-2.5 sm:space-y-3.5 mb-6 md:mb-8">
-                  {config.spinningWheelSection.bulletPoints.map((bp, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
-                      <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
-                      <span>{bp}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <button 
-                  onClick={handleSpinWheel}
-                  disabled={isSpinning}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-primary text-on-primary font-label-caps text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-transform active:scale-95 disabled:opacity-50" 
-                  id="spin-btn"
-                >
-                  {spinText}
-                </button>
-              </div>
-              
-              <div className="relative flex justify-center py-4 md:py-6">
-                <div 
-                  className="w-56 h-56 sm:w-72 sm:h-72 md:w-[400px] md:h-[400px] border-4 md:border-8 border-[#D4AF37] relative shadow-[0_10px_30px_rgba(0,0,0,0.1)] overflow-hidden bg-white" 
-                  id="wheel"
-                  style={{
-                    borderRadius: '50%',
-                    transform: `rotate(${rotation}deg)`,
-                    transition: isSpinning ? 'transform 4s cubic-bezier(0.15, 0, 0.15, 1)' : 'none'
-                  }}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center" style={{ borderRadius: '50%', overflow: 'hidden' }}>
-                    <div 
-                      className="w-full h-full" 
-                      style={{ 
-                        borderRadius: '50%',
-                        background: 'conic-gradient(#490017 0deg 60deg, #fed579 60deg 120deg, #a13b51 120deg 180deg, #ffb2bc 180deg 240deg, #6b102a 240deg 300deg, #775a04 300deg 360deg)' 
-                      }}
-                    ></div>
-                    
-                    {config.spinningWheelSection.prizes.map((prizeText, i) => {
-                      const isBottomHalf = i > 1 && i < 5;
-                      return (
-                        <div 
-                          key={i} 
-                          className="absolute inset-0 flex items-start justify-center"
-                          style={{ transform: `rotate(${i * 60 + 30}deg)` }}
-                        >
-                          <div className={`pt-4 sm:pt-6 md:pt-10 w-20 sm:w-24 text-center font-display-lg text-[9.5px] sm:text-[11px] md:text-sm tracking-wide leading-tight ${i % 2 === 0 ? 'text-white' : 'text-[#490017]'}`}>
-                            <span className="block" style={{ transform: isBottomHalf ? 'rotate(180deg)' : 'none' }}>
-                              {prizeText}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+        {/* Lucky Draw Spinning Wheel Modal */}
+        {config.spinningWheelSection?.isActive !== false && showSpinWheelModal && (
+          <div className="fixed inset-0 z-[40] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+            <div 
+              className="bg-[#FDFBF7] rounded-[2.5rem] border-2 border-[#D4AF37] p-5 sm:p-8 md:p-8 max-w-4xl w-full shadow-2xl relative animate-in zoom-in-95 duration-500 overflow-hidden max-h-[92vh] flex flex-col justify-center"
+              style={{ transform: 'translateZ(0)' }}
+            >
+              <button 
+                onClick={() => setShowSpinWheelModal(false)}
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 text-[#2D3326]/50 hover:text-[#2D3326] transition-colors z-50 p-1"
+              >
+                <span className="material-symbols-outlined text-2xl">close</span>
+              </button>
+
+              <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center relative z-10 my-auto">
+                <div>
+                  <h3 className="font-display-lg text-2xl sm:text-3xl md:text-[42px] text-[#2D3326] mb-2 md:mb-4 leading-tight">{config.spinningWheelSection.title}</h3>
+                  <p className="text-[#2D3326]/80 text-xs sm:text-sm md:text-base mb-4 md:mb-6 font-normal leading-relaxed max-w-lg">{config.spinningWheelSection.description}</p>
                   
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div 
-                      className={`w-8 h-8 md:w-10 md:h-10 bg-white rounded-full z-10 shadow-xl border-2 md:border-4 border-[#D4AF37] pointer-events-auto flex items-center justify-center transition-all duration-300 ${isSpinning ? 'opacity-80' : 'cursor-pointer hover:scale-110 hover:shadow-2xl'}`}
-                      onClick={isSpinning ? undefined : handleSpinWheel}
-                      title={isSpinning ? "Spinning..." : "Click to Spin!"}
-                    >
-                      <div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-[#D4AF37] rounded-full"></div>
-                    </div>
-                  </div>
+                  <ul className="space-y-2 sm:space-y-3 mb-5 md:mb-6">
+                    {config.spinningWheelSection.bulletPoints.map((bp, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-[#2D3326] text-xs sm:text-sm font-medium">
+                        <span className="material-symbols-outlined text-[#D4AF37] text-base sm:text-lg shrink-0 mt-0.5">check_circle</span>
+                        <span>{bp}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <button 
+                    onClick={handleSpinWheel}
+                    disabled={isSpinning}
+                    className="w-full sm:w-auto min-w-[210px] inline-flex items-center justify-center px-8 py-3.5 bg-primary text-on-primary font-label-caps text-xs tracking-widest rounded-full shadow-lg hover:scale-105 transition-all duration-300 active:scale-95 disabled:opacity-50" 
+                    id="spin-btn"
+                  >
+                    {spinText}
+                  </button>
                 </div>
                 
-                {/* Golden Indicator */}
-                <div 
-                  className="absolute -top-1 md:-top-2 left-1/2 -translate-x-1/2 w-6 h-9 md:w-8 md:h-12 bg-[#D4AF37] z-20 drop-shadow-md" 
-                  style={{ clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)' }}
-                ></div>
+                <div className="relative flex justify-center items-center py-2 md:py-4 shrink-0 overflow-hidden min-h-[250px] sm:min-h-[300px] md:min-h-[370px]">
+                  {/* Rotating Wheel Circle */}
+                  <div 
+                    className="w-56 h-56 sm:w-72 sm:h-72 md:w-[350px] md:h-[350px] shrink-0 aspect-square border-4 md:border-8 border-[#D4AF37] relative shadow-[0_10px_30px_rgba(0,0,0,0.1)] overflow-hidden bg-white" 
+                    id="wheel"
+                    style={{
+                      borderRadius: '50%',
+                      transform: `rotate(${rotation}deg) translateZ(0)`,
+                      transition: 'transform 4s cubic-bezier(0.15, 0, 0.15, 1)',
+                      willChange: 'transform',
+                      backfaceVisibility: 'hidden'
+                    }}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center" style={{ borderRadius: '50%', overflow: 'hidden' }}>
+                      <div 
+                        className="w-full h-full" 
+                        style={{ 
+                          borderRadius: '50%',
+                          background: 'conic-gradient(#490017 0deg 60deg, #fed579 60deg 120deg, #a13b51 120deg 180deg, #ffb2bc 180deg 240deg, #6b102a 240deg 300deg, #775a04 300deg 360deg)' 
+                        }}
+                      ></div>
+                      
+                      {config.spinningWheelSection.prizes.map((prizeText, i) => {
+                        const isBottomHalf = i > 1 && i < 5;
+                        return (
+                          <div 
+                            key={i} 
+                            className="absolute inset-0 flex items-start justify-center"
+                            style={{ transform: `rotate(${i * 60 + 30}deg)` }}
+                          >
+                            <div className={`pt-3 sm:pt-5 md:pt-8 w-20 sm:w-24 text-center font-display-lg text-[9.5px] sm:text-[11px] md:text-sm tracking-wide leading-tight ${i % 2 === 0 ? 'text-white' : 'text-[#490017]'}`}>
+                              <span className="block" style={{ transform: isBottomHalf ? 'rotate(180deg)' : 'none' }}>
+                                {prizeText}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Stationary Center SPIN Button */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                    <button 
+                      type="button"
+                      className={`w-14 h-14 md:w-20 md:h-20 bg-white rounded-full shadow-xl border-2 md:border-4 border-[#D4AF37] pointer-events-auto flex items-center justify-center transition-all duration-300 ${isSpinning ? 'opacity-80 cursor-not-allowed' : 'cursor-pointer hover:scale-105 active:scale-95 hover:shadow-2xl'}`}
+                      onClick={isSpinning ? undefined : handleSpinWheel}
+                      disabled={isSpinning}
+                      title={isSpinning ? "Spinning..." : "Click to Spin!"}
+                    >
+                      <span className="font-label-caps text-[#D4AF37] text-[11px] md:text-sm font-bold tracking-[0.15em] ml-0.5">SPIN</span>
+                    </button>
+                  </div>
+                  
+                  {/* Golden Indicator */}
+                  <div 
+                    className="absolute top-0 md:top-1 left-1/2 -translate-x-1/2 w-6 h-9 md:w-8 md:h-12 bg-[#D4AF37] z-20 drop-shadow-md pointer-events-none" 
+                    style={{ clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)' }}
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
         )}
 
         {/* Prize Popup Modal */}

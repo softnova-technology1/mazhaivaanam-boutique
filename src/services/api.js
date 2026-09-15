@@ -385,3 +385,11 @@ export const addressAPI = {
   },
 };
 
+// ====== OFFER & COUPONS API ======
+export const offerAPI = {
+  getMyCoupons: async () => {
+    const res = await request('/limited-offer/my-coupons');
+    return res.data || [];
+  },
+};
+

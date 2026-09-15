@@ -27,12 +27,12 @@ const ImageUploaderInput = ({ label, value, onChange }) => {
     <div className="form-group" style={{ marginBottom: 16 }}>
       <label className="form-label">{label}</label>
       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-        <input 
-          type="text" 
-          className="form-input" 
-          value={value || ''} 
+        <input
+          type="text"
+          className="form-input"
+          value={value || ''}
           placeholder="/Images/... or http://..."
-          onChange={e => onChange(e.target.value)} 
+          onChange={e => onChange(e.target.value)}
           style={{ flex: 1 }}
         />
         <label className="btn btn-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', margin: 0, padding: '8px 16px', whiteSpace: 'nowrap' }}>
@@ -82,7 +82,7 @@ const SareeImageUploaderCard = ({ title, subtitle, value, onChange, isPrimary = 
       </div>
 
       {value ? (
-        <div 
+        <div
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           style={{
@@ -97,10 +97,10 @@ const SareeImageUploaderCard = ({ title, subtitle, value, onChange, isPrimary = 
             transition: 'all 0.2s ease-in-out'
           }}
         >
-          <img 
-            src={value} 
-            alt={title} 
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 
+          <img
+            src={value}
+            alt={title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
 
           {/* Badge */}
@@ -124,9 +124,9 @@ const SareeImageUploaderCard = ({ title, subtitle, value, onChange, isPrimary = 
               <Upload size={14} /> Change Image
               <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} disabled={uploading} />
             </label>
-            <button 
-              type="button" 
-              className="btn btn-outline" 
+            <button
+              type="button"
+              className="btn btn-outline"
               style={{ padding: '6px 14px', fontSize: '0.78rem', background: 'rgba(239, 68, 68, 0.9)', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', gap: 6 }}
               onClick={() => onChange('')}
             >
@@ -152,11 +152,11 @@ const SareeImageUploaderCard = ({ title, subtitle, value, onChange, isPrimary = 
           position: 'relative'
         }}>
           <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} disabled={uploading} />
-          
+
           <div style={{ background: '#f1f5f9', width: 48, height: 48, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, border: '1px solid #e2e8f0' }}>
             {uploading ? <RefreshCw className="spinner" size={22} color="var(--primary)" /> : <Upload size={22} color="#64748b" />}
           </div>
-          
+
           <span style={{ fontWeight: 700, fontSize: '0.88rem', color: '#1e293b', marginBottom: 4 }}>
             {uploading ? 'Uploading to S3...' : `Upload ${title}`}
           </span>
@@ -171,12 +171,12 @@ const SareeImageUploaderCard = ({ title, subtitle, value, onChange, isPrimary = 
 
       {/* Manual URL entry fallback */}
       <div style={{ marginTop: 8 }}>
-        <input 
-          type="text" 
-          className="form-input" 
-          placeholder="Or paste image URL (e.g. /Images/... or https://...)" 
-          value={value || ''} 
-          onChange={e => onChange(e.target.value)} 
+        <input
+          type="text"
+          className="form-input"
+          placeholder="Or paste image URL (e.g. /Images/... or https://...)"
+          value={value || ''}
+          onChange={e => onChange(e.target.value)}
           style={{ fontSize: '0.78rem', padding: '5px 10px' }}
         />
       </div>
@@ -188,7 +188,7 @@ export default function LimitedOfferAdmin() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
-  
+
   // Edit Offer Modal State
   const [editModal, setEditModal] = useState({ open: false, section: null, product: null, endDate: '', offerLabel: '' });
   const [deleteModal, setDeleteModal] = useState({ open: false, section: null, product: null });
@@ -398,14 +398,22 @@ export default function LimitedOfferAdmin() {
         'Free Shipping',
       ],
     },
+    offerZonePopup: {
+      isActive: true,
+      badgeText: 'LIMITED TIME OFFER',
+      title: 'Exclusive Festival Vault Unlocked!',
+      description: 'Explore handpicked royal silk sarees, artisan blouses, and limited-time festive deals.',
+      bgImage: '/Images/limited.png',
+      buttonText: 'EXPLORE OFFERS NOW',
+    },
   });
 
   const searchContainerRef = useRef(null);
 
   useEffect(() => {
     loadConfig();
-    categoryAPI.getAll().then(res => setCategoriesList(res.data || [])).catch(() => {});
-    fabricAPI.getAll().then(res => setFabricsList(res.data || [])).catch(() => {});
+    categoryAPI.getAll().then(res => setCategoriesList(res.data || [])).catch(() => { });
+    fabricAPI.getAll().then(res => setFabricsList(res.data || [])).catch(() => { });
   }, []);
 
   const openCreateSareeModal = (slotNum, existingSection = null) => {
@@ -640,6 +648,10 @@ export default function LimitedOfferAdmin() {
             bulletPoints: d.spinningWheelSection?.bulletPoints?.length ? d.spinningWheelSection.bulletPoints : prev.spinningWheelSection.bulletPoints,
             prizes: d.spinningWheelSection?.prizes?.length === 6 ? d.spinningWheelSection.prizes : prev.spinningWheelSection.prizes
           },
+          offerZonePopup: {
+            ...prev.offerZonePopup,
+            ...(d.offerZonePopup || {}),
+          },
         }));
       }
     } catch (err) {
@@ -777,7 +789,7 @@ export default function LimitedOfferAdmin() {
       });
 
       const targetItems = visibleRowItems.filter(item => selectedOfferRowKeys.includes(item.key));
-      
+
       let updatedCount = 0;
       for (const item of targetItems) {
         if (item.sec) {
@@ -808,7 +820,7 @@ export default function LimitedOfferAdmin() {
       });
 
       const targetItems = visibleRowItems.filter(item => selectedOfferRowKeys.includes(item.key));
-      
+
       let deletedCount = 0;
       for (const item of targetItems) {
         if (item.sec) {
@@ -1005,9 +1017,9 @@ export default function LimitedOfferAdmin() {
               {config.isActive ? 'PAGE ACTIVE' : 'PAGE INACTIVE'}
             </span>
             <label style={{ position: 'relative', display: 'inline-block', width: 44, height: 24, cursor: 'pointer', margin: 0 }}>
-              <input 
-                type="checkbox" 
-                checked={config.isActive} 
+              <input
+                type="checkbox"
+                checked={config.isActive}
                 onChange={(e) => setConfig({ ...config, isActive: e.target.checked })}
                 style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
               />
@@ -1032,9 +1044,9 @@ export default function LimitedOfferAdmin() {
               </span>
             </label>
           </div>
-          <button 
-            className="btn btn-primary" 
-            onClick={handleSave} 
+          <button
+            className="btn btn-primary"
+            onClick={handleSave}
             disabled={saving}
             style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 24px' }}
           >
@@ -1069,6 +1081,7 @@ export default function LimitedOfferAdmin() {
           { id: 'duo', label: 'Curated Duo', icon: Gift },
           { id: 'tiers', label: 'Bespoke Offer Tiers', icon: Layers },
           { id: 'wheel', label: 'Spinning Wheel', icon: Disc },
+          { id: 'offerzone', label: 'Offer Zone Popup', icon: Sparkles },
           { id: 'section1', label: 'Exclusive Offers (Grid)', icon: Package },
           { id: 'section2', label: 'Buy 2 Get 1 Gallery (Carousel)', icon: Gift },
         ].map(t => (
@@ -1090,7 +1103,7 @@ export default function LimitedOfferAdmin() {
 
       {/* Form Content */}
       <form onSubmit={handleSave} className="card" style={{ padding: 28 }}>
-        
+
         {/* TAB 1: HERO BANNER */}
         {activeTab === 'hero' && (
           <div>
@@ -1099,31 +1112,31 @@ export default function LimitedOfferAdmin() {
             </h3>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Top Pill Badge Text</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                value={config.heroSection.badgeText} 
-                onChange={e => setConfig({ ...config, heroSection: { ...config.heroSection, badgeText: e.target.value } })} 
+              <input
+                type="text"
+                className="form-input"
+                value={config.heroSection.badgeText}
+                onChange={e => setConfig({ ...config, heroSection: { ...config.heroSection, badgeText: e.target.value } })}
               />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
               <div className="form-group">
                 <label className="form-label">Title Main Part</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  value={config.heroSection.title} 
-                  onChange={e => setConfig({ ...config, heroSection: { ...config.heroSection, title: e.target.value } })} 
+                <input
+                  type="text"
+                  className="form-input"
+                  value={config.heroSection.title}
+                  onChange={e => setConfig({ ...config, heroSection: { ...config.heroSection, title: e.target.value } })}
                 />
               </div>
               <div className="form-group">
                 <label className="form-label">Title Italic Highlight (Text Carousel Words - Comma Separated)</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  value={config.heroSection.titleItalic} 
+                <input
+                  type="text"
+                  className="form-input"
+                  value={config.heroSection.titleItalic}
                   placeholder="e.g. Limited Time, Festive Deals, Royal Vault, Handloom Luxury"
-                  onChange={e => setConfig({ ...config, heroSection: { ...config.heroSection, titleItalic: e.target.value } })} 
+                  onChange={e => setConfig({ ...config, heroSection: { ...config.heroSection, titleItalic: e.target.value } })}
                 />
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4, display: 'block' }}>
                   Enter multiple 2-word phrases separated by comma (,) to automatically animate in the carousel.
@@ -1132,19 +1145,19 @@ export default function LimitedOfferAdmin() {
             </div>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Subtitle Description</label>
-              <textarea 
-                className="form-input" 
-                rows="3" 
-                value={config.heroSection.subtitle} 
-                onChange={e => setConfig({ ...config, heroSection: { ...config.heroSection, subtitle: e.target.value } })} 
+              <textarea
+                className="form-input"
+                rows="3"
+                value={config.heroSection.subtitle}
+                onChange={e => setConfig({ ...config, heroSection: { ...config.heroSection, subtitle: e.target.value } })}
               />
             </div>
-            
+
             {/* Image Uploader for Hero Banner */}
-            <ImageUploaderInput 
-              label="Hero Background Image" 
-              value={config.heroSection.bgImage} 
-              onChange={url => setConfig({ ...config, heroSection: { ...config.heroSection, bgImage: url } })} 
+            <ImageUploaderInput
+              label="Hero Background Image"
+              value={config.heroSection.bgImage}
+              onChange={url => setConfig({ ...config, heroSection: { ...config.heroSection, bgImage: url } })}
             />
           </div>
         )}
@@ -1157,38 +1170,38 @@ export default function LimitedOfferAdmin() {
             </h3>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Timer Badge Sub-Label</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                value={config.timerSection.badgeText} 
-                onChange={e => setConfig({ ...config, timerSection: { ...config.timerSection, badgeText: e.target.value } })} 
+              <input
+                type="text"
+                className="form-input"
+                value={config.timerSection.badgeText}
+                onChange={e => setConfig({ ...config, timerSection: { ...config.timerSection, badgeText: e.target.value } })}
               />
             </div>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Sale Event Title</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                value={config.timerSection.title} 
-                onChange={e => setConfig({ ...config, timerSection: { ...config.timerSection, title: e.target.value } })} 
+              <input
+                type="text"
+                className="form-input"
+                value={config.timerSection.title}
+                onChange={e => setConfig({ ...config, timerSection: { ...config.timerSection, title: e.target.value } })}
               />
             </div>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Sale Description</label>
-              <textarea 
-                className="form-input" 
-                rows="2" 
-                value={config.timerSection.description} 
-                onChange={e => setConfig({ ...config, timerSection: { ...config.timerSection, description: e.target.value } })} 
+              <textarea
+                className="form-input"
+                rows="2"
+                value={config.timerSection.description}
+                onChange={e => setConfig({ ...config, timerSection: { ...config.timerSection, description: e.target.value } })}
               />
             </div>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Sale Event Expiry Date & Time</label>
-              <input 
-                type="datetime-local" 
-                className="form-input" 
-                value={config.timerSection.endDate} 
-                onChange={e => setConfig({ ...config, timerSection: { ...config.timerSection, endDate: e.target.value } })} 
+              <input
+                type="datetime-local"
+                className="form-input"
+                value={config.timerSection.endDate}
+                onChange={e => setConfig({ ...config, timerSection: { ...config.timerSection, endDate: e.target.value } })}
               />
             </div>
           </div>
@@ -1202,48 +1215,48 @@ export default function LimitedOfferAdmin() {
             </h3>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Section Tag Label</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                value={config.featuredDuoSection.badgeText} 
-                onChange={e => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, badgeText: e.target.value } })} 
+              <input
+                type="text"
+                className="form-input"
+                value={config.featuredDuoSection.badgeText}
+                onChange={e => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, badgeText: e.target.value } })}
               />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
               <div className="form-group">
                 <label className="form-label">Main Heading</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  value={config.featuredDuoSection.heading} 
-                  onChange={e => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, heading: e.target.value } })} 
+                <input
+                  type="text"
+                  className="form-input"
+                  value={config.featuredDuoSection.heading}
+                  onChange={e => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, heading: e.target.value } })}
                 />
               </div>
               <div className="form-group">
                 <label className="form-label">Offer Sub-Heading / Tagline</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  value={config.featuredDuoSection.subHeading} 
-                  onChange={e => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, subHeading: e.target.value } })} 
+                <input
+                  type="text"
+                  className="form-input"
+                  value={config.featuredDuoSection.subHeading}
+                  onChange={e => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, subHeading: e.target.value } })}
                 />
               </div>
             </div>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Description Text</label>
-              <textarea 
-                className="form-input" 
-                rows="3" 
-                value={config.featuredDuoSection.description} 
-                onChange={e => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, description: e.target.value } })} 
+              <textarea
+                className="form-input"
+                rows="3"
+                value={config.featuredDuoSection.description}
+                onChange={e => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, description: e.target.value } })}
               />
             </div>
-            
+
             {/* Image Uploader for Curated Duo */}
-            <ImageUploaderInput 
-              label="Curated Duo Banner Image" 
-              value={config.featuredDuoSection.image} 
-              onChange={url => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, image: url } })} 
+            <ImageUploaderInput
+              label="Curated Duo Banner Image"
+              value={config.featuredDuoSection.image}
+              onChange={url => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, image: url } })}
             />
           </div>
         )}
@@ -1260,41 +1273,41 @@ export default function LimitedOfferAdmin() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
                   <div>
                     <label className="form-label">Card Title</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={card.title} 
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={card.title}
                       onChange={e => {
                         const updated = [...config.curationOfJoySection.cards];
                         updated[idx].title = e.target.value;
                         setConfig({ ...config, curationOfJoySection: { ...config.curationOfJoySection, cards: updated } });
-                      }} 
+                      }}
                     />
                   </div>
                   <div>
                     <label className="form-label">Discount Badge Text</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={card.discountBadge} 
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={card.discountBadge}
                       onChange={e => {
                         const updated = [...config.curationOfJoySection.cards];
                         updated[idx].discountBadge = e.target.value;
                         setConfig({ ...config, curationOfJoySection: { ...config.curationOfJoySection, cards: updated } });
-                      }} 
+                      }}
                     />
                   </div>
                 </div>
 
                 {/* Card Image Uploader */}
-                <ImageUploaderInput 
-                  label={`Card #${idx + 1} Image`} 
-                  value={card.image} 
+                <ImageUploaderInput
+                  label={`Card #${idx + 1} Image`}
+                  value={card.image}
                   onChange={url => {
                     const updated = [...config.curationOfJoySection.cards];
                     updated[idx].image = url;
                     setConfig({ ...config, curationOfJoySection: { ...config.curationOfJoySection, cards: updated } });
-                  }} 
+                  }}
                 />
               </div>
             ))}
@@ -1313,9 +1326,9 @@ export default function LimitedOfferAdmin() {
                   {config.spinningWheelSection.isActive !== false ? 'SECTION ACTIVE' : 'SECTION INACTIVE'}
                 </span>
                 <div style={{ position: 'relative', width: 44, height: 24 }}>
-                  <input 
-                    type="checkbox" 
-                    checked={config.spinningWheelSection.isActive !== false} 
+                  <input
+                    type="checkbox"
+                    checked={config.spinningWheelSection.isActive !== false}
                     onChange={(e) => setConfig({ ...config, spinningWheelSection: { ...config.spinningWheelSection, isActive: e.target.checked } })}
                     style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
                   />
@@ -1335,32 +1348,32 @@ export default function LimitedOfferAdmin() {
             </div>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Wheel Section Heading</label>
-              <input 
-                type="text" 
-                className="form-input" 
-                value={config.spinningWheelSection.title} 
-                onChange={e => setConfig({ ...config, spinningWheelSection: { ...config.spinningWheelSection, title: e.target.value } })} 
+              <input
+                type="text"
+                className="form-input"
+                value={config.spinningWheelSection.title}
+                onChange={e => setConfig({ ...config, spinningWheelSection: { ...config.spinningWheelSection, title: e.target.value } })}
               />
             </div>
             <div className="form-group" style={{ marginBottom: 16 }}>
               <label className="form-label">Wheel Section Description</label>
-              <textarea 
-                className="form-input" 
-                rows="2" 
-                value={config.spinningWheelSection.description} 
-                onChange={e => setConfig({ ...config, spinningWheelSection: { ...config.spinningWheelSection, description: e.target.value } })} 
+              <textarea
+                className="form-input"
+                rows="2"
+                value={config.spinningWheelSection.description}
+                onChange={e => setConfig({ ...config, spinningWheelSection: { ...config.spinningWheelSection, description: e.target.value } })}
               />
             </div>
 
             <div style={{ marginBottom: 20 }}>
               <label className="form-label">Bullet Point Benefits (3 Items)</label>
               {config.spinningWheelSection.bulletPoints.map((bp, i) => (
-                <input 
-                  key={i} 
-                  type="text" 
-                  className="form-input" 
+                <input
+                  key={i}
+                  type="text"
+                  className="form-input"
                   style={{ marginBottom: 8 }}
-                  value={bp} 
+                  value={bp}
                   onChange={e => {
                     const updated = [...config.spinningWheelSection.bulletPoints];
                     updated[i] = e.target.value;
@@ -1376,10 +1389,10 @@ export default function LimitedOfferAdmin() {
                 {config.spinningWheelSection.prizes.map((pz, i) => (
                   <div key={i}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Slice #{i + 1}</span>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={pz} 
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={pz}
                       onChange={e => {
                         const updated = [...config.spinningWheelSection.prizes];
                         updated[i] = e.target.value;
@@ -1393,6 +1406,90 @@ export default function LimitedOfferAdmin() {
           </div>
         )}
 
+        {/* TAB 8: OFFER ZONE POPUP */}
+        {activeTab === 'offerzone' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, borderBottom: '1px solid var(--border-color)', paddingBottom: 10 }}>
+              <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--primary)' }}>
+                Offer Zone Entry Popup Settings
+              </h3>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 8, fontSize: '0.85rem', fontWeight: 600 }}>
+                <span style={{ color: config.offerZonePopup?.isActive !== false ? '#16a34a' : '#dc2626' }}>
+                  {config.offerZonePopup?.isActive !== false ? 'POPUP ACTIVE' : 'POPUP INACTIVE'}
+                </span>
+                <div style={{ position: 'relative', width: 44, height: 24 }}>
+                  <input
+                    type="checkbox"
+                    checked={config.offerZonePopup?.isActive !== false}
+                    onChange={(e) => setConfig({ ...config, offerZonePopup: { ...(config.offerZonePopup || {}), isActive: e.target.checked } })}
+                    style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                  />
+                  <span style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                    backgroundColor: config.offerZonePopup?.isActive !== false ? '#16a34a' : '#e5e7eb',
+                    transition: '.3s', borderRadius: 24, boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+                  }}>
+                    <span style={{
+                      position: 'absolute', height: 18, width: 18,
+                      left: config.offerZonePopup?.isActive !== false ? 23 : 3, bottom: 3,
+                      backgroundColor: 'white', transition: '.3s', borderRadius: '50%', boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                    }} />
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label className="form-label">Popup Pill Tag / Badge Text</label>
+              <input
+                type="text"
+                className="form-input"
+                value={config.offerZonePopup?.badgeText || 'LIMITED TIME OFFER'}
+                onChange={e => setConfig({ ...config, offerZonePopup: { ...(config.offerZonePopup || {}), badgeText: e.target.value } })}
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label className="form-label">Popup Main Heading</label>
+              <input
+                type="text"
+                className="form-input"
+                value={config.offerZonePopup?.title || 'Exclusive Festival Vault Unlocked!'}
+                onChange={e => setConfig({ ...config, offerZonePopup: { ...(config.offerZonePopup || {}), title: e.target.value } })}
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label className="form-label">Popup Description Text</label>
+              <textarea
+                className="form-input"
+                rows="3"
+                value={config.offerZonePopup?.description || 'Explore handpicked royal silk sarees, artisan blouses, and limited-time festive deals.'}
+                onChange={e => setConfig({ ...config, offerZonePopup: { ...(config.offerZonePopup || {}), description: e.target.value } })}
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label className="form-label">Button Action Text</label>
+              <input
+                type="text"
+                className="form-input"
+                value={config.offerZonePopup?.buttonText || 'EXPLORE OFFERS NOW'}
+                onChange={e => setConfig({ ...config, offerZonePopup: { ...(config.offerZonePopup || {}), buttonText: e.target.value } })}
+              />
+            </div>
+
+            <ImageUploaderInput
+              label="Popup Card Background Image"
+              value={config.offerZonePopup?.bgImage || '/Images/limited.png'}
+              onChange={url => setConfig({ ...config, offerZonePopup: { ...(config.offerZonePopup || {}), bgImage: url } })}
+            />
+            <span style={{ fontSize: '0.78rem', color: '#d97706', fontWeight: 600, marginTop: -8, marginBottom: 16, display: 'block' }}>
+              💡 Recommended Aspect Ratio: <strong>1:1 (Square)</strong> or <strong>4:5 (Vertical Poster)</strong> | Best Size: <strong>800 × 800 px</strong> or <strong>800 × 1000 px</strong> (Max 5MB)
+            </span>
+          </div>
+        )}
+
         {/* TAB 6 & 7: OFFER SECTIONS (Section 1: Exclusive Offers & Section 2: Buy 2 Get 1 Gallery) */}
         {(activeTab === 'section1' || activeTab === 'section2' || activeTab === 'products') && (
           <div>
@@ -1401,7 +1498,7 @@ export default function LimitedOfferAdmin() {
               <h4 style={{ fontWeight: 700, marginBottom: 14, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Edit2 size={16} /> Edit Title & Badge for {selectedSectionSlot === 1 ? 'Section 1 (Exclusive Offers Grid)' : 'Section 2 (Buy 2 Get 1 Gallery)'}
               </h4>
-              
+
               {selectedSectionSlot === 1 ? (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <div className="form-group" style={{ marginBottom: 0 }}>
@@ -1639,10 +1736,10 @@ export default function LimitedOfferAdmin() {
                               <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                                 {product ? (
                                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
-                                    <img 
-                                      src={product.images?.[0]?.url || '/Images/saree1.png'} 
-                                      alt={product.name} 
-                                      style={{ width: 38, height: 50, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border-color)' }} 
+                                    <img
+                                      src={product.images?.[0]?.url || '/Images/saree1.png'}
+                                      alt={product.name}
+                                      style={{ width: 38, height: 50, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border-color)' }}
                                     />
                                     <div>
                                       <div style={{ fontWeight: 700, color: '#2D3326', fontSize: '0.86rem', whiteSpace: 'nowrap' }}>{product.name}</div>
@@ -1672,12 +1769,12 @@ export default function LimitedOfferAdmin() {
                               <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                                 {isEditingTime ? (
                                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
-                                    <input 
-                                      type="datetime-local" 
-                                      className="form-input" 
+                                    <input
+                                      type="datetime-local"
+                                      className="form-input"
                                       style={{ padding: '4px 8px', fontSize: '0.8rem' }}
-                                      value={editSectionForm.endDate ?? end.toISOString().slice(0, 16)} 
-                                      onChange={e => setEditSectionForm(f => ({ ...f, endDate: e.target.value }))} 
+                                      value={editSectionForm.endDate ?? end.toISOString().slice(0, 16)}
+                                      onChange={e => setEditSectionForm(f => ({ ...f, endDate: e.target.value }))}
                                     />
                                     <button type="button" className="btn btn-primary" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => handleUpdateSection(sec._id)} disabled={sectionSaving}>Save</button>
                                     <button type="button" className="btn btn-outline" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => setEditSectionId(null)}>X</button>
@@ -1696,13 +1793,13 @@ export default function LimitedOfferAdmin() {
 
                               {/* Status Badge */}
                               <td style={{ padding: '12px 16px', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
-                                <span style={{ 
-                                  background: `${statusColor}18`, 
-                                  color: statusColor, 
-                                  border: `1px solid ${statusColor}40`, 
-                                  padding: '4px 12px', 
-                                  borderRadius: 20, 
-                                  fontWeight: 700, 
+                                <span style={{
+                                  background: `${statusColor}18`,
+                                  color: statusColor,
+                                  border: `1px solid ${statusColor}40`,
+                                  padding: '4px 12px',
+                                  borderRadius: 20,
+                                  fontWeight: 700,
                                   fontSize: '0.78rem',
                                   whiteSpace: 'nowrap'
                                 }}>
@@ -1714,8 +1811,8 @@ export default function LimitedOfferAdmin() {
                               <td style={{ padding: '12px 16px', verticalAlign: 'middle', textAlign: 'right', whiteSpace: 'nowrap' }}>
                                 <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'nowrap', alignItems: 'center', whiteSpace: 'nowrap' }}>
                                   {product && (
-                                    <button 
-                                      type="button" 
+                                    <button
+                                      type="button"
                                       style={{ padding: '5px 10px', fontSize: '0.78rem', background: '#fee2e2', border: '1px solid #fca5a5', color: '#dc2626', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontWeight: 700, whiteSpace: 'nowrap' }}
                                       onClick={() => {
                                         const pId = product._id || (typeof product === 'string' ? product : null);
@@ -1728,9 +1825,9 @@ export default function LimitedOfferAdmin() {
                                     </button>
                                   )}
 
-                                  <button 
-                                    type="button" 
-                                    className="btn btn-outline" 
+                                  <button
+                                    type="button"
+                                    className="btn btn-outline"
                                     style={{ padding: '5px 10px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 4, background: '#fff8e6', borderColor: '#D4AF37', color: '#B38A4A', fontWeight: 700 }}
                                     onClick={() => {
                                       const dateVal = sec.endDate ? new Date(new Date(sec.endDate).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
@@ -1748,8 +1845,8 @@ export default function LimitedOfferAdmin() {
                                     <Edit3 size={13} /> Edit
                                   </button>
 
-                                  <button 
-                                    type="button" 
+                                  <button
+                                    type="button"
                                     style={{ padding: '5px 10px', fontSize: '0.78rem', background: sec.isActive ? '#fef3c7' : '#dcfce7', border: '1px solid', borderColor: sec.isActive ? '#fcd34d' : '#86efac', color: sec.isActive ? '#92400e' : '#166534', borderRadius: 6, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}
                                     onClick={() => handleToggleSectionActive(sec, product)}
                                     disabled={sectionSaving}
@@ -1757,9 +1854,9 @@ export default function LimitedOfferAdmin() {
                                     {sec.isActive ? 'Pause' : 'Resume'}
                                   </button>
 
-                                  <button 
-                                    type="button" 
-                                    className="btn btn-outline" 
+                                  <button
+                                    type="button"
+                                    className="btn btn-outline"
                                     style={{ padding: '5px 10px', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 4, background: '#fee2e2', borderColor: '#fca5a5', color: '#dc2626', fontWeight: 700, borderRadius: 6, cursor: 'pointer', whiteSpace: 'nowrap' }}
                                     onClick={() => setDeleteModal({ open: true, section: sec, product: product })}
                                     disabled={sectionSaving}
@@ -1827,20 +1924,20 @@ export default function LimitedOfferAdmin() {
             <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: 12, background: '#fff', alignItems: 'center' }}>
               <div style={{ position: 'relative', flex: 1 }}>
                 <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  placeholder="Search by saree name, fabric, or tag..." 
-                  value={pickerSearch} 
-                  onChange={e => setPickerSearch(e.target.value)} 
-                  style={{ paddingLeft: 36, fontSize: '0.85rem' }} 
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Search by saree name, fabric, or tag..."
+                  value={pickerSearch}
+                  onChange={e => setPickerSearch(e.target.value)}
+                  style={{ paddingLeft: 36, fontSize: '0.85rem' }}
                 />
               </div>
               {categoriesList.length > 0 && (
-                <select 
-                  className="form-input" 
-                  value={pickerCategory} 
-                  onChange={e => setPickerCategory(e.target.value)} 
+                <select
+                  className="form-input"
+                  value={pickerCategory}
+                  onChange={e => setPickerCategory(e.target.value)}
                   style={{ width: 180, fontSize: '0.85rem' }}
                 >
                   <option value="">All Categories</option>
@@ -1871,9 +1968,9 @@ export default function LimitedOfferAdmin() {
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                         <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', color: 'var(--primary)' }}>
-                          <input 
-                            type="checkbox" 
-                            checked={allSelected} 
+                          <input
+                            type="checkbox"
+                            checked={allSelected}
                             onChange={e => {
                               if (e.target.checked) {
                                 setSelectedProductIds(prev => Array.from(new Set([...prev, ...filtered.map(p => p._id)])));
@@ -1881,7 +1978,7 @@ export default function LimitedOfferAdmin() {
                                 const filteredIds = new Set(filtered.map(p => p._id));
                                 setSelectedProductIds(prev => prev.filter(id => !filteredIds.has(id)));
                               }
-                            }} 
+                            }}
                           />
                           Select All ({filtered.length} Sarees)
                         </label>
@@ -1894,7 +1991,7 @@ export default function LimitedOfferAdmin() {
                         {filtered.map(p => {
                           const isSelected = selectedProductIds.includes(p._id);
                           return (
-                            <div 
+                            <div
                               key={p._id}
                               onClick={() => {
                                 setSelectedProductIds(prev => isSelected ? prev.filter(id => id !== p._id) : [...prev, p._id]);
@@ -1906,11 +2003,11 @@ export default function LimitedOfferAdmin() {
                                 cursor: 'pointer', transition: 'all 0.15s'
                               }}
                             >
-                              <input 
-                                type="checkbox" 
-                                checked={isSelected} 
-                                onChange={() => {}} 
-                                style={{ width: 18, height: 18, accentColor: 'var(--primary)' }} 
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={() => { }}
+                                style={{ width: 18, height: 18, accentColor: 'var(--primary)' }}
                               />
                               <img src={p.images?.[0]?.url || '/Images/saree1.png'} alt={p.name} style={{ width: 44, height: 58, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
                               <div style={{ flex: 1, minWidth: 0 }}>
@@ -1933,22 +2030,22 @@ export default function LimitedOfferAdmin() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <div>
                   <label className="form-label" style={{ fontSize: '0.8rem', marginBottom: 4 }}>Offer Campaign Title</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    value={offerTitle} 
-                    onChange={e => setOfferTitle(e.target.value)} 
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={offerTitle}
+                    onChange={e => setOfferTitle(e.target.value)}
                     placeholder="e.g. Festive Exclusive Saree Sale"
                     style={{ fontSize: '0.85rem', padding: '6px 10px' }}
                   />
                 </div>
                 <div>
                   <label className="form-label" style={{ fontSize: '0.8rem', marginBottom: 4 }}>Offer End Date & Time <span style={{ color: 'red' }}>*</span></label>
-                  <input 
-                    type="datetime-local" 
-                    className="form-input" 
-                    value={offerEndDate} 
-                    onChange={e => setOfferEndDate(e.target.value)} 
+                  <input
+                    type="datetime-local"
+                    className="form-input"
+                    value={offerEndDate}
+                    onChange={e => setOfferEndDate(e.target.value)}
                     style={{ fontSize: '0.85rem', padding: '6px 10px' }}
                   />
                 </div>
@@ -1960,9 +2057,9 @@ export default function LimitedOfferAdmin() {
                 </span>
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button type="button" className="btn btn-outline" onClick={() => setShowProductModal(false)}>Cancel</button>
-                  <button 
-                    type="button" 
-                    className="btn btn-primary" 
+                  <button
+                    type="button"
+                    className="btn btn-primary"
                     disabled={sectionSaving || selectedProductIds.length === 0 || !offerEndDate}
                     onClick={handleSaveModalProducts}
                     style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 20px' }}
@@ -2006,43 +2103,43 @@ export default function LimitedOfferAdmin() {
 
             {/* Modal Body Form */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'grid', gridTemplateColumns: '320px 1fr', gap: 24 }}>
-              
+
               {/* Left Column: Image Uploaders with 3:4 Live Previews */}
               <div>
-                <SareeImageUploaderCard 
-                  title="Primary Image" 
-                  subtitle="(Max 5MB • Aspect Ratio 3:4)" 
-                  value={sareeForm.primaryImage} 
-                  onChange={url => setSareeForm(f => ({ ...f, primaryImage: url }))} 
-                  isPrimary={true} 
+                <SareeImageUploaderCard
+                  title="Primary Image"
+                  subtitle="(Max 5MB • Aspect Ratio 3:4)"
+                  value={sareeForm.primaryImage}
+                  onChange={url => setSareeForm(f => ({ ...f, primaryImage: url }))}
+                  isPrimary={true}
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                  <SareeImageUploaderCard 
-                    title="Secondary Image 1" 
-                    subtitle="(3:4)" 
-                    value={sareeForm.secondaryImage1} 
-                    onChange={url => setSareeForm(f => ({ ...f, secondaryImage1: url }))} 
+                  <SareeImageUploaderCard
+                    title="Secondary Image 1"
+                    subtitle="(3:4)"
+                    value={sareeForm.secondaryImage1}
+                    onChange={url => setSareeForm(f => ({ ...f, secondaryImage1: url }))}
                   />
 
-                  <SareeImageUploaderCard 
-                    title="Secondary Image 2" 
-                    subtitle="(3:4)" 
-                    value={sareeForm.secondaryImage2} 
-                    onChange={url => setSareeForm(f => ({ ...f, secondaryImage2: url }))} 
+                  <SareeImageUploaderCard
+                    title="Secondary Image 2"
+                    subtitle="(3:4)"
+                    value={sareeForm.secondaryImage2}
+                    onChange={url => setSareeForm(f => ({ ...f, secondaryImage2: url }))}
                   />
                 </div>
               </div>
 
               {/* Right Column: Saree Fields & Specifications */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                
+
                 {/* Name */}
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Product Name *</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
+                  <input
+                    type="text"
+                    className="form-input"
                     placeholder="e.g. Kanchipuram Pure Zari Silk Saree"
                     value={sareeForm.name}
                     onChange={e => setSareeForm(f => ({ ...f, name: e.target.value }))}
@@ -2052,9 +2149,9 @@ export default function LimitedOfferAdmin() {
                 {/* Simple Description */}
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Simple Description (Shows on Shop Card & Details Subtitle)</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
+                  <input
+                    type="text"
+                    className="form-input"
                     placeholder="e.g. Handcrafted Megatron Silk Saree with Rich Brocade"
                     value={sareeForm.shortDescription}
                     onChange={e => setSareeForm(f => ({ ...f, shortDescription: e.target.value }))}
@@ -2064,9 +2161,9 @@ export default function LimitedOfferAdmin() {
                 {/* Detailed Description */}
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Detailed Description (Shows on Product Details Page)</label>
-                  <textarea 
-                    className="form-input" 
-                    rows="3" 
+                  <textarea
+                    className="form-input"
+                    rows="3"
                     placeholder="Detailed product description..."
                     value={sareeForm.description}
                     onChange={e => setSareeForm(f => ({ ...f, description: e.target.value }))}
@@ -2077,7 +2174,7 @@ export default function LimitedOfferAdmin() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Category *</label>
-                    <select 
+                    <select
                       className="form-input"
                       value={sareeForm.category}
                       onChange={e => setSareeForm(f => ({ ...f, category: e.target.value }))}
@@ -2089,7 +2186,7 @@ export default function LimitedOfferAdmin() {
 
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Fabric *</label>
-                    <select 
+                    <select
                       className="form-input"
                       value={sareeForm.fabric}
                       onChange={e => setSareeForm(f => ({ ...f, fabric: e.target.value }))}
@@ -2114,9 +2211,9 @@ export default function LimitedOfferAdmin() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Price (₹) *</label>
-                    <input 
-                      type="number" 
-                      className="form-input" 
+                    <input
+                      type="number"
+                      className="form-input"
                       placeholder="e.g. 1800"
                       value={sareeForm.price}
                       onChange={e => {
@@ -2131,9 +2228,9 @@ export default function LimitedOfferAdmin() {
 
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">MRP Price (₹)</label>
-                    <input 
-                      type="number" 
-                      className="form-input" 
+                    <input
+                      type="number"
+                      className="form-input"
                       placeholder="e.g. 2400"
                       value={sareeForm.mrpPrice}
                       onChange={e => {
@@ -2151,9 +2248,9 @@ export default function LimitedOfferAdmin() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Discount (%)</label>
-                    <input 
-                      type="number" 
-                      className="form-input" 
+                    <input
+                      type="number"
+                      className="form-input"
                       placeholder="0"
                       value={sareeForm.discountPercent || 0}
                       onChange={e => {
@@ -2168,9 +2265,9 @@ export default function LimitedOfferAdmin() {
 
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Discount Amount / Profit (₹) <span style={{ fontSize: '0.72rem', color: '#B38A4A', fontWeight: 700 }}>(ADMIN ONLY)</span></label>
-                    <input 
-                      type="number" 
-                      className="form-input" 
+                    <input
+                      type="number"
+                      className="form-input"
                       placeholder="0"
                       readOnly
                       value={sareeForm.discountAmount || 0}
@@ -2183,9 +2280,9 @@ export default function LimitedOfferAdmin() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Stock Quantity *</label>
-                    <input 
-                      type="number" 
-                      className="form-input" 
+                    <input
+                      type="number"
+                      className="form-input"
                       value={sareeForm.stockQuantity}
                       onChange={e => setSareeForm(f => ({ ...f, stockQuantity: e.target.value }))}
                     />
@@ -2193,7 +2290,7 @@ export default function LimitedOfferAdmin() {
 
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Tag Badge</label>
-                    <select 
+                    <select
                       className="form-input"
                       value={sareeForm.tag}
                       onChange={e => setSareeForm(f => ({ ...f, tag: e.target.value }))}
@@ -2216,9 +2313,9 @@ export default function LimitedOfferAdmin() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Weight</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. 500g"
                       value={sareeForm.weight}
                       onChange={e => setSareeForm(f => ({ ...f, weight: e.target.value }))}
@@ -2226,9 +2323,9 @@ export default function LimitedOfferAdmin() {
                   </div>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Height</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. 45 inches"
                       value={sareeForm.height}
                       onChange={e => setSareeForm(f => ({ ...f, height: e.target.value }))}
@@ -2236,9 +2333,9 @@ export default function LimitedOfferAdmin() {
                   </div>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Saree Length</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. 5.5 meters"
                       value={sareeForm.sareeLength}
                       onChange={e => setSareeForm(f => ({ ...f, sareeLength: e.target.value }))}
@@ -2246,9 +2343,9 @@ export default function LimitedOfferAdmin() {
                   </div>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Blouse Length</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. 0.8 meters"
                       value={sareeForm.blouseLength}
                       onChange={e => setSareeForm(f => ({ ...f, blouseLength: e.target.value }))}
@@ -2256,9 +2353,9 @@ export default function LimitedOfferAdmin() {
                   </div>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Pattern</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. Floral Motif"
                       value={sareeForm.pattern}
                       onChange={e => setSareeForm(f => ({ ...f, pattern: e.target.value }))}
@@ -2266,9 +2363,9 @@ export default function LimitedOfferAdmin() {
                   </div>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Pallu</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. Rich Brocade"
                       value={sareeForm.pallu}
                       onChange={e => setSareeForm(f => ({ ...f, pallu: e.target.value }))}
@@ -2276,9 +2373,9 @@ export default function LimitedOfferAdmin() {
                   </div>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Blouse</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. Running Blouse"
                       value={sareeForm.blouse}
                       onChange={e => setSareeForm(f => ({ ...f, blouse: e.target.value }))}
@@ -2286,9 +2383,9 @@ export default function LimitedOfferAdmin() {
                   </div>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Wash Care</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. Dry Clean Only"
                       value={sareeForm.washCare}
                       onChange={e => setSareeForm(f => ({ ...f, washCare: e.target.value }))}
@@ -2301,9 +2398,9 @@ export default function LimitedOfferAdmin() {
                   <label className="form-label" style={{ fontSize: '0.78rem', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>
                     RETURN/EXCHANGE
                   </label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
+                  <input
+                    type="text"
+                    className="form-input"
                     placeholder="e.g. Not Applicable"
                     value={sareeForm.returnPolicy}
                     onChange={e => setSareeForm(f => ({ ...f, returnPolicy: e.target.value }))}
@@ -2319,9 +2416,9 @@ export default function LimitedOfferAdmin() {
                   <label className="form-label" style={{ fontSize: '0.78rem', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px' }}>
                     NOTE
                   </label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
+                  <input
+                    type="text"
+                    className="form-input"
                     placeholder="Product Color May Slightly Vary Due To Photographic Lighting..."
                     value={sareeForm.note}
                     onChange={e => setSareeForm(f => ({ ...f, note: e.target.value }))}
@@ -2342,8 +2439,8 @@ export default function LimitedOfferAdmin() {
                 }}>
                   <div style={{ display: 'flex', gap: 28, alignItems: 'center', flexWrap: 'wrap' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.88rem', fontWeight: 600, color: '#334155', cursor: 'pointer', userSelect: 'none' }}>
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         style={{ width: 18, height: 18, accentColor: 'var(--primary)', cursor: 'pointer' }}
                         checked={!!sareeForm.isFeatured}
                         onChange={e => setSareeForm(f => ({ ...f, isFeatured: e.target.checked }))}
@@ -2352,16 +2449,16 @@ export default function LimitedOfferAdmin() {
                     </label>
 
                     <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.88rem', fontWeight: 600, color: '#334155', cursor: 'pointer', userSelect: 'none' }}>
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         style={{ width: 18, height: 18, accentColor: 'var(--primary)', cursor: 'pointer' }}
                         checked={!!sareeForm.isActive}
                         onChange={e => {
                           const val = e.target.checked;
-                          setSareeForm(f => ({ 
-                            ...f, 
+                          setSareeForm(f => ({
+                            ...f,
                             isActive: val,
-                            isScheduled: val ? false : f.isScheduled 
+                            isScheduled: val ? false : f.isScheduled
                           }));
                         }}
                       />
@@ -2369,16 +2466,16 @@ export default function LimitedOfferAdmin() {
                     </label>
 
                     <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.88rem', fontWeight: 600, color: '#334155', cursor: 'pointer', userSelect: 'none' }}>
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         style={{ width: 18, height: 18, accentColor: 'var(--primary)', cursor: 'pointer' }}
                         checked={!!sareeForm.isScheduled}
                         onChange={e => {
                           const val = e.target.checked;
-                          setSareeForm(f => ({ 
-                            ...f, 
+                          setSareeForm(f => ({
+                            ...f,
                             isScheduled: val,
-                            isActive: val ? false : f.isActive 
+                            isActive: val ? false : f.isActive
                           }));
                         }}
                       />
@@ -2389,11 +2486,11 @@ export default function LimitedOfferAdmin() {
                   {sareeForm.isScheduled && (
                     <div style={{ marginTop: 4, paddingTop: 10, borderTop: '1px dashed var(--border-color)', display: 'flex', alignItems: 'center', gap: 12 }}>
                       <label className="form-label" style={{ fontSize: '0.78rem', margin: 0, whiteSpace: 'nowrap' }}>Schedule Date & Time:</label>
-                      <input 
-                        type="datetime-local" 
-                        className="form-input" 
+                      <input
+                        type="datetime-local"
+                        className="form-input"
                         style={{ maxWidth: 240, fontSize: '0.82rem', padding: '5px 10px' }}
-                        value={sareeForm.scheduledAt || ''} 
+                        value={sareeForm.scheduledAt || ''}
                         onChange={e => setSareeForm(f => ({ ...f, scheduledAt: e.target.value }))}
                       />
                     </div>
@@ -2408,9 +2505,9 @@ export default function LimitedOfferAdmin() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Offer Campaign Label</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. Diwali Flash Deal"
                       value={sareeForm.offerTitle}
                       onChange={e => setSareeForm(f => ({ ...f, offerTitle: e.target.value }))}
@@ -2418,9 +2515,9 @@ export default function LimitedOfferAdmin() {
                   </div>
                   <div>
                     <label className="form-label" style={{ fontSize: '0.78rem' }}>Offer End Date & Time *</label>
-                    <input 
-                      type="datetime-local" 
-                      className="form-input" 
+                    <input
+                      type="datetime-local"
+                      className="form-input"
                       value={sareeForm.offerEndDate}
                       onChange={e => setSareeForm(f => ({ ...f, offerEndDate: e.target.value }))}
                     />
@@ -2432,9 +2529,9 @@ export default function LimitedOfferAdmin() {
             {/* Modal Footer */}
             <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-color)', background: '#faf9f6', display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
               <button type="button" className="btn btn-outline" onClick={() => setShowCreateSareeModal(false)}>Cancel</button>
-              <button 
-                type="button" 
-                className="btn btn-primary" 
+              <button
+                type="button"
+                className="btn btn-primary"
                 disabled={sectionSaving}
                 onClick={handleCreateNewSaree}
                 style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 24px' }}
@@ -2455,8 +2552,8 @@ export default function LimitedOfferAdmin() {
               <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Edit3 size={20} color="var(--primary)" /> Edit Offer
               </h3>
-              <button 
-                className="close-btn" 
+              <button
+                className="close-btn"
                 onClick={() => setEditModal({ open: false, section: null, product: null, endDate: '', offerLabel: '' })}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
               >
@@ -2467,9 +2564,9 @@ export default function LimitedOfferAdmin() {
             <div style={{ padding: 24 }}>
               <div style={{ marginBottom: 16 }}>
                 <label className="form-label">Offer Label</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
+                <input
+                  type="text"
+                  className="form-input"
                   value={editModal.offerLabel}
                   onChange={e => setEditModal(m => ({ ...m, offerLabel: e.target.value }))}
                   placeholder="e.g. Exclusive Offers Sale"
@@ -2477,9 +2574,9 @@ export default function LimitedOfferAdmin() {
               </div>
               <div>
                 <label className="form-label">Offer End Date & Time</label>
-                <input 
-                  type="datetime-local" 
-                  className="form-input" 
+                <input
+                  type="datetime-local"
+                  className="form-input"
                   value={editModal.endDate}
                   onChange={e => setEditModal(m => ({ ...m, endDate: e.target.value }))}
                 />
@@ -2487,16 +2584,16 @@ export default function LimitedOfferAdmin() {
             </div>
 
             <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-color)', background: '#faf9f6', display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-              <button 
-                type="button" 
-                className="btn btn-outline" 
+              <button
+                type="button"
+                className="btn btn-outline"
                 onClick={() => setEditModal({ open: false, section: null, product: null, endDate: '', offerLabel: '' })}
               >
                 Cancel
               </button>
-              <button 
-                type="button" 
-                className="btn btn-primary" 
+              <button
+                type="button"
+                className="btn btn-primary"
                 disabled={sectionSaving}
                 onClick={handleSaveEdit}
                 style={{ display: 'flex', alignItems: 'center', gap: 8 }}

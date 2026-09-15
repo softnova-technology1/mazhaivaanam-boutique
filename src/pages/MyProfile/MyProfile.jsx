@@ -23,12 +23,15 @@ import {
   ArrowRight,
   Eye,
   EyeOff,
-  Award
+  Award,
+  Ticket,
+  Copy,
+  CheckCircle2
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCart } from '../../hooks/useCart';
 import { useWishlist } from '../../hooks/useWishlist';
-import { orderAPI, authAPI, addressAPI } from '../../services/api';
+import { orderAPI, authAPI, addressAPI, offerAPI } from '../../services/api';
 import { formatCurrency } from '../../utils/formatters';
 import InvoiceModal from '../../admin/components/InvoiceModal';
 import styles from './MyProfile.module.css';
@@ -68,6 +71,52 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     };
     loadOrders();
   }, []);
+
+  // Coupons State
+  const [coupons, setCoupons] = useState([]);
+  const [couponsLoading, setCouponsLoading] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(null);
+
+  // Load user coupons when coupons tab is active
+  useEffect(() => {
+    const loadCoupons = async () => {
+      setCouponsLoading(true);
+      try {
+        const liveCoupons = await offerAPI.getMyCoupons();
+        if (liveCoupons && liveCoupons.length > 0) {
+          setCoupons(liveCoupons);
+        } else {
+          // fallback to localStorage
+          const saved = localStorage.getItem('boutique_user_won_coupons');
+          if (saved) setCoupons(JSON.parse(saved));
+        }
+      } catch (err) {
+        const saved = localStorage.getItem('boutique_user_won_coupons');
+        if (saved) setCoupons(JSON.parse(saved));
+      } finally {
+        setCouponsLoading(false);
+      }
+    };
+    loadCoupons();
+  }, [activeSection]);
+
+  const handleCopyCouponCode = (code) => {
+    if (!code) return;
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    triggerToast(`Coupon code ${code} copied to clipboard! 📋`);
+    setTimeout(() => {
+      setCopiedCode(null);
+    }, 2500);
+  };
+
+  const handleUseCoupon = (code) => {
+    if (code) {
+      localStorage.setItem('boutique_applied_coupon', code);
+      triggerToast(`Coupon ${code} activated for checkout! 🛍️`);
+    }
+    setCurrentTab('catalog');
+  };
 
   // 1. Personal Profile State
   // 1. Personal Profile State
@@ -350,6 +399,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   const menuItems = [
     { id: 'personal', label: 'Personal Info', icon: <User size={18} /> },
     { id: 'orders', label: 'My Orders', icon: <Package size={18} /> },
+    { id: 'coupons', label: 'My Coupons', icon: <Ticket size={18} /> },
     { id: 'addresses', label: 'Saved Addresses', icon: <MapPin size={18} /> },
     { id: 'security', label: 'Security Settings', icon: <Lock size={18} /> },
     { id: 'help', label: 'Help & Support', icon: <HelpCircle size={18} /> }
@@ -600,6 +650,153 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+              </section>
+            )}
+
+            {/* TAB: MY COUPONS */}
+            {activeSection === 'coupons' && (
+              <section className={styles.tabSection}>
+                <h3 className={styles.sectionHeader}>My Coupons & Rewards</h3>
+                <p className={styles.sectionSubtitle}>View your won coupon codes, discounts, and spinning wheel prizes.</p>
+                <div className={styles.sectionDivider}></div>
+
+                {couponsLoading ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                    <div style={{ width: 32, height: 32, border: '3px solid rgba(200, 163, 77, 0.3)', borderTopColor: '#C8A34D', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto' }} />
+                  </div>
+                ) : coupons.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '45px 20px', background: '#FFFDFB', borderRadius: 14, border: '1px dashed rgba(200, 163, 77, 0.45)' }}>
+                    <Ticket size={52} style={{ color: '#C8A34D', margin: '0 auto 14px auto', opacity: 0.85 }} />
+                    <h4 style={{ fontSize: '1.2rem', color: '#4F4E22', marginBottom: 8, fontWeight: 600 }}>No Coupons Available</h4>
+                    <p style={{ fontSize: '0.88rem', color: '#696738', marginBottom: 22, maxWidth: 440, margin: '0 auto 22px auto', lineHeight: 1.5 }}>
+                      You haven't collected any coupon codes yet. Spin the wheel on our Limited Offer page to win instant discount vouchers!
+                    </p>
+                    <button onClick={() => setCurrentTab('limited-offers')} className={`${styles.submitBtn} menuLink`}>
+                      Spin & Win Coupons
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 20 }}>
+                    {coupons.map((item, idx) => {
+                      const isExpired = item.isExpired;
+                      const isUsed = item.isUsed;
+                      const isActive = !isExpired && !isUsed;
+                      const code = item.couponCode || item.code || 'MAZHAI10';
+
+                      return (
+                        <div
+                          key={item._id || item.id || idx}
+                          style={{
+                            background: '#FFFDFB',
+                            borderRadius: 14,
+                            border: '1.5px dashed rgba(200, 163, 77, 0.5)',
+                            padding: '22px',
+                            position: 'relative',
+                            boxShadow: '0 8px 24px rgba(79, 78, 34, 0.05)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            gap: 16,
+                            opacity: isExpired || isUsed ? 0.65 : 1
+                          }}
+                        >
+                          {/* Top row status */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A34D', display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <Ticket size={14} /> Reward VOUCHER
+                            </span>
+                            <span style={{
+                              padding: '4px 10px',
+                              borderRadius: 20,
+                              fontSize: '0.68rem',
+                              fontWeight: 700,
+                              textTransform: 'uppercase',
+                              background: isUsed ? 'rgba(100, 100, 100, 0.12)' : isExpired ? 'rgba(239, 68, 68, 0.12)' : 'rgba(34, 197, 94, 0.12)',
+                              color: isUsed ? '#666' : isExpired ? '#ef4444' : '#16a34a',
+                              border: `1px solid ${isUsed ? '#888' : isExpired ? '#ef4444' : '#16a34a'}`
+                            }}>
+                              {isUsed ? 'Used' : isExpired ? 'Expired' : 'Active'}
+                            </span>
+                          </div>
+
+                          {/* Prize info */}
+                          <div>
+                            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#4F4E22', marginBottom: 4 }}>
+                              {item.prize || `${item.value || 10}% OFF`}
+                            </div>
+                            <div style={{ fontSize: '0.78rem', color: '#8C886B' }}>
+                              Valid until {item.validUntil ? new Date(item.validUntil).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'No Expiry'}
+                            </div>
+                          </div>
+
+                          {/* Code Display & Copy Box */}
+                          <div style={{
+                            background: '#FAF8F4',
+                            border: '1px solid rgba(200, 163, 77, 0.35)',
+                            borderRadius: 8,
+                            padding: '10px 14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: 8
+                          }}>
+                            <span style={{ fontFamily: 'monospace', fontSize: '1.05rem', fontWeight: 700, letterSpacing: '0.14em', color: '#363618' }}>
+                              {code}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyCouponCode(code)}
+                              style={{
+                                background: copiedCode === code ? '#4F4E22' : 'transparent',
+                                color: copiedCode === code ? '#FFFFFF' : '#C8A34D',
+                                border: '1px solid #C8A34D',
+                                borderRadius: 6,
+                                padding: '6px 12px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 4,
+                                transition: 'all 0.2s ease'
+                              }}
+                            >
+                              {copiedCode === code ? <CheckCircle2 size={14} /> : <Copy size={14} />}
+                              {copiedCode === code ? 'Copied!' : 'Copy'}
+                            </button>
+                          </div>
+
+                          {/* Action Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleUseCoupon(code)}
+                            disabled={!isActive}
+                            style={{
+                              width: '100%',
+                              padding: '11px 0',
+                              background: isActive ? '#4F4E22' : '#E5E2DB',
+                              color: isActive ? '#FFFFFF' : '#8C886B',
+                              border: 'none',
+                              borderRadius: 25,
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              letterSpacing: '0.12em',
+                              textTransform: 'uppercase',
+                              cursor: isActive ? 'pointer' : 'not-allowed',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 6
+                            }}
+                          >
+                            <span>Use at Checkout</span>
+                            <ArrowRight size={14} />
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </section>

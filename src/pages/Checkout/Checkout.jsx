@@ -1503,74 +1503,76 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
                 <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
                   <h2 className={styles.sectionTitle}>
                     <Lock size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
-                    Choose Payment Method
+                    Payment Method
                   </h2>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {/* Card */}
-                    <label
-                      className={`${styles.deliveryLabelCard} ${paymentMethod === 'card' ? styles.selectedDelivery : ''}`}
-                      onClick={() => setPaymentMethod('card')}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <input type="radio" name="payMethod" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className={styles.hiddenRadio} />
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <CreditCard size={22} color={paymentMethod === 'card' ? 'var(--primary)' : 'var(--text-muted)'} />
-                        <div className={styles.deliveryInfo}>
-                          <span className={styles.deliveryOptionTitle}>Credit / Debit Card</span>
-                          <p className={styles.deliveryOptionSubtitle}>Visa, Mastercard, RuPay &amp; more</p>
+                  {/* Single Unified Razorpay Payment Card */}
+                  <div
+                    style={{
+                      background: 'linear-gradient(135deg, #FFFDFB 0%, #FAF6F0 100%)',
+                      border: '2px solid #C8A34D',
+                      borderRadius: 14,
+                      padding: '20px',
+                      boxShadow: '0 8px 24px rgba(79, 78, 34, 0.06)',
+                      position: 'relative',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: '50%',
+                          background: 'rgba(200, 163, 77, 0.15)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: '1px solid #C8A34D'
+                        }}>
+                          <ShieldCheck size={24} color="#4F4E22" />
+                        </div>
+                        <div>
+                          <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#4F4E22' }}>
+                            Razorpay Secure Checkout
+                          </h4>
+                          <span style={{ fontSize: '0.78rem', color: '#696738', fontWeight: 500 }}>
+                            100% Encrypted &amp; Instant Verification
+                          </span>
                         </div>
                       </div>
-                    </label>
+                      <span style={{
+                        padding: '4px 10px',
+                        background: 'rgba(34, 197, 94, 0.12)',
+                        color: '#16a34a',
+                        border: '1px solid #16a34a',
+                        borderRadius: 20,
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.05em',
+                        textTransform: 'uppercase'
+                      }}>
+                        ⚡ All Payment Modes Enabled
+                      </span>
+                    </div>
 
-                    {/* UPI */}
-                    <label
-                      className={`${styles.deliveryLabelCard} ${paymentMethod === 'upi' ? styles.selectedDelivery : ''}`}
-                      onClick={() => setPaymentMethod('upi')}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <input type="radio" name="payMethod" checked={paymentMethod === 'upi'} onChange={() => setPaymentMethod('upi')} className={styles.hiddenRadio} />
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <Smartphone size={22} color={paymentMethod === 'upi' ? 'var(--primary)' : 'var(--text-muted)'} />
-                        <div className={styles.deliveryInfo}>
-                          <span className={styles.deliveryOptionTitle}>UPI / QR</span>
-                          <p className={styles.deliveryOptionSubtitle}>GPay, PhonePe, Paytm, BHIM &amp; more</p>
-                        </div>
-                      </div>
-                    </label>
-
-                    {/* Net Banking */}
-                    <label
-                      className={`${styles.deliveryLabelCard} ${paymentMethod === 'netbanking' ? styles.selectedDelivery : ''}`}
-                      onClick={() => setPaymentMethod('netbanking')}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <input type="radio" name="payMethod" checked={paymentMethod === 'netbanking'} onChange={() => setPaymentMethod('netbanking')} className={styles.hiddenRadio} />
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <Landmark size={22} color={paymentMethod === 'netbanking' ? 'var(--primary)' : 'var(--text-muted)'} />
-                        <div className={styles.deliveryInfo}>
-                          <span className={styles.deliveryOptionTitle}>Net Banking</span>
-                          <p className={styles.deliveryOptionSubtitle}>All major Indian banks supported</p>
-                        </div>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div style={{
-                    marginTop: 16,
-                    padding: '12px 16px',
-                    background: 'rgba(200, 163, 77, 0.06)',
-                    border: '1px solid var(--border-gold)',
-                    borderRadius: 8,
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 10
-                  }}>
-                    <ShieldCheck size={18} color="var(--primary)" style={{ flexShrink: 0, marginTop: 1 }} />
-                    <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                      Your payment is secured by <strong>Razorpay</strong> with 256-bit SSL encryption.
-                      After clicking <em>Complete Order</em>, you will be redirected to complete payment securely.
+                    <p style={{ margin: '0 0 14px 0', fontSize: '0.86rem', color: '#3B3B36', lineHeight: 1.6 }}>
+                      Pay via <strong>UPI (GPay, PhonePe, Paytm, BHIM)</strong>, <strong>Credit / Debit Cards (Visa, Mastercard, RuPay)</strong>, <strong>Net Banking (All Indian Banks)</strong>, or <strong>Wallets</strong>.
                     </p>
+
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '10px 14px',
+                      background: '#FFFFFF',
+                      borderRadius: 8,
+                      border: '1px dashed rgba(200, 163, 77, 0.45)',
+                      fontSize: '0.78rem',
+                      color: '#696738'
+                    }}>
+                      <Lock size={14} color="#C8A34D" style={{ flexShrink: 0 }} />
+                      <span>Protected by 256-bit SSL encryption. Razorpay gateway will open when you click <strong>Complete Order</strong>.</span>
+                    </div>
                   </div>
                 </section>
               </>

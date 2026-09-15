@@ -95,6 +95,13 @@ export default function InvoiceModal({ order, onClose }) {
     window.print();
   };
 
+  const getPaymentModeLabel = (pm) => {
+    if (!pm) return 'ONLINE';
+    const val = String(pm).toLowerCase().trim();
+    if (val === 'cod') return 'COD';
+    return 'ONLINE';
+  };
+
   return createPortal(
     <div className="modal-overlay" onClick={onClose} style={{ zIndex: 9999 }}>
       <div 
@@ -186,7 +193,7 @@ export default function InvoiceModal({ order, onClose }) {
                 <div>Invoice No: <strong>{invoiceNumber}</strong></div>
                 <div>Invoice Date: <strong>{invoiceDate}</strong></div>
                 <div>Order ID: <strong>{order.orderId || order._id}</strong></div>
-                <div>Payment Mode: <strong style={{ textTransform: 'uppercase' }}>{order.paymentMethod ? order.paymentMethod.toUpperCase() : 'PREPAID / ONLINE'}</strong></div>
+                <div>Payment Mode: <strong style={{ textTransform: 'uppercase' }}>{getPaymentModeLabel(order.paymentMethod)}</strong></div>
                 <div>Status: <strong style={{ color: (order.paymentStatus === 'paid' || order.status === 'CONFIRMED' || order.status === 'IN TRANSIT' || order.status === 'DELIVERED') ? '#16a34a' : '#ea580c' }}>{(order.paymentStatus || order.status || 'PAID').toUpperCase()}</strong></div>
               </div>
             </div>

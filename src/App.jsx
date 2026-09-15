@@ -36,6 +36,7 @@ import { ShippingPolicy } from './pages/ShippingPolicy/ShippingPolicy';
 import { MyProfile } from './pages/MyProfile/MyProfile';
 import { SavedAddress } from './pages/SavedAddress/SavedAddress';
 import { PreBooking } from './pages/PreBooking/PreBooking';
+import { OfferZoneModal } from './components/common/OfferZoneModal/OfferZoneModal';
 import { getProductByIdOrSlug } from './services/api';
 import './App.css';
 
@@ -43,7 +44,7 @@ function getInitialState() {
   const path = window.location.pathname;
   let tab = 'shop';
   let prod = null;
-  
+
   if (path === '/' || path === '') {
     tab = 'shop';
   } else if (path === '/catalog') {
@@ -75,6 +76,8 @@ function AppContent() {
   const [toastMessage, setToastMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isLimitedOfferActive, setIsLimitedOfferActive] = useState(true);
+  const [offerZoneConfig, setOfferZoneConfig] = useState(null);
+  const [showOfferZoneModal, setShowOfferZoneModal] = useState(false);
 
   // Clear directCheckoutItem when navigating away from checkout page
   useEffect(() => {
@@ -106,7 +109,7 @@ function AppContent() {
           window.dispatchEvent(new Event('storage')); // trigger update for Navbar/Wishlist components
         }
       }
-    } catch (e) {}
+    } catch (e) { }
   }, []);
 
   // Initial loading effect and Limited Offer Config
@@ -115,6 +118,15 @@ function AppContent() {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
+
+    const defaultPopupConfig = {
+      isActive: true,
+      badgeText: 'LIMITED TIME OFFER',
+      title: 'Exclusive Festival Vault Unlocked!',
+      description: 'Explore handpicked royal silk sarees, artisan blouses, and limited-time festive deals.',
+      bgImage: '/Images/limited.png',
+      buttonText: 'EXPLORE OFFERS NOW',
+    };
 
     fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/limited-offer/config`)
       .then(res => res.json())
@@ -127,9 +139,21 @@ function AppContent() {
             }
           }
           setIsLimitedOfferActive(active);
+
+          const popupCfg = data.data.offerZonePopup || defaultPopupConfig;
+          setOfferZoneConfig(popupCfg);
+
+          // Show offer zone popup on site open ONLY IF limited offer page is ON and popup is active
+          if (active && popupCfg.isActive !== false) {
+            setTimeout(() => {
+              setShowOfferZoneModal(true);
+            }, 1000);
+          }
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        setOfferZoneConfig(defaultPopupConfig);
+      });
 
     return () => clearTimeout(timer);
   }, []);
@@ -207,12 +231,12 @@ function AppContent() {
     } else if (currentTab !== 'shop') {
       expectedPath = `/${currentTab}`;
     }
-    
+
     // Only push if the path is actually different to avoid duplicates
     if (path !== expectedPath) {
       window.history.pushState(null, '', expectedPath);
     }
-    
+
     // Scroll to top on page navigation
     window.scrollTo(0, 0);
   }, [currentTab, selectedProduct]);
@@ -223,11 +247,11 @@ function AppContent() {
         return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} setCatalogFilter={setCatalogFilter} />;
       case 'catalog':
         return (
-          <Catalog 
-            activeFilter={catalogFilter} 
-            setActiveFilter={setCatalogFilter} 
-            setCurrentTab={setCurrentTab} 
-            setSelectedProduct={setSelectedProduct} 
+          <Catalog
+            activeFilter={catalogFilter}
+            setActiveFilter={setCatalogFilter}
+            setCurrentTab={setCurrentTab}
+            setSelectedProduct={setSelectedProduct}
           />
         );
       case 'product-detail':
@@ -245,10 +269,10 @@ function AppContent() {
         return <Cart setCurrentTab={setCurrentTab} />;
       case 'checkout':
         return (
-          <Checkout 
-            setCurrentTab={setCurrentTab} 
-            directCheckoutItem={directCheckoutItem} 
-            setDirectCheckoutItem={setDirectCheckoutItem} 
+          <Checkout
+            setCurrentTab={setCurrentTab}
+            directCheckoutItem={directCheckoutItem}
+            setDirectCheckoutItem={setDirectCheckoutItem}
           />
         );
       case 'my-orders':
@@ -279,10 +303,10 @@ function AppContent() {
 
       case 'pre-booking':
         return (
-          <PreBooking 
-            setCurrentTab={setCurrentTab} 
-            setSelectedProduct={setSelectedProduct} 
-            setDirectCheckoutItem={setDirectCheckoutItem} 
+          <PreBooking
+            setCurrentTab={setCurrentTab}
+            setSelectedProduct={setSelectedProduct}
+            setDirectCheckoutItem={setDirectCheckoutItem}
           />
         );
       case 'shipping-policy':
@@ -298,7 +322,7 @@ function AppContent() {
         <div className="global-loader">
           <div className="rain-container">
             {Array.from({ length: 150 }).map((_, i) => (
-              <i key={i} className="drop" style={{ 
+              <i key={i} className="drop" style={{
                 left: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 2}s`,
                 animationDuration: `${1.5 + Math.random() * 3}s`
@@ -308,17 +332,17 @@ function AppContent() {
           <img src="/logo.png" alt="Loading..." className="loader-logo" />
         </div>
       )}
-      <Navbar 
-        currentTab={currentTab} 
-        setCurrentTab={handleNavbarNavigation} 
+      <Navbar
+        currentTab={currentTab}
+        setCurrentTab={handleNavbarNavigation}
         setCatalogFilter={setCatalogFilter}
         setSelectedProduct={setSelectedProduct}
-        cartItemCount={cartItemCount} 
+        cartItemCount={cartItemCount}
         isLimitedOfferActive={isLimitedOfferActive}
       />
       <main className="main-content">
-        <Breadcrumbs 
-          currentTab={currentTab} 
+        <Breadcrumbs
+          currentTab={currentTab}
           setCurrentTab={setCurrentTab}
           catalogFilter={catalogFilter}
           setCatalogFilter={setCatalogFilter}
@@ -362,6 +386,22 @@ function AppContent() {
 
       {/* Cart Popup Notification */}
       <CartToast setCurrentTab={handleNavbarNavigation} />
+
+      {/* Offer Zone Entry Popup Modal */}
+      {showOfferZoneModal && isLimitedOfferActive && (
+        <OfferZoneModal
+          popupConfig={offerZoneConfig}
+          onClose={() => {
+            setShowOfferZoneModal(false);
+            sessionStorage.setItem('hasShownOfferZonePopup', 'true');
+          }}
+          onExplore={() => {
+            setShowOfferZoneModal(false);
+            sessionStorage.setItem('hasShownOfferZonePopup', 'true');
+            handleNavbarNavigation('limited-offer');
+          }}
+        />
+      )}
     </div>
   );
 }

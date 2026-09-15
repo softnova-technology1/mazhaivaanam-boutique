@@ -11,6 +11,19 @@ async function req(url, options = {}) {
   return res.json();
 }
 
+const formatForDateTimeLocal = (dateStr) => {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
+  const pad = (num) => String(num).padStart(2, '0');
+  const year = d.getFullYear();
+  const month = pad(d.getMonth() + 1);
+  const day = pad(d.getDate());
+  const hours = pad(d.getHours());
+  const minutes = pad(d.getMinutes());
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
 export default function Coupons() {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +53,7 @@ export default function Coupons() {
     setForm({
       code: c.code, description: c.description || '', type: c.type, value: c.value,
       minOrderAmount: c.minOrderAmount || '', maxDiscount: c.maxDiscount || '',
-      usageLimit: c.usageLimit || '', validUntil: c.validUntil ? c.validUntil.slice(0, 10) : ''
+      usageLimit: c.usageLimit || '', validUntil: c.validUntil ? formatForDateTimeLocal(c.validUntil) : ''
     });
     setModal({ open: true, coupon: c });
   };
@@ -124,7 +137,9 @@ export default function Coupons() {
                   <td style={{ fontWeight: 600 }}>{c.type === 'percentage' ? `${c.value}%` : `₹${c.value}`}{c.maxDiscount ? ` (max ₹${c.maxDiscount})` : ''}</td>
                   <td>{c.minOrderAmount ? `₹${c.minOrderAmount.toLocaleString('en-IN')}` : '—'}</td>
                   <td>{c.usedCount}{c.usageLimit ? ` / ${c.usageLimit}` : ' / ∞'}</td>
-                  <td style={{ color: new Date(c.validUntil) < new Date() ? 'var(--danger)' : 'var(--text-muted)' }}>{new Date(c.validUntil).toLocaleDateString('en-IN')}</td>
+                  <td style={{ color: new Date(c.validUntil) < new Date() ? 'var(--danger)' : 'var(--text-muted)', fontSize: '0.84rem' }}>
+                    {new Date(c.validUntil).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
+                  </td>
                   <td><span className={`badge ${c.isActive && new Date(c.validUntil) > new Date() ? 'badge-success' : 'badge-danger'}`}>{c.isActive && new Date(c.validUntil) > new Date() ? 'Active' : 'Expired'}</span></td>
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
@@ -217,8 +232,8 @@ export default function Coupons() {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Valid Until</label>
-                  <input className="form-input" type="date" required value={form.validUntil} onChange={e => setForm(f => ({ ...f, validUntil: e.target.value }))} />
+                  <label className="form-label">Valid Until (Date & Time)</label>
+                  <input className="form-input" type="datetime-local" required value={form.validUntil} onChange={e => setForm(f => ({ ...f, validUntil: e.target.value }))} />
                 </div>
               </div>
               <div className="modal-footer">

@@ -172,7 +172,7 @@ export default function InvoiceModal({ order, onClose }) {
                 LUXURY HANDLOOM BOUTIQUE
               </div>
               <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>
-                ANA Complex- 1st Floor, Sethu Road, <br />
+                ANA Complex, Sethu Road, <br />
                 Peravurani, Thanjavur, Tamil Nadu, India 614804<br />
                 GSTIN: <strong>33ANYPN4388D1ZH</strong> | State Code: 33<br />
                 📞 +91 8807959179 | ✉️ mazhaivaanampvi@gmail.com

@@ -134,7 +134,7 @@ export default function ShippingLabelModal({ order, onClose }) {
                 <div className={styles.addressText}>
                   <div className={styles.customerName}>Mazhai Vaanam</div>
                   Women's Collections<br />
-                  ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804<br />
+                  ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804<br />
                   T: +91 8807959179
                 </div>
               </div>

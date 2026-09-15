@@ -253,6 +253,74 @@
   color: var(--primary-dark, #4A4E2B);
 }
 
+/* Floating Tooltip Popover for Password Requirements */
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid rgba(200, 163, 77, 0.45);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 30px rgba(45, 41, 38, 0.16), 0 4px 12px rgba(200, 163, 77, 0.1);
+  z-index: 100;
+  text-align: left;
+  animation: tooltipSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.password-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 24px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #ffffff transparent transparent transparent;
+}
+
+.password-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 23px;
+  border-width: 7px;
+  border-style: solid;
+  border-color: rgba(200, 163, 77, 0.45) transparent transparent transparent;
+}
+
+@keyframes tooltipSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info-trigger-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-muted, #7D756D);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.info-trigger-btn:hover {
+  color: var(--accent, #C8A34D);
+}
+
 /* Submit Button */
 .auth-submit-btn {
   width: 100%;

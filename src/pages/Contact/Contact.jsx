@@ -380,7 +380,7 @@ export const Contact = ({ setCurrentTab }) => {
                 <Store size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
                   <h4>Physical Address</h4>
-                  <p>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
+                  <p>ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
                 </div>
               </div>
             </div>
@@ -405,7 +405,7 @@ export const Contact = ({ setCurrentTab }) => {
               <div className={styles.locationTextDetails}>
                 <div>
                   <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>Mazhai Vaanam Women's Collections</h3>
-                  <p className={styles.locationAddressText}>ANA Complex- 1st Floor, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804</p>
+                  <p className={styles.locationAddressText}>ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804</p>
                   <p className={styles.locationHoursLabel}>Hours</p>
                   <p className={styles.locationHoursValue}>Mon - Sat: 10 AM - 8 PM<br />Sun: Closed</p>
                 </div>

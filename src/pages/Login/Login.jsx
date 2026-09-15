@@ -11,7 +11,8 @@ import {
   ArrowRight,
   CheckCircle2,
   X,
-  Phone
+  Phone,
+  Info
 } from 'lucide-react';
 import styles from './Login.module.css';
 
@@ -24,6 +25,8 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [showPasswordTooltip, setShowPasswordTooltip] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(initialIsRegistering);
@@ -253,83 +256,110 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
           {/* Password Input */}
           <div className={styles['input-group-container']}>
             <div className={styles['label-row']}>
-              <label className={styles['input-label']}>PASSWORD</label>
-              {!isRegistering && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <label className={styles['input-label']}>PASSWORD</label>
+                {isRegistering && (
+                  <button
+                    type="button"
+                    className={styles['info-trigger-btn']}
+                    onMouseEnter={() => setShowPasswordTooltip(true)}
+                    onMouseLeave={() => setShowPasswordTooltip(false)}
+                    onClick={() => setShowPasswordTooltip(!showPasswordTooltip)}
+                    aria-label="Password requirements info"
+                  >
+                    <Info size={13} />
+                  </button>
+                )}
+              </div>
+
+              {!isRegistering ? (
                 <span 
                   className={styles['forgot-password-link']}
                   onClick={() => alert("Password reset link will be sent to your registered email address.")}
                 >
                   Forgot?
                 </span>
+              ) : (
+                password.length > 0 && (
+                  <span style={{ fontSize: '10.5px', fontWeight: 700, color: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#e65100' : '#c62828' }}>
+                    {strengthScore === 5 ? '💪 Strong' : strengthScore >= 3 ? '⚠️ Medium' : '❌ Weak'}
+                  </span>
+                )
               )}
             </div>
-            <div className={styles['input-with-icon']}>
-              <Lock size={16} className={styles['field-icon']} />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className={styles['auth-input']}
-                required
-                autoComplete={isRegistering ? "new-password" : "current-password"}
-              />
-              <button
-                type="button"
-                className={styles['password-toggle-btn']}
-                onClick={() => setShowPassword(!showPassword)}
-                tabIndex={-1}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
 
-            {/* Live Strong Password Requirements Checklist (for Register mode) */}
-            {isRegistering && password.length > 0 && (
-              <div style={{ marginTop: '12px', padding: '12px 14px', background: 'var(--bg-secondary, rgba(0,0,0,0.03))', borderRadius: '8px', border: '1px solid var(--border-color, #e0e0e0)' }}>
-                {/* Strength Meter Bar */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '0.75rem', letterSpacing: '0.5px', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
-                    Password Strength:
-                  </span>
-                  <span style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    color: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#e65100' : '#c62828'
-                  }}>
-                    {strengthScore === 5 ? '💪 Strong Password' : strengthScore >= 3 ? '⚠️ Medium Strength' : '❌ Weak Password'}
-                  </span>
-                </div>
-                <div style={{ width: '100%', height: '4px', background: '#e0e0e0', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' }}>
-                  <div style={{
-                    height: '100%',
-                    width: `${(strengthScore / 5) * 100}%`,
-                    background: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#f57c00' : '#d32f2f',
-                    transition: 'all 0.3s ease'
-                  }} />
-                </div>
+            <div className={styles['password-input-wrapper']}>
+              {/* Floating Tooltip Requirements Popover (for Register mode) */}
+              {isRegistering && (isPasswordFocused || showPasswordTooltip) && (
+                <div className={styles['password-tooltip']}>
+                  {/* Strength Meter Bar */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <span style={{ fontSize: '0.72rem', letterSpacing: '0.5px', fontWeight: 700, textTransform: 'uppercase', color: '#555' }}>
+                      Password Requirements:
+                    </span>
+                    <span style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      color: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#e65100' : '#c62828'
+                    }}>
+                      {strengthScore === 5 ? '💪 Strong Password' : strengthScore >= 3 ? '⚠️ Medium' : '❌ Weak'}
+                    </span>
+                  </div>
 
-                {/* Requirements List */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '0.75rem' }}>
-                  <div style={{ color: passMinLength ? '#2e7d32' : '#888', fontWeight: passMinLength ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>{passMinLength ? '✅' : '⚪'}</span> 8+ Characters
+                  <div style={{ width: '100%', height: '4px', background: '#e0e0e0', borderRadius: '2px', overflow: 'hidden', marginBottom: '8px' }}>
+                    <div style={{
+                      height: '100%',
+                      width: `${(strengthScore / 5) * 100}%`,
+                      background: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#f57c00' : '#d32f2f',
+                      transition: 'all 0.3s ease'
+                    }} />
                   </div>
-                  <div style={{ color: passHasUpper ? '#2e7d32' : '#888', fontWeight: passHasUpper ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>{passHasUpper ? '✅' : '⚪'}</span> 1 Uppercase (A-Z)
-                  </div>
-                  <div style={{ color: passHasLower ? '#2e7d32' : '#888', fontWeight: passHasLower ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>{passHasLower ? '✅' : '⚪'}</span> 1 Lowercase (a-z)
-                  </div>
-                  <div style={{ color: passHasNumber ? '#2e7d32' : '#888', fontWeight: passHasNumber ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span>{passHasNumber ? '✅' : '⚪'}</span> 1 Number (0-9)
-                  </div>
-                  <div style={{ color: passHasSpecial ? '#2e7d32' : '#888', fontWeight: passHasSpecial ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px', gridColumn: 'span 2' }}>
-                    <span>{passHasSpecial ? '✅' : '⚪'}</span> 1 Special Symbol (@$!%*?&#)
+
+                  {/* Requirements List */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontSize: '0.72rem' }}>
+                    <div style={{ color: passMinLength ? '#2e7d32' : '#666', fontWeight: passMinLength ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span>{passMinLength ? '✅' : '⚪'}</span> 8+ Characters
+                    </div>
+                    <div style={{ color: passHasUpper ? '#2e7d32' : '#666', fontWeight: passHasUpper ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span>{passHasUpper ? '✅' : '⚪'}</span> 1 Uppercase (A-Z)
+                    </div>
+                    <div style={{ color: passHasLower ? '#2e7d32' : '#666', fontWeight: passHasLower ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span>{passHasLower ? '✅' : '⚪'}</span> 1 Lowercase (a-z)
+                    </div>
+                    <div style={{ color: passHasNumber ? '#2e7d32' : '#666', fontWeight: passHasNumber ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span>{passHasNumber ? '✅' : '⚪'}</span> 1 Number (0-9)
+                    </div>
+                    <div style={{ color: passHasSpecial ? '#2e7d32' : '#666', fontWeight: passHasSpecial ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px', gridColumn: 'span 2' }}>
+                      <span>{passHasSpecial ? '✅' : '⚪'}</span> 1 Special Symbol (@$!%*?&#)
+                    </div>
                   </div>
                 </div>
+              )}
+
+              <div className={styles['input-with-icon']}>
+                <Lock size={16} className={styles['field-icon']} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setIsPasswordFocused(true)}
+                  onBlur={() => setIsPasswordFocused(false)}
+                  placeholder="Enter your password"
+                  className={styles['auth-input']}
+                  required
+                  autoComplete={isRegistering ? "new-password" : "current-password"}
+                />
+                <button
+                  type="button"
+                  className={styles['password-toggle-btn']}
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Submit Button */}

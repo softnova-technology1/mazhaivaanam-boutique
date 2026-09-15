@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
 import { useWishlist } from '../../hooks/useWishlist';
@@ -18,6 +18,44 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
+
+  const reviewsGridRef = useRef(null);
+
+  useEffect(() => {
+    const grid = reviewsGridRef.current;
+    if (!grid) return;
+
+    let isPaused = false;
+
+    const scrollStep = () => {
+      if (isPaused) return;
+      if (grid.scrollWidth <= grid.clientWidth) return;
+      if (grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 10) {
+        grid.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        const itemWidth = grid.clientWidth * 0.85 + 16;
+        grid.scrollBy({ left: itemWidth, behavior: 'smooth' });
+      }
+    };
+
+    const scrollTimer = setInterval(scrollStep, 3500);
+    const pause = () => { isPaused = true; };
+    const resume = () => { isPaused = false; };
+    const delayResume = () => { setTimeout(resume, 3000); };
+
+    grid.addEventListener('mouseenter', pause);
+    grid.addEventListener('mouseleave', resume);
+    grid.addEventListener('touchstart', pause, { passive: true });
+    grid.addEventListener('touchend', delayResume);
+
+    return () => {
+      clearInterval(scrollTimer);
+      grid.removeEventListener('mouseenter', pause);
+      grid.removeEventListener('mouseleave', resume);
+      grid.removeEventListener('touchstart', pause);
+      grid.removeEventListener('touchend', delayResume);
+    };
+  }, []);
 
   // Fallback product data if none is passed (e.g. direct nav)
   const defaultProduct = {
@@ -524,19 +562,11 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
+        <div className={styles['reviews-grid-container']} ref={reviewsGridRef}>
           {REVIEWS_DATA.slice(0, 3).map((rev) => (
             <div
               key={rev.id}
-              style={{
-                background: 'var(--bg-surface)',
-                padding: 22,
-                borderRadius: 12,
-                border: '1px solid var(--border-color)',
-                display: 'flex',
-                flexDirection: 'column',
-                justify: 'space-between'
-              }}
+              className={styles['review-card-item']}
             >
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
@@ -752,65 +782,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         </section>
       )}
 
-      {/* 5. Recently Viewed Sarees Section */}
-      {recentlyViewed.length > 0 && (
-        <section style={{ maxWidth: 1240, margin: '40px auto 70px auto', padding: '0 20px' }}>
-          <div style={{ marginBottom: 20 }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
-              Your Browsing History
-            </span>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.6rem', color: 'var(--text-main)', marginTop: 4 }}>
-              Recently Viewed Weaves
-            </h2>
-          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 18 }}>
-            {recentlyViewed.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => {
-                  setSelectedProduct(item);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  background: 'var(--bg-surface)',
-                  padding: 10,
-                  borderRadius: 8,
-                  border: '1px solid var(--border-color)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--primary)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-color)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <div style={{ width: 56, height: 56, borderRadius: 6, overflow: 'hidden', flexShrink: 0, background: '#111' }}>
-                  <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {item.name}
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: 2 }}>
-                    {item.fabric || 'Pure Silk'}
-                  </div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginTop: 2 }}>
-                    ₹{Number(item.price).toLocaleString('en-IN')}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
       
       </>
       )}

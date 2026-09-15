@@ -57,6 +57,50 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
 
   const [bestSellers, setBestSellers] = useState([]);
 
+  const valuesGridRef = useRef(null);
+
+  useEffect(() => {
+    const grid = valuesGridRef.current;
+    if (!grid) return;
+
+    let isPaused = false;
+
+    const scrollStep = () => {
+      if (isPaused) return;
+      
+      // If no horizontal scroll is possible (e.g., desktop), do nothing
+      if (grid.scrollWidth <= grid.clientWidth) return;
+
+      // If reached the end, scroll back to start
+      if (grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 10) {
+        grid.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        // Scroll by roughly one item's width
+        const itemWidth = grid.clientWidth * 0.85 + 24;
+        grid.scrollBy({ left: itemWidth, behavior: 'smooth' });
+      }
+    };
+
+    const scrollTimer = setInterval(scrollStep, 3500);
+
+    const pause = () => { isPaused = true; };
+    const resume = () => { isPaused = false; };
+    const delayResume = () => { setTimeout(resume, 3000); };
+
+    grid.addEventListener('mouseenter', pause);
+    grid.addEventListener('mouseleave', resume);
+    grid.addEventListener('touchstart', pause, { passive: true });
+    grid.addEventListener('touchend', delayResume);
+
+    return () => {
+      clearInterval(scrollTimer);
+      grid.removeEventListener('mouseenter', pause);
+      grid.removeEventListener('mouseleave', resume);
+      grid.removeEventListener('touchstart', pause);
+      grid.removeEventListener('touchend', delayResume);
+    };
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
     getBestSellers(4)
@@ -339,7 +383,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
       {/* 7. Why Choose */}
       <section className={styles['values-section']}>
         <div className="container">
-          <div className={styles['values-grid']}>
+          <div className={styles['values-grid']} ref={valuesGridRef}>
             <div className={styles['values-item']}>
               <div className={styles['value-icon']}>
                 <ShieldCheck size={32} strokeWidth={1.5} />

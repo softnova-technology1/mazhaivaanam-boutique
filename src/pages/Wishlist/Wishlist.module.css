@@ -1776,14 +1776,31 @@
 
 @media (max-width: 576px) {
   .trust-badges-section {
-    padding: 36px 16px;
+    padding: 36px 12px;
   }
   .trust-badges-container {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
   .trust-badge-card {
-    padding: 20px 16px;
+    padding: 16px 10px;
+  }
+  .trust-badge-icon-box {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 12px;
+  }
+  .trust-badge-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .trust-badge-card h4 {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  .trust-badge-card p {
+    font-size: 10px;
+    line-height: 1.4;
   }
 }
 

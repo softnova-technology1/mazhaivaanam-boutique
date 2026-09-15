@@ -2341,3 +2341,39 @@
     justify-content: center;
   }
 }
+
+/* Patron Reviews Section Marquee on Mobile */
+.reviews-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.review-card-item {
+  background: var(--bg-surface);
+  padding: 22px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .reviews-grid-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    padding-bottom: 16px;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .reviews-grid-container::-webkit-scrollbar {
+    display: none;
+  }
+  .review-card-item {
+    flex: 0 0 85%;
+    scroll-snap-align: center;
+  }
+}

@@ -1499,11 +1499,22 @@
   }
 
   .values-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     gap: 24px;
+    padding-bottom: 16px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .values-grid::-webkit-scrollbar {
+    display: none;
   }
 
   .values-item {
+    flex: 0 0 85%;
+    scroll-snap-align: center;
     padding: 0 8px;
     gap: 12px;
   }

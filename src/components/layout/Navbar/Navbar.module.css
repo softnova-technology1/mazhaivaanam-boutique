@@ -28,12 +28,23 @@
 .sliderContainer {
   height: 35px;
   overflow: hidden;
+  width: 100%;
 }
 
 .slider {
   display: flex;
-  flex-direction: column;
-  animation: slideVertical 9s infinite;
+  flex-direction: row;
+  width: max-content;
+  animation: marquee 20s linear infinite;
+}
+
+.slider:hover {
+  animation-play-state: paused;
+}
+
+.slideTrack {
+  display: flex;
+  flex-direction: row;
 }
 
 .slide {
@@ -41,13 +52,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 40px;
+  white-space: nowrap;
 }
 
-@keyframes slideVertical {
-  0%, 20% { transform: translateY(0); }
-  33%, 53% { transform: translateY(-35px); }
-  66%, 86% { transform: translateY(-70px); }
-  100% { transform: translateY(-105px); } /* 4th slide */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  /* Since we duplicated the track 4 times, moving by -25% seamlessly loops one full track */
+  100% { transform: translateX(-25%); }
 }
 
 /* Sticky Navbar Styling */

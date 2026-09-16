@@ -30,7 +30,7 @@ export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
         <div className={`container ${styles['footer-container']}`}>
           {/* Column 1: Brand Info */}
           <div className={styles['footer-brand']}>
-            <img src="/logo.png" alt="Mazhai Vaanam Logo" className={styles['footer-logo-img']} />
+            <img src="/Images/malai-vanam-footer.png" alt="Mazhai Vaanam Footer Logo" className={styles['footer-logo-img']} />
             <h3 onClick={() => handleTabChange('shop')} style={{ cursor: 'pointer', textTransform: 'uppercase' }}>{storeConfig.storeName || 'MAZHAI VAANAM'}</h3>
             <p>Handpicked heritage fabrics & luxury ensembles, tailored to perfection.</p>
             <div className={styles['social-icons']}>

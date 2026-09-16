@@ -144,18 +144,20 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
         >
           <div className={styles.sliderContainer}>
             <div className={styles.slider}>
-              <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
-                {storeConfig.announcementText1 || storeConfig.announcementText || '✨ Handwoven Luxury, Delivered Worldwide.'}
-              </div>
-              <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
-                {storeConfig.announcementText2 || storeConfig.announcementText || '🥻 Unveiling Authentic Kanjeevaram & Banarasi Heritage.'}
-              </div>
-              <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
-                {storeConfig.announcementText3 || storeConfig.announcementText || '📞 Book a Personalized Video Shopping Experience.'}
-              </div>
-              <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
-                {storeConfig.announcementText1 || storeConfig.announcementText || '✨ Handwoven Luxury, Delivered Worldwide.'}
-              </div>
+              {/* Duplicate track multiple times to ensure seamless infinite scroll */}
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className={styles.slideTrack} aria-hidden={i > 0 ? "true" : "false"}>
+                  <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
+                    {storeConfig.announcementText1 || storeConfig.announcementText || '✨ Handwoven Luxury, Delivered Worldwide.'}
+                  </div>
+                  <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
+                    {storeConfig.announcementText2 || storeConfig.announcementText || '🥻 Unveiling Authentic Kanjeevaram & Banarasi Heritage.'}
+                  </div>
+                  <div className={styles.slide} style={{ color: storeConfig.announcementTextColor || '#F4E4BC' }}>
+                    {storeConfig.announcementText3 || storeConfig.announcementText || '📞 Book a Personalized Video Shopping Experience.'}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

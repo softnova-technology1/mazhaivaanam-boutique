@@ -411,6 +411,15 @@
   }
 }
 
+/* A5 Print Mode */
+.a5Print .labelContainer {
+  width: 700px !important; 
+  max-width: none !important;
+  margin: 0 auto;
+  padding: 25px;
+  zoom: 0.75; /* Scale for A5 */
+}
+
 /* Small Print Mode - Maintain side-by-side layout but scale properly */
 .smallPrint .labelContainer {
   width: 700px !important; 

@@ -31,7 +31,7 @@ export default function ShippingLabelModal({ order, onClose }) {
         {`
           @media print {
             @page {
-              size: ${printSize === 'A4' ? 'A4 portrait' : printSize === 'A6' ? 'A6 portrait' : '4in 6in'};
+              size: ${printSize === 'A4' ? 'A4 portrait' : printSize === 'A5' ? 'A5 portrait' : '4in 6in'};
               margin: 0;
             }
           }
@@ -55,7 +55,7 @@ export default function ShippingLabelModal({ order, onClose }) {
               className={styles.sizeSelect}
             >
               <option value="A4">A4 Size</option>
-              <option value="A6">A6 Size</option>
+              <option value="A5">A5 Size</option>
               <option value="4in 6in">Thermal (4x6)</option>
             </select>
             <button onClick={handlePrint} className={styles.printBtn}>
@@ -68,7 +68,7 @@ export default function ShippingLabelModal({ order, onClose }) {
         </div>
 
         {/* Printable Area */}
-        <div className={`${styles.printableArea} ${printSize !== 'A4' ? styles.smallPrint : ''}`}>
+        <div className={`${styles.printableArea} ${printSize === 'A5' ? styles.a5Print : printSize !== 'A4' ? styles.smallPrint : ''}`}>
           <div className={styles.labelContainer}>
             
             <div className={styles.topBadge}>M V</div>

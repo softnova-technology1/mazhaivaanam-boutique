@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { path: '/mazhaivaanam-sn2026/categories', icon: Layers3, label: 'Categories' },
   { path: '/mazhaivaanam-sn2026/users', icon: Users, label: 'Users' },
   { path: '/mazhaivaanam-sn2026/inquiries', icon: MessageSquare, label: 'Inquiries' },
+  { path: '/mazhaivaanam-sn2026/reviews', icon: Star, label: 'Reviews' },
   { path: '/mazhaivaanam-sn2026/coupons', icon: Ticket, label: 'Coupons' },
   { path: '/mazhaivaanam-sn2026/settings', icon: Settings, label: 'Settings' },
 ];

@@ -122,6 +122,7 @@ export const reviewAPI = {
   getPending: () => request('/admin/reviews'),
   getAll: () => request('/admin/reviews/all'),
   approve: (id) => request(`/admin/reviews/${id}/approve`, { method: 'PUT' }),
+  edit: (id, body) => request(`/admin/reviews/${id}`, { method: 'PUT', body }),
   delete: (id) => request(`/admin/reviews/${id}`, { method: 'DELETE' }),
 };
 

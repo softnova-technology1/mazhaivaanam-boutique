@@ -80,7 +80,6 @@ export default function ShippingLabelModal({ order, onClose }) {
                   <img src="/logo.png" alt="Logo" className={styles.logoImage} />
                   <div className={styles.brandText}>
                     <div className={styles.shopBrandName}>MAZHAI VAANAM</div>
-                    <div className={styles.shopSubName}>WOMEN'S COLLECTIONS</div>
                   </div>
                 </div>
                 
@@ -133,7 +132,6 @@ export default function ShippingLabelModal({ order, onClose }) {
                 <div className={styles.sectionTitle}>From:</div>
                 <div className={styles.addressText}>
                   <div className={styles.customerName}>Mazhai Vaanam</div>
-                  Women's Collections<br />
                   ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804<br />
                   T: +91 8807959179
                 </div>
@@ -159,7 +157,7 @@ export default function ShippingLabelModal({ order, onClose }) {
 
             {/* Footer */}
             <div className={styles.footerBadge}>
-              <div className={styles.thankYouNote}>Thank you for shopping with Mazhai Vaanam Women's Collections!</div>
+              <div className={styles.thankYouNote}>Thank you for shopping with Mazhai Vaanam!</div>
               <span className={styles.premiumBadgeText}>M V</span>
             </div>
 

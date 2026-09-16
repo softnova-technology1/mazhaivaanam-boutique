@@ -349,7 +349,7 @@ export const Contact = ({ setCurrentTab }) => {
                 <Info size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
                   <h4>Trade Name</h4>
-                  <p>Mazhai Vaanam Women's Collections</p>
+                  <p>Mazhai Vaanam</p>
                   <span>Handle By Naveenkumar Kannan</span>
                 </div>
               </div>
@@ -404,12 +404,12 @@ export const Contact = ({ setCurrentTab }) => {
               </div>
               <div className={styles.locationTextDetails}>
                 <div>
-                  <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>Mazhai Vaanam Women's Collections</h3>
+                  <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>Mazhai Vaanam</h3>
                   <p className={styles.locationAddressText}>ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804</p>
                   <p className={styles.locationHoursLabel}>Hours</p>
                   <p className={styles.locationHoursValue}>Mon - Sat: 10 AM - 8 PM<br />Sun: Closed</p>
                 </div>
-                <button onClick={() => window.open("https://maps.google.com/?q=Mazhai+Vaanam+Womens+Collections,+Peravurani,+Thanjavur,+Tamil+Nadu", "_blank")} className={styles.locationActionBtn}>
+                <button onClick={() => window.open("https://maps.google.com/?q=Mazhai+Vaanam,+Peravurani,+Thanjavur,+Tamil+Nadu", "_blank")} className={styles.locationActionBtn}>
                   GET DIRECTIONS
                 </button>
               </div>
@@ -419,7 +419,7 @@ export const Contact = ({ setCurrentTab }) => {
             <div className={styles.mapCard}>
               <div className={styles.mapFrameWrapper} style={{ height: '100%', display: 'flex' }}>
                 <iframe
-                  src="https://maps.google.com/maps?q=Mazhai%20Vaanam%20Womens%20Collections,%20ANA%20Complex,%20Sethu%20Road,%20Peravurani,%20Thanjavur,%20Tamil%20Nadu%20614804&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  src="https://maps.google.com/maps?q=Mazhai%20Vaanam,%20ANA%20Complex,%20Sethu%20Road,%20Peravurani,%20Thanjavur,%20Tamil%20Nadu%20614804&t=&z=16&ie=UTF8&iwloc=&output=embed"
                   width="100%"
                   style={{ border: 0, minHeight: '400px', borderRadius: '4px', flexGrow: 1 }}
                   allowFullScreen=""

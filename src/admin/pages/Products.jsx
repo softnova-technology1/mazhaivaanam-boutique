@@ -914,6 +914,7 @@ export default function Products() {
                         type="number" 
                         min="0" 
                         max="100" 
+                        step="0.01"
                         value={
                           Number(form.mrpPrice) > 0 && Number(form.mrpPrice) > Number(form.price)
                             ? parseFloat((((Number(form.mrpPrice) - Number(form.price)) / Number(form.mrpPrice)) * 100).toFixed(2))

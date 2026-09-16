@@ -5,8 +5,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { useWishlist } from '../../hooks/useWishlist';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
-import { getProducts } from '../../services/api';
-import { REVIEWS_DATA } from '../../data/reviewsData';
+import { getProducts, reviewAPI } from '../../services/api';
+import ReviewModal from '../../components/common/ReviewModal/ReviewModal';
 import styles from './ProductDetail.module.css';
 
 export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setDirectCheckoutItem, isPreview = false }) => {
@@ -19,6 +19,8 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [productReviews, setProductReviews] = useState([]);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const reviewsGridRef = useRef(null);
 
@@ -124,6 +126,14 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         }
       })
       .catch(() => {});
+
+    if (activeProduct.id || activeProduct._id) {
+      reviewAPI.getByProduct(activeProduct._id || activeProduct.id)
+        .then(data => {
+          if (isMounted) setProductReviews(data);
+        })
+        .catch(console.error);
+    }
 
     return () => { isMounted = false; };
   }, [activeProduct]);
@@ -580,58 +590,74 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
 
       </div>
 
-      {/* Patron Reviews & Drapes Section (Static 6 Reviews Array) */}
+      {/* Dynamic Patron Reviews Section */}
       {!isPreview && (
-        <>
-          <section style={{ maxWidth: 1240, margin: '50px auto 40px auto', padding: '0 20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid rgba(200,163,77,0.2)', paddingBottom: 16 }}>
-          <div>
-            <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
-              Patron Voices & Feedback
-            </span>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: 'var(--text-main)', marginTop: 4, marginBottom: 0 }}>
-              Authentic Client Reviews (5.0 ★★★★★)
-            </h2>
-          </div>
-        </div>
-
-        <div className={styles['reviews-grid-container']} ref={reviewsGridRef}>
-          {REVIEWS_DATA.slice(0, 3).map((rev) => (
-            <div
-              key={rev.id}
-              className={styles['review-card-item']}
-            >
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <div style={{ display: 'flex', gap: 3 }}>
-                    {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} size={15} fill="#B38A4A" stroke="#B38A4A" />
-                    ))}
-                  </div>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{rev.date}</span>
-                </div>
-
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-main)', lineHeight: 1.6, fontStyle: 'italic', marginBottom: 14 }}>
-                  "{rev.text}"
-                </p>
-                <div style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 600, marginBottom: 14 }}>
-                  Purchased: {rev.drape}
-                </div>
-              </div>
-
-              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8rem' }}>
-                  {rev.initials}
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)' }}>{rev.name}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>✓ {rev.role} • {rev.location}</div>
-                </div>
-              </div>
+        <section style={{ maxWidth: 1240, margin: '50px auto 40px auto', padding: '0 20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid rgba(200,163,77,0.2)', paddingBottom: 16 }}>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
+                Patron Voices & Feedback
+              </span>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: 'var(--text-main)', marginTop: 4, marginBottom: 0 }}>
+                Authentic Client Reviews {activeProduct.averageRating ? `(${activeProduct.averageRating.toFixed(1)} ★)` : ''}
+              </h2>
             </div>
-          ))}
-        </div>
-      </section>
+            <button 
+              className="btn btn-primary" 
+              onClick={() => setIsReviewModalOpen(true)}
+              style={{ background: 'var(--primary)', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+            >
+              Write a Review
+            </button>
+          </div>
+
+          {productReviews.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+              <p>No reviews yet for this product. Be the first to review!</p>
+            </div>
+          ) : (
+            <div className={styles['reviews-grid-container']} ref={reviewsGridRef}>
+              {productReviews.map((rev) => (
+                <div key={rev._id || rev.id} className={styles['review-card-item']}>
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                      <div style={{ display: 'flex', gap: 3 }}>
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} size={15} fill={i < rev.rating ? "#B38A4A" : "transparent"} stroke={i < rev.rating ? "#B38A4A" : "#666"} />
+                        ))}
+                      </div>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{new Date(rev.createdAt).toLocaleDateString('en-GB')}</span>
+                    </div>
+
+                    <p style={{ fontSize: '0.92rem', color: 'var(--text-main)', lineHeight: 1.6, fontStyle: 'italic', marginBottom: 14 }}>
+                      "{rev.text}"
+                    </p>
+                  </div>
+
+                  <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.8rem' }}>
+                      {rev.name?.charAt(0) || 'V'}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-main)' }}>{rev.name}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>✓ {rev.isVerified ? 'Verified Buyer' : 'Patron'} • {rev.location || 'India'}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Review Modal */}
+      <ReviewModal 
+        isOpen={isReviewModalOpen} 
+        onClose={() => setIsReviewModalOpen(false)} 
+        productId={activeProduct._id || activeProduct.id}
+        productName={activeProduct.name}
+        onSuccess={(msg) => setWishlistMessage(msg)}
+      />
 
       {/* Related Products Section */}
       <section className={styles['related-products-section']}>
@@ -814,12 +840,6 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
           </div>
         </section>
       )}
-
-
-      
-      </>
-      )}
-
     </div>
   );
 };

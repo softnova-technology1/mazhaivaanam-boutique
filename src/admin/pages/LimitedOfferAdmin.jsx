@@ -2250,6 +2250,7 @@ export default function LimitedOfferAdmin() {
                     <label className="form-label">Discount (%)</label>
                     <input
                       type="number"
+                      step="0.01"
                       className="form-input"
                       placeholder="0"
                       value={sareeForm.discountPercent || 0}

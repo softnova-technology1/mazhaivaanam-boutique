@@ -31,7 +31,8 @@ export const Returns = () => {
         <section className={styles.policySection}>
           <h2>Refunds</h2>
           <ul>
-            <li>After the returned product passes quality inspection, refunds will be processed within <strong>5–7 business days</strong> to the original payment method.</li>
+            <li>Refunds usually take 7–15 Banking Business days to reflect in your account (the days may increase or decrease based on your bank)</li>
+            <li>In case of failed transactions where the payment is deducted but the order is not placed, the amount will be automatically refunded as per your bank’s policy. Since the payment is not received by us, we are unable to process such refunds manually.</li>
           </ul>
         </section>
 

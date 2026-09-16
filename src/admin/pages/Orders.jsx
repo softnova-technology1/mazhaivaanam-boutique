@@ -408,7 +408,12 @@ export default function Orders() {
                             : (order.status === 'SHIPPING' ? 'IN TRANSIT 🚚' : order.status)}
                         </span>
                       </td>
-                      <td style={{ color: 'var(--text-muted)' }}>{new Date(order.createdAt).toLocaleDateString('en-IN')}</td>
+                      <td style={{ color: 'var(--text-muted)' }}>
+                        <div>{new Date(order.createdAt).toLocaleDateString('en-IN')}</div>
+                        <div style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: 2 }}>
+                          {new Date(order.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                        </div>
+                      </td>
                       <td style={{ textAlign: 'right' }}>
                         <button
                           className="btn btn-outline btn-sm"

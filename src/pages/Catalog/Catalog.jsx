@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEO from '../../components/common/SEO/SEO';
 import { useCart } from '../../hooks/useCart';
 import { useWishlist } from '../../hooks/useWishlist';
 import { formatCurrency } from '../../utils/formatters';
@@ -247,8 +248,20 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     }, 50);
   };
 
+  const categoryTitle = selectedCategory && selectedCategory !== 'All' 
+    ? `${selectedCategory} Sarees Collection` 
+    : 'Shop Authentic Handwoven Sarees & Designer Ethnic Wear';
+  
+  const categoryDesc = `Explore our curated ${selectedCategory !== 'All' ? selectedCategory : 'luxury'} saree collection including Silk Sarees, Cotton Sarees, Fancy Sarees, Kanjeevaram & Banarasi weaves at Mazhai Vaanam Boutique.`;
+
   return (
     <div className={styles['catalog-page-container']}>
+      <SEO
+        title={categoryTitle}
+        description={categoryDesc}
+        keywords={`Mazhai Vaanam, ${selectedCategory} Saree, Silk Sarees, Cotton Sarees, Fancy Sarees, Handwoven Sarees India`}
+        url={`/catalog${selectedCategory !== 'All' ? `?category=${encodeURIComponent(selectedCategory)}` : ''}`}
+      />
 
 
 

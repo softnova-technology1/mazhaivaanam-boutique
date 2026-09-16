@@ -1,3 +1,4 @@
+import SEO from '../../components/common/SEO/SEO';
 import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
@@ -260,8 +261,40 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
     }).format(val);
   };
 
+  const mainProductImage = activeProduct.image || activeProduct.images?.[0]?.url || 'https://mazhaivaanam.com/logo.png';
+  const productSchema = {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    'name': activeProduct.name,
+    'image': [mainProductImage],
+    'description': activeProduct.description || `${activeProduct.name} - Handwoven Silk Saree by Mazhai Vaanam Boutique`,
+    'sku': activeProduct.id || activeProduct._id,
+    'brand': {
+      '@type': 'Brand',
+      'name': 'Mazhai Vaanam Boutique'
+    },
+    'offers': {
+      '@type': 'Offer',
+      'url': `https://mazhaivaanam.com/product/${activeProduct.id || activeProduct.slug || ''}`,
+      'priceCurrency': 'INR',
+      'price': effectiveProductPrice,
+      'availability': activeProduct.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      'seller': {
+        '@type': 'Organization',
+        'name': 'Mazhai Vaanam Boutique'
+      }
+    }
+  };
+
   return (
     <div className={styles['details-wrapper']}>
+      <SEO
+        title={`${activeProduct.name} — Handwoven Silk Saree`}
+        description={activeProduct.description || `Buy authentic ${activeProduct.name} handwoven saree online at Mazhai Vaanam Boutique.`}
+        image={mainProductImage}
+        url={`/product/${activeProduct.id || activeProduct.slug || ''}`}
+        schema={productSchema}
+      />
       {/* Toast Wishlist Notification */}
       {wishlistMessage && (
         <div className={styles['wishlist-toast']}>

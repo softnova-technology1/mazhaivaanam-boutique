@@ -1,44 +1,50 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Heart } from 'lucide-react';
-import AdminApp from './admin/AdminApp';
+
+// Context Providers
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { StoreConfigProvider } from './context/StoreConfigContext';
 import { useCart } from './hooks/useCart';
+
+// Core Layout & Home Components (Loaded statically for fast LCP)
 import { Navbar } from './components/layout/Navbar/Navbar';
 import { WhatsAppButton } from './components/common/WhatsAppButton/WhatsAppButton';
 import { ScrollToTopButton } from './components/common/ScrollToTopButton/ScrollToTopButton';
 import { Breadcrumbs } from './components/common/Breadcrumbs/Breadcrumbs';
 import { CartToast } from './components/common/CartToast/CartToast';
 import { Home } from './pages/Home/Home';
-import { Cart } from './pages/Cart/Cart';
-import { Login } from './pages/Login/Login';
 import { Catalog } from './pages/Catalog/Catalog';
-import { About } from './pages/About/About';
-import { Contact } from './pages/Contact/Contact';
-import { Footer } from './components/layout/Footer/Footer';
 import { ProductDetail } from './pages/ProductDetail/ProductDetail';
-import { Wishlist } from './pages/Wishlist/Wishlist';
-import { Checkout } from './pages/Checkout/Checkout';
-import { MyOrders } from './pages/MyOrders/MyOrders';
-import { TrackOrder } from './pages/TrackOrder/TrackOrder';
-import { Support } from './pages/Support/Support';
-import { Privacy } from './pages/Privacy/Privacy';
-import { Returns } from './pages/Returns/Returns';
-import { Terms } from './pages/Terms/Terms';
-import { LimitedOffer } from './pages/LimitedOffer/LimitedOffer';
-import { NewArrivals } from './pages/NewArrivals/NewArrivals';
-import { BestSellers } from './pages/BestSellers/BestSellers';
-import { Collections } from './pages/Collections/Collections';
-import { ShippingPolicy } from './pages/ShippingPolicy/ShippingPolicy';
-import { MyProfile } from './pages/MyProfile/MyProfile';
-import { SavedAddress } from './pages/SavedAddress/SavedAddress';
-import { PreBooking } from './pages/PreBooking/PreBooking';
+import { Footer } from './components/layout/Footer/Footer';
 import { OfferZoneModal } from './components/common/OfferZoneModal/OfferZoneModal';
 import { getProductByIdOrSlug } from './services/api';
 import './App.css';
+
+// Code Splitting (Lazy Loading Admin Portal & Heavy Sub-Pages)
+const AdminApp = lazy(() => import('./admin/AdminApp'));
+const Cart = lazy(() => import('./pages/Cart/Cart').then(m => ({ default: m.Cart })));
+const Login = lazy(() => import('./pages/Login/Login').then(m => ({ default: m.Login })));
+const About = lazy(() => import('./pages/About/About').then(m => ({ default: m.About })));
+const Contact = lazy(() => import('./pages/Contact/Contact').then(m => ({ default: m.Contact })));
+const Wishlist = lazy(() => import('./pages/Wishlist/Wishlist').then(m => ({ default: m.Wishlist })));
+const Checkout = lazy(() => import('./pages/Checkout/Checkout').then(m => ({ default: m.Checkout })));
+const MyOrders = lazy(() => import('./pages/MyOrders/MyOrders').then(m => ({ default: m.MyOrders })));
+const TrackOrder = lazy(() => import('./pages/TrackOrder/TrackOrder').then(m => ({ default: m.TrackOrder })));
+const Support = lazy(() => import('./pages/Support/Support').then(m => ({ default: m.Support })));
+const Privacy = lazy(() => import('./pages/Privacy/Privacy').then(m => ({ default: m.Privacy })));
+const Returns = lazy(() => import('./pages/Returns/Returns').then(m => ({ default: m.Returns })));
+const Terms = lazy(() => import('./pages/Terms/Terms').then(m => ({ default: m.Terms })));
+const LimitedOffer = lazy(() => import('./pages/LimitedOffer/LimitedOffer').then(m => ({ default: m.LimitedOffer })));
+const NewArrivals = lazy(() => import('./pages/NewArrivals/NewArrivals').then(m => ({ default: m.NewArrivals })));
+const BestSellers = lazy(() => import('./pages/BestSellers/BestSellers').then(m => ({ default: m.BestSellers })));
+const Collections = lazy(() => import('./pages/Collections/Collections').then(m => ({ default: m.Collections })));
+const ShippingPolicy = lazy(() => import('./pages/ShippingPolicy/ShippingPolicy').then(m => ({ default: m.ShippingPolicy })));
+const MyProfile = lazy(() => import('./pages/MyProfile/MyProfile').then(m => ({ default: m.MyProfile })));
+const SavedAddress = lazy(() => import('./pages/SavedAddress/SavedAddress').then(m => ({ default: m.SavedAddress })));
+const PreBooking = lazy(() => import('./pages/PreBooking/PreBooking').then(m => ({ default: m.PreBooking })));
 
 function getInitialState() {
   const path = window.location.pathname;
@@ -348,7 +354,9 @@ function AppContent() {
           setCatalogFilter={setCatalogFilter}
           selectedProduct={selectedProduct}
         />
-        {renderContent()}
+        <Suspense fallback={<div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="spinner" /></div>}>
+          {renderContent()}
+        </Suspense>
       </main>
       <Footer setCurrentTab={setCurrentTab} setCatalogFilter={setCatalogFilter} />
 
@@ -410,7 +418,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/mazhaivaanam-sn2026/*" element={<AdminApp />} />
+        <Route 
+          path="/mazhaivaanam-sn2026/*" 
+          element={
+            <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0B0B0F', color: '#C8A34D' }}>Loading Admin Portal...</div>}>
+              <AdminApp />
+            </Suspense>
+          } 
+        />
         <Route
           path="/*"
           element={

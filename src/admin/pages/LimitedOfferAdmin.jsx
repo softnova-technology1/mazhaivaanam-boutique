@@ -2300,7 +2300,10 @@ export default function LimitedOfferAdmin() {
                       <option value="LIMITED EDITION">LIMITED EDITION</option>
                       <option value="FESTIVAL CHOICE">FESTIVAL CHOICE</option>
                       <option value="BESTSELLER">BESTSELLER</option>
-                      <option value="NEW ARRIVAL">NEW ARRIVAL</option>
+                      <option value="Fresh Pick">Fresh Pick</option>
+                        <option value="Traditional Charm">Traditional Charm</option>
+                        <option value="TRENDING">Trending</option>
+                        <option value="Elegant Pick">Elegant Pick</option>
                     </select>
                   </div>
                 </div>

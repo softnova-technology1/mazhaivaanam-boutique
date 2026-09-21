@@ -406,7 +406,10 @@ export default function PreBooking() {
           <select className="form-select" value={filters.tag} onChange={(e) => setFilters(f => ({ ...f, tag: e.target.value, page: 1 }))}>
             <option value="">All Tags</option>
             <option value="BESTSELLER">Bestseller</option>
-            <option value="NEW ARRIVAL">New Arrival</option>
+            <option value="Fresh Pick">Fresh Pick</option>
+                        <option value="Traditional Charm">Traditional Charm</option>
+                        <option value="TRENDING">Trending</option>
+                        <option value="Elegant Pick">Elegant Pick</option>
             <option value="LIMITED EDITION">Limited Edition</option>
             <option value="FESTIVAL CHOICE">Festival Choice</option>
           </select>
@@ -903,7 +906,10 @@ export default function PreBooking() {
                       <select className="form-select" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
                         <option value="">None</option>
                         <option value="BESTSELLER">Bestseller</option>
-                        <option value="NEW ARRIVAL">New Arrival</option>
+                        <option value="Fresh Pick">Fresh Pick</option>
+                        <option value="Traditional Charm">Traditional Charm</option>
+                        <option value="TRENDING">Trending</option>
+                        <option value="Elegant Pick">Elegant Pick</option>
                         <option value="LIMITED EDITION">Limited Edition</option>
                         <option value="FESTIVAL CHOICE">Festival Choice</option>
                       </select>

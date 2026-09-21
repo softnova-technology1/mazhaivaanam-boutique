@@ -59,7 +59,7 @@
 .image-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 4/5;
+  aspect-ratio: 1/1; /* Changed from 4/5 to 1/1 (Square) so the round tray is fully visible */
   overflow: hidden;
   border-radius: 0;
 }
@@ -69,10 +69,16 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.8s ease;
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  image-rendering: -webkit-optimize-contrast; 
+  filter: blur(0.5px) contrast(1.03); 
 }
 
 .product-card:hover .image-container img {
-  transform: scale(1.08);
+  transform: scale(1.03) translateZ(0); 
 }
 
 .badge-tag {

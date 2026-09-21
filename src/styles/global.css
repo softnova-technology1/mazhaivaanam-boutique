@@ -293,18 +293,44 @@ a {
   right: 15% !important;
 }
 
+/* Shine animation for badges */
+@keyframes shimmer-shine {
+  0% { transform: translateX(-150%) skewX(-25deg); }
+  100% { transform: translateX(150%) skewX(-25deg); }
+}
+
+[class*="badge-"]:not(.badge-default) {
+  overflow: hidden;
+}
+[class*="badge-"]:not(.badge-default):not([class*="badge-tag"]) {
+  position: relative;
+}
+
+[class*="badge-"]:not(.badge-default)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg) translateX(-150%);
+  animation: shimmer-shine 3s infinite;
+  pointer-events: none;
+}
+
 /* Premium Dynamic Badge Styling */
 .badge-bestseller {
-  background-color: #d32f2f !important; /* Premium Ruby Red */
+  background-color: #c49c30 !important; /* Premium Gold / Mustard */
   color: #ffffff !important;
-  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4) !important;
+  box-shadow: 0 4px 12px rgba(196, 156, 48, 0.4) !important;
   border-radius: 4px !important;
 }
 
-.badge-new-arrival {
-  background-color: #fed579 !important; /* Premium Light Honey Yellow */
-  color: #251a00 !important; /* Dark Charcoal for readability */
-  box-shadow: 0 4px 12px rgba(254, 213, 121, 0.4) !important;
+.badge-fresh-pick {
+  background-color: #9b84b5 !important; /* Premium Soft Lavender */
+  color: #ffffff !important; 
+  box-shadow: 0 4px 12px rgba(155, 132, 181, 0.4) !important;
   border-radius: 4px !important;
 }
 
@@ -326,6 +352,27 @@ a {
   background-color: #7d756d !important; /* Elegant slate grey */
   color: #ffffff !important;
   box-shadow: 0 4px 12px rgba(125, 117, 109, 0.4) !important;
+  border-radius: 4px !important;
+}
+
+.badge-traditional-charm {
+  background-color: #c46210 !important; /* Rich Orange/Rust */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(196, 98, 16, 0.4) !important;
+  border-radius: 4px !important;
+}
+
+.badge-trending {
+  background-color: #ff3366 !important; /* Vibrant Pink/Red */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(255, 51, 102, 0.4) !important;
+  border-radius: 4px !important;
+}
+
+.badge-elegant-pick {
+  background-color: #0b5345 !important; /* Deep Emerald Green */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(11, 83, 69, 0.4) !important;
   border-radius: 4px !important;
 }
 

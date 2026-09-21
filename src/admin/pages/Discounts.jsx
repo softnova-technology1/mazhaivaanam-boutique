@@ -617,7 +617,10 @@ export default function Discounts() {
                       <select className="form-select" value={bulkForm.tag} onChange={(e) => setBulkForm((f) => ({ ...f, tag: e.target.value }))}>
                         <option value="">All Tags</option>
                         <option value="BESTSELLER">Bestseller</option>
-                        <option value="NEW ARRIVAL">New Arrival</option>
+                        <option value="Fresh Pick">Fresh Pick</option>
+                        <option value="Traditional Charm">Traditional Charm</option>
+                        <option value="TRENDING">Trending</option>
+                        <option value="Elegant Pick">Elegant Pick</option>
                         <option value="LIMITED EDITION">Limited Edition</option>
                         <option value="FESTIVAL CHOICE">Festival Choice</option>
                       </select>
@@ -723,7 +726,10 @@ export default function Discounts() {
                       <select className="form-select" value={bulkRemoveForm.tag} onChange={(e) => setBulkRemoveForm((f) => ({ ...f, tag: e.target.value }))}>
                         <option value="">All Tags</option>
                         <option value="BESTSELLER">Bestseller</option>
-                        <option value="NEW ARRIVAL">New Arrival</option>
+                        <option value="Fresh Pick">Fresh Pick</option>
+                        <option value="Traditional Charm">Traditional Charm</option>
+                        <option value="TRENDING">Trending</option>
+                        <option value="Elegant Pick">Elegant Pick</option>
                         <option value="LIMITED EDITION">Limited Edition</option>
                         <option value="FESTIVAL CHOICE">Festival Choice</option>
                       </select>

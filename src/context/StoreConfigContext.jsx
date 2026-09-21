@@ -4,11 +4,11 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Default fallback values
 const DEFAULT_CONFIG = {
-  storeName: 'MAZHAI VAANAM',
-  email: 'support@mazhaivaanam.com',
-  phone: '',
-  whatsapp: '',
-  address: '',
+  storeName: 'Mazhai Vaanam',
+  email: 'mazhaivaanampvi@gmail.com',
+  phone: '+91 8807959179',
+  whatsapp: '+91 8807959179',
+  address: 'ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804',
   facebookUrl: 'https://www.facebook.com/profile.php?id=61569890920943',
   instagramUrl: 'https://www.instagram.com/mazhaivaanam',
   youtubeUrl: 'https://www.youtube.com/@mazhaivaanam',

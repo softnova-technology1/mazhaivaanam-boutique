@@ -21,12 +21,10 @@ import {
   Calendar,
   Download,
   Star,
-  Quote,
-  Tag,
-  Ticket,
-  Sparkles,
   X,
-  Check
+  Check,
+  Ticket,
+  Quote
 } from 'lucide-react';
 import styles from './Checkout.module.css';
 import { useStoreConfig } from '../../context/StoreConfigContext';
@@ -61,13 +59,6 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const [deliveryMode, setDeliveryMode] = useState('standard'); // 'pickup' | 'standard'
   const [giftPackaging, setGiftPackaging] = useState(false);
   const [giftMessage, setGiftMessage] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' | 'upi' | 'netbanking'
-  const [showDetailedPrice, setShowDetailedPrice] = useState(false);
-
-  // Card Payment States
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvv, setCvv] = useState('');
 
   // Coupon States
   const [couponInput, setCouponInput] = useState('');
@@ -185,26 +176,55 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const GIFT_WRAP_PRICE = Number(storeConfig?.giftWrapPrice) || 499;
   const DEFAULT_SAREE_WEIGHT_KG = 0.5;
 
-  // Weight-based shipping rate table (same as backend shipping.js)
-  const SHIPPING_RATES = [
-    { label: 'Standard', uptoKg: 0.5, price: 60 },
-    { label: 'Upto 1kg', uptoKg: 1.0, price: 75 },
-    { label: 'Upto 1.5kg', uptoKg: 1.5, price: 90 },
-    { label: 'Upto 2kg', uptoKg: 2.0, price: 115 },
-    { label: 'Upto 2.5kg', uptoKg: 2.5, price: 130 },
-    { label: 'Upto 3kg', uptoKg: 3.0, price: 145 },
-    { label: 'Upto 4kg', uptoKg: 4.0, price: 170 },
-    { label: 'Upto 5kg', uptoKg: 5.0, price: 190 },
-    { label: 'Above 5kg', uptoKg: Infinity, price: 220 },
-  ];
+  // Weight & Zone based shipping rate tables (same as backend shipping.js)
+  const SHIPPING_ZONES = {
+    'Tamil Nadu': [
+      { label: 'Standard', uptoKg: 0.5, price: 40 },
+      { label: 'Upto 1kg', uptoKg: 1.0, price: 60 },
+      { label: 'Upto 1.5kg', uptoKg: 1.5, price: 80 },
+      { label: 'Upto 2kg', uptoKg: 2.0, price: 100 },
+      { label: 'Upto 2.5kg', uptoKg: 2.5, price: 120 },
+      { label: 'Upto 3kg', uptoKg: 3.0, price: 140 },
+      { label: 'Upto 4kg', uptoKg: 4.0, price: 160 },
+      { label: 'Upto 5kg', uptoKg: 5.0, price: 180 },
+      { label: 'Above 5kg', uptoKg: Infinity, price: 200 },
+    ],
+    'Other States': [
+      { label: 'Standard', uptoKg: 0.5, price: 60 },
+      { label: 'Upto 1kg', uptoKg: 1.0, price: 75 },
+      { label: 'Upto 1.5kg', uptoKg: 1.5, price: 90 },
+      { label: 'Upto 2kg', uptoKg: 2.0, price: 115 },
+      { label: 'Upto 2.5kg', uptoKg: 2.5, price: 130 },
+      { label: 'Upto 3kg', uptoKg: 3.0, price: 145 },
+      { label: 'Upto 4kg', uptoKg: 4.0, price: 170 },
+      { label: 'Upto 5kg', uptoKg: 5.0, price: 190 },
+      { label: 'Above 5kg', uptoKg: Infinity, price: 220 },
+    ]
+  };
 
-  const calcShippingFee = (items, mode) => {
-    if (mode === 'pickup' || items.length === 0) return 0;
+  const resolveShippingZone = () => {
+    const pin = String(pinCode).replace(/\D/g, '');
+    if (pin.length === 6) {
+      return Number(pin) >= 600000 && Number(pin) <= 643999 ? 'Tamil Nadu' : 'Other States';
+    }
+    const stateKey = String(stateName).toLowerCase().replace(/[^a-z]/g, '');
+    return ['tamilnadu', 'tn', 'tamilnad'].includes(stateKey) ? 'Tamil Nadu' : 'Other States';
+  };
+
+  const getShippingSlab = (items) => {
     const totalWeightKg = items.reduce((sum, item) => {
       const w = Number(item.weightKg) || DEFAULT_SAREE_WEIGHT_KG;
       return sum + w * (item.quantity || 1);
     }, 0);
-    const slab = SHIPPING_RATES.find(r => totalWeightKg <= r.uptoKg);
+    const zone = resolveShippingZone();
+    const rates = SHIPPING_ZONES[zone];
+    const slab = rates.find(r => totalWeightKg <= r.uptoKg);
+    return { slab, totalWeightKg, zone };
+  };
+
+  const calcShippingFee = (items, mode) => {
+    if (mode === 'pickup' || items.length === 0) return 0;
+    const { slab } = getShippingSlab(items);
     const base = slab ? slab.price : 220;
     return mode === 'express' ? base + 60 : base;
   };
@@ -212,12 +232,8 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const getShippingLabel = (items, mode) => {
     if (mode === 'pickup') return 'Store Pickup (Free)';
     if (items.length === 0) return '';
-    const totalWeightKg = items.reduce((sum, item) => {
-      const w = Number(item.weightKg) || DEFAULT_SAREE_WEIGHT_KG;
-      return sum + w * (item.quantity || 1);
-    }, 0);
-    const slab = SHIPPING_RATES.find(r => totalWeightKg <= r.uptoKg);
-    return `${slab ? slab.label : 'Above 5kg'} (${totalWeightKg.toFixed(2)} kg)${mode === 'express' ? ' + Express' : ''}`;
+    const { slab, totalWeightKg, zone } = getShippingSlab(items);
+    return `${slab ? slab.label : 'Above 5kg'} (${totalWeightKg.toFixed(2)} kg) · ${zone}${mode === 'express' ? ' + Express' : ''}`;
   };
 
   // mrpPrice from DB = original MRP; item.price = effective (post-discount) price
@@ -228,15 +244,12 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   const exclusivePricingSavings = Math.max(0, mrpTotal - subtotal);
   const festivalDiscount = 0; // festival discount removed
-  const festivalDiscountLabel = '';
-  const festivalPct = 0;
   const couponDiscount = appliedCoupon ? appliedCoupon.discountAmount : 0;
   const totalSavings = exclusivePricingSavings + festivalDiscount + couponDiscount;
 
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
   const convenienceFee = checkoutItems.length > 0 ? (storeConfig?.convenienceFee !== undefined && storeConfig?.convenienceFee !== null ? Number(storeConfig?.convenienceFee) : 2) : 0;
   const shippingFee = calcShippingFee(checkoutItems, deliveryMode);
-  const shippingLabel = getShippingLabel(checkoutItems, deliveryMode);
   const totalFees = giftPackAddon + convenienceFee + shippingFee;
 
   const finalAmount = Math.max(0, mrpTotal - totalSavings + totalFees);

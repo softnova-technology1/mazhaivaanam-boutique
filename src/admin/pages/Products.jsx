@@ -92,10 +92,24 @@ export default function Products() {
     setDeleteAlert({ open: true, type: 'bulk', id: null, name: `${selectedProducts.length} selected products` });
   };
 
-  const handleExportCSV = (exportSelected = false) => {
-    const listToExport = exportSelected
-      ? products.filter(p => selectedProducts.includes(p._id))
-      : products;
+  const handleExportCSV = async (exportSelected = false) => {
+    let listToExport = [];
+
+    if (exportSelected) {
+      listToExport = products.filter(p => selectedProducts.includes(p._id));
+      if (!listToExport.length) {
+        showToast('No items selected to export', 'error');
+        return;
+      }
+    } else {
+      try {
+        const res = await productAPI.getAll('limit=all');
+        listToExport = res.data || [];
+      } catch (err) {
+        showToast('Failed to fetch all products for export', 'error');
+        return;
+      }
+    }
 
     if (!listToExport.length) {
       showToast('No items to export', 'error');
@@ -104,16 +118,34 @@ export default function Products() {
 
     const columns = [
       { key: 'name', label: 'Product Name' },
-      { key: 'category', label: 'Category', formatter: (p) => p.category?.name || '' },
-      { key: 'fabric', label: 'Fabric' },
+      { key: 'sku', label: 'SKU', formatter: (p) => p.sku || '' },
+      { key: 'patternCode', label: 'Pattern Code', formatter: (p) => p.patternCode || '' },
+      { key: 'patternSeq', label: 'Pattern Seq', formatter: (p) => p.patternSeq || '' },
+      { key: 'category', label: 'Category', formatter: (p) => p.category?.name || p.category || '' },
+      { key: 'fabric', label: 'Fabric', formatter: (p) => p.fabric || '' },
       { key: 'price', label: 'Sale Price (INR)' },
       { key: 'mrpPrice', label: 'MRP Price (INR)' },
+      { key: 'stock', label: 'Stock Available', formatter: (p) => p.stock?.available ?? p.stock ?? 0 },
       { key: 'tag', label: 'Tag Badge', formatter: (p) => p.tag || 'None' },
-      { key: 'occasion', label: 'Occasion' },
       { key: 'isActive', label: 'Status', formatter: (p) => p.isActive ? 'Active' : 'Inactive' },
+      { key: 'isFeatured', label: 'Featured', formatter: (p) => p.isFeatured ? 'Yes' : 'No' },
+      { key: 'isPreorder', label: 'Is Preorder', formatter: (p) => p.isPreorder ? 'Yes' : 'No' },
+      { key: 'shortDescription', label: 'Short Description', formatter: (p) => p.shortDescription || '' },
+      { key: 'description', label: 'Description', formatter: (p) => p.description || '' },
+      { key: 'weight', label: 'Weight', formatter: (p) => p.weight || '' },
+      { key: 'pattern', label: 'Pattern', formatter: (p) => p.pattern || '' },
+      { key: 'pallu', label: 'Pallu', formatter: (p) => p.pallu || '' },
+      { key: 'sareeLength', label: 'Saree Length', formatter: (p) => p.sareeLength || '' },
+      { key: 'blouseLength', label: 'Blouse Length', formatter: (p) => p.blouseLength || '' },
+      { key: 'blouse', label: 'Blouse', formatter: (p) => p.blouse || '' },
+      { key: 'height', label: 'Height', formatter: (p) => p.height || '' },
+      { key: 'washCare', label: 'Wash Care', formatter: (p) => p.washCare || '' },
+      { key: 'returnPolicy', label: 'Return Policy', formatter: (p) => p.returnPolicy || '' },
+      { key: 'note', label: 'Note', formatter: (p) => p.note || '' },
       { key: 'image', label: 'Primary Image URL', formatter: (p) => p.images?.[0]?.url || '' },
       { key: 'sec1_image', label: 'Secondary Image 1 URL', formatter: (p) => p.images?.[1]?.url || '' },
       { key: 'sec2_image', label: 'Secondary Image 2 URL', formatter: (p) => p.images?.[2]?.url || '' },
+      { key: 'createdAt', label: 'Created At', formatter: (p) => p.createdAt ? new Date(p.createdAt).toLocaleString() : '' },
     ];
 
     exportToCSV(listToExport, columns, 'MazhaiVaanam_Products_Catalog');

@@ -3,7 +3,7 @@ import { Search, Heart, User, ShoppingBag, Menu, X, Trash2, Plus, Minus, MapPin,
 import { useCart } from '../../../hooks/useCart';
 import { useAuth } from '../../../hooks/useAuth';
 import { useWishlist } from '../../../hooks/useWishlist';
-import { getProducts } from '../../../services/api';
+import { getProducts, getCategories } from '../../../services/api';
 import { formatCurrency } from '../../../utils/formatters';
 import { useStoreConfig } from '../../../context/StoreConfigContext';
 import styles from './Navbar.module.css';
@@ -21,7 +21,22 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   
   // Mobile accordion states
+  // Mobile accordion states
   const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState(false);
+  
+  const [navCategories, setNavCategories] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getCategories()
+      .then(dbCats => {
+        if (isMounted && dbCats && dbCats.length > 0) {
+          setNavCategories(dbCats.map(c => ({ label: c.name, link: c.slug || c.name })));
+        }
+      })
+      .catch(err => console.error('Failed to load collections for navbar:', err));
+    return () => { isMounted = false; };
+  }, []);
   
   // Search input state & live search results
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,15 +82,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
       document.body.style.overflow = 'unset';
     };
   }, [isCartOpen, isMobileMenuOpen, isSearchOpen, isWishlistOpen]);
-
   const popularSearches = ['Pure Silk Sarees', 'Bridal Kanjeevaram', 'Organza Silk', 'Banarasi Brocade', 'Black Magic'];
-
-  const collectionsList = [
-    { label: 'Everyday Elegance', link: 'everyday-elegance' },
-    { label: 'Festive Glow', link: 'festive-glow' },
-    { label: 'Style Studio', link: 'style-studio' },
-    { label: 'Black Magic', link: 'black-magic' }
-  ];
 
 
 
@@ -302,18 +309,26 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
                 <div className={styles.megaMenuPanel}>
                   <div className={styles.megaMenuContainer}>
                     <div className={styles.megaMenuColumn}>
-                      <button onClick={() => handleCatalogClick('Everyday Elegance')} className={styles.megaMenuHeadingBtn}>
-                        <h4>Everyday Elegance</h4>
-                      </button>
-                      <button onClick={() => handleCatalogClick('Festive Glow')} className={styles.megaMenuHeadingBtn}>
-                        <h4>Festive Glow</h4>
-                      </button>
-                      <button onClick={() => handleCatalogClick('Style Studio')} className={styles.megaMenuHeadingBtn}>
-                        <h4>Style Studio</h4>
-                      </button>
-                      <button onClick={() => handleCatalogClick('Black Magic')} className={styles.megaMenuHeadingBtn}>
-                        <h4>Black Magic</h4>
-                      </button>
+                      {navCategories.length > 0 ? navCategories.map(cat => (
+                        <button key={cat.label} onClick={() => handleCatalogClick(cat.label)} className={styles.megaMenuHeadingBtn}>
+                          <h4>{cat.label}</h4>
+                        </button>
+                      )) : (
+                        <>
+                          <button onClick={() => handleCatalogClick('Everyday Elegance')} className={styles.megaMenuHeadingBtn}>
+                            <h4>Everyday Elegance</h4>
+                          </button>
+                          <button onClick={() => handleCatalogClick('Festive Glow')} className={styles.megaMenuHeadingBtn}>
+                            <h4>Festive Glow</h4>
+                          </button>
+                          <button onClick={() => handleCatalogClick('Style Studio')} className={styles.megaMenuHeadingBtn}>
+                            <h4>Style Studio</h4>
+                          </button>
+                          <button onClick={() => handleCatalogClick('Black Magic')} className={styles.megaMenuHeadingBtn}>
+                            <h4>Black Magic</h4>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -639,11 +654,18 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
                 </button>
                 {mobileCollectionsOpen && (
                   <ul className={styles.drawerSubList}>
-                    {collectionsList.map(item => (
+                    {navCategories.length > 0 ? navCategories.map(item => (
                       <li key={item.link}>
                         <button onClick={() => handleCatalogClick(item.label)} className={styles.drawerSubLink}>{item.label}</button>
                       </li>
-                    ))}
+                    )) : (
+                      <>
+                        <li><button onClick={() => handleCatalogClick('Everyday Elegance')} className={styles.drawerSubLink}>Everyday Elegance</button></li>
+                        <li><button onClick={() => handleCatalogClick('Festive Glow')} className={styles.drawerSubLink}>Festive Glow</button></li>
+                        <li><button onClick={() => handleCatalogClick('Style Studio')} className={styles.drawerSubLink}>Style Studio</button></li>
+                        <li><button onClick={() => handleCatalogClick('Black Magic')} className={styles.drawerSubLink}>Black Magic</button></li>
+                      </>
+                    )}
                   </ul>
                 )}
               </li>

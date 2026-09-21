@@ -31,6 +31,8 @@ export default function Coupons() {
   const [form, setForm] = useState({ code: '', description: '', type: 'percentage', value: '', minOrderAmount: '', maxDiscount: '', usageLimit: '', validUntil: '' });
   const [saving, setSaving] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCoupons, setSelectedCoupons] = useState([]);
+  const [bulkLoading, setBulkLoading] = useState(false);
   const ITEMS_PER_PAGE = 15;
 
   useEffect(() => { loadCoupons(); }, []);
@@ -88,6 +90,38 @@ export default function Coupons() {
     } catch (err) { alert(err.message); }
   };
 
+  const handleSelectAll = () => {
+    const currentPageIds = paginatedCoupons.map(c => c._id);
+    const allSelected = currentPageIds.every(id => selectedCoupons.includes(id));
+    if (allSelected) {
+      setSelectedCoupons(prev => prev.filter(id => !currentPageIds.includes(id)));
+    } else {
+      setSelectedCoupons(prev => [...new Set([...prev, ...currentPageIds])]);
+    }
+  };
+
+  const handleSelectCoupon = (id, e) => {
+    e.stopPropagation();
+    if (selectedCoupons.includes(id)) {
+      setSelectedCoupons(prev => prev.filter(item => item !== id));
+    } else {
+      setSelectedCoupons(prev => [...prev, id]);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (!selectedCoupons.length) return;
+    if (!confirm(`Delete ${selectedCoupons.length} selected coupons?`)) return;
+    
+    setBulkLoading(true);
+    try {
+      await Promise.all(selectedCoupons.map(id => req(`/admin/coupons/${id}`, { method: 'DELETE' })));
+      setSelectedCoupons([]);
+      loadCoupons();
+    } catch (err) { alert(err.message); }
+    setBulkLoading(false);
+  };
+
   const activeCount = coupons.filter(c => c.isActive && new Date(c.validUntil) > new Date()).length;
   const totalPages = Math.ceil(coupons.length / ITEMS_PER_PAGE);
   const paginatedCoupons = coupons.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
@@ -111,10 +145,41 @@ export default function Coupons() {
         </div>
       ) : (
         <>
+        {/* Bulk Action Bar */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 16, minHeight: 38 }}>
+          {selectedCoupons.length > 0 && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              background: 'var(--bg-secondary)', padding: '8px 16px',
+              borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)'
+            }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>
+                {selectedCoupons.length} selected
+              </span>
+              <button
+                className="btn btn-sm btn-outline"
+                disabled={bulkLoading}
+                onClick={handleBulkDelete}
+                style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
+              >
+                <Trash2 size={14} /> Delete Selected
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="table-container">
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: 40, textAlign: 'center' }}>
+                  <input
+                    type="checkbox"
+                    checked={paginatedCoupons.length > 0 && paginatedCoupons.every(c => selectedCoupons.includes(c._id))}
+                    onChange={handleSelectAll}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </th>
                 <th style={{ width: 50, textAlign: 'center' }}>#</th>
                 <th>Code</th>
                 <th>Type</th>
@@ -127,8 +192,18 @@ export default function Coupons() {
               </tr>
             </thead>
             <tbody>
-              {paginatedCoupons.map((c, idx) => (
-                <tr key={c._id}>
+              {paginatedCoupons.map((c, idx) => {
+                const isSelected = selectedCoupons.includes(c._id);
+                return (
+                <tr key={c._id} style={{ background: isSelected ? 'rgba(200, 163, 77, 0.08)' : undefined }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={(e) => handleSelectCoupon(c._id, e)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </td>
                   <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
                     {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
                   </td>
@@ -148,7 +223,8 @@ export default function Coupons() {
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

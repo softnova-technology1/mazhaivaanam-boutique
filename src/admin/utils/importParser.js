@@ -10,7 +10,8 @@
  *   Root cause: fallback assigned each image to a separate row index.
  *   Fix: extract BOTH row AND column from XML anchor, group by row, slot by column order.
  */
-import * as xlsx from 'xlsx';
+import ExcelJS from 'exceljs';
+import Papa from 'papaparse';
 import JSZip from 'jszip';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -43,7 +44,7 @@ function extToMime(ext = '') {
   return map[ext.toLowerCase()] || 'image/jpeg';
 }
 
-export function downloadSampleImportTemplate() {
+export async function downloadSampleImportTemplate() {
   const headers = [
     'Product Name', 'Simple Description', 'Description', 'Category', 'Fabric', 'Price (Rs)', 'MRP Price (Rs)',
     'Stock', 'Weight', 'Tag',
@@ -51,11 +52,20 @@ export function downloadSampleImportTemplate() {
     'Pattern', 'Border', 'Pallu', 'Saree Length', 'Blouse Length',
     'Style', 'Wash Care', 'Return Policy', 'Note'
   ];
-  const wb = xlsx.utils.book_new();
-  const ws = xlsx.utils.aoa_to_sheet([headers]);
-  ws['!cols'] = headers.map(h => ({ wch: Math.max(String(h).length + 4, 16) }));
-  xlsx.utils.book_append_sheet(wb, ws, 'Products');
-  xlsx.writeFile(wb, 'MazhaiVaanam_Products_Import_Template.xlsx');
+  
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet('Products');
+  ws.addRow(headers);
+  ws.columns = headers.map(h => ({ width: Math.max(String(h).length + 4, 16) }));
+  
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'MazhaiVaanam_Products_Import_Template.xlsx';
+  a.click();
+  window.URL.revokeObjectURL(url);
 }
 
 function normalizeKey(header) {
@@ -98,18 +108,47 @@ export async function parseImportFile(file, onProgress = null) {
     reader.readAsArrayBuffer(file);
   });
 
-  let workbook;
-  try {
-    workbook = xlsx.read(arrayBuffer, { type: 'array', cellDates: true });
-  } catch {
-    throw new Error('Failed to parse file. Please check it is a valid Excel (.xlsx/.xls) or CSV file.');
+  let allRows = [];
+  const isXlsx = file.name && (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls'));
+  const isCsv = file.name && file.name.toLowerCase().endsWith('.csv');
+
+  if (isXlsx) {
+    try {
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(arrayBuffer);
+      const worksheet = workbook.worksheets[0];
+      
+      let maxCols = 0;
+      worksheet.eachRow((row) => {
+        if (row.values && row.values.length > maxCols) maxCols = row.values.length;
+      });
+
+      worksheet.eachRow((row) => {
+        const rowVals = [];
+        for (let i = 1; i < maxCols; i++) {
+          let val = row.values[i];
+          if (val === null || val === undefined) val = '';
+          if (typeof val === 'object') {
+            if (val.result !== undefined) val = val.result;
+            else if (val.text !== undefined) val = val.text;
+            else if (val.hyperlink !== undefined) val = val.hyperlink;
+            else val = '';
+          }
+          rowVals.push(val);
+        }
+        allRows.push(rowVals);
+      });
+    } catch {
+      throw new Error('Failed to parse file. Please check it is a valid Excel (.xlsx/.xls) or CSV file.');
+    }
+  } else if (isCsv) {
+    const text = new TextDecoder().decode(arrayBuffer);
+    const parsed = Papa.parse(text, { skipEmptyLines: true });
+    allRows = parsed.data;
+  } else {
+    throw new Error('Unsupported file type. Please use .xlsx, .xls, or .csv');
   }
 
-  const firstSheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[firstSheetName];
-
-  // Read ALL rows including header as raw 2D array
-  const allRows = xlsx.utils.sheet_to_json(worksheet, { defval: '', header: 1 });
   if (!allRows || allRows.length < 2) {
     throw new Error('File is empty or has no data rows.');
   }
@@ -138,8 +177,8 @@ export async function parseImportFile(file, onProgress = null) {
   // slot 0 = image1, 1 = image2, 2 = image3 -- determined by COLUMN position
   const embeddedByRow = {};
 
-  const isXlsx = file.name && file.name.toLowerCase().endsWith('.xlsx');
-  if (isXlsx) {
+  const isXlsxFile = file.name && file.name.toLowerCase().endsWith('.xlsx');
+  if (isXlsxFile) {
     try {
       const zip = await JSZip.loadAsync(arrayBuffer);
 

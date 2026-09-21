@@ -1571,7 +1571,7 @@ export default function LimitedOfferAdmin() {
                   Search sarees to add directly to this offer section and set custom offer countdown timers.
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end', flex: '1 1 auto', minWidth: '320px' }}>
                 <button
                   type="button"
                   className="btn btn-outline"

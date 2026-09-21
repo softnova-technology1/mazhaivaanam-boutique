@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { userAPI } from '../api/api.js';
+import { exportToCSV } from '../utils/exportCSV.js';
 import { Users as UsersIcon, Shield, User, Download, Trash2, UserX, UserCheck } from 'lucide-react';
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [bulkLoading, setBulkLoading] = useState(false);
   const ITEMS_PER_PAGE = 15;
 
   useEffect(() => { loadUsers(); }, []);
@@ -19,8 +22,19 @@ export default function UsersPage() {
     setLoading(false);
   };
 
-  const handleExportCSV = () => {
-    if (!users.length) {
+  const handleExportCSV = (exportSelected = false) => {
+    let listToExport = [];
+    if (exportSelected === true) {
+      listToExport = users.filter(u => selectedUsers.includes(u._id));
+      if (!listToExport.length) {
+        alert('No items selected to export');
+        return;
+      }
+    } else {
+      listToExport = users;
+    }
+
+    if (!listToExport.length) {
       alert('No user data to export');
       return;
     }
@@ -64,6 +78,38 @@ export default function UsersPage() {
     } catch (err) { alert(err.message); }
   };
 
+  const handleSelectAll = () => {
+    const currentPageIds = paginatedUsers.map(u => u._id);
+    const allSelected = currentPageIds.every(id => selectedUsers.includes(id));
+    if (allSelected) {
+      setSelectedUsers(prev => prev.filter(id => !currentPageIds.includes(id)));
+    } else {
+      setSelectedUsers(prev => [...new Set([...prev, ...currentPageIds])]);
+    }
+  };
+
+  const handleSelectUser = (id, e) => {
+    e.stopPropagation();
+    if (selectedUsers.includes(id)) {
+      setSelectedUsers(prev => prev.filter(item => item !== id));
+    } else {
+      setSelectedUsers(prev => [...prev, id]);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (!selectedUsers.length) return;
+    if (!confirm(`Are you sure you want to permanently delete ${selectedUsers.length} selected users?`)) return;
+    
+    setBulkLoading(true);
+    try {
+      await Promise.all(selectedUsers.map(id => userAPI.delete(id)));
+      setSelectedUsers([]);
+      loadUsers();
+    } catch (err) { alert(err.message); }
+    setBulkLoading(false);
+  };
+
   const admins = users.filter(u => u.role === 'admin');
   const customers = users.filter(u => u.role === 'customer');
   const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
@@ -78,7 +124,7 @@ export default function UsersPage() {
         </div>
         <button 
           className="btn btn-outline" 
-          onClick={handleExportCSV}
+          onClick={() => handleExportCSV(false)}
           style={{ display: 'flex', alignItems: 'center', gap: 6 }}
         >
           <Download size={16} /> Export Users to CSV
@@ -104,10 +150,47 @@ export default function UsersPage() {
         <div className="loader"><div className="spinner" /></div>
       ) : (
         <>
+        {/* Bulk Action Bar */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 16, minHeight: 38 }}>
+          {selectedUsers.length > 0 && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              background: 'var(--bg-secondary)', padding: '8px 16px',
+              borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)'
+            }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>
+                {selectedUsers.length} selected
+              </span>
+              <button
+                className="btn btn-sm btn-outline"
+                disabled={bulkLoading}
+                onClick={handleBulkDelete}
+                style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
+              >
+                <Trash2 size={14} /> Delete Selected
+              </button>
+              <button
+                className="btn btn-sm btn-outline"
+                onClick={() => handleExportCSV(true)}
+              >
+                <Download size={14} /> Export Selected
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="table-container">
           <table className="data-table">
             <thead>
               <tr>
+                <th style={{ width: 40, textAlign: 'center' }}>
+                  <input
+                    type="checkbox"
+                    checked={paginatedUsers.length > 0 && paginatedUsers.every(u => selectedUsers.includes(u._id))}
+                    onChange={handleSelectAll}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </th>
                 <th style={{ width: 50, textAlign: 'center' }}>#</th>
                 <th>User</th>
                 <th>Email</th>
@@ -119,8 +202,18 @@ export default function UsersPage() {
               </tr>
             </thead>
             <tbody>
-              {paginatedUsers.map((user, idx) => (
-                <tr key={user._id}>
+              {paginatedUsers.map((user, idx) => {
+                const isSelected = selectedUsers.includes(user._id);
+                return (
+                <tr key={user._id} style={{ background: isSelected ? 'rgba(200, 163, 77, 0.08)' : undefined }}>
+                  <td style={{ textAlign: 'center' }}>
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={(e) => handleSelectUser(user._id, e)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </td>
                   <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
                     {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
                   </td>
@@ -175,7 +268,8 @@ export default function UsersPage() {
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

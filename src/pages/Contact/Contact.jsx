@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { contactAPI } from '../../services/api';
+import { useStoreConfig } from '../../context/StoreConfigContext';
 import {
   Search,
   MapPin,
@@ -18,6 +19,8 @@ import {
 import styles from './Contact.module.css';
 
 export const Contact = ({ setCurrentTab }) => {
+  const storeConfig = useStoreConfig();
+  const whatsappNumber = storeConfig?.whatsapp?.replace(/[^0-9]/g, '') || '918807959179';
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [name, setName] = useState('');
@@ -349,7 +352,7 @@ export const Contact = ({ setCurrentTab }) => {
                 <Info size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
                   <h4>Trade Name</h4>
-                  <p>Mazhai Vaanam</p>
+                  <p>{storeConfig?.storeName || 'Mazhai Vaanam'}</p>
                   <span>Handle By Naveenkumar Kannan</span>
                 </div>
               </div>
@@ -358,8 +361,8 @@ export const Contact = ({ setCurrentTab }) => {
                 <Phone size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
                   <h4>Contact Number</h4>
-                  <a href="https://wa.me/918807959179" target="_blank" rel="noopener noreferrer" className={styles.whatsappLink}>
-                    +91 8807959179
+                  <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className={styles.whatsappLink}>
+                    {storeConfig?.phone || '+91 8807959179'}
                   </a>
                   <span>Phone & WhatsApp Support</span>
                 </div>
@@ -369,8 +372,8 @@ export const Contact = ({ setCurrentTab }) => {
                 <Mail size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
                   <h4>Email</h4>
-                  <a href="mailto:mazhaivaanampvi@gmail.com" className={styles.emailLink}>
-                    mazhaivaanampvi@gmail.com
+                  <a href={`mailto:${storeConfig?.email || 'mazhaivaanampvi@gmail.com'}`} className={styles.emailLink}>
+                    {storeConfig?.email || 'mazhaivaanampvi@gmail.com'}
                   </a>
                   <span>Expected response within 24 hours</span>
                 </div>
@@ -380,7 +383,7 @@ export const Contact = ({ setCurrentTab }) => {
                 <Store size={18} className={styles.infoCardIcon} />
                 <div className={styles.infoCardText}>
                   <h4>Physical Address</h4>
-                  <p>ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
+                  <p>{storeConfig?.address || 'ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804'}</p>
                 </div>
               </div>
             </div>
@@ -399,17 +402,17 @@ export const Contact = ({ setCurrentTab }) => {
               <div className={styles.locationImageBox}>
                 <img
                   src="/Images/contact1.png"
-                  alt="Mazhai Vaanam Boutique Storefront"
+                  alt={`${storeConfig?.storeName || 'Mazhai Vaanam'} Boutique Storefront`}
                 />
               </div>
               <div className={styles.locationTextDetails}>
                 <div>
-                  <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>Mazhai Vaanam</h3>
-                  <p className={styles.locationAddressText}>ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804</p>
+                  <h3 className={`${styles.locationTitleHeader} ${styles.lineAccent}`}>{storeConfig?.storeName || 'Mazhai Vaanam'}</h3>
+                  <p className={styles.locationAddressText}>{storeConfig?.address || 'ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804'}</p>
                   <p className={styles.locationHoursLabel}>Hours</p>
                   <p className={styles.locationHoursValue}>Mon - Sat: 10 AM - 8 PM<br />Sun: Closed</p>
                 </div>
-                <button onClick={() => window.open("https://maps.google.com/?q=Mazhai+Vaanam,+Peravurani,+Thanjavur,+Tamil+Nadu", "_blank")} className={styles.locationActionBtn}>
+                <button onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent((storeConfig?.storeName || 'Mazhai Vaanam') + ', ' + (storeConfig?.address || 'ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804'))}`, "_blank")} className={styles.locationActionBtn}>
                   GET DIRECTIONS
                 </button>
               </div>
@@ -419,13 +422,13 @@ export const Contact = ({ setCurrentTab }) => {
             <div className={styles.mapCard}>
               <div className={styles.mapFrameWrapper} style={{ height: '100%', display: 'flex' }}>
                 <iframe
-                  src="https://maps.google.com/maps?q=Mazhai%20Vaanam,%20ANA%20Complex,%20Sethu%20Road,%20Peravurani,%20Thanjavur,%20Tamil%20Nadu%20614804&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent((storeConfig?.storeName || 'Mazhai Vaanam') + ', ' + (storeConfig?.address || 'ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804'))}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   style={{ border: 0, minHeight: '400px', borderRadius: '4px', flexGrow: 1 }}
                   allowFullScreen=""
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Mazhai Vaanam Location Map"
+                  title={`${storeConfig?.storeName || 'Mazhai Vaanam'} Location Map`}
                 ></iframe>
               </div>
             </div>

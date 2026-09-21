@@ -5,15 +5,12 @@ import { useWishlist } from '../../hooks/useWishlist';
 import { formatCurrency } from '../../utils/formatters';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X, Loader2 } from 'lucide-react';
-import { getProducts, getFabrics } from '../../services/api';
+import { getProducts, getFabrics, getCategories } from '../../services/api';
 import { OfferTimerBadge } from '../../components/common/OfferTimerBadge/OfferTimerBadge';
 import styles from './Catalog.module.css';
 
 // Export empty fallback for backward compatibility
 export const ALL_PRODUCTS = [];
-
-// Permanent categories (hardcoded)
-const PERMANENT_CATEGORIES = ['Everyday Elegance', 'Black Magic', 'Festive Glow', 'Style Studio'];
 
 export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelectedProduct }) => {
   const { addToCart } = useCart();
@@ -21,6 +18,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fabrics, setFabrics] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   // States matching filters
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -55,8 +53,9 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     setLoading(true);
     Promise.all([
       getProducts({ limit: 200 }),
-      getFabrics()
-    ]).then(([prodRes, fabList]) => {
+      getFabrics(),
+      getCategories()
+    ]).then(([prodRes, fabList, dbCats]) => {
       const now = new Date();
       const list = (prodRes.products || []).filter(p => {
         // Hide products where limited offer has expired
@@ -71,6 +70,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       setMasterProducts(list);
       setProducts(list);
       setFabrics(fabList || []);
+      setCategories(dbCats?.map(c => c.name) || []);
       setLoading(false);
     }).catch(err => {
       console.error('Failed to load data from API:', err);
@@ -354,8 +354,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                    >
                      All
                    </button>
-                   {/* Permanent categories */}
-                   {PERMANENT_CATEGORIES.map(catName => {
+                   {/* Dynamic categories */}
+                   {categories.length > 0 ? categories.map(catName => {
                      const isSelected = selectedCategory === catName;
                      return (
                        <button
@@ -367,7 +367,15 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                          {catName}
                        </button>
                      );
-                   })}
+                   }) : (
+                     <>
+                       {/* Fallback while loading */}
+                       <button onClick={() => setSelectedCategory('Everyday Elegance')} className={`${styles['fabric-chip']} ${selectedCategory === 'Everyday Elegance' ? styles['active-chip'] : ''}`} type="button">Everyday Elegance</button>
+                       <button onClick={() => setSelectedCategory('Festive Glow')} className={`${styles['fabric-chip']} ${selectedCategory === 'Festive Glow' ? styles['active-chip'] : ''}`} type="button">Festive Glow</button>
+                       <button onClick={() => setSelectedCategory('Style Studio')} className={`${styles['fabric-chip']} ${selectedCategory === 'Style Studio' ? styles['active-chip'] : ''}`} type="button">Style Studio</button>
+                       <button onClick={() => setSelectedCategory('Black Magic')} className={`${styles['fabric-chip']} ${selectedCategory === 'Black Magic' ? styles['active-chip'] : ''}`} type="button">Black Magic</button>
+                     </>
+                   )}
                  </div>
                </div>
 

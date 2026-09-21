@@ -99,6 +99,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
           onClick={handleShareClick}
           role="button"
           title="Share Product"
+          aria-label="Share Product"
         >
           <Share2 
             size={16} 
@@ -112,6 +113,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
           onClick={handleAddToWishlist}
           role="button"
           title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+          aria-label={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         >
           <Heart 
             size={16} 

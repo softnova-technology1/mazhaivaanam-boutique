@@ -66,7 +66,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
   
   const displayImage = (typeof image === 'string' && image.trim() !== '') ? image : '/Images/placeholder.svg';
 
-  const fallbackTag = product.discountLabel || product.discount?.label || (isNew ? 'NEW ARRIVAL' : (isLimited ? 'LIMITED EDITION' : tag));
+  const fallbackTag = product.discountLabel || product.discount?.label || (isNew ? 'Fresh Pick' : (isLimited ? 'LIMITED EDITION' : tag));
   const endDate = product.discountEndDate || product.discount?.endDate || product.limitedOfferEntry?.endDate;
 
   return (

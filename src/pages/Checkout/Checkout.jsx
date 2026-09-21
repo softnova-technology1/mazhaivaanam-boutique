@@ -205,10 +205,14 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
   const resolveShippingZone = () => {
     const pin = String(pinCode).replace(/\D/g, '');
     if (pin.length === 6) {
-      return Number(pin) >= 600000 && Number(pin) <= 643999 ? 'Tamil Nadu' : 'Other States';
+      const pinNum = Number(pin);
+      return pinNum >= 600000 && pinNum <= 643999 ? 'Tamil Nadu' : 'Other States';
     }
     const stateKey = String(stateName).toLowerCase().replace(/[^a-z]/g, '');
-    return ['tamilnadu', 'tn', 'tamilnad'].includes(stateKey) ? 'Tamil Nadu' : 'Other States';
+    if (['tamilnadu', 'tn', 'tamilnad'].includes(stateKey)) {
+      return 'Tamil Nadu';
+    }
+    return 'Tamil Nadu';
   };
 
   const getShippingSlab = (items) => {
@@ -217,15 +221,15 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       return sum + w * (item.quantity || 1);
     }, 0);
     const zone = resolveShippingZone();
-    const rates = SHIPPING_ZONES[zone];
-    const slab = rates.find(r => totalWeightKg <= r.uptoKg);
+    const rates = SHIPPING_ZONES[zone] || SHIPPING_ZONES['Tamil Nadu'];
+    const slab = rates.find(r => totalWeightKg <= r.uptoKg) || rates[0];
     return { slab, totalWeightKg, zone };
   };
 
   const calcShippingFee = (items, mode) => {
     if (mode === 'pickup' || items.length === 0) return 0;
     const { slab } = getShippingSlab(items);
-    const base = slab ? slab.price : 220;
+    const base = slab ? slab.price : 40;
     return mode === 'express' ? base + 60 : base;
   };
 
@@ -233,7 +237,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     if (mode === 'pickup') return 'Store Pickup (Free)';
     if (items.length === 0) return '';
     const { slab, totalWeightKg, zone } = getShippingSlab(items);
-    return `${slab ? slab.label : 'Above 5kg'} (${totalWeightKg.toFixed(2)} kg) · ${zone}${mode === 'express' ? ' + Express' : ''}`;
+    return `${slab ? slab.label : 'Standard'} (${totalWeightKg.toFixed(2)} kg) · ${zone}${mode === 'express' ? ' + Express' : ''}`;
   };
 
   // mrpPrice from DB = original MRP; item.price = effective (post-discount) price
@@ -249,70 +253,40 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   const giftPackAddon = giftPackaging ? GIFT_WRAP_PRICE : 0;
   const convenienceFee = checkoutItems.length > 0 ? (storeConfig?.convenienceFee !== undefined && storeConfig?.convenienceFee !== null ? Number(storeConfig?.convenienceFee) : 2) : 0;
-  const shippingFee = calcShippingFee(checkoutItems, deliveryMode);
+
+  // Only calculate shipping once a valid 6-digit PIN code is entered (or pickup is selected)
+  const cleanedPin = String(pinCode).replace(/\D/g, '');
+  const hasValidPin = cleanedPin.length === 6;
+  const addressKnown = deliveryMode === 'pickup' || hasValidPin;
+  const shippingFee = addressKnown ? calcShippingFee(checkoutItems, deliveryMode) : 0;
+
   const totalFees = giftPackAddon + convenienceFee + shippingFee;
 
   const finalAmount = Math.max(0, mrpTotal - totalSavings + totalFees);
 
-  const [checkoutStep, setCheckoutStep] = useState('checkout'); // 'checkout' | 'payment'
-
   const renderProgressIndicator = () => {
+    const steps = [
+      { key: 'bag', label: 'Bag', num: 1, done: true },
+      { key: 'checkout', label: 'Shipping & Payment', num: 2, active: true },
+      { key: 'confirm', label: 'Confirmation', num: 3, done: false },
+    ];
     return (
       <div className={styles.progressSection}>
         <div className={styles.progressBar}>
+          {/* Background track */}
           <div className={styles.progressLine}></div>
-          <div className={styles.step}>
-            <div className={`${styles.dot} ${styles.completed}`}></div>
-            <span className={styles.stepLabel}>Bag</span>
-          </div>
-          <div className={styles.step}>
-            <div className={`${styles.dot} ${checkoutStep === 'payment' ? styles.completed : styles.active}`}></div>
-            <span className={`${styles.stepLabel} ${checkoutStep === 'checkout' ? styles.activeLabel : ''}`}>Checkout</span>
-          </div>
-          <div className={styles.step}>
-            <div className={`${styles.dot} ${checkoutStep === 'payment' ? styles.active : ''}`}></div>
-            <span className={`${styles.stepLabel} ${checkoutStep === 'payment' ? styles.activeLabel : ''}`}>Payment</span>
-          </div>
-          <div className={styles.step}>
-            <div className={styles.dot}></div>
-            <span className={styles.stepLabel}>Confirm</span>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderDetailsSummary = () => {
-    return (
-      <div className={styles.detailsSummaryCard}>
-        <div className={styles.detailsSummaryHeader}>
-          <h3>Delivery & Contact Information</h3>
-          <button
-            type="button"
-            className={styles.editDetailsBtn}
-            onClick={() => setCheckoutStep('checkout')}
-          >
-            Edit Address
-          </button>
-        </div>
-        <div className={styles.detailsSummaryGrid}>
-          <div className={styles.detailsSummaryItem}>
-            <strong>Full Name:</strong> <span>{fullName}</span>
-          </div>
-          <div className={styles.detailsSummaryItem}>
-            <strong>Email:</strong> <span>{email}</span>
-          </div>
-          <div className={styles.detailsSummaryItem}>
-            <strong>Phone:</strong> <span>{phone}</span>
-          </div>
-          <div className={styles.detailsSummaryItem}>
-            <strong>Delivery Mode:</strong> <span>{deliveryMode === 'pickup' ? 'Self Pickup' : 'Standard Delivery'}</span>
-          </div>
-          {deliveryMode === 'standard' && (
-            <div className={styles.detailsSummaryItem} style={{ gridColumn: 'span 2' }}>
-              <strong>Shipping Address:</strong> <span>{`${addressLine}, ${city}, ${stateName} - ${pinCode}`}</span>
+          {/* Animated fill: 50% between Bag and Confirmation */}
+          <div className={styles.progressLineFill} style={{ width: '50%' }}></div>
+          {steps.map((s) => (
+            <div key={s.key} className={styles.step}>
+              <div className={`${styles.dot} ${s.done ? styles.completed : s.active ? styles.active : ''}`}>
+                {s.done ? <Check size={8} strokeWidth={3} /> : <span className={styles.dotNumber}>{s.num}</span>}
+              </div>
+              <span className={`${styles.stepLabel} ${s.active ? styles.activeLabel : s.done ? styles.completedLabel : ''}`}>
+                {s.label}
+              </span>
             </div>
-          )}
+          ))}
         </div>
       </div>
     );
@@ -335,7 +309,12 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     }
 
     if (deliveryMode === 'standard') {
-      if (!pinCode.trim()) newErrors.pinCode = 'Pin Code is required';
+      const pinDigits = String(pinCode).replace(/\D/g, '');
+      if (!pinCode.trim()) {
+        newErrors.pinCode = 'Pin Code is required';
+      } else if (pinDigits.length !== 6) {
+        newErrors.pinCode = 'Enter a valid 6-digit Pin Code';
+      }
       if (!addressLine.trim()) newErrors.addressLine = 'Address is required';
       if (!city.trim()) newErrors.city = 'City / Town is required';
       if (!stateName.trim()) newErrors.stateName = 'State is required';
@@ -354,14 +333,6 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       return false;
     }
     return true;
-  };
-
-  const handleConfirmDetails = (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    if (validateForm()) {
-      setCheckoutStep('payment');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
   };
 
   const isFormFilled = () => {
@@ -403,6 +374,27 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     setCouponMsg({ type: '', text: '' });
   };
 
+  const loadRazorpaySDK = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+      if (existing) {
+        existing.onload = () => resolve(true);
+        existing.onerror = () => resolve(false);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const handleCompleteOrder = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     setSubmitError('');
@@ -424,7 +416,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       deliveryMode,
       giftPackaging,
       giftMessage,
-      paymentMethod,
+      paymentMethod: 'card',
       finalAmount,
       totalSavings,
       mrpTotal,
@@ -507,33 +499,37 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
         product: item._id || item.id,
         quantity: item.quantity || 1,
       })),
+      email: email.trim(),
       shippingAddress: {
-        fullName,
-        addressLine,
-        landmark,
-        city,
-        state: stateName,
-        pinCode,
-        phone,
+        fullName: fullName.trim(),
+        email: email.trim(),
+        addressLine: addressLine.trim(),
+        landmark: landmark ? landmark.trim() : '',
+        city: city.trim(),
+        state: stateName.trim(),
+        pinCode: pinCode.trim(),
+        phone: phone.trim(),
       },
       deliveryMode,
       giftPackaging: Boolean(giftPackaging),
       giftMessage: giftMessage || '',
-      paymentMethod: paymentMethod === 'card' ? 'card' : paymentMethod === 'upi' ? 'upi' : paymentMethod === 'netbanking' ? 'netbanking' : 'card',
+      paymentMethod: 'card',
       couponCode: appliedCoupon?.code || '',
     };
 
     try {
+      // Ensure Razorpay SDK is loaded
+      const rzpLoaded = await loadRazorpaySDK();
+      if (!rzpLoaded || !window.Razorpay) {
+        throw new Error('Razorpay SDK could not be loaded. Please check your internet connection.');
+      }
+
       // Call backend API to create order & Razorpay order
       const res = await orderAPI.createOrder(orderPayload);
       const { razorpayOrderId, razorpayKeyId, amount, orderId: backendOrderId } = res;
 
       if (!razorpayKeyId || !razorpayOrderId) {
         throw new Error('Razorpay keys or order ID not received from backend server');
-      }
-
-      if (!window.Razorpay) {
-        throw new Error('Razorpay SDK failed to load. Please check your internet connection and refresh.');
       }
 
       const options = {
@@ -809,8 +805,13 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
         {/* Shipping */}
         <div className={styles.priceRow}>
           <span>Shipping & Delivery</span>
-          <span className={styles.priceValue}>
-            {deliveryMode === 'pickup' ? 'FREE' : formatCurrency(shippingFee)}
+          <span className={styles.priceValue} style={!addressKnown && deliveryMode !== 'pickup' ? { color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '0.78rem' } : {}}>
+            {deliveryMode === 'pickup'
+              ? 'FREE'
+              : addressKnown
+                ? formatCurrency(shippingFee)
+                : 'Enter address to calculate'
+            }
           </span>
         </div>
 
@@ -837,7 +838,14 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       <div className={styles.totalsBlock}>
         <div className={styles.payableRow}>
           <span className={styles.payableLabel}>Final Payable</span>
-          <span className={styles.payableValue}>{formatCurrency(finalAmount)}</span>
+          <span className={styles.payableValue}>
+            {formatCurrency(finalAmount)}
+            {!addressKnown && deliveryMode !== 'pickup' && (
+              <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500, fontStyle: 'italic', marginTop: 2 }}>
+                + shipping (after address)
+              </span>
+            )}
+          </span>
         </div>
       </div>
 
@@ -1146,28 +1154,81 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
           </div>
         </div>
       ) : (
-        /* Standard Checkout Form Flow - Two Column Layout for both step 1 & step 2 */
-        <div className={styles.layoutGrid}>
-          {/* Left Column */}
-          <div className={styles.leftColumn}>
-            {renderProgressIndicator()}
+        /* Standard Checkout Form Flow */
+        <div className={styles.checkoutFlowWrapper}>
+          {/* Progress bar spans FULL WIDTH above both columns */}
+          {renderProgressIndicator()}
 
-            {checkoutStep === 'checkout' ? (
-              <>
-                <section className={styles.sectionBlock}>
-                  <h2 className={styles.sectionTitle}>{deliveryMode === 'standard' ? 'Shipping Details' : 'Contact Details'}</h2>
+          <div className={styles.layoutGrid}>
+            {/* Left Column */}
+            <div className={styles.leftColumn}>
+              <section className={styles.sectionBlock}>
+                <h2 className={styles.sectionTitle}>{deliveryMode === 'standard' ? 'Shipping Details' : 'Contact Details'}</h2>
 
-                  {deliveryMode === 'standard' && savedAddresses.length > 0 && !showAddressForm ? (
-                    <div className={styles.addressGrid}>
-                      {savedAddresses.map(addr => {
-                        const addrId = addr._id || addr.id;
-                        const isSelected = selectedAddressId === addrId;
-                        return (
-                          <div
-                            key={addrId}
-                            className={`${styles.addressCard} ${isSelected ? styles.addressCardDefault : ''}`}
-                            onClick={() => {
-                              setSelectedAddressId(addrId);
+                {deliveryMode === 'standard' && savedAddresses.length > 0 && !showAddressForm ? (
+                  <div className={styles.addressGrid}>
+                    {savedAddresses.map(addr => {
+                      const addrId = addr._id || addr.id;
+                      const isSelected = selectedAddressId === addrId;
+                      return (
+                        <div
+                          key={addrId}
+                          className={`${styles.addressCard} ${isSelected ? styles.addressCardDefault : ''}`}
+                          onClick={() => {
+                            setSelectedAddressId(addrId);
+                            setFullName(addr.fullName || addr.name || '');
+                            setPhone(addr.phone || '');
+                            setAddressLine(addr.addressLine || '');
+                            setLandmark(addr.landmark || '');
+                            setCity(addr.city || '');
+                            setStateName(addr.state || addr.stateName || '');
+                            setPinCode(addr.pinCode || '');
+                          }}
+                        >
+                          {isSelected && <div className={styles.defaultBadge}>SELECTED</div>}
+                          <h3 className={styles.addressName}>{addr.fullName || addr.name}</h3>
+                          <div className={styles.addressDetails}>
+                            <p>{addr.addressLine}</p>
+                            {addr.landmark && <p>Landmark: {addr.landmark}</p>}
+                            <p>{addr.city}, {addr.stateName || addr.state} - {addr.pinCode}</p>
+                            <p>{addr.country || 'India'}</p>
+                            <p>Phone: {addr.phone}</p>
+                          </div>
+                          <div className={styles.addressActions}>
+                            <button type="button" className={`${styles.addressLinkBtn} ${isSelected ? '' : styles.deleteBtn}`}>
+                              {isSelected ? 'SELECTED' : 'SELECT'}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    <div className={styles.addAddressBtn} onClick={() => {
+                      setShowAddressForm(true);
+                      setFullName(user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+                      setPhone(user?.phone || '');
+                      setAddressLine('');
+                      setLandmark('');
+                      setCity('');
+                      setStateName('');
+                      setPinCode('');
+                    }}>
+                      <span style={{ fontSize: '24px', color: '#C8A34D' }}>+</span>
+                      <p className={styles.addAddressTitle}>ADD NEW ADDRESS</p>
+                    </div>
+                  </div>
+                ) : (
+                  <form className={styles.formContainer} onSubmit={handleCompleteOrder} noValidate>
+                    {savedAddresses.length > 0 && deliveryMode === 'standard' && (
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-16px' }}>
+                        <button
+                          type="button"
+                          className={styles.addressLinkBtn}
+                          onClick={() => {
+                            setShowAddressForm(false);
+                            const addr = savedAddresses.find(a => (a._id || a.id) === selectedAddressId) || savedAddresses[0];
+                            if (addr) {
+                              setSelectedAddressId(addr._id || addr.id);
                               setFullName(addr.fullName || addr.name || '');
                               setPhone(addr.phone || '');
                               setAddressLine(addr.addressLine || '');
@@ -1175,432 +1236,381 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
                               setCity(addr.city || '');
                               setStateName(addr.state || addr.stateName || '');
                               setPinCode(addr.pinCode || '');
-                            }}
-                          >
-                            {isSelected && <div className={styles.defaultBadge}>SELECTED</div>}
-                            <h3 className={styles.addressName}>{addr.fullName || addr.name}</h3>
-                            <div className={styles.addressDetails}>
-                              <p>{addr.addressLine}</p>
-                              {addr.landmark && <p>Landmark: {addr.landmark}</p>}
-                              <p>{addr.city}, {addr.stateName || addr.state} - {addr.pinCode}</p>
-                              <p>{addr.country || 'India'}</p>
-                              <p>Phone: {addr.phone}</p>
-                            </div>
-                            <div className={styles.addressActions}>
-                              <button type="button" className={`${styles.addressLinkBtn} ${isSelected ? '' : styles.deleteBtn}`}>
-                                {isSelected ? 'SELECTED' : 'SELECT'}
-                              </button>
-                            </div>
-                          </div>
-                        )
-                      })}
+                            }
+                          }}
+                        >
+                          Cancel & Use Saved
+                        </button>
+                      </div>
+                    )}
+                    <div className={styles.gridRow}>
+                      <div className={`${styles.floatingLabelContainer} ${errors.fullName ? styles.inputErrorBorder : ''}`}>
+                        <input
+                          type="text"
+                          required
+                          placeholder=" "
+                          value={fullName}
+                          onChange={(e) => {
+                            setFullName(e.target.value);
+                            if (errors.fullName) setErrors(prev => ({ ...prev, fullName: '' }));
+                          }}
+                          className={styles.formInput}
+                          id="fullName"
+                        />
+                        <label className={styles.formLabel}>Full Name *</label>
+                        {errors.fullName && <span className={styles.errorText}>{errors.fullName}</span>}
+                      </div>
 
-                      <div className={styles.addAddressBtn} onClick={() => {
-                        setShowAddressForm(true);
-                        setFullName(user?.name || (user?.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
-                        setPhone(user?.phone || '');
-                        setAddressLine('');
-                        setLandmark('');
-                        setCity('');
-                        setStateName('');
-                        setPinCode('');
-                      }}>
-                        <span style={{ fontSize: '24px', color: '#C8A34D' }}>+</span>
-                        <p className={styles.addAddressTitle}>ADD NEW ADDRESS</p>
+                      <div className={`${styles.floatingLabelContainer} ${errors.email ? styles.inputErrorBorder : ''}`}>
+                        <input
+                          type="email"
+                          required
+                          placeholder=" "
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
+                          }}
+                          className={styles.formInput}
+                          id="email"
+                        />
+                        <label className={styles.formLabel}>Email Address *</label>
+                        {errors.email && <span className={styles.errorText}>{errors.email}</span>}
                       </div>
                     </div>
-                  ) : (
-                    <form className={styles.formContainer} onSubmit={handleConfirmDetails}>
-                      {savedAddresses.length > 0 && deliveryMode === 'standard' && (
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-16px' }}>
-                          <button
-                            type="button"
-                            className={styles.addressLinkBtn}
-                            onClick={() => {
-                              setShowAddressForm(false);
-                              const addr = savedAddresses.find(a => (a._id || a.id) === selectedAddressId) || savedAddresses[0];
-                              if (addr) {
-                                setSelectedAddressId(addr._id || addr.id);
-                                setFullName(addr.fullName || addr.name || '');
-                                setPhone(addr.phone || '');
-                                setAddressLine(addr.addressLine || '');
-                                setLandmark(addr.landmark || '');
-                                setCity(addr.city || '');
-                                setStateName(addr.state || addr.stateName || '');
-                                setPinCode(addr.pinCode || '');
-                              }
-                            }}
-                          >
-                            Cancel & Use Saved
-                          </button>
-                        </div>
-                      )}
-                      <div className={styles.gridRow}>
-                        <div className={`${styles.floatingLabelContainer} ${errors.fullName ? styles.inputErrorBorder : ''}`}>
-                          <input
-                            type="text"
-                            required
-                            placeholder=" "
-                            value={fullName}
-                            onChange={(e) => {
-                              setFullName(e.target.value);
-                              if (errors.fullName) setErrors(prev => ({ ...prev, fullName: '' }));
-                            }}
-                            className={styles.formInput}
-                            id="fullName"
-                          />
-                          <label className={styles.formLabel}>Full Name *</label>
-                          {errors.fullName && <span className={styles.errorText}>{errors.fullName}</span>}
-                        </div>
 
-                        <div className={`${styles.floatingLabelContainer} ${errors.email ? styles.inputErrorBorder : ''}`}>
-                          <input
-                            type="email"
-                            required
-                            placeholder=" "
-                            value={email}
-                            onChange={(e) => {
-                              setEmail(e.target.value);
-                              if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
-                            }}
-                            className={styles.formInput}
-                            id="email"
-                          />
-                          <label className={styles.formLabel}>Email Address *</label>
-                          {errors.email && <span className={styles.errorText}>{errors.email}</span>}
-                        </div>
-                      </div>
-
-                      <div className={styles.gridRow}>
-                        <div className={`${styles.floatingLabelContainer} ${errors.phone ? styles.inputErrorBorder : ''}`}>
-                          <input
-                            type="tel"
-                            required
-                            placeholder=" "
-                            value={phone}
-                            onChange={(e) => {
-                              setPhone(e.target.value);
-                              if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
-                            }}
-                            className={styles.formInput}
-                            id="phone"
-                          />
-                          <label className={styles.formLabel}>Phone Number *</label>
-                          {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
-                        </div>
-
-                        {deliveryMode === 'standard' && (
-                          <div className={`${styles.floatingLabelContainer} ${errors.pinCode ? styles.inputErrorBorder : ''}`}>
-                            <input
-                              type="text"
-                              required={deliveryMode === 'standard'}
-                              placeholder=" "
-                              value={pinCode}
-                              onChange={(e) => {
-                                setPinCode(e.target.value);
-                                if (errors.pinCode) setErrors(prev => ({ ...prev, pinCode: '' }));
-                              }}
-                              className={styles.formInput}
-                              id="pinCode"
-                            />
-                            <label className={styles.formLabel}>Pin Code *</label>
-                            {errors.pinCode && <span className={styles.errorText}>{errors.pinCode}</span>}
-                          </div>
-                        )}
+                    <div className={styles.gridRow}>
+                      <div className={`${styles.floatingLabelContainer} ${errors.phone ? styles.inputErrorBorder : ''}`}>
+                        <input
+                          type="tel"
+                          required
+                          placeholder=" "
+                          value={phone}
+                          onChange={(e) => {
+                            setPhone(e.target.value);
+                            if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
+                          }}
+                          className={styles.formInput}
+                          id="phone"
+                        />
+                        <label className={styles.formLabel}>Phone Number *</label>
+                        {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
                       </div>
 
                       {deliveryMode === 'standard' && (
-                        <>
-                          <div className={`${styles.floatingLabelContainer} ${errors.addressLine ? styles.inputErrorBorder : ''}`} style={{ width: '100%' }}>
+                        <div className={`${styles.floatingLabelContainer} ${errors.pinCode ? styles.inputErrorBorder : ''}`}>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={6}
+                            placeholder=" "
+                            value={pinCode}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                              setPinCode(val);
+                              if (errors.pinCode) setErrors(prev => ({ ...prev, pinCode: '' }));
+                            }}
+                            className={styles.formInput}
+                            id="pinCode"
+                          />
+                          <label className={styles.formLabel}>Pin Code *</label>
+                          {errors.pinCode && <span className={styles.errorText}>{errors.pinCode}</span>}
+                        </div>
+                      )}
+                    </div>
+
+                    {deliveryMode === 'standard' && (
+                      <>
+                        <div className={`${styles.floatingLabelContainer} ${errors.addressLine ? styles.inputErrorBorder : ''}`} style={{ width: '100%' }}>
+                          <input
+                            type="text"
+                            required={deliveryMode === 'standard'}
+                            placeholder=" "
+                            value={addressLine}
+                            onChange={(e) => {
+                              setAddressLine(e.target.value);
+                              if (errors.addressLine) setErrors(prev => ({ ...prev, addressLine: '' }));
+                            }}
+                            className={styles.formInput}
+                            id="addressLine"
+                          />
+                          <label className={styles.formLabel}>Flat, House no., Apartment *</label>
+                          {errors.addressLine && <span className={styles.errorText}>{errors.addressLine}</span>}
+                        </div>
+
+                        <div className={styles.floatingLabelContainer} style={{ width: '100%', marginTop: '16px' }}>
+                          <input
+                            type="text"
+                            placeholder=" "
+                            value={landmark}
+                            onChange={(e) => setLandmark(e.target.value)}
+                            className={styles.formInput}
+                            id="landmark"
+                          />
+                          <label className={styles.formLabel}>Landmark (Optional)</label>
+                        </div>
+
+                        <div className={styles.gridRow}>
+                          <div className={`${styles.floatingLabelContainer} ${errors.city ? styles.inputErrorBorder : ''}`}>
                             <input
                               type="text"
                               required={deliveryMode === 'standard'}
                               placeholder=" "
-                              value={addressLine}
+                              value={city}
                               onChange={(e) => {
-                                setAddressLine(e.target.value);
-                                if (errors.addressLine) setErrors(prev => ({ ...prev, addressLine: '' }));
+                                setCity(e.target.value);
+                                if (errors.city) setErrors(prev => ({ ...prev, city: '' }));
                               }}
                               className={styles.formInput}
-                              id="addressLine"
+                              id="city"
                             />
-                            <label className={styles.formLabel}>Flat, House no., Apartment *</label>
-                            {errors.addressLine && <span className={styles.errorText}>{errors.addressLine}</span>}
+                            <label className={styles.formLabel}>City / Town *</label>
+                            {errors.city && <span className={styles.errorText}>{errors.city}</span>}
                           </div>
 
-                          <div className={styles.floatingLabelContainer} style={{ width: '100%', marginTop: '16px' }}>
+                          <div className={`${styles.floatingLabelContainer} ${errors.stateName ? styles.inputErrorBorder : ''}`}>
                             <input
                               type="text"
+                              required={deliveryMode === 'standard'}
                               placeholder=" "
-                              value={landmark}
-                              onChange={(e) => setLandmark(e.target.value)}
+                              value={stateName}
+                              onChange={(e) => {
+                                setStateName(e.target.value);
+                                if (errors.stateName) setErrors(prev => ({ ...prev, stateName: '' }));
+                              }}
                               className={styles.formInput}
-                              id="landmark"
+                              id="stateName"
                             />
-                            <label className={styles.formLabel}>Landmark (Optional)</label>
+                            <label className={styles.formLabel}>State *</label>
+                            {errors.stateName && <span className={styles.errorText}>{errors.stateName}</span>}
                           </div>
+                        </div>
+                      </>
+                    )}
+                  </form>
+                )}
+              </section>
 
-                          <div className={styles.gridRow}>
-                            <div className={`${styles.floatingLabelContainer} ${errors.city ? styles.inputErrorBorder : ''}`}>
-                              <input
-                                type="text"
-                                required={deliveryMode === 'standard'}
-                                placeholder=" "
-                                value={city}
-                                onChange={(e) => {
-                                  setCity(e.target.value);
-                                  if (errors.city) setErrors(prev => ({ ...prev, city: '' }));
-                                }}
-                                className={styles.formInput}
-                                id="city"
-                              />
-                              <label className={styles.formLabel}>City / Town *</label>
-                              {errors.city && <span className={styles.errorText}>{errors.city}</span>}
-                            </div>
-
-                            <div className={`${styles.floatingLabelContainer} ${errors.stateName ? styles.inputErrorBorder : ''}`}>
-                              <input
-                                type="text"
-                                required={deliveryMode === 'standard'}
-                                placeholder=" "
-                                value={stateName}
-                                onChange={(e) => {
-                                  setStateName(e.target.value);
-                                  if (errors.stateName) setErrors(prev => ({ ...prev, stateName: '' }));
-                                }}
-                                className={styles.formInput}
-                                id="stateName"
-                              />
-                              <label className={styles.formLabel}>State *</label>
-                              {errors.stateName && <span className={styles.errorText}>{errors.stateName}</span>}
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </form>
-                  )}
-                </section>
-
-                <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
-                  <h2 className={styles.sectionTitle}>Delivery Mode</h2>
-                  <div className={styles.deliveryModeGrid}>
-                    <label
-                      className={`${styles.deliveryLabelCard} ${deliveryMode === 'standard' ? styles.selectedDelivery : ''}`}
-                      onClick={() => setDeliveryMode('standard')}
-                    >
-                      <input
-                        type="radio"
-                        name="delivery"
-                        checked={deliveryMode === 'standard'}
-                        onChange={() => setDeliveryMode('standard')}
-                        className={styles.hiddenRadio}
-                      />
-                      <div className={styles.deliveryInfo}>
-                        <span className={styles.deliveryOptionTitle}>Standard Delivery</span>
-                        <p className={styles.deliveryOptionSubtitle}>Delivery in 5-7 business days</p>
-                      </div>
-                      <span className={styles.deliveryCost}>{formatCurrency(calcShippingFee(checkoutItems, 'standard'))}</span>
-                    </label>
-
-                    <label
-                      className={`${styles.deliveryLabelCard} ${deliveryMode === 'pickup' ? styles.selectedDelivery : ''}`}
-                      onClick={() => setDeliveryMode('pickup')}
-                    >
-                      <input
-                        type="radio"
-                        name="delivery"
-                        checked={deliveryMode === 'pickup'}
-                        onChange={() => setDeliveryMode('pickup')}
-                        className={styles.hiddenRadio}
-                      />
-                      <div className={styles.deliveryInfo}>
-                        <span className={styles.deliveryOptionTitle}>Self Pickup</span>
-                        <p className={styles.deliveryOptionSubtitle}>ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
-                      </div>
-                      <span className={styles.deliveryCost}>FREE</span>
-                    </label>
-                  </div>
-                </section>
-
-                {/* Gift Packaging Section */}
-                <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
-                  <h2 className={styles.sectionTitle}>
-                    <Gift size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
-                    Gift Options
-                  </h2>
-
-                  {/* Toggle card — full-row click */}
-                  <div
-                    onClick={() => setGiftPackaging(prev => !prev)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '14px 18px',
-                      border: `2px solid ${giftPackaging ? 'var(--primary)' : 'var(--border-color)'}`,
-                      borderRadius: 10,
-                      background: giftPackaging ? 'rgba(200,163,77,0.08)' : 'var(--bg-surface)',
-                      cursor: 'pointer',
-                      userSelect: 'none',
-                      transition: 'all 0.2s ease'
-                    }}
+              <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
+                <h2 className={styles.sectionTitle}>Delivery Mode</h2>
+                <div className={styles.deliveryModeGrid}>
+                  <label
+                    className={`${styles.deliveryLabelCard} ${deliveryMode === 'standard' ? styles.selectedDelivery : ''}`}
+                    onClick={() => setDeliveryMode('standard')}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                      {/* Large icon */}
+                    <input
+                      type="radio"
+                      name="delivery"
+                      checked={deliveryMode === 'standard'}
+                      onChange={() => setDeliveryMode('standard')}
+                      className={styles.hiddenRadio}
+                    />
+                    <div className={styles.deliveryInfo}>
+                      <span className={styles.deliveryOptionTitle}>Standard Delivery</span>
+                      <p className={styles.deliveryOptionSubtitle}>Delivery in 5-7 business days</p>
+                    </div>
+                    <span className={styles.deliveryCost}>
+                      {addressKnown
+                        ? formatCurrency(calcShippingFee(checkoutItems, 'standard'))
+                        : 'From ₹40'
+                      }
+                    </span>
+                  </label>
+
+                  <label
+                    className={`${styles.deliveryLabelCard} ${deliveryMode === 'pickup' ? styles.selectedDelivery : ''}`}
+                    onClick={() => setDeliveryMode('pickup')}
+                  >
+                    <input
+                      type="radio"
+                      name="delivery"
+                      checked={deliveryMode === 'pickup'}
+                      onChange={() => setDeliveryMode('pickup')}
+                      className={styles.hiddenRadio}
+                    />
+                    <div className={styles.deliveryInfo}>
+                      <span className={styles.deliveryOptionTitle}>Self Pickup</span>
+                      <p className={styles.deliveryOptionSubtitle}>ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804</p>
+                    </div>
+                    <span className={styles.deliveryCost}>FREE</span>
+                  </label>
+                </div>
+              </section>
+
+              {/* Gift Packaging Section */}
+              <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
+                <h2 className={styles.sectionTitle}>
+                  <Gift size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
+                  Gift Options
+                </h2>
+
+                {/* Toggle card — full-row click */}
+                <div
+                  onClick={() => setGiftPackaging(prev => !prev)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '14px 18px',
+                    border: `2px solid ${giftPackaging ? 'var(--primary)' : 'var(--border-color)'}`,
+                    borderRadius: 10,
+                    background: giftPackaging ? 'rgba(200,163,77,0.08)' : 'var(--bg-surface)',
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: 8,
+                      background: giftPackaging ? 'var(--primary)' : 'rgba(200,163,77,0.12)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0, transition: 'all 0.2s ease'
+                    }}>
+                      <Gift size={22} color={giftPackaging ? '#fff' : 'var(--primary)'} />
+                    </div>
+                    <div>
+                      <p style={{ margin: 0, fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                        Luxury Gift Packaging
+                      </p>
+                      <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                        Premium silk box wrap + handwritten message card
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--primary)' }}>
+                      +{formatCurrency(GIFT_WRAP_PRICE)}
+                    </span>
+                    {/* Toggle switch */}
+                    <div style={{
+                      width: 44, height: 24, borderRadius: 12,
+                      background: giftPackaging ? 'var(--primary)' : 'var(--border-color)',
+                      position: 'relative', transition: 'background 0.25s ease'
+                    }}>
                       <div style={{
-                        width: 44, height: 44, borderRadius: 8,
-                        background: giftPackaging ? 'var(--primary)' : 'rgba(200,163,77,0.12)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0, transition: 'all 0.2s ease'
+                        position: 'absolute', top: 3,
+                        left: giftPackaging ? 23 : 3,
+                        width: 18, height: 18, borderRadius: '50%',
+                        background: '#fff',
+                        transition: 'left 0.25s ease',
+                        boxShadow: '0 1px 4px rgba(0,0,0,0.25)'
+                      }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Gift message input — slides in when toggled on */}
+                {giftPackaging && (
+                  <div style={{ marginTop: 12 }}>
+                    <div className={styles.floatingLabelContainer} style={{ width: '100%' }}>
+                      <input
+                        type="text"
+                        placeholder=" "
+                        value={giftMessage}
+                        onChange={e => setGiftMessage(e.target.value)}
+                        className={styles.formInput}
+                        maxLength={250}
+                      />
+                      <label className={styles.formLabel}>Gift Message (optional, max 250 chars)</label>
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'right', marginTop: 4 }}>
+                      {giftMessage.length}/250
+                    </div>
+                  </div>
+                )}
+              </section>
+
+              {/* Payment Method Banner */}
+              <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
+                <h2 className={styles.sectionTitle}>
+                  <Lock size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
+                  Payment Method
+                </h2>
+
+                {/* Single Unified Razorpay Payment Card */}
+                <div
+                  style={{
+                    background: 'linear-gradient(135deg, #FFFDFB 0%, #FAF6F0 100%)',
+                    border: '2px solid #C8A34D',
+                    borderRadius: 14,
+                    padding: '20px',
+                    boxShadow: '0 8px 24px rgba(79, 78, 34, 0.06)',
+                    position: 'relative',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: '50%',
+                        background: 'rgba(200, 163, 77, 0.15)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '1px solid #C8A34D'
                       }}>
-                        <Gift size={22} color={giftPackaging ? '#fff' : 'var(--primary)'} />
+                        <ShieldCheck size={24} color="#4F4E22" />
                       </div>
                       <div>
-                        <p style={{ margin: 0, fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-main)' }}>
-                          Luxury Gift Packaging
-                        </p>
-                        <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                          Premium silk box wrap + handwritten message card
-                        </p>
+                        <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#4F4E22' }}>
+                          Razorpay Secure Checkout
+                        </h4>
+                        <span style={{ fontSize: '0.78rem', color: '#696738', fontWeight: 500 }}>
+                          100% Encrypted &amp; Instant Verification
+                        </span>
                       </div>
                     </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
-                      <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--primary)' }}>
-                        +{formatCurrency(GIFT_WRAP_PRICE)}
-                      </span>
-                      {/* Toggle switch */}
-                      <div style={{
-                        width: 44, height: 24, borderRadius: 12,
-                        background: giftPackaging ? 'var(--primary)' : 'var(--border-color)',
-                        position: 'relative', transition: 'background 0.25s ease'
-                      }}>
-                        <div style={{
-                          position: 'absolute', top: 3,
-                          left: giftPackaging ? 23 : 3,
-                          width: 18, height: 18, borderRadius: '50%',
-                          background: '#fff',
-                          transition: 'left 0.25s ease',
-                          boxShadow: '0 1px 4px rgba(0,0,0,0.25)'
-                        }} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Gift message input — slides in when toggled on */}
-                  {giftPackaging && (
-                    <div style={{ marginTop: 12 }}>
-                      <div className={styles.floatingLabelContainer} style={{ width: '100%' }}>
-                        <input
-                          type="text"
-                          placeholder=" "
-                          value={giftMessage}
-                          onChange={e => setGiftMessage(e.target.value)}
-                          className={styles.formInput}
-                          maxLength={250}
-                        />
-                        <label className={styles.formLabel}>Gift Message (optional, max 250 chars)</label>
-                      </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'right', marginTop: 4 }}>
-                        {giftMessage.length}/250
-                      </div>
-                    </div>
-                  )}
-                </section>
-              </>
-            ) : (
-              <>
-                {renderDetailsSummary()}
-
-                {/* Payment Method Selection */}
-                <section className={styles.sectionBlock} style={{ marginTop: '16px' }}>
-                  <h2 className={styles.sectionTitle}>
-                    <Lock size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
-                    Payment Method
-                  </h2>
-
-                  {/* Single Unified Razorpay Payment Card */}
-                  <div
-                    style={{
-                      background: 'linear-gradient(135deg, #FFFDFB 0%, #FAF6F0 100%)',
-                      border: '2px solid #C8A34D',
-                      borderRadius: 14,
-                      padding: '20px',
-                      boxShadow: '0 8px 24px rgba(79, 78, 34, 0.06)',
-                      position: 'relative',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 10 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div style={{
-                          width: 44,
-                          height: 44,
-                          borderRadius: '50%',
-                          background: 'rgba(200, 163, 77, 0.15)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          border: '1px solid #C8A34D'
-                        }}>
-                          <ShieldCheck size={24} color="#4F4E22" />
-                        </div>
-                        <div>
-                          <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#4F4E22' }}>
-                            Razorpay Secure Checkout
-                          </h4>
-                          <span style={{ fontSize: '0.78rem', color: '#696738', fontWeight: 500 }}>
-                            100% Encrypted &amp; Instant Verification
-                          </span>
-                        </div>
-                      </div>
-                      <span style={{
-                        padding: '4px 10px',
-                        background: 'rgba(34, 197, 94, 0.12)',
-                        color: '#16a34a',
-                        border: '1px solid #16a34a',
-                        borderRadius: 20,
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        letterSpacing: '0.05em',
-                        textTransform: 'uppercase'
-                      }}>
-                        ⚡ All Payment Modes Enabled
-                      </span>
-                    </div>
-
-                    <p style={{ margin: '0 0 14px 0', fontSize: '0.86rem', color: '#3B3B36', lineHeight: 1.6 }}>
-                      Pay via <strong>UPI (GPay, PhonePe, Paytm, BHIM)</strong>, <strong>Credit / Debit Cards (Visa, Mastercard, RuPay)</strong>, <strong>Net Banking (All Indian Banks)</strong>, or <strong>Wallets</strong>.
-                    </p>
-
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      padding: '10px 14px',
-                      background: '#FFFFFF',
-                      borderRadius: 8,
-                      border: '1px dashed rgba(200, 163, 77, 0.45)',
-                      fontSize: '0.78rem',
-                      color: '#696738'
+                    <span style={{
+                      padding: '4px 10px',
+                      background: 'rgba(34, 197, 94, 0.12)',
+                      color: '#16a34a',
+                      border: '1px solid #16a34a',
+                      borderRadius: 20,
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.05em',
+                      textTransform: 'uppercase'
                     }}>
-                      <Lock size={14} color="#C8A34D" style={{ flexShrink: 0 }} />
-                      <span>Protected by 256-bit SSL encryption. Razorpay gateway will open when you click <strong>Complete Order</strong>.</span>
-                    </div>
+                      ⚡ All Payment Modes Enabled
+                    </span>
                   </div>
-                </section>
-              </>
-            )}
 
-            {/* Heritage & Trust Badges in Left Column */}
-            {renderTrustAndGuarantee()}
-          </div>
+                  <p style={{ margin: '0 0 14px 0', fontSize: '0.86rem', color: '#3B3B36', lineHeight: 1.6 }}>
+                    Pay via <strong>UPI (GPay, PhonePe, Paytm, BHIM)</strong>, <strong>Credit / Debit Cards (Visa, Mastercard, RuPay)</strong>, <strong>Net Banking (All Indian Banks)</strong>, or <strong>Wallets</strong>.
+                  </p>
 
-          {/* Right Column */}
-          <div className={styles.rightColumn}>
-            {checkoutStep === 'checkout'
-              ? renderOrderSummaryCard('CONFIRM DETAILS', handleConfirmDetails, <ArrowRight size={16} />)
-              : renderOrderSummaryCard('COMPLETE ORDER', handleCompleteOrder, <Lock className={styles.checkoutIcon} size={18} />)
-            }
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '10px 14px',
+                    background: '#FFFFFF',
+                    borderRadius: 8,
+                    border: '1px dashed rgba(200, 163, 77, 0.45)',
+                    fontSize: '0.78rem',
+                    color: '#696738'
+                  }}>
+                    <Lock size={14} color="#C8A34D" style={{ flexShrink: 0 }} />
+                    <span>Protected by 256-bit SSL encryption. Razorpay gateway opens instantly on clicking <strong>Proceed to Pay</strong>.</span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Heritage & Trust Badges in Left Column */}
+              {renderTrustAndGuarantee()}
+            </div>
+
+            {/* Right Column */}
+            <div className={styles.rightColumn}>
+              {renderOrderSummaryCard(
+                isSubmitting ? 'PROCESSING PAYMENT...' : `PROCEED TO PAY ${formatCurrency(finalAmount)}`,
+                handleCompleteOrder,
+                <Lock className={styles.checkoutIcon} size={18} />
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -225,86 +225,86 @@ export default function Inventory() {
       {!modal.open ? (
         <>
           <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <h1 className="page-title">Inventory Management</h1>
-              <p className="page-subtitle">{totalCount} products tracked</p>
-            </div>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button
-                className="btn btn-outline"
-                onClick={() => handleExportCSV(false)}
-                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-              >
-                <Download size={16} /> Export All to CSV
-              </button>
-            </div>
-          </div>
+        <div>
+          <h1 className="page-title">Inventory Management</h1>
+          <p className="page-subtitle">{totalCount} products tracked</p>
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button 
+            className="btn btn-outline" 
+            onClick={() => handleExportCSV(false)}
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          >
+            <Download size={16} /> Export All to CSV
+          </button>
+        </div>
+      </div>
 
-          {/* Filters */}
-          <div className="filter-bar" style={{ marginBottom: 20 }}>
-            <div className="search-bar" style={{ flex: 1, maxWidth: 320 }}>
-              <Search size={16} />
-              <input
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <select className="form-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-              <option value="">All Categories</option>
-              {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
-            </select>
-          </div>
+      {/* Filters */}
+      <div className="filter-bar" style={{ marginBottom: 20 }}>
+        <div className="search-bar" style={{ flex: 1, maxWidth: 320 }}>
+          <Search size={16} />
+          <input
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <select className="form-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+          <option value="">All Categories</option>
+          {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
+        </select>
+      </div>
 
-          {/* Selected Action Bar */}
-          {selectedItems.length > 0 && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 10, background: 'var(--bg-secondary)',
-              padding: '8px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)',
-              marginBottom: 20
-            }}>
-              <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>
-                {selectedItems.length} selected
-              </span>
-              <button className="btn btn-sm btn-outline" onClick={() => handleExportCSV(true)}>
-                <Download size={14} /> Export Selected
-              </button>
-              <button className="btn btn-sm btn-outline" style={{ color: 'var(--warning)', borderColor: 'var(--warning)' }} onClick={() => handleBulkToggleActive(false)}>
-                <EyeOff size={14} /> Deactivate
-              </button>
-              <button className="btn btn-sm btn-outline" style={{ color: 'var(--success)', borderColor: 'var(--success)' }} onClick={() => handleBulkToggleActive(true)}>
-                <Eye size={14} /> Activate
-              </button>
-              <button className="btn btn-sm btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={handleBulkDelete}>
-                <Trash2 size={14} /> Delete Selected
-              </button>
-            </div>
-          )}
+      {/* Selected Action Bar */}
+      {selectedItems.length > 0 && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10, background: 'var(--bg-secondary)',
+          padding: '8px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--primary)',
+          marginBottom: 20
+        }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>
+            {selectedItems.length} selected
+          </span>
+          <button className="btn btn-sm btn-outline" onClick={() => handleExportCSV(true)}>
+            <Download size={14} /> Export Selected
+          </button>
+          <button className="btn btn-sm btn-outline" style={{ color: 'var(--warning)', borderColor: 'var(--warning)' }} onClick={() => handleBulkToggleActive(false)}>
+            <EyeOff size={14} /> Deactivate
+          </button>
+          <button className="btn btn-sm btn-outline" style={{ color: 'var(--success)', borderColor: 'var(--success)' }} onClick={() => handleBulkToggleActive(true)}>
+            <Eye size={14} /> Activate
+          </button>
+          <button className="btn btn-sm btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={handleBulkDelete}>
+            <Trash2 size={14} /> Delete Selected
+          </button>
+        </div>
+      )}
 
-          {/* Alert Cards */}
-          <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
-            <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'all' ? '1px solid var(--primary)' : undefined }} onClick={() => setFilter('all')}>
-              <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3B82F6' }}><PackageSearch size={20} /></div>
-              <div><div style={{ fontSize: '1.3rem', fontWeight: 700 }}>{totalCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Products</div></div>
-            </div>
-            <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'low' ? '1px solid var(--warning)' : undefined }} onClick={() => setFilter('low')}>
-              <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F59E0B' }}><AlertTriangle size={20} /></div>
-              <div><div style={{ fontSize: '1.3rem', fontWeight: 700, color: lowCount > 0 ? 'var(--warning)' : undefined }}>{lowCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Low Stock</div></div>
-            </div>
-            <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'out' ? '1px solid var(--danger)' : undefined }} onClick={() => setFilter('out')}>
-              <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#EF4444' }}><PackageX size={20} /></div>
-              <div><div style={{ fontSize: '1.3rem', fontWeight: 700, color: outCount > 0 ? 'var(--danger)' : undefined }}>{outCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Out of Stock</div></div>
-            </div>
-            <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'deactivated' ? '1px solid #6B7280' : undefined }} onClick={() => setFilter('deactivated')}>
-              <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(107,114,128,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}><EyeOff size={20} /></div>
-              <div><div style={{ fontSize: '1.3rem', fontWeight: 700, color: inactiveCount > 0 ? '#6B7280' : undefined }}>{inactiveCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Deactivated</div></div>
-            </div>
-          </div>
+      {/* Alert Cards */}
+      <div style={{ display: 'flex', gap: 16, marginBottom: 24 }}>
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'all' ? '1px solid var(--primary)' : undefined }} onClick={() => setFilter('all')}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3B82F6' }}><PackageSearch size={20} /></div>
+          <div><div style={{ fontSize: '1.3rem', fontWeight: 700 }}>{totalCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Products</div></div>
+        </div>
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'low' ? '1px solid var(--warning)' : undefined }} onClick={() => setFilter('low')}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(245,158,11,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F59E0B' }}><AlertTriangle size={20} /></div>
+          <div><div style={{ fontSize: '1.3rem', fontWeight: 700, color: lowCount > 0 ? 'var(--warning)' : undefined }}>{lowCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Low Stock</div></div>
+        </div>
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'out' ? '1px solid var(--danger)' : undefined }} onClick={() => setFilter('out')}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#EF4444' }}><PackageX size={20} /></div>
+          <div><div style={{ fontSize: '1.3rem', fontWeight: 700, color: outCount > 0 ? 'var(--danger)' : undefined }}>{outCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Out of Stock</div></div>
+        </div>
+        <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 14, padding: 18, cursor: 'pointer', border: filter === 'deactivated' ? '1px solid #6B7280' : undefined }} onClick={() => setFilter('deactivated')}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(107,114,128,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}><EyeOff size={20} /></div>
+          <div><div style={{ fontSize: '1.3rem', fontWeight: 700, color: inactiveCount > 0 ? '#6B7280' : undefined }}>{inactiveCount}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Deactivated</div></div>
+        </div>
+      </div>
 
-          {loading ? (
-            <div className="loader"><div className="spinner" /></div>
-          ) : (
-            <>
+      {loading ? (
+        <div className="loader"><div className="spinner" /></div>
+      ) : (
+        <>
               <div className="table-container">
                 <table className="data-table">
                   <thead>
@@ -558,6 +558,7 @@ export default function Inventory() {
                       type="file"
                       accept="image/*"
                       style={{ display: 'none' }}
+                      onClick={e => { e.stopPropagation(); e.target.value = null; }}
                       onChange={e => {
                         const file = e.target.files[0];
                         if (file) setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
@@ -595,7 +596,7 @@ export default function Inventory() {
                           <Plus size={24} style={{ opacity: 0.6 }} />
                         </div>
                       )}
-                      <input id="inventory-sec1-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                      <input id="inventory-sec1-upload" type="file" accept="image/*" style={{ display: 'none' }} onClick={e => { e.stopPropagation(); e.target.value = null; }} onChange={e => {
                         const file = e.target.files[0];
                         if (file) setForm(f => ({ ...f, sec1File: file, sec1Preview: URL.createObjectURL(file) }));
                       }} />
@@ -627,7 +628,7 @@ export default function Inventory() {
                           <Plus size={24} style={{ opacity: 0.6 }} />
                         </div>
                       )}
-                      <input id="inventory-sec2-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                      <input id="inventory-sec2-upload" type="file" accept="image/*" style={{ display: 'none' }} onClick={e => { e.stopPropagation(); e.target.value = null; }} onChange={e => {
                         const file = e.target.files[0];
                         if (file) setForm(f => ({ ...f, sec2File: file, sec2Preview: URL.createObjectURL(file) }));
                       }} />

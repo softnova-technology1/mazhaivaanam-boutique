@@ -7,7 +7,7 @@ export function OfferZoneModal({ popupConfig, onClose, onExplore }) {
     badgeText = 'LIMITED TIME OFFER',
     title = '',
     description = '',
-    bgImage = '/Images/limited.png',
+    bgImage = 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png',
     buttonText = 'EXPLORE OFFERS NOW',
   } = popupConfig;
 
@@ -52,10 +52,10 @@ export function OfferZoneModal({ popupConfig, onClose, onExplore }) {
           onClick={onExplore}
         >
           <img 
-            src={bgImage || '/Images/limited.png'} 
+            src={bgImage || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png'} 
             alt="Offer Banner" 
             className="w-full h-auto object-cover max-h-[65vh] transition-transform duration-500 group-hover:scale-[1.01]"
-            onError={(e) => { e.target.src = '/Images/limited.png'; }}
+            onError={(e) => { e.target.src = 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png'; }}
           />
         </div>
 

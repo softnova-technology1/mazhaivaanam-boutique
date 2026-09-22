@@ -6,13 +6,12 @@ import {
   Lock, 
   Eye, 
   EyeOff, 
-  Sparkles, 
   ShieldCheck, 
   ArrowRight,
-  CheckCircle2,
   X,
   Phone,
-  Info
+  Info,
+  Check
 } from 'lucide-react';
 import styles from './Login.module.css';
 
@@ -36,14 +35,12 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
     setIsRegistering(initialIsRegistering);
   }, [initialIsRegistering]);
 
-  // Strong password metrics
+  // Essential password metrics
   const passMinLength = password.length >= 8;
   const passHasUpper = /[A-Z]/.test(password);
-  const passHasLower = /[a-z]/.test(password);
   const passHasNumber = /\d/.test(password);
-  const passHasSpecial = /[@$!%*?&#^()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-  const isPasswordStrong = passMinLength && passHasUpper && passHasLower && passHasNumber && passHasSpecial;
-  const strengthScore = [passMinLength, passHasUpper, passHasLower, passHasNumber, passHasSpecial].filter(Boolean).length;
+  const isPasswordStrong = passMinLength && passHasUpper && passHasNumber;
+  const strengthScore = [passMinLength, passHasUpper, passHasNumber].filter(Boolean).length;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +64,7 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
         return;
       }
       if (!isPasswordStrong) {
-        setError('Please create a strong password that meets all 5 security requirements below.');
+        setError('Please create a password that meets the security requirements below.');
         return;
       }
     }
@@ -108,11 +105,6 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
           <X size={24} />
         </button>
         
-        {/* Luxury Top Badge */}
-        <div className={styles['brand-badge-pill']}>
-          <Sparkles size={13} className={styles['badge-sparkle-icon']} />
-          <span>MAZHAI VAANAM PATRON PORTAL</span>
-        </div>
 
         {/* Tab Toggle Switch */}
         <div className={styles['tab-switch-container']}>
@@ -281,61 +273,14 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
                 </span>
               ) : (
                 password.length > 0 && (
-                  <span style={{ fontSize: '10.5px', fontWeight: 700, color: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#e65100' : '#c62828' }}>
-                    {strengthScore === 5 ? '💪 Strong' : strengthScore >= 3 ? '⚠️ Medium' : '❌ Weak'}
+                  <span className={`${styles['req-badge']} ${strengthScore === 3 ? styles['badge-strong'] : strengthScore === 2 ? styles['badge-medium'] : styles['badge-weak']}`}>
+                    {strengthScore === 3 ? 'Strong' : strengthScore >= 2 ? 'Medium' : 'Weak'}
                   </span>
                 )
               )}
             </div>
 
             <div className={styles['password-input-wrapper']}>
-              {/* Floating Tooltip Requirements Popover (for Register mode) */}
-              {isRegistering && (isPasswordFocused || showPasswordTooltip) && (
-                <div className={styles['password-tooltip']}>
-                  {/* Strength Meter Bar */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                    <span style={{ fontSize: '0.72rem', letterSpacing: '0.5px', fontWeight: 700, textTransform: 'uppercase', color: '#555' }}>
-                      Password Requirements:
-                    </span>
-                    <span style={{
-                      fontSize: '0.72rem',
-                      fontWeight: 700,
-                      color: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#e65100' : '#c62828'
-                    }}>
-                      {strengthScore === 5 ? '💪 Strong Password' : strengthScore >= 3 ? '⚠️ Medium' : '❌ Weak'}
-                    </span>
-                  </div>
-
-                  <div style={{ width: '100%', height: '4px', background: '#e0e0e0', borderRadius: '2px', overflow: 'hidden', marginBottom: '8px' }}>
-                    <div style={{
-                      height: '100%',
-                      width: `${(strengthScore / 5) * 100}%`,
-                      background: strengthScore === 5 ? '#2e7d32' : strengthScore >= 3 ? '#f57c00' : '#d32f2f',
-                      transition: 'all 0.3s ease'
-                    }} />
-                  </div>
-
-                  {/* Requirements List */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontSize: '0.72rem' }}>
-                    <div style={{ color: passMinLength ? '#2e7d32' : '#666', fontWeight: passMinLength ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span>{passMinLength ? '✅' : '⚪'}</span> 8+ Characters
-                    </div>
-                    <div style={{ color: passHasUpper ? '#2e7d32' : '#666', fontWeight: passHasUpper ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span>{passHasUpper ? '✅' : '⚪'}</span> 1 Uppercase (A-Z)
-                    </div>
-                    <div style={{ color: passHasLower ? '#2e7d32' : '#666', fontWeight: passHasLower ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span>{passHasLower ? '✅' : '⚪'}</span> 1 Lowercase (a-z)
-                    </div>
-                    <div style={{ color: passHasNumber ? '#2e7d32' : '#666', fontWeight: passHasNumber ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span>{passHasNumber ? '✅' : '⚪'}</span> 1 Number (0-9)
-                    </div>
-                    <div style={{ color: passHasSpecial ? '#2e7d32' : '#666', fontWeight: passHasSpecial ? 600 : 400, display: 'flex', alignItems: 'center', gap: '4px', gridColumn: 'span 2' }}>
-                      <span>{passHasSpecial ? '✅' : '⚪'}</span> 1 Special Symbol (@$!%*?&#)
-                    </div>
-                  </div>
-                </div>
-              )}
-
               <div className={styles['input-with-icon']}>
                 <Lock size={16} className={styles['field-icon']} />
                 <input
@@ -352,6 +297,7 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
                 <button
                   type="button"
                   className={styles['password-toggle-btn']}
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => setShowPassword(!showPassword)}
                   tabIndex={-1}
                   aria-label={showPassword ? "Hide password" : "Show password"}
@@ -359,6 +305,61 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+
+              {/* Innovative Interactive Requirements Card */}
+              {isRegistering && (isPasswordFocused || showPasswordTooltip) && (
+                <div className={styles['password-requirements-card']}>
+                  <div className={styles['req-header']}>
+                    <div className={styles['req-title-wrap']}>
+                      <ShieldCheck size={14} color="#8C7A5B" />
+                      <span>Security Strength</span>
+                    </div>
+                    <span className={`${styles['req-badge']} ${strengthScore === 3 ? styles['badge-strong'] : strengthScore === 2 ? styles['badge-medium'] : styles['badge-weak']}`}>
+                      {strengthScore === 3 ? (
+                        <>
+                          <Check size={11} strokeWidth={3} />
+                          <span>Strong</span>
+                        </>
+                      ) : strengthScore === 2 ? (
+                        <span>Medium</span>
+                      ) : (
+                        <span>Weak</span>
+                      )}
+                    </span>
+                  </div>
+
+                  {/* 3-Segment Progress Bar */}
+                  <div className={styles['segments-track']}>
+                    <div className={`${styles['segment-bar']} ${strengthScore >= 1 ? (strengthScore === 3 ? styles['segment-active-strong'] : strengthScore === 2 ? styles['segment-active-medium'] : styles['segment-active-weak']) : ''}`} />
+                    <div className={`${styles['segment-bar']} ${strengthScore >= 2 ? (strengthScore === 3 ? styles['segment-active-strong'] : styles['segment-active-medium']) : ''}`} />
+                    <div className={`${styles['segment-bar']} ${strengthScore >= 3 ? styles['segment-active-strong'] : ''}`} />
+                  </div>
+
+                  {/* Interactive Modern Pill Badges */}
+                  <div className={styles['req-pills-row']}>
+                    <div className={`${styles['req-pill']} ${passMinLength ? styles['req-pill-active'] : ''}`}>
+                      <span className={styles['req-pill-icon']}>
+                        {passMinLength ? <Check size={11} strokeWidth={3} /> : <span className={styles['req-pill-dot']} />}
+                      </span>
+                      <span>8+ Characters</span>
+                    </div>
+
+                    <div className={`${styles['req-pill']} ${passHasNumber ? styles['req-pill-active'] : ''}`}>
+                      <span className={styles['req-pill-icon']}>
+                        {passHasNumber ? <Check size={11} strokeWidth={3} /> : <span className={styles['req-pill-dot']} />}
+                      </span>
+                      <span>1 Number (0-9)</span>
+                    </div>
+
+                    <div className={`${styles['req-pill']} ${passHasUpper ? styles['req-pill-active'] : ''}`}>
+                      <span className={styles['req-pill-icon']}>
+                        {passHasUpper ? <Check size={11} strokeWidth={3} /> : <span className={styles['req-pill-dot']} />}
+                      </span>
+                      <span>1 Uppercase (A-Z)</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -379,19 +380,6 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
           </button>
         </form>
 
-        {/* Benefits Checklist in Registration Mode */}
-        {isRegistering && (
-          <div className={styles['member-benefits-box']}>
-            <div className={styles['benefit-item']}>
-              <CheckCircle2 size={13} className={styles['benefit-check-icon']} />
-              <span>Earn 10% Silk Rewards on all pure zari orders</span>
-            </div>
-            <div className={styles['benefit-item']}>
-              <CheckCircle2 size={13} className={styles['benefit-check-icon']} />
-              <span>Early access to limited weaver drops & festive collections</span>
-            </div>
-          </div>
-        )}
 
         {/* Bottom Toggle Prompt */}
         <p className={styles['switch-prompt-text']}>

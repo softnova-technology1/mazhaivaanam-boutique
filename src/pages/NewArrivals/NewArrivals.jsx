@@ -284,7 +284,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
             <div className={styles['loom-card']}>
               <div className={styles['loom-image-box']}>
                 <img 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJfof75b7FWLZovQ32H3vMOrYEqmduqr3NDY0fMx0lXWYg7IucF6PspwjR6G9P-FDiO8q2kUiP48BgWgyLH9mXYo5ruiGqqj7QRLbmG7cD2JLZFvna_06BTftBZVi3m1jObQ64e0Y5KG_Tet40HwoOABnF9opZlKSFXyjoKRQ5x3teFeSZVFL-_6tRM8xb_W0b-cQ7q7QEja5Q0-ToGjtHuasitZeRsAdb-MhuIbdmE2anF5_KMc8c" 
+                  src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/new_arrivals_page/behind_loom1.jpg" 
                   alt="Organic Silk Dyeing" 
                 />
                 <span className={styles['step-badge']}>01</span>
@@ -302,7 +302,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
             <div className={styles['loom-card']}>
               <div className={styles['loom-image-box']}>
                 <img 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWUOv1rAI9-jZz8TOtAz62JmLOLpUA0_tvOImElbfSLA59yQbHk1Gwh_2FW_bVQspBFP8S3wDatOH0rkSCHxHCgcXroL_0rCw1b0R-yWE6EuzjOKg_qG5C1aZsgBOxI_btusUSsZebAH8_j4_YvDQgMQ7QJlggqdo780jkvMtUlf7hqe8GBACrwPq8jP2goM5nIuJsmm8z5fLqaECZZo4Y7epkKxMUbsrL_MSArJcxpNnGTQ_1GNmb" 
+                  src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/new_arrivals_page/behind_loom2_8k.png" 
                   alt="Fine Zari Work Drawing" 
                 />
                 <span className={styles['step-badge']}>02</span>
@@ -320,7 +320,7 @@ export const NewArrivals = ({ setCurrentTab, setSelectedProduct }) => {
             <div className={styles['loom-card']}>
               <div className={styles['loom-image-box']}>
                 <img 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-GlLDCXS6jcUfqmy5LK5Pk-Um-NqR5htyyvz2gOxO0IpV5NytJsB5ajbyjI1jt6Ql9d8VicfjBbYAX1Mu6wqNvK9g6QgdLbnC0-DAN4GhxZF2LrMoLjqeei6PKQCOABQEFfFQ6GOgLnXyt1BdthiBpLD3PBmaxZSZjTvaELbKmmP4tCNN46_8Lp2IxL-_UFKgLm363a0hBXB20hr4SgPaKwDRjU0yrYDYgHe7YtzKukfNeZA5_GC0" 
+                  src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/new_arrivals_page/behind_loom3_8k.png" 
                   alt="Wooden Handloom Weft Warp Coordination" 
                 />
                 <span className={styles['step-badge']}>03</span>

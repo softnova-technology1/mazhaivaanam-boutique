@@ -179,7 +179,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
             {/* Promo banner */}
             <div className={styles['promo-banner']} onClick={() => setCurrentTab && setCurrentTab('catalog')}>
-              <img src="/Images/saree1.png" alt="Premium Collections" />
+              <img src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/bestsellers_page/promo_banner.jpg" alt="Premium Collections" />
               <div className={styles['promo-overlay']}>
                 <span>PREMIUM WEAVES</span>
                 <p>Handloom Masterpieces</p>

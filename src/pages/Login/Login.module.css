@@ -16,7 +16,7 @@
   position: absolute;
   inset: 0;
   background-color: #FAF8F5;
-  background-image: url('/Images/login-pattern.png');
+  background-image: url('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/login_page/login-pattern.png');
   background-size: cover;
   background-position: center;
   filter: contrast(1.15) brightness(0.95); /* Makes the line-art subjects slightly darker and more distinct */
@@ -253,56 +253,152 @@
   color: var(--primary-dark, #4A4E2B);
 }
 
-/* Floating Tooltip Popover for Password Requirements */
+/* Innovative Luxury Card for Password Requirements */
 .password-input-wrapper {
   position: relative;
   width: 100%;
 }
 
-.password-tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
-  right: 0;
-  background: #ffffff;
-  border: 1px solid rgba(200, 163, 77, 0.45);
-  border-radius: 12px;
+.password-requirements-card {
+  margin-top: 10px;
+  width: 100%;
+  background: linear-gradient(145deg, #ffffff 0%, #faf8f5 100%);
+  border: 1px solid rgba(200, 163, 77, 0.28);
+  border-radius: 14px;
   padding: 12px 14px;
-  box-shadow: 0 10px 30px rgba(45, 41, 38, 0.16), 0 4px 12px rgba(200, 163, 77, 0.1);
-  z-index: 100;
+  box-shadow: 0 4px 18px rgba(45, 41, 38, 0.05), 0 1px 3px rgba(200, 163, 77, 0.08);
   text-align: left;
-  animation: tooltipSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: modernSlideDown 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.password-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 24px;
-  border-width: 6px;
-  border-style: solid;
-  border-color: #ffffff transparent transparent transparent;
-}
-
-.password-tooltip::before {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 23px;
-  border-width: 7px;
-  border-style: solid;
-  border-color: rgba(200, 163, 77, 0.45) transparent transparent transparent;
-}
-
-@keyframes tooltipSlideUp {
+@keyframes modernSlideDown {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.req-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.req-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-secondary, #55504A);
+  text-transform: uppercase;
+}
+
+.req-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.25s ease;
+}
+
+.badge-weak {
+  background: rgba(211, 47, 47, 0.08);
+  color: #c62828;
+}
+
+.badge-medium {
+  background: rgba(245, 124, 0, 0.1);
+  color: #e65100;
+}
+
+.badge-strong {
+  background: rgba(46, 125, 50, 0.1);
+  color: #2e7d32;
+}
+
+/* Modern 3-Segment Progress Bar */
+.segments-track {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.segment-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.segment-active-weak {
+  background: #d32f2f;
+}
+
+.segment-active-medium {
+  background: #f57c00;
+}
+
+.segment-active-strong {
+  background: #2e7d32;
+  box-shadow: 0 0 6px rgba(46, 125, 50, 0.35);
+}
+
+/* Interactive Modern Pill Badges */
+.req-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.req-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.71rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #f5f2ec;
+  border: 1px solid rgba(200, 163, 77, 0.18);
+  color: #7d756d;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.req-pill-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #bbb4a8;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.req-pill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.req-pill-active {
+  background: #eef7ee;
+  border-color: rgba(46, 125, 50, 0.38);
+  color: #27672b;
+  font-weight: 600;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(46, 125, 50, 0.09);
 }
 
 .info-trigger-btn {

@@ -363,89 +363,92 @@ export default function PreBooking() {
       {!modal.open ? (
         <>
           <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <h1 className="page-title">Pre-Booking Catalog</h1>
-              <p className="page-subtitle">{pagination.total || 0} preorder products in catalog</p>
-            </div>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button
-                className="btn btn-outline"
-                onClick={() => setImportModal({ open: true, file: null, parsedProducts: [], importing: false, error: '' })}
-                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-              >
-                <FileSpreadsheet size={16} /> Import Excel / CSV
-              </button>
-              <button
-                className="btn btn-outline"
-                onClick={() => handleExportCSV(false)}
-                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-              >
-                <Download size={16} /> Export to CSV
-              </button>
-              <button className="btn btn-primary" onClick={openCreate}>
-                <Plus size={18} /> Add Pre-Booking Product
-              </button>
-            </div>
-          </div>
+        <div>
+          <h1 className="page-title">Pre-Booking Catalog</h1>
+          <p className="page-subtitle">{pagination.total || 0} preorder products in catalog</p>
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            className="btn btn-outline"
+            onClick={() => setImportModal({ open: true, file: null, parsedProducts: [], importing: false, error: '' })}
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          >
+            <FileSpreadsheet size={16} /> Import Excel / CSV
+          </button>
+          <button
+            className="btn btn-outline"
+            onClick={() => handleExportCSV(false)}
+            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+          >
+            <Download size={16} /> Export to CSV
+          </button>
+          <button className="btn btn-primary" onClick={openCreate}>
+            <Plus size={18} /> Add Pre-Booking Product
+          </button>
+        </div>
+      </div>
 
-          {/* Filters and Bulk Action Bar */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-            <div className="filter-bar" style={{ margin: 0 }}>
-              <form onSubmit={handleSearch} className="search-bar" style={{ flex: 1, maxWidth: 300 }}>
-                <Search size={16} />
-                <input
-                  placeholder="Search preorders..."
-                  value={filters.search}
-                  onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
-                />
-              </form>
-              <select className="form-select" value={filters.category} onChange={(e) => setFilters(f => ({ ...f, category: e.target.value, page: 1 }))}>
-                <option value="">All Categories</option>
-                {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
-              </select>
-              <select className="form-select" value={filters.tag} onChange={(e) => setFilters(f => ({ ...f, tag: e.target.value, page: 1 }))}>
-                <option value="">All Tags</option>
-                <option value="BESTSELLER">Bestseller</option>
-                <option value="Fresh Pick">Fresh Pick</option>
-                <option value="Traditional Charm">Traditional Charm</option>
-                <option value="TRENDING">Trending</option>
-                <option value="Elegant Pick">Elegant Pick</option>
-                <option value="LIMITED EDITION">Limited Edition</option>
-                <option value="FESTIVAL CHOICE">Festival Choice</option>
-              </select>
-            </div>
+      {/* Filters and Bulk Action Bar */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+        <div className="filter-bar" style={{ margin: 0 }}>
+          <form onSubmit={handleSearch} className="search-bar" style={{ flex: 1, maxWidth: 300 }}>
+            <Search size={16} />
+            <input
+              placeholder="Search preorders..."
+              value={filters.search}
+              onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
+            />
+          </form>
+          <select className="form-select" value={filters.category} onChange={(e) => setFilters(f => ({ ...f, category: e.target.value, page: 1 }))}>
+            <option value="">All Categories</option>
+            {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
+          </select>
+          <select className="form-select" value={filters.tag} onChange={(e) => setFilters(f => ({ ...f, tag: e.target.value, page: 1 }))}>
+            <option value="">All Tags</option>
+            <option value="BESTSELLER">Bestseller</option>
+            <option value="Fresh Pick">Fresh Pick</option>
+                        <option value="Traditional Charm">Traditional Charm</option>
+                        <option value="TRENDING">Trending</option>
+                        <option value="Elegant Pick">Elegant Pick</option>
+            <option value="LIMITED EDITION">Limited Edition</option>
+            <option value="FESTIVAL CHOICE">Festival Choice</option>
+          </select>
+        </div>
 
-            {/* Selected Products Actions */}
-            {selectedProducts.length > 0 && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                background: 'var(--bg-secondary)',
-                padding: '8px 16px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--primary)'
-              }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>
-                  {selectedProducts.length} selected
-                </span>
-                <button
-                  className="btn btn-sm btn-outline"
-                  disabled={bulkLoading}
-                  onClick={handleBulkDelete}
-                  style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
-                >
-                  <Trash2 size={14} /> Delete Selected
-                </button>
-                <button
-                  className="btn btn-sm btn-outline"
-                  onClick={() => handleExportCSV(true)}
-                >
-                  <Download size={14} /> Export Selected
-                </button>
-              </div>
-            )}
+        {/* Selected Products Actions */}
+        {selectedProducts.length > 0 && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            background: 'var(--bg-secondary)',
+            padding: '8px 16px',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--primary)'
+          }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)' }}>
+              {selectedProducts.length} selected
+            </span>
+            <button
+              className="btn btn-sm btn-outline"
+              disabled={bulkLoading}
+              onClick={handleBulkDelete}
+              style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
+            >
+              <Trash2 size={14} /> Delete Selected
+            </button>
+            <button
+              className="btn btn-sm btn-outline"
+              onClick={() => handleExportCSV(true)}
+            >
+              <Download size={14} /> Export Selected
+            </button>
           </div>
+        )}
+      </div>
+
+      {/* Table */}
+
 
           {/* Table */}
           {loading ? (

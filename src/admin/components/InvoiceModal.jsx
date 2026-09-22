@@ -16,7 +16,7 @@ function InvoiceItemImage({ item }) {
         return raw;
       }
     }
-    return '/Images/saree12.png';
+    return 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree12.png';
   };
 
   const [imgSrc, setImgSrc] = useState(getSafeImage());
@@ -27,8 +27,8 @@ function InvoiceItemImage({ item }) {
       alt="" 
       style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 6, display: 'block', margin: '0 auto', border: '1px solid #cbd5e1', background: '#f8fafc' }}
       onError={() => {
-        if (imgSrc !== '/Images/saree12.png') {
-          setImgSrc('/Images/saree12.png');
+        if (imgSrc !== 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree12.png') {
+          setImgSrc('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree12.png');
         }
       }}
     />

@@ -63,6 +63,10 @@
   --shadow-md: 0 8px 24px rgba(79, 78, 34, 0.06);
   --shadow-lg: 0 16px 40px rgba(79, 78, 34, 0.08);
 
+  --error: #DC2626;            /* Vivid Red */
+  --success: #16a34a;          /* Green */
+  --danger: #DC2626;
+
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;

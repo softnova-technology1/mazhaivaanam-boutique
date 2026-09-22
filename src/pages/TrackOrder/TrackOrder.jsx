@@ -60,7 +60,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
         price: 65000,
         mrpPrice: 72800,
         quantity: 1,
-        image: "/Images/placeholder.svg"
+        image: "https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg"
       }
     ]
   };
@@ -519,7 +519,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                     {(activeOrder.items && activeOrder.items.length > 0 ? activeOrder.items : [activeOrder]).map((item, idx) => {
-                      const itemImg = item.image || item.images?.[0]?.url || (typeof item.images?.[0] === 'string' ? item.images[0] : null) || '/Images/saree12.png';
+                      const itemImg = item.image || item.images?.[0]?.url || (typeof item.images?.[0] === 'string' ? item.images[0] : null) || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree12.png';
                       const itemPrice = Number(item.price || 0);
                       const qty = item.quantity || 1;
 

@@ -29,7 +29,7 @@ export const WishlistProvider = ({ children }) => {
           const formatted = data.items.map(item => ({
             ...item.product,
             id: item.product._id || item.product.id,
-            image: (item.product.images && item.product.images.length > 0) ? item.product.images[0].url : (item.product.image || '/Images/placeholder.svg')
+            image: (item.product.images && item.product.images.length > 0) ? item.product.images[0].url : (item.product.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg')
           }));
           setWishlist(formatted);
         }

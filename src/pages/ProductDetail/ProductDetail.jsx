@@ -213,8 +213,8 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
     
     // Fallback to old structure
     const main = activeProduct.image;
-    const blueDetail = "/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg";
-    const goldDetail = "/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg";
+    const blueDetail = "https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg";
+    const goldDetail = "https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg";
 
     return [main, goldDetail, blueDetail];
   };

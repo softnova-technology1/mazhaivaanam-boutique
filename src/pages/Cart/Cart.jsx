@@ -28,10 +28,6 @@ export const Cart = ({ setCurrentTab }) => {
   const carouselRef = useRef(null);
 
   // Local interactive states
-  const [couponCode, setCouponCode] = useState('');
-  const [couponApplied, setCouponApplied] = useState(false);
-  const [couponError, setCouponError] = useState('');
-  const [giftPackaging, setGiftPackaging] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
   const triggerToast = (msg) => {
@@ -45,26 +41,6 @@ export const Cart = ({ setCurrentTab }) => {
     
     removeFromCart(item.id);
     triggerToast(`Moved "${item.name}" to Wishlist.`);
-  };
-
-  // Handlers for Coupon Code
-  const handleApplyCoupon = () => {
-    if (couponCode.toUpperCase().trim() === 'FESTIVAL1000') {
-      setCouponApplied(true);
-      setCouponError('');
-      triggerToast('Coupon FESTIVAL1000 applied! Saved ₹1,000.');
-    } else if (!couponCode.trim()) {
-      setCouponError('Please enter a coupon code.');
-    } else {
-      setCouponError('Invalid code. Try FESTIVAL1000');
-    }
-  };
-
-  const handleRemoveCoupon = () => {
-    setCouponApplied(false);
-    setCouponCode('');
-    setCouponError('');
-    triggerToast('Coupon removed.');
   };
 
   // Carousel Scrolling
@@ -137,14 +113,10 @@ export const Cart = ({ setCurrentTab }) => {
   // Dynamic calculations
   const mrpTotal = cart.reduce((sum, item) => sum + (item.mrpPrice || item.oldPrice || item.price) * item.quantity, 0);
   const subtotal = cartTotal;
-  const exclusivePricingSavings = mrpTotal - subtotal;
-  const festivalPct = 0; // festival discount removed
-  const festivalDiscountLabel = '';
-  const festivalDiscount = 0;
-  const couponDiscount = couponApplied ? 1000 : 0;
-  const totalSavings = exclusivePricingSavings + couponDiscount;
-  const shippingFee = cart.length > 0 ? 100 : 0;
-  const finalAmount = Math.max(0, mrpTotal - totalSavings) + (cart.length > 0 ? 2 : 0) + shippingFee;
+  const exclusivePricingSavings = Math.max(0, mrpTotal - subtotal);
+  const totalSavings = exclusivePricingSavings;
+  const convenienceFee = cart.length > 0 ? (storeConfig?.convenienceFee !== undefined && storeConfig?.convenienceFee !== null ? Number(storeConfig?.convenienceFee) : 2) : 0;
+  const finalAmount = Math.max(0, mrpTotal - totalSavings) + convenienceFee;
 
   const handleCheckout = () => {
     if (isAuthenticated) {
@@ -282,33 +254,6 @@ export const Cart = ({ setCurrentTab }) => {
               <div className={styles.summaryCard}>
                 <h3 className={styles.summaryTitle}>Order Summary</h3>
 
-                {/* Coupon Code Block */}
-                <div className={styles.couponBlock}>
-                  <label className={styles.couponLabel}>Apply Coupon Code</label>
-                  {couponApplied ? (
-                    <div className={styles.couponAppliedBadge}>
-                      <span>FESTIVAL1000 (-₹1,000)</span>
-                      <button onClick={handleRemoveCoupon} className={styles.removeCouponLink}>
-                        Remove
-                      </button>
-                    </div>
-                  ) : (
-                    <div className={styles.couponInputWrapper}>
-                      <input 
-                        type="text" 
-                        placeholder="FESTIVAL1000" 
-                        value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value)}
-                        className={styles.couponInput}
-                      />
-                      <button onClick={handleApplyCoupon} className={styles.couponBtn}>
-                        Apply
-                      </button>
-                    </div>
-                  )}
-                  {couponError && <p className={styles.couponError}>{couponError}</p>}
-                </div>
-
                 {/* Price Breakdown */}
                 <div className={styles.priceBreakdown}>
                   {mrpTotal > subtotal && (
@@ -321,26 +266,14 @@ export const Cart = ({ setCurrentTab }) => {
                     <span>{mrpTotal > subtotal ? 'Exclusive Pricing' : 'Subtotal'}</span>
                     <span className={styles.priceValue}>{formatCurrency(subtotal)}</span>
                   </div>
-                  {festivalDiscount > 0 && (
-                  <div className={styles.discountRow}>
-                    <span>{festivalDiscountLabel}</span>
-                    <span className={styles.discountValue}>-{formatCurrency(festivalDiscount)}</span>
-                  </div>
-                  )}
                   <div className={styles.priceRow}>
                     <span>Convenient Fees</span>
-                    <span className={styles.priceValue}>₹2</span>
+                    <span className={styles.priceValue}>{formatCurrency(convenienceFee)}</span>
                   </div>
-                  {couponApplied && (
-                    <div className={styles.discountRow}>
-                      <span>Coupon Discount</span>
-                      <span className={styles.discountValue}>-₹1,000</span>
-                    </div>
-                  )}
                   <div className={styles.priceRow}>
-                    <span>Shipping</span>
-                    <span className={styles.priceValue}>
-                      {formatCurrency(shippingFee)}
+                    <span>Shipping & Delivery</span>
+                    <span className={styles.priceValue} style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '0.8rem' }}>
+                      Enter address to calculate
                     </span>
                   </div>
                 </div>

@@ -88,7 +88,7 @@ export const MyOrders = ({ setCurrentTab }) => {
         mrpPrice: i.mrpPrice,
         oldPrice: i.oldPrice,
         fabric: i.fabric || 'Pure Silk',
-        image: i.image || '/Images/placeholder.svg',
+        image: i.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg',
         quantity: i.quantity || 1,
       }));
 
@@ -285,7 +285,7 @@ export const MyOrders = ({ setCurrentTab }) => {
                       {/* Saree Thumbnail Image */}
                       <div className={styles.productThumbBox}>
                         <img 
-                          src={order.items[0]?.image || '/Images/placeholder.svg'} 
+                          src={order.items[0]?.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg'} 
                           alt={order.items[0]?.name || 'Saree thumbnail'} 
                           className={styles.productThumbImage}
                         />

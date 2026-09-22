@@ -57,7 +57,7 @@ function TimedProductCard({ product, onView, onBuy, isCarousel, hideTag = false 
   const endDate = product.limitedOfferEntry?.endDate;
   const isExpired = endDate ? new Date(endDate) < now : false;
 
-  const img = product.images?.[0]?.url || '/Images/saree1.png';
+  const img = product.images?.[0]?.url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png';
   const price = Number(product.price || 0);
   const mrp = Number(product.mrpPrice || 0);
   const discountPct = (mrp > price && price > 0) ? Math.round(((mrp - price) / mrp) * 100) : 0;
@@ -178,7 +178,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
       title: 'Exclusive Offers,',
       titleItalic: 'Limited Time',
       subtitle: 'Enjoy special prices on selected sarees for a limited period. Elevate your wardrobe with premium collections while these exclusive offers last.',
-      bgImage: '/Images/limited.png',
+      bgImage: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png',
       primaryCtaText: 'EXPLORE COLLECTION',
       secondaryCtaText: 'OUR HERITAGE',
     },
@@ -193,16 +193,16 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
       heading: 'The Heritage Gift',
       subHeading: 'Buy 2 Sarees, Get 1 Free',
       description: 'Embrace the timeless tradition of gifting. Choose from our exquisite hand-woven silk collections and receive a complimentary heritage piece as a symbol of our festive gratitude.',
-      image: '/Images/heritage.png',
+      image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/heritage.png',
       ctaText: 'Explore Collection',
     },
     curationOfJoySection: {
       badgeText: 'Curation of Joy',
       heading: 'Bespoke Offer Tiers',
       cards: [
-        { title: 'Diwali Offers', discountBadge: 'UP TO 40%', image: '/Images/diwali.png', linkTab: 'catalog' },
-        { title: 'Bridal Offers', discountBadge: '20% OFF', image: '/Images/bridal.png', linkTab: 'catalog' },
-        { title: 'Combo Set', discountBadge: 'SAVE 5K', image: '/Images/wedding.png', linkTab: 'catalog' },
+        { title: 'Diwali Offers', discountBadge: 'UP TO 40%', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/diwali.png', linkTab: 'catalog' },
+        { title: 'Bridal Offers', discountBadge: '20% OFF', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/bridal.png', linkTab: 'catalog' },
+        { title: 'Combo Set', discountBadge: 'SAVE 5K', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/wedding.png', linkTab: 'catalog' },
       ],
     },
     spinningWheelSection: {
@@ -519,7 +519,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
         <section 
           className="relative min-h-[480px] md:min-h-[600px] md:h-[600px] py-12 md:py-0 flex flex-col items-center justify-center text-center px-4 overflow-hidden"
           style={{ 
-            backgroundImage: `url('${config.heroSection.bgImage || '/Images/limited.png'}')`,
+            backgroundImage: `url('${config.heroSection.bgImage || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png'}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             boxShadow: '0 15px 40px rgba(0, 0, 0, 0.6)'
@@ -608,7 +608,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                 alt="Featured Duo" 
-                src={config.featuredDuoSection.image || '/Images/heritage.png'}
+                src={config.featuredDuoSection.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/heritage.png'}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
             </div>
@@ -739,7 +739,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
         {/* Offer Categories (Bento Grid) */}
         <section 
           className="relative pt-8 md:pt-16 pb-6 md:pb-16 px-3 sm:px-6 md:px-margin-desktop text-white bg-fixed bg-center bg-cover"
-          style={{ backgroundImage: "url('/Images/offer.png')" }}
+          style={{ backgroundImage: "url('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/offer.png')" }}
         >
           <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]"></div>
           
@@ -763,7 +763,7 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
                   <img 
                     className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                     alt={card.title} 
-                    src={card.image || '/Images/diwali.png'}
+                    src={card.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/diwali.png'}
                   />
                   <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
                   

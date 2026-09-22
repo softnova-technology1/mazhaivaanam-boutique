@@ -39,7 +39,7 @@ export const CartProvider = ({ children }) => {
               mrpPrice: prod.mrpPrice,    // original MRP for strikethrough
               image: (prod.images && prod.images.length > 0)
                 ? prod.images[0].url
-                : (prod.image || '/Images/placeholder.svg'),
+                : (prod.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg'),
               quantity: item.quantity,
             };
           });

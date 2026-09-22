@@ -196,7 +196,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
 
             {/* Logo perfectly centered */}
             <div className={styles.centerLogo} onClick={() => handleTabChange('shop')}>
-              <img src="/logo.png" alt="logo" className={styles.brandLogoIcon} />
+              <img src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/logo/logo.png" alt="logo" className={styles.brandLogoIcon} />
               <div className={styles.brandTextGroup}>
                 <h1 className={styles.brandTitle}>
                   MAZHAI VAANAM

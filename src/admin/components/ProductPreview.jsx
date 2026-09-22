@@ -22,9 +22,9 @@ export const ProductPreview = ({ form }) => {
     price: Number(form.price) || 0,
     mrpPrice: Number(form.mrpPrice) || 0,
     oldPrice: Number(form.mrpPrice) || 0, // Frontend uses oldPrice
-    image: form.imagePreview || form.imageUrl || '/Images/placeholder.svg',
+    image: form.imagePreview || form.imageUrl || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg',
     images: [
-      { url: form.imagePreview || form.imageUrl || '/Images/placeholder.svg' },
+      { url: form.imagePreview || form.imageUrl || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg' },
       { url: form.sec1Preview || '' },
       { url: form.sec2Preview || '' }
     ].filter(img => img.url),

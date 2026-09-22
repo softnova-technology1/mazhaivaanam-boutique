@@ -31,7 +31,7 @@ const ImageUploaderInput = ({ label, value, onChange }) => {
           type="text"
           className="form-input"
           value={value || ''}
-          placeholder="/Images/... or http://..."
+          placeholder="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/... or http://..."
           onChange={e => onChange(e.target.value)}
           style={{ flex: 1 }}
         />
@@ -344,7 +344,7 @@ export default function LimitedOfferAdmin() {
       title: 'Exclusive Offers,',
       titleItalic: 'Limited Time',
       subtitle: 'Enjoy special prices on selected sarees for a limited period. Elevate your wardrobe with premium collections while these exclusive offers last.',
-      bgImage: '/Images/limited.png',
+      bgImage: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png',
       primaryCtaText: 'EXPLORE COLLECTION',
       secondaryCtaText: 'OUR HERITAGE',
     },
@@ -359,7 +359,7 @@ export default function LimitedOfferAdmin() {
       heading: 'The Heritage Gift',
       subHeading: 'Buy 2 Sarees, Get 1 Free',
       description: 'Embrace the timeless tradition of gifting. Choose from our exquisite hand-woven silk collections and receive a complimentary heritage piece as a symbol of our festive gratitude.',
-      image: '/Images/heritage.png',
+      image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/heritage.png',
       ctaText: 'Explore Collection',
     },
     offerProductsSection: {
@@ -375,9 +375,9 @@ export default function LimitedOfferAdmin() {
       badgeText: 'Curation of Joy',
       heading: 'Bespoke Offer Tiers',
       cards: [
-        { title: 'Diwali Offers', discountBadge: 'UP TO 40%', image: '/Images/diwali.png', linkTab: 'catalog' },
-        { title: 'Bridal Offers', discountBadge: '20% OFF', image: '/Images/bridal.png', linkTab: 'catalog' },
-        { title: 'Combo Set', discountBadge: 'SAVE 5K', image: '/Images/wedding.png', linkTab: 'catalog' },
+        { title: 'Diwali Offers', discountBadge: 'UP TO 40%', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/diwali.png', linkTab: 'catalog' },
+        { title: 'Bridal Offers', discountBadge: '20% OFF', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/bridal.png', linkTab: 'catalog' },
+        { title: 'Combo Set', discountBadge: 'SAVE 5K', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/wedding.png', linkTab: 'catalog' },
       ],
     },
     spinningWheelSection: {
@@ -403,7 +403,7 @@ export default function LimitedOfferAdmin() {
       badgeText: 'LIMITED TIME OFFER',
       title: 'Exclusive Festival Vault Unlocked!',
       description: 'Explore handpicked royal silk sarees, artisan blouses, and limited-time festive deals.',
-      bgImage: '/Images/limited.png',
+      bgImage: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png',
       buttonText: 'EXPLORE OFFERS NOW',
     },
   });
@@ -1481,7 +1481,7 @@ export default function LimitedOfferAdmin() {
 
             <ImageUploaderInput
               label="Popup Card Background Image"
-              value={config.offerZonePopup?.bgImage || '/Images/limited.png'}
+              value={config.offerZonePopup?.bgImage || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png'}
               onChange={url => setConfig({ ...config, offerZonePopup: { ...(config.offerZonePopup || {}), bgImage: url } })}
             />
             <span style={{ fontSize: '0.78rem', color: '#d97706', fontWeight: 600, marginTop: -8, marginBottom: 16, display: 'block' }}>
@@ -1737,7 +1737,7 @@ export default function LimitedOfferAdmin() {
                                 {product ? (
                                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
                                     <img
-                                      src={product.images?.[0]?.url || '/Images/saree1.png'}
+                                      src={product.images?.[0]?.url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png'}
                                       alt={product.name}
                                       style={{ width: 38, height: 50, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border-color)' }}
                                     />
@@ -2009,7 +2009,7 @@ export default function LimitedOfferAdmin() {
                                 onChange={() => { }}
                                 style={{ width: 18, height: 18, accentColor: 'var(--primary)' }}
                               />
-                              <img src={p.images?.[0]?.url || '/Images/saree1.png'} alt={p.name} style={{ width: 44, height: 58, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+                              <img src={p.images?.[0]?.url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png'} alt={p.name} style={{ width: 44, height: 58, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontWeight: 700, fontSize: '0.84rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', color: '#2d3326' }}>{p.name}</div>
                                 <div style={{ fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 700, marginTop: 2 }}>₹{p.price?.toLocaleString('en-IN')}</div>

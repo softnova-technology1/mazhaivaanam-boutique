@@ -356,7 +356,7 @@ export default function Inventory() {
                         <div style={{ width: 38, height: 38, borderRadius: 6, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
                           {(() => {
                             const rawUrl = inv.product?.images?.[0]?.url;
-                            const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/placeholder.svg';
+                            const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
                             return (
                               <img 
                                 src={safeUrl} 
@@ -364,7 +364,7 @@ export default function Inventory() {
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                                 onError={(e) => {
                                   e.target.onerror = null;
-                                  e.target.src = '/Images/placeholder.svg';
+                                  e.target.src = 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
                                 }}
                               />
                             );

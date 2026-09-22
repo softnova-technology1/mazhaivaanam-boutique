@@ -130,7 +130,7 @@ function AppContent() {
       badgeText: 'LIMITED TIME OFFER',
       title: 'Exclusive Festival Vault Unlocked!',
       description: 'Explore handpicked royal silk sarees, artisan blouses, and limited-time festive deals.',
-      bgImage: '/Images/limited.png',
+      bgImage: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png',
       buttonText: 'EXPLORE OFFERS NOW',
     };
 
@@ -335,7 +335,7 @@ function AppContent() {
               }}></i>
             ))}
           </div>
-          <img src="/logo.png" alt="Loading..." className="loader-logo" />
+          <img src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/logo/logo.png" alt="Loading..." className="loader-logo" />
         </div>
       )}
       <Navbar

@@ -64,7 +64,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
   };
 
   
-  const displayImage = (typeof image === 'string' && image.trim() !== '') ? image : '/Images/placeholder.svg';
+  const displayImage = (typeof image === 'string' && image.trim() !== '') ? image : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
 
   const fallbackTag = product.discountLabel || product.discount?.label || (isNew ? 'Fresh Pick' : (isLimited ? 'LIMITED EDITION' : tag));
   const endDate = product.discountEndDate || product.discount?.endDate || product.limitedOfferEntry?.endDate;
@@ -78,7 +78,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
           loading="lazy" 
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = '/Images/placeholder.svg';
+            e.target.src = 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
           }}
         />
 

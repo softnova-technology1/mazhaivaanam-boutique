@@ -401,7 +401,7 @@ export const Contact = ({ setCurrentTab }) => {
             <div className={styles.locationDetailCard}>
               <div className={styles.locationImageBox}>
                 <img
-                  src="/Images/contact1.png"
+                  src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/contact_page/contact1.png"
                   alt={`${storeConfig?.storeName || 'Mazhai Vaanam'} Boutique Storefront`}
                 />
               </div>
@@ -412,7 +412,7 @@ export const Contact = ({ setCurrentTab }) => {
                   <p className={styles.locationHoursLabel}>Hours</p>
                   <p className={styles.locationHoursValue}>Mon - Sat: 10 AM - 8 PM<br />Sun: Closed</p>
                 </div>
-                <button onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent((storeConfig?.storeName || 'Mazhai Vaanam') + ', ' + (storeConfig?.address || 'ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804'))}`, "_blank")} className={styles.locationActionBtn}>
+                <button onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent('ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804')}`, "_blank")} className={styles.locationActionBtn}>
                   GET DIRECTIONS
                 </button>
               </div>
@@ -422,7 +422,7 @@ export const Contact = ({ setCurrentTab }) => {
             <div className={styles.mapCard}>
               <div className={styles.mapFrameWrapper} style={{ height: '100%', display: 'flex' }}>
                 <iframe
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent((storeConfig?.storeName || 'Mazhai Vaanam') + ', ' + (storeConfig?.address || 'ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804'))}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent('ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu, India 614804')}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
                   width="100%"
                   style={{ border: 0, minHeight: '400px', borderRadius: '4px', flexGrow: 1 }}
                   allowFullScreen=""

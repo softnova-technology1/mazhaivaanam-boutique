@@ -152,12 +152,12 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
   // Image & Quantity Helpers
   const getImageUrl = (item) => {
-    if (!item) return '/Images/placeholder.svg';
+    if (!item) return 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
     let url = item.image;
     if (!url || typeof url !== 'string' || url.startsWith('blob:')) {
-      url = item.images?.[0]?.url || '/Images/placeholder.svg';
+      url = item.images?.[0]?.url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
     }
-    return url || '/Images/placeholder.svg';
+    return url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
   };
 
   const handleQuantityChange = (item, delta) => {
@@ -432,7 +432,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
           img = item.images?.[0]?.url || (typeof item.images?.[0] === 'string' ? item.images[0] : null);
         }
         if (!img || typeof img !== 'string' || img.startsWith('blob:') || img.includes('placeholder')) {
-          img = '/Images/saree12.png';
+          img = 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree12.png';
         }
         return { ...item, image: img };
       }),
@@ -653,7 +653,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
                 alt={item.name}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = '/Images/placeholder.svg';
+                  e.currentTarget.src = 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
                 }}
               />
             </div>

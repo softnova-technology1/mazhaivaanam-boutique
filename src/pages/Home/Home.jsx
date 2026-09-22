@@ -115,19 +115,19 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
 
   const slides = useMemo(() => [
     {
-      image: "/Images/saree4.png",
+      image: "https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/saree4.png",
       tag: "Wear Confidence",
       title: "Fashion Rooted in Tradition.",
       desc: "Your Style, Your Story."
     },
     {
-      image: "/Images/saree3.png",
+      image: "https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/saree3.png",
       tag: "Where Beauty Meets Tradition.",
       title: "Celebrate Every Moment with Elegance.",
       desc: "From Our Collection to Your Celebration."
     },
     {
-      image: "/Images/saree5.png",
+      image: "https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/saree5.png",
       tag: "Mazhai Vaanam",
       title: "Grace Begins with Mazhai Vaanam.",
       desc: "Discover handcrafted luxury sarees designed for life's most precious celebrations."
@@ -241,7 +241,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           {/* Card 1: Everyday Elegance */}
           <div onClick={() => handleCategoryClick('Everyday Elegance')} className="relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[350px]">
             <img 
-              src="/Images/cotton3.png" 
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/cotton3.png" 
               alt="Everyday Elegance" 
               className="absolute inset-0 w-full h-full object-cover group-hover:blur-[2px] group-hover:scale-105 transition-all duration-700 ease-in-out"
             />
@@ -263,7 +263,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           {/* Card 2: Festive Glow */}
           <div onClick={() => handleCategoryClick('Festive Glow')} className="relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[350px]">
             <img 
-              src="/Images/silk1.png" 
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/silk1.png" 
               alt="Festive Glow" 
               className="absolute inset-0 w-full h-full object-cover group-hover:blur-[2px] group-hover:scale-105 transition-all duration-700 ease-in-out"
             />
@@ -285,7 +285,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           {/* Card 3: Style Studio */}
           <div onClick={() => handleCategoryClick('Style Studio')} className="relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[350px]">
             <img 
-              src="/Images/fancy1.png" 
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/fancy1.png" 
               alt="Style Studio" 
               className="absolute inset-0 w-full h-full object-cover group-hover:blur-[2px] group-hover:scale-105 transition-all duration-700 ease-in-out"
             />
@@ -307,7 +307,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           {/* Card 4: Black Magic */}
           <div onClick={() => handleCategoryClick('Black Magic')} className="relative group overflow-hidden rounded-sm shadow-xl cursor-pointer outline outline-1 outline-[#D4AF37]/60 outline-offset-[-10px] flex min-h-[350px]">
             <img 
-              src="/Images/black1.png" 
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/black1.png" 
               alt="Black Magic" 
               className="absolute inset-0 w-full h-full object-cover group-hover:blur-[2px] group-hover:scale-105 transition-all duration-700 ease-in-out"
             />
@@ -359,7 +359,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
       {/* 5. The Bridal Edit */}
       <section 
         className={styles['bridal-edit-section']}
-        style={{ backgroundImage: `url('/Images/saree2.png')` }}
+        style={{ backgroundImage: `url('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/saree2.png')` }}
       >
         <div className={styles['bridal-overlay']}></div>
         <div className={styles['bridal-text-pane']}>
@@ -441,7 +441,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           {/* Card 2: Image (Spans 2 cols, 2 rows) */}
           <div className={`${styles['social-img-card']} ${styles['bento-col-2']} ${styles['bento-row-2']}`}>
             <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9J_Q7jOWawajmiqySs-_LfCpGRtiFFoUpmqQQo7c561Iwdz08UwJ-4ppCiBCt7uwZc5TR5Wmu1uUegKCMeJcA2mwKhGi3suCNgjjdJJNQMHlgo74O1ApnWH0uIZfuS7SQl2vJSet5RV57sbCzr2fOKI2EaOQURbOETeI2_cUkJsXebCgDSanEaGhQ9KYiT5cf1AvahdPU1T77J0OM4Fcmq7H8JMMFNda_0VWh_Z6oFBnrFI0mLUZ_" 
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/testimonial1.jpg" 
               alt="Woman in garden" 
             />
             <div className={styles['social-img-caption']}>
@@ -453,7 +453,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           {/* Card 3: Image (1 col, 1 row) */}
           <div className={styles['social-img-card']}>
             <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS5dUlDrXgcLXeAfrtbm6bpkLMa2De10OTD3E3O0UkWLKvxvyu5fgIfEjC_3LlMUUIAlLm1WLAsLNJoWy4B8JQ7bREVnsTsSyuxGgDEkVFVIBn4_vtUYVpafMFpJ-90CcAGpWpDXIc09AII3rZ-rmBvJxPTzqF3PI-abBrLpmFyI9uXrtbohocYODzHv9a43pHQmYLapQ8XbjBa1SL7XgkVVR3z8xt_4fH535evmyXhoNglxq5OHuw" 
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/testimonial2.jpg" 
               alt="Bride hands touching saree" 
             />
             <div className={styles['social-img-caption']}>
@@ -465,7 +465,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           {/* Card 5: Image (1 col, 1 row) */}
           <div className={styles['social-img-card']}>
             <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYuFjAXKyW_0p4At-q11yX2qN1DLHsS-4VZyF7WXFWipfqs_q3-ftdMhmOHQGUA-2G52g_AWD_21kSRTW9raBfQUjGPsb8vxE8uTK-D6sq8z2IUj-RTHeoShoKhtXWuTs661ynsWHOIFJ9-m862hzskYxRcPQ3PILDgSxbFD7Ll34R4JaR711wOMrT7-gJHQDP55nrlWkUBHEAO2-pMR7QaRDBkQY2RZgJCM0tzrYtpJg3Nu2_2EvA" 
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/home_page/testimonial3.jpg" 
               alt="Folded Silk Sarees" 
             />
             <div className={styles['social-img-caption']}>

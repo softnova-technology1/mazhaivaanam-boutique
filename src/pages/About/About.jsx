@@ -103,7 +103,7 @@ export const About = ({ setCurrentTab }) => {
           <div className={styles.storyImageContainer}>
             <div className={styles.storyImgBorderFrame}></div>
             <img
-              src="/Images/contact1.png"
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/about_page/contact1.png"
               alt="Rich silk handloom weaving with silk cocoons, gold zari thread, and folded sarees"
               className={styles.storyMainImg}
             />
@@ -144,7 +144,7 @@ export const About = ({ setCurrentTab }) => {
           <div className={styles.principleCard}>
             <div className={styles.principleImgFrame}>
               <img
-                src="/Images/silk.jpg"
+                src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/about_page/silk.jpg"
                 alt="Premium Silk Saree"
               />
             </div>
@@ -156,7 +156,7 @@ export const About = ({ setCurrentTab }) => {
           <div className={`${styles.principleCard} ${styles.pushedCard}`}>
             <div className={styles.principleImgFrame}>
               <img
-                src="/Images/cotton3.jpg"
+                src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/about_page/cotton3.jpg"
                 alt="Cotton Saree"
               />
             </div>
@@ -168,7 +168,7 @@ export const About = ({ setCurrentTab }) => {
           <div className={styles.principleCard}>
             <div className={styles.principleImgFrame}>
               <img
-                src="/Images/fancy.jpg"
+                src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/about_page/fancy.jpg"
                 alt="Festival Saree Collection"
               />
             </div>
@@ -180,7 +180,7 @@ export const About = ({ setCurrentTab }) => {
           <div className={`${styles.principleCard} ${styles.pushedCard}`}>
             <div className={styles.principleImgFrame}>
               <img
-                src="/Images/black.jpg"
+                src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/about_page/black.jpg"
                 alt="Black Love Saree Collection"
               />
             </div>
@@ -285,7 +285,7 @@ export const About = ({ setCurrentTab }) => {
         <div className={styles.founderLayoutGrid}>
           <div className={styles.founderImageBox}>
             <img
-              src="/Images/sareemodel.png"
+              src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/about_page/sareemodel.png"
               alt="Royal silk saree drape showcasing rich handloom zari art"
               className={styles.founderPortraitImg}
             />

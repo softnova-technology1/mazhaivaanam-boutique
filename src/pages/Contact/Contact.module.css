@@ -60,7 +60,7 @@
 .heroBackgroundImage {
   position: absolute;
   inset: 0;
-  background-image: url('/Images/saree13.png');
+  background-image: url('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/contact_page/saree13.png');
   background-size: cover;
   background-position: center;
   transform: scale(1.03);

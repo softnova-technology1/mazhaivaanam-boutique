@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useWishlist } from '../../hooks/useWishlist';
 import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ShoppingBag, ArrowRight, Check, ShieldCheck, Gift, Truck, Play, Minimize, Maximize, Home, ChevronRight, ChevronLeft, Share2 } from 'lucide-react';
-import { getProducts, reviewAPI } from '../../services/api';
+import { getProducts, getNewArrivals, reviewAPI } from '../../services/api';
 import ReviewModal from '../../components/common/ReviewModal/ReviewModal';
 import styles from './ProductDetail.module.css';
 
@@ -19,6 +19,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [newArrivals, setNewArrivals] = useState([]);
   const [productReviews, setProductReviews] = useState([]);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
@@ -122,7 +123,15 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
     getProducts(categoryParam)
       .then(res => {
         if (isMounted && res.products) {
-          setRelatedProducts(res.products.filter(p => p.id !== activeProduct.id));
+          setRelatedProducts(res.products.filter(p => (p.id || p._id) !== (activeProduct.id || activeProduct._id)));
+        }
+      })
+      .catch(() => {});
+
+    getNewArrivals(8)
+      .then(list => {
+        if (isMounted && Array.isArray(list)) {
+          setNewArrivals(list.filter(p => (p.id || p._id) !== (activeProduct.id || activeProduct._id)));
         }
       })
       .catch(() => {});
@@ -204,8 +213,8 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
     
     // Fallback to old structure
     const main = activeProduct.image;
-    const blueDetail = "/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg";
-    const goldDetail = "/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg";
+    const blueDetail = "https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/cotton saree/0515ac1b-a928-4af5-a71c-7f5e033614e0_3aa.jpg";
+    const goldDetail = "https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/silk sarees/019afd9a-0bf9-49be-adde-9006ac3c2157_4.jpg";
 
     return [main, goldDetail, blueDetail];
   };
@@ -720,32 +729,34 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
 
 
 
-      {/* 4. Similar Weaves You May Love Section */}
-      {relatedProducts.length > 0 && (
+      {/* 4. New Arrivals Section */}
+      {(newArrivals.length > 0 || relatedProducts.length > 0) && (
         <section style={{ maxWidth: 1240, margin: '60px auto 40px auto', padding: '0 20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28, borderBottom: '1px solid rgba(200,163,77,0.2)', paddingBottom: 16 }}>
             <div>
               <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
-                Curated Recommendations
+                Fresh From The Looms
               </span>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: 'var(--text-main)', marginTop: 4, marginBottom: 0 }}>
-                Similar Weaves You May Love
+                New Arrivals
               </h2>
             </div>
             <button
-              onClick={() => setCurrentTab('catalog')}
+              onClick={() => setCurrentTab('new-arrivals')}
               style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6 }}
             >
-              Explore Full Atelier <ArrowRight size={16} />
+              Explore All New Arrivals <ArrowRight size={16} />
             </button>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
-            {relatedProducts.slice(0, 4).map((item) => (
+            {(newArrivals.length > 0 ? newArrivals : relatedProducts).slice(0, 4).map((item) => (
               <div
-                key={item.id}
+                key={item.id || item._id}
                 onClick={() => {
-                  setSelectedProduct(item);
+                  if (setSelectedProduct) {
+                    setSelectedProduct(item);
+                  }
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 style={{
@@ -773,9 +784,9 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                   <img
                     src={item.image}
                     alt={item.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
+                    style={{ width: '100%', height: '100%', transition: 'transform 0.4s ease' }}
                   />
-                  {item.tag && (
+                  {(item.tag || item.isNew) && (
                     <span style={{
                       position: 'absolute',
                       top: 12,
@@ -789,7 +800,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                       letterSpacing: '0.06em',
                       backdropFilter: 'blur(4px)'
                     }}>
-                      {item.tag}
+                      {item.tag || 'NEW ARRIVAL'}
                     </span>
                   )}
                 </div>

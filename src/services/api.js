@@ -6,9 +6,9 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 export function normalizeProduct(p) {
   if (!p) return null;
   const id = p._id || p.id;
-  let image = p.images?.[0]?.url || p.image || '/Images/saree1.png';
+  let image = p.images?.[0]?.url || p.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png';
   if (typeof image === 'string' && image.startsWith('blob:')) {
-    image = '/Images/saree1.png';
+    image = 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png';
   }
   const categoryName = typeof p.category === 'object' ? p.category?.name : (p.category || 'Handloom Sarees');
   const categorySlug = typeof p.category === 'object' ? p.category?.slug : (p.categorySlug || '');

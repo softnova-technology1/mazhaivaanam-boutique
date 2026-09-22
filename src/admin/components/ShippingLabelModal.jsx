@@ -77,7 +77,7 @@ export default function ShippingLabelModal({ order, onClose }) {
             <div className={styles.topRow}>
               <div className={styles.leftCol}>
                 <div className={styles.brandBlock}>
-                  <img src="/logo.png" alt="Logo" className={styles.logoImage} />
+                  <img src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/logo/logo.png" alt="Logo" className={styles.logoImage} />
                   <div className={styles.brandText}>
                     <div className={styles.shopBrandName}>MAZHAI VAANAM</div>
                   </div>

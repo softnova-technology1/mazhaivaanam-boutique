@@ -3,10 +3,10 @@ import { getCollections } from '../../services/api';
 import styles from './Collections.module.css';
 
 const DEFAULT_COLLECTIONS = [
-  { id: 'everyday-elegance', label: 'Everyday Elegance', name: 'Everyday Elegance', image: '/Images/saree1.png', gridClass: 'card-wide', subtitle: 'CASUAL & CHIC' },
-  { id: 'festive-glow', label: 'Festive Glow', name: 'Festive Glow', image: '/Images/silk1.png', gridClass: 'card-tall', subtitle: 'CELEBRATION READY' },
-  { id: 'style-studio', label: 'Style Studio', name: 'Style Studio', image: '/Images/fancy1.png', gridClass: 'card-half', subtitle: 'MODERN TRENDS' },
-  { id: 'black-magic', label: 'Black Magic', name: 'Black Magic', image: '/Images/black1.png', gridClass: 'card-half', subtitle: 'BOLD & BEAUTIFUL' }
+  { id: 'everyday-elegance', label: 'Everyday Elegance', name: 'Everyday Elegance', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/saree1.png', gridClass: 'card-wide', subtitle: 'CASUAL & CHIC' },
+  { id: 'festive-glow', label: 'Festive Glow', name: 'Festive Glow', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/silk1.png', gridClass: 'card-tall', subtitle: 'CELEBRATION READY' },
+  { id: 'style-studio', label: 'Style Studio', name: 'Style Studio', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/fancy1.png', gridClass: 'card-half', subtitle: 'MODERN TRENDS' },
+  { id: 'black-magic', label: 'Black Magic', name: 'Black Magic', image: 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/black1.png', gridClass: 'card-half', subtitle: 'BOLD & BEAUTIFUL' }
 ];
 
 export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
@@ -18,7 +18,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
       .then(dbCats => {
         if (isMounted && dbCats && dbCats.length > 0) {
           const gridClasses = ['card-wide', 'card-tall', 'card-half', 'card-half'];
-          const images = ['/Images/saree1.png', '/Images/silk1.png', '/Images/fancy1.png', '/Images/black1.png'];
+          const images = ['https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/saree1.png', 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/silk1.png', 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/fancy1.png', 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/black1.png'];
           const mapped = dbCats.map((c, i) => ({
             id: c._id || c.slug,
             slug: c.slug,
@@ -100,7 +100,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
             <div className={styles['guide-row']}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/everyday.png" 
+                  src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/everyday.png" 
                   alt="Everyday Elegance" 
                 />
               </div>
@@ -128,7 +128,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
             <div className={`${styles['guide-row']} ${styles['row-reverse']}`}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/festival1.png" 
+                  src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/festival1.png" 
                   alt="Festive Glow" 
                 />
               </div>
@@ -156,7 +156,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
             <div className={styles['guide-row']}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/style1.png" 
+                  src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/style1.png" 
                   alt="Style Studio" 
                 />
               </div>
@@ -184,7 +184,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
             <div className={`${styles['guide-row']} ${styles['row-reverse']}`}>
               <div className={styles['guide-image-box']}>
                 <img 
-                  src="/Images/black-shop.png" 
+                  src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/collections_page/black-shop.png" 
                   alt="Black Magic" 
                 />
               </div>

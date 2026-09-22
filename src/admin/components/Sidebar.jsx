@@ -30,7 +30,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-brand">
         <div className="sidebar-logo">
-          <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <img src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/logo/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
         {!isCollapsed && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>

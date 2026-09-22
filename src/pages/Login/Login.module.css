@@ -16,7 +16,7 @@
   position: absolute;
   inset: 0;
   background-color: #FAF8F5;
-  background-image: url('/Images/login-pattern.png');
+  background-image: url('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/login_page/login-pattern.png');
   background-size: cover;
   background-position: center;
   filter: contrast(1.15) brightness(0.95); /* Makes the line-art subjects slightly darker and more distinct */

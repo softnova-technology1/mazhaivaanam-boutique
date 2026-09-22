@@ -28,11 +28,11 @@ export default function PreBooking() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [bulkLoading, setBulkLoading] = useState(false);
   const [deleteAlert, setDeleteAlert] = useState({ open: false, type: 'single', id: null, name: '' });
-    const [toast, setToast] = useState({ open: false, message: '', type: 'error' });
-    const showToast = (message, type = 'error') => {
-      setToast({ open: true, message, type });
-      setTimeout(() => setToast({ open: false, message: '', type: 'error' }), 4000);
-    };
+  const [toast, setToast] = useState({ open: false, message: '', type: 'error' });
+  const showToast = (message, type = 'error') => {
+    setToast({ open: true, message, type });
+    setTimeout(() => setToast({ open: false, message: '', type: 'error' }), 4000);
+  };
   const [imagePreviewModal, setImagePreviewModal] = useState({ open: false, url: '' });
 
   useEffect(() => {
@@ -163,9 +163,9 @@ export default function PreBooking() {
       preorderWeaver: 'Master Weaver',
       preorderEstimatedDays: '',
       preorderDiscount: '',
-      weight: '', pattern: '', 
-      pallu: '', sareeLength: '', blouseLength: '', blouse: '', height: '', washCare: '', 
-      returnPolicy: 'Not Applicable', 
+      weight: '', pattern: '',
+      pallu: '', sareeLength: '', blouseLength: '', blouse: '', height: '', washCare: '',
+      returnPolicy: 'Not Applicable',
       note: 'Product Color May Slightly Vary Due To Photography Lighting.'
     });
     setModal({ open: true, product: null });
@@ -448,601 +448,605 @@ export default function PreBooking() {
       </div>
 
       {/* Table */}
-      {loading ? (
-        <div className="loader"><div className="spinner" /></div>
-      ) : (
-        <>
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th style={{ width: 40, textAlign: 'center' }}>
-                    <input
-                      type="checkbox"
-                      checked={products.length > 0 && selectedProducts.length === products.length}
-                      onChange={handleSelectAll}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </th>
-                  <th style={{ width: 45, textAlign: 'center' }}>#</th>
-                  <th>Product</th>
-                  <th>SKU</th>
-                  <th>Fabric</th>
-                  <th>Full Price</th>
-                  <th>Est. Days</th>
-                  <th>Status</th>
-                  <th style={{ textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((p, idx) => {
-                  const isSelected = selectedProducts.includes(p._id);
-                  return (
-                    <tr key={p._id} style={{ background: isSelected ? 'rgba(200, 163, 77, 0.08)' : undefined }}>
-                      <td style={{ textAlign: 'center' }}>
+
+
+          {/* Table */}
+          {loading ? (
+            <div className="loader"><div className="spinner" /></div>
+          ) : (
+            <>
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: 40, textAlign: 'center' }}>
                         <input
                           type="checkbox"
-                          checked={isSelected}
-                          onChange={(e) => handleSelectProduct(p._id, e)}
+                          checked={products.length > 0 && selectedProducts.length === products.length}
+                          onChange={handleSelectAll}
                           style={{ cursor: 'pointer' }}
                         />
-                      </td>
-                      <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
-                        {(filters.page - 1) * filters.limit + idx + 1}
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <div style={{ width: 44, height: 44, borderRadius: 8, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
-                            {(() => {
-                              const rawUrl = p.images?.[0]?.url;
-                              const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/placeholder.svg';
-                              return (
-                                <img 
-                                  src={safeUrl} 
-                                  alt={p.name || ''} 
-                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                                  onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = '/Images/placeholder.svg';
-                                  }}
-                                />
-                              );
-                            })()}
-                          </div>
-                          <div style={{ maxWidth: 220, overflow: 'hidden' }} title={p.name}>
-                            <div style={{ color: 'var(--text-primary)', fontWeight: 500, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
-                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.slug}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>{p.sku || '—'}</td>
-                      <td>{p.fabric}</td>
-                      <td>
-                        <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>₹{p.price?.toLocaleString('en-IN')}</span>
-                        {p.mrpPrice > p.price && <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textDecoration: 'line-through' }}>₹{p.mrpPrice?.toLocaleString('en-IN')}</div>}
-                      </td>
-                      <td>{p.preorderEstimatedDays || 14} days</td>
-                      <td><span className={`badge ${p.isActive ? 'badge-success' : 'badge-danger'}`}>{p.isActive ? 'Active' : 'Inactive'}</span></td>
-                      <td style={{ textAlign: 'right' }}>
-                        <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
-                          <button className="btn-ghost btn-icon" onClick={() => openEdit(p)} title="Edit"><Edit size={16} /></button>
-                          <button className="btn-ghost btn-icon" onClick={() => triggerDelete(p._id, p.name)} title="Delete" style={{ color: 'var(--danger)' }}><Trash2 size={16} /></button>
-                        </div>
-                      </td>
+                      </th>
+                      <th style={{ width: 45, textAlign: 'center' }}>#</th>
+                      <th>Product</th>
+                      <th>SKU</th>
+                      <th>Fabric</th>
+                      <th>Full Price</th>
+                      <th>Est. Days</th>
+                      <th>Status</th>
+                      <th style={{ textAlign: 'right' }}>Actions</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody>
+                    {products.map((p, idx) => {
+                      const isSelected = selectedProducts.includes(p._id);
+                      return (
+                        <tr key={p._id} style={{ background: isSelected ? 'rgba(200, 163, 77, 0.08)' : undefined }}>
+                          <td style={{ textAlign: 'center' }}>
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={(e) => handleSelectProduct(p._id, e)}
+                              style={{ cursor: 'pointer' }}
+                            />
+                          </td>
+                          <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
+                            {(filters.page - 1) * filters.limit + idx + 1}
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                              <div style={{ width: 44, height: 44, borderRadius: 8, background: 'var(--bg-secondary)', overflow: 'hidden', flexShrink: 0 }}>
+                                {(() => {
+                                  const rawUrl = p.images?.[0]?.url;
+                                  const safeUrl = (rawUrl && typeof rawUrl === 'string' && !rawUrl.startsWith('blob:')) ? rawUrl : '/Images/placeholder.svg';
+                                  return (
+                                    <img
+                                      src={safeUrl}
+                                      alt={p.name || ''}
+                                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                      onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = '/Images/placeholder.svg';
+                                      }}
+                                    />
+                                  );
+                                })()}
+                              </div>
+                              <div style={{ maxWidth: 220, overflow: 'hidden' }} title={p.name}>
+                                <div style={{ color: 'var(--text-primary)', fontWeight: 500, fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</div>
+                                <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.slug}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>{p.sku || '—'}</td>
+                          <td>{p.fabric}</td>
+                          <td>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>₹{p.price?.toLocaleString('en-IN')}</span>
+                            {p.mrpPrice > p.price && <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textDecoration: 'line-through' }}>₹{p.mrpPrice?.toLocaleString('en-IN')}</div>}
+                          </td>
+                          <td>{p.preorderEstimatedDays || 14} days</td>
+                          <td><span className={`badge ${p.isActive ? 'badge-success' : 'badge-danger'}`}>{p.isActive ? 'Active' : 'Inactive'}</span></td>
+                          <td style={{ textAlign: 'right' }}>
+                            <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
+                              <button className="btn-ghost btn-icon" onClick={() => openEdit(p)} title="Edit"><Edit size={16} /></button>
+                              <button className="btn-ghost btn-icon" onClick={() => triggerDelete(p._id, p.name)} title="Delete" style={{ color: 'var(--danger)' }}><Trash2 size={16} /></button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
 
-          {/* Pagination */}
-          {pagination.totalPages > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 24 }}>
-              <button
-                className="btn btn-sm btn-outline"
-                disabled={filters.page <= 1}
-                onClick={() => setFilters(f => ({ ...f, page: f.page - 1 }))}
-              >
-                Previous
-              </button>
-              {Array.from({ length: pagination.totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  className={`btn btn-sm ${filters.page === i + 1 ? 'btn-primary' : 'btn-outline'}`}
-                  onClick={() => setFilters(f => ({ ...f, page: i + 1 }))}
-                >
-                  {i + 1}
-                </button>
-              ))}
-              <button
-                className="btn btn-sm btn-outline"
-                disabled={filters.page >= pagination.totalPages}
-                onClick={() => setFilters(f => ({ ...f, page: f.page + 1 }))}
-              >
-                Next
-              </button>
-            </div>
+              {/* Pagination */}
+              {pagination.totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 24 }}>
+                  <button
+                    className="btn btn-sm btn-outline"
+                    disabled={filters.page <= 1}
+                    onClick={() => setFilters(f => ({ ...f, page: f.page - 1 }))}
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: pagination.totalPages }, (_, i) => (
+                    <button
+                      key={i}
+                      className={`btn btn-sm ${filters.page === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+                      onClick={() => setFilters(f => ({ ...f, page: i + 1 }))}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                  <button
+                    className="btn btn-sm btn-outline"
+                    disabled={filters.page >= pagination.totalPages}
+                    onClick={() => setFilters(f => ({ ...f, page: f.page + 1 }))}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </>
-      )}
-      </>
-    ) : (
-      /* Create/Edit Form Page */
-      <div className="form-page-container">
-        <div className="page-header" style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
-          <button className="btn btn-outline" onClick={() => setModal({ open: false, product: null })} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ArrowLeft size={16} /> Back to Pre-Booking
-          </button>
-          <h2 className="page-title">{modal.product ? 'Edit Pre-Booking Product' : 'Add Pre-Booking Product'}</h2>
-        </div>
-        <form onSubmit={handleSave} style={{ background: 'var(--bg-primary)', borderRadius: 12, padding: 32, border: '1px solid var(--border-color)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
+      ) : (
+        /* Create/Edit Form Page */
+        <div className="form-page-container">
+          <div className="page-header" style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+            <button className="btn btn-outline" onClick={() => setModal({ open: false, product: null })} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <ArrowLeft size={16} /> Back to Pre-Booking
+            </button>
+            <h2 className="page-title">{modal.product ? 'Edit Pre-Booking Product' : 'Add Pre-Booking Product'}</h2>
+          </div>
+          <form onSubmit={handleSave} style={{ background: 'var(--bg-primary)', borderRadius: 12, padding: 32, border: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 32 }}>
 
-                {/* Left Column: Image Upload */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  <div>
-                    <label className="form-label">
-                      Primary Image
-                      <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 500, marginLeft: 8 }}>
-                        (Max 5MB for AWS S3 • Aspect Ratio 3:4)
-                      </span>
-                    </label>
+              {/* Left Column: Image Upload */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div>
+                  <label className="form-label">
+                    Primary Image
+                    <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 500, marginLeft: 8 }}>
+                      (Max 5MB for AWS S3 • Aspect Ratio 3:4)
+                    </span>
+                  </label>
+                  <div
+                    style={{
+                      border: '2px dashed var(--border-color)',
+                      borderRadius: 12,
+                      aspectRatio: '3/4',
+                      minHeight: 280,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'var(--bg-secondary)',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      transition: 'border-color 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
+                    onClick={() => {
+                      if (form.imagePreview) {
+                        setImagePreviewModal({ open: true, url: form.imagePreview });
+                      } else {
+                        document.getElementById('preorder-image-upload').click();
+                      }
+                    }}
+                  >
+                    {form.imagePreview ? (
+                      <>
+                        <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'rgba(0,0,0,0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            opacity: 0,
+                            transition: 'opacity 0.2s',
+                            gap: 24
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                          onMouseLeave={e => e.currentTarget.style.opacity = 0}
+                        >
+                          <div
+                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}
+                          >
+                            <Eye size={32} />
+                            <span style={{ fontWeight: 500 }}>Preview</span>
+                          </div>
+                          <div
+                            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}
+                            onClick={(e) => { e.stopPropagation(); document.getElementById('preorder-image-upload').click(); }}
+                          >
+                            <UploadCloud size={32} />
+                            <span style={{ fontWeight: 500 }}>Change</span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 16, margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <UploadCloud size={40} style={{ marginBottom: 12, opacity: 0.6 }} />
+                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Upload Primary Image</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: 4 }}>
+                          Max 5MB (Suitable for S3 Bucket)
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>
+                          Recommended Ratio: 3:4 (e.g. 600x800px)
+                        </div>
+                      </div>
+                    )}
+                    <input
+                      id="preorder-image-upload"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onClick={e => { e.stopPropagation(); e.target.value = null; }}
+                      onChange={e => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        if (file.size > 5 * 1024 * 1024) {
+                          showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
+                          e.target.value = '';
+                          return;
+                        }
+                        setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="form-label">
+                    Secondary Images
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 400, marginLeft: 8 }}>
+                      (Max 5MB • 3:4 Ratio)
+                    </span>
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    {/* Secondary 1 */}
                     <div
                       style={{
                         border: '2px dashed var(--border-color)',
                         borderRadius: 12,
                         aspectRatio: '3/4',
-                        minHeight: 280,
+                        minHeight: 180,
                         display: 'flex',
-                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
                         background: 'var(--bg-secondary)',
                         position: 'relative',
                         overflow: 'hidden',
-                        cursor: 'pointer',
-                        transition: 'border-color 0.2s'
+                        cursor: 'pointer'
                       }}
-                      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                      onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-color)'}
                       onClick={() => {
-                        if (form.imagePreview) {
-                          setImagePreviewModal({ open: true, url: form.imagePreview });
+                        if (form.sec1Preview) {
+                          setImagePreviewModal({ open: true, url: form.sec1Preview });
                         } else {
-                          document.getElementById('preorder-image-upload').click();
+                          document.getElementById('preorder-sec1-upload').click();
                         }
                       }}
                     >
-                      {form.imagePreview ? (
+                      {form.sec1Preview ? (
                         <>
-                          <img src={form.imagePreview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
-                          <div
-                            style={{
-                              position: 'absolute',
-                              inset: 0,
-                              background: 'rgba(0,0,0,0.5)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              opacity: 0,
-                              transition: 'opacity 0.2s',
-                              gap: 24
-                            }}
-                            onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                            onMouseLeave={e => e.currentTarget.style.opacity = 0}
-                          >
-                            <div 
-                              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}
-                            >
-                              <Eye size={32} />
-                              <span style={{ fontWeight: 500 }}>Preview</span>
+                          <img src={form.sec1Preview} alt="Sec 1" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, background: 'rgba(0,0,0,0.4)', opacity: 0, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                            <div style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                              <Eye size={24} />
+                              <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Preview</span>
                             </div>
-                            <div 
-                              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, color: 'white' }}
-                              onClick={(e) => { e.stopPropagation(); document.getElementById('preorder-image-upload').click(); }}
+                            <div
+                              style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
+                              onClick={(e) => { e.stopPropagation(); document.getElementById('preorder-sec1-upload').click(); }}
                             >
-                              <UploadCloud size={32} />
-                              <span style={{ fontWeight: 500 }}>Change</span>
+                              <UploadCloud size={24} />
+                              <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Change</span>
                             </div>
                           </div>
+                          <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4, zIndex: 10 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec1File: null, sec1Preview: '' })); }}><X size={14} /></div>
                         </>
                       ) : (
-                        <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 16, margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                          <UploadCloud size={40} style={{ marginBottom: 12, opacity: 0.6 }} />
-                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Upload Primary Image</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: 4 }}>
-                            Max 5MB (Suitable for S3 Bucket)
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>
-                            Recommended Ratio: 3:4 (e.g. 600x800px)
-                          </div>
+                        <div style={{ textAlign: 'center', color: 'var(--text-muted)', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                          <Plus size={24} style={{ opacity: 0.6 }} />
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>3:4 (Max 5MB)</div>
                         </div>
                       )}
-                      <input
-                        id="preorder-image-upload"
-                        type="file"
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        onChange={e => {
-                          const file = e.target.files[0];
-                          if (!file) return;
-                          if (file.size > 5 * 1024 * 1024) {
-                            showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
-                            e.target.value = '';
-                            return;
-                          }
-                          setForm(f => ({ ...f, imageFile: file, imagePreview: URL.createObjectURL(file) }));
-                        }}
-                      />
+                      <input id="preorder-sec1-upload" type="file" accept="image/*" style={{ display: 'none' }} onClick={e => { e.stopPropagation(); e.target.value = null; }} onChange={e => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        if (file.size > 5 * 1024 * 1024) {
+                          showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
+                          e.target.value = '';
+                          return;
+                        }
+                        setForm(f => ({ ...f, sec1File: file, sec1Preview: URL.createObjectURL(file) }));
+                      }} />
+                    </div>
+
+                    {/* Secondary 2 */}
+                    <div
+                      style={{
+                        border: '2px dashed var(--border-color)',
+                        borderRadius: 12,
+                        aspectRatio: '3/4',
+                        minHeight: 180,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'var(--bg-secondary)',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => {
+                        if (form.sec2Preview) {
+                          setImagePreviewModal({ open: true, url: form.sec2Preview });
+                        } else {
+                          document.getElementById('preorder-sec2-upload').click();
+                        }
+                      }}
+                    >
+                      {form.sec2Preview ? (
+                        <>
+                          <img src={form.sec2Preview} alt="Sec 2" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+                          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, background: 'rgba(0,0,0,0.4)', opacity: 0, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+                            <div style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                              <Eye size={24} />
+                              <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Preview</span>
+                            </div>
+                            <div
+                              style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
+                              onClick={(e) => { e.stopPropagation(); document.getElementById('preorder-sec2-upload').click(); }}
+                            >
+                              <UploadCloud size={24} />
+                              <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Change</span>
+                            </div>
+                          </div>
+                          <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4, zIndex: 10 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec2File: null, sec2Preview: '' })); }}><X size={14} /></div>
+                        </>
+                      ) : (
+                        <div style={{ textAlign: 'center', color: 'var(--text-muted)', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                          <Plus size={24} style={{ opacity: 0.6 }} />
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>3:4 (Max 5MB)</div>
+                        </div>
+                      )}
+                      <input id="preorder-sec2-upload" type="file" accept="image/*" style={{ display: 'none' }} onClick={e => { e.stopPropagation(); e.target.value = null; }} onChange={e => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        if (file.size > 5 * 1024 * 1024) {
+                          showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
+                          e.target.value = '';
+                          return;
+                        }
+                        setForm(f => ({ ...f, sec2File: file, sec2Preview: URL.createObjectURL(file) }));
+                      }} />
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  <div>
+              {/* Right Column: Details */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Product Name</label>
+                  <input className="form-input" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">SKU</label>
+                  <input className="form-input" value={form.sku} onChange={e => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="e.g. MV-001" />
+                </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Simple Description (Shows on Shop Card & Details Subtitle)</label>
+                  <input className="form-input" value={form.shortDescription} onChange={e => setForm(f => ({ ...f, shortDescription: e.target.value }))} placeholder="e.g. Handcrafted Megatron saree" />
+                </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Detailed Description (Shows on Product Details Page)</label>
+                  <textarea className="form-textarea" rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Detailed product description..." />
+                </div>
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Fabric</label>
+                    <select
+                      className="form-select"
+                      value={form.fabric}
+                      onChange={e => setForm(f => ({ ...f, fabric: e.target.value }))}
+                    >
+                      <option value="">Select Fabric</option>
+                      {fabricsList.map(fab => <option key={fab._id} value={fab.name}>{fab.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Price (₹) *</label>
+                    <input className="form-input" type="number" required min="0" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">MRP Price (₹)</label>
+                    <input className="form-input" type="number" min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Discount (%)</label>
+                    <input
+                      className="form-input"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.01"
+                      value={
+                        Number(form.mrpPrice) > 0 && Number(form.mrpPrice) > Number(form.price)
+                          ? parseFloat((((Number(form.mrpPrice) - Number(form.price)) / Number(form.mrpPrice)) * 100).toFixed(2))
+                          : 0
+                      }
+                      onChange={e => {
+                        const percent = Number(e.target.value) || 0;
+                        const mrp = Number(form.mrpPrice) || 0;
+                        if (mrp > 0) {
+                          const newPrice = mrp - (mrp * percent / 100);
+                          setForm(f => ({ ...f, price: Math.round(newPrice) }));
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">
-                      Secondary Images
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 400, marginLeft: 8 }}>
-                        (Max 5MB • 3:4 Ratio)
-                      </span>
+                      Discount Amount / Profit (₹)
+                      <span style={{ fontSize: '0.7rem', color: 'var(--primary)', marginLeft: 6, fontWeight: 500, opacity: 0.8 }}>(Admin Only)</span>
                     </label>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                      {/* Secondary 1 */}
-                      <div
-                        style={{
-                          border: '2px dashed var(--border-color)',
-                          borderRadius: 12,
-                          aspectRatio: '3/4',
-                          minHeight: 180,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          background: 'var(--bg-secondary)',
-                          position: 'relative',
-                          overflow: 'hidden',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => {
-                          if (form.sec1Preview) {
-                            setImagePreviewModal({ open: true, url: form.sec1Preview });
-                          } else {
-                            document.getElementById('preorder-sec1-upload').click();
-                          }
-                        }}
-                      >
-                        {form.sec1Preview ? (
-                          <>
-                            <img src={form.sec1Preview} alt="Sec 1" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
-                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, background: 'rgba(0,0,0,0.4)', opacity: 0, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>
-                               <div style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                                 <Eye size={24}/>
-                                 <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Preview</span>
-                               </div>
-                               <div 
-                                 style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
-                                 onClick={(e) => { e.stopPropagation(); document.getElementById('preorder-sec1-upload').click(); }}
-                               >
-                                 <UploadCloud size={24}/>
-                                 <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Change</span>
-                               </div>
-                            </div>
-                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4, zIndex: 10 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec1File: null, sec1Preview: '' })); }}><X size={14}/></div>
-                          </>
-                        ) : (
-                          <div style={{ textAlign: 'center', color: 'var(--text-muted)', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <Plus size={24} style={{ opacity: 0.6 }} />
-                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>3:4 (Max 5MB)</div>
-                          </div>
-                        )}
-                        <input id="preorder-sec1-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
-                          const file = e.target.files[0];
-                          if (!file) return;
-                          if (file.size > 5 * 1024 * 1024) {
-                            showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
-                            e.target.value = '';
-                            return;
-                          }
-                          setForm(f => ({ ...f, sec1File: file, sec1Preview: URL.createObjectURL(file) }));
-                        }} />
-                      </div>
-                      
-                      {/* Secondary 2 */}
-                      <div
-                        style={{
-                          border: '2px dashed var(--border-color)',
-                          borderRadius: 12,
-                          aspectRatio: '3/4',
-                          minHeight: 180,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          background: 'var(--bg-secondary)',
-                          position: 'relative',
-                          overflow: 'hidden',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => {
-                          if (form.sec2Preview) {
-                            setImagePreviewModal({ open: true, url: form.sec2Preview });
-                          } else {
-                            document.getElementById('preorder-sec2-upload').click();
-                          }
-                        }}
-                      >
-                        {form.sec2Preview ? (
-                          <>
-                            <img src={form.sec2Preview} alt="Sec 2" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
-                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, background: 'rgba(0,0,0,0.4)', opacity: 0, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0}>
-                               <div style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                                 <Eye size={24}/>
-                                 <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Preview</span>
-                               </div>
-                               <div 
-                                 style={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
-                                 onClick={(e) => { e.stopPropagation(); document.getElementById('preorder-sec2-upload').click(); }}
-                               >
-                                 <UploadCloud size={24}/>
-                                 <span style={{ fontSize: '0.8rem', fontWeight: 500 }}>Change</span>
-                               </div>
-                            </div>
-                            <div style={{ position: 'absolute', right: 4, top: 4, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '50%', padding: 4, zIndex: 10 }} onClick={(e) => { e.stopPropagation(); setForm(f => ({ ...f, sec2File: null, sec2Preview: '' })); }}><X size={14}/></div>
-                          </>
-                        ) : (
-                          <div style={{ textAlign: 'center', color: 'var(--text-muted)', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <Plus size={24} style={{ opacity: 0.6 }} />
-                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4 }}>3:4 (Max 5MB)</div>
-                          </div>
-                        )}
-                        <input id="preorder-sec2-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
-                          const file = e.target.files[0];
-                          if (!file) return;
-                          if (file.size > 5 * 1024 * 1024) {
-                            showToast('Image file size must be less than 5MB (suitable for S3 bucket)', 'error');
-                            e.target.value = '';
-                            return;
-                          }
-                          setForm(f => ({ ...f, sec2File: file, sec2Preview: URL.createObjectURL(file) }));
-                        }} />
-                      </div>
-                    </div>
+                    <input
+                      className="form-input"
+                      type="number"
+                      min="0"
+                      value={
+                        Number(form.mrpPrice) > 0 && Number(form.mrpPrice) > Number(form.price)
+                          ? Number(form.mrpPrice) - Number(form.price)
+                          : 0
+                      }
+                      onChange={e => {
+                        const amt = Number(e.target.value) || 0;
+                        const mrp = Number(form.mrpPrice) || 0;
+                        if (mrp > 0) {
+                          setForm(f => ({ ...f, price: Math.max(0, mrp - amt) }));
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Stock Quantity *</label>
+                    <input className="form-input" type="number" required min="0" value={form.stock ?? 0} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Tag</label>
+                    <select className="form-select" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
+                      <option value="">None</option>
+                      <option value="BESTSELLER">Bestseller</option>
+                      <option value="Fresh Pick">Fresh Pick</option>
+                      <option value="Traditional Charm">Traditional Charm</option>
+                      <option value="TRENDING">Trending</option>
+                      <option value="Elegant Pick">Elegant Pick</option>
+                      <option value="LIMITED EDITION">Limited Edition</option>
+                      <option value="FESTIVAL CHOICE">Festival Choice</option>
+                    </select>
                   </div>
                 </div>
 
-                {/* Right Column: Details */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Product Name</label>
-                    <input className="form-input" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">SKU</label>
-                    <input className="form-input" value={form.sku} onChange={e => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="e.g. MV-001" />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Simple Description (Shows on Shop Card & Details Subtitle)</label>
-                    <input className="form-input" value={form.shortDescription} onChange={e => setForm(f => ({ ...f, shortDescription: e.target.value }))} placeholder="e.g. Handcrafted Megatron saree" />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Detailed Description (Shows on Product Details Page)</label>
-                    <textarea className="form-textarea" rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Detailed product description..." />
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Fabric</label>
-                      <select 
-                        className="form-select" 
-                        value={form.fabric} 
-                        onChange={e => setForm(f => ({ ...f, fabric: e.target.value }))} 
-                      >
-                        <option value="">Select Fabric</option>
-                        {fabricsList.map(fab => <option key={fab._id} value={fab.name}>{fab.name}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Price (₹) *</label>
-                      <input className="form-input" type="number" required min="0" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">MRP Price (₹)</label>
-                      <input className="form-input" type="number" min="0" value={form.mrpPrice} onChange={e => setForm(f => ({ ...f, mrpPrice: e.target.value }))} />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Discount (%)</label>
-                      <input 
-                        className="form-input" 
-                        type="number" 
-                        min="0" 
-                        max="100" 
-                        step="0.01"
-                        value={
-                          Number(form.mrpPrice) > 0 && Number(form.mrpPrice) > Number(form.price)
-                            ? parseFloat((((Number(form.mrpPrice) - Number(form.price)) / Number(form.mrpPrice)) * 100).toFixed(2))
-                            : 0
-                        }
-                        onChange={e => {
-                          const percent = Number(e.target.value) || 0;
-                          const mrp = Number(form.mrpPrice) || 0;
-                          if (mrp > 0) {
-                            const newPrice = mrp - (mrp * percent / 100);
-                            setForm(f => ({ ...f, price: Math.round(newPrice) }));
-                          }
-                        }} 
-                      />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">
-                        Discount Amount / Profit (₹)
-                        <span style={{ fontSize: '0.7rem', color: 'var(--primary)', marginLeft: 6, fontWeight: 500, opacity: 0.8 }}>(Admin Only)</span>
-                      </label>
-                      <input 
-                        className="form-input" 
-                        type="number" 
-                        min="0"
-                        value={
-                          Number(form.mrpPrice) > 0 && Number(form.mrpPrice) > Number(form.price)
-                            ? Number(form.mrpPrice) - Number(form.price)
-                            : 0
-                        }
-                        onChange={e => {
-                          const amt = Number(e.target.value) || 0;
-                          const mrp = Number(form.mrpPrice) || 0;
-                          if (mrp > 0) {
-                            setForm(f => ({ ...f, price: Math.max(0, mrp - amt) }));
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Stock Quantity *</label>
-                      <input className="form-input" type="number" required min="0" value={form.stock ?? 0} onChange={e => setForm(f => ({ ...f, stock: e.target.value }))} />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Tag</label>
-                      <select className="form-select" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
-                        <option value="">None</option>
-                        <option value="BESTSELLER">Bestseller</option>
-                        <option value="Fresh Pick">Fresh Pick</option>
-                        <option value="Traditional Charm">Traditional Charm</option>
-                        <option value="TRENDING">Trending</option>
-                        <option value="Elegant Pick">Elegant Pick</option>
-                        <option value="LIMITED EDITION">Limited Edition</option>
-                        <option value="FESTIVAL CHOICE">Festival Choice</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  {/* --- Product Specifications --- */}
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, borderBottom: '1px solid var(--border-color)', paddingBottom: 8 }}>Product Specifications</h4>
-                  
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Weight</label>
-                      <input className="form-input" value={form.weight} onChange={e => setForm(f => ({ ...f, weight: e.target.value }))} placeholder="e.g. 500g" />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Height</label>
-                      <input className="form-input" value={form.height} onChange={e => setForm(f => ({ ...f, height: e.target.value }))} placeholder="e.g. 45 inches" />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Saree Length</label>
-                      <input className="form-input" value={form.sareeLength} onChange={e => setForm(f => ({ ...f, sareeLength: e.target.value }))} placeholder="e.g. 5.5 meters" />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Blouse Length</label>
-                      <input className="form-input" value={form.blouseLength} onChange={e => setForm(f => ({ ...f, blouseLength: e.target.value }))} placeholder="e.g. 0.8 meters" />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Pattern</label>
-                      <input className="form-input" value={form.pattern} onChange={e => setForm(f => ({ ...f, pattern: e.target.value }))} placeholder="e.g. Floral Motif" />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Pallu</label>
-                      <input className="form-input" value={form.pallu} onChange={e => setForm(f => ({ ...f, pallu: e.target.value }))} placeholder="e.g. Rich Brocade" />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Blouse</label>
-                      <input className="form-input" value={form.blouse} onChange={e => setForm(f => ({ ...f, blouse: e.target.value }))} placeholder="e.g. Running Blouse" />
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Wash Care</label>
-                      <input className="form-input" value={form.washCare} onChange={e => setForm(f => ({ ...f, washCare: e.target.value }))} placeholder="e.g. Dry Clean Only" />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Return/Exchange</label>
-                      <input className="form-input" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))} placeholder="e.g. Not Applicable" />
-                    </div>
-                  </div>
+                {/* --- Product Specifications --- */}
+                <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, borderBottom: '1px solid var(--border-color)', paddingBottom: 8 }}>Product Specifications</h4>
 
-                  {/* --- Additional Info --- */}
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, borderBottom: '1px solid var(--border-color)', paddingBottom: 8 }}>Additional Info</h4>
-                  
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Note</label>
-                      <input className="form-input" value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))} placeholder="e.g. Dry clean only" />
-                    </div>
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Weight</label>
+                    <input className="form-input" value={form.weight} onChange={e => setForm(f => ({ ...f, weight: e.target.value }))} placeholder="e.g. 500g" />
                   </div>
-
-                  {/* Pre-order Specific Inputs */}
-                  <div className="form-row">
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Estimated Days *</label>
-                      <select className="form-select" required value={form.preorderEstimatedDays} onChange={e => setForm(f => ({ ...f, preorderEstimatedDays: e.target.value }))}>
-                        <option value="">Select Estimated Days</option>
-                        <option value="10 to 15 days">10 to 15 days</option>
-                        <option value="15 to 20 days">15 to 20 days</option>
-                      </select>
-                    </div>
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      {/* Empty space to keep layout balanced if needed, or leave it spanning full width depending on css */}
-                    </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Height</label>
+                    <input className="form-input" value={form.height} onChange={e => setForm(f => ({ ...f, height: e.target.value }))} placeholder="e.g. 45 inches" />
                   </div>
-
-                  <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)', flexWrap: 'wrap' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
-                      Featured Product
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
-                      Active Status
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
-                      <input 
-                        type="checkbox" 
-                        checked={form.isScheduled} 
-                        onChange={e => {
-                          const isScheduled = e.target.checked;
-                          setForm(f => ({ ...f, isScheduled, isActive: isScheduled ? false : f.isActive }));
-                        }} 
-                        style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} 
-                      />
-                      Schedule Product
-                    </label>
-                  </div>
-                  
-                  {form.isScheduled && (
-                    <div className="form-row" style={{ marginTop: 16, padding: '16px', background: 'var(--bg-secondary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
-                      <div className="form-group" style={{ marginBottom: 0 }}>
-                        <label className="form-label" style={{ color: 'var(--primary)', fontWeight: 600 }}>Publish Date & Time *</label>
-                        <input 
-                          type="datetime-local" 
-                          className="form-input" 
-                          required={form.isScheduled}
-                          value={form.scheduledAt} 
-                          onChange={e => setForm(f => ({ ...f, scheduledAt: e.target.value }))} 
-                        />
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 8 }}>
-                          The product will automatically become active at this time.
-                        </p>
-                      </div>
-                    </div>
-                  )}
                 </div>
-                <div style={{ marginTop: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridColumn: '1 / -1' }}>
-                  <button type="button" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => setPreviewModalOpen(true)}>
-                    <Eye size={16} /> Preview
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Saree Length</label>
+                    <input className="form-input" value={form.sareeLength} onChange={e => setForm(f => ({ ...f, sareeLength: e.target.value }))} placeholder="e.g. 5.5 meters" />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Blouse Length</label>
+                    <input className="form-input" value={form.blouseLength} onChange={e => setForm(f => ({ ...f, blouseLength: e.target.value }))} placeholder="e.g. 0.8 meters" />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Pattern</label>
+                    <input className="form-input" value={form.pattern} onChange={e => setForm(f => ({ ...f, pattern: e.target.value }))} placeholder="e.g. Floral Motif" />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Pallu</label>
+                    <input className="form-input" value={form.pallu} onChange={e => setForm(f => ({ ...f, pallu: e.target.value }))} placeholder="e.g. Rich Brocade" />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Blouse</label>
+                    <input className="form-input" value={form.blouse} onChange={e => setForm(f => ({ ...f, blouse: e.target.value }))} placeholder="e.g. Running Blouse" />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Wash Care</label>
+                    <input className="form-input" value={form.washCare} onChange={e => setForm(f => ({ ...f, washCare: e.target.value }))} placeholder="e.g. Dry Clean Only" />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Return/Exchange</label>
+                    <input className="form-input" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))} placeholder="e.g. Not Applicable" />
+                  </div>
+                </div>
+
+                {/* --- Additional Info --- */}
+                <h4 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, borderBottom: '1px solid var(--border-color)', paddingBottom: 8 }}>Additional Info</h4>
+
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Note</label>
+                    <input className="form-input" value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))} placeholder="e.g. Dry clean only" />
+                  </div>
+                </div>
+
+                {/* Pre-order Specific Inputs */}
+                <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Estimated Days *</label>
+                    <select className="form-select" required value={form.preorderEstimatedDays} onChange={e => setForm(f => ({ ...f, preorderEstimatedDays: e.target.value }))}>
+                      <option value="">Select Estimated Days</option>
+                      <option value="10 to 15 days">10 to 15 days</option>
+                      <option value="15 to 20 days">15 to 20 days</option>
+                    </select>
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    {/* Empty space to keep layout balanced if needed, or leave it spanning full width depending on css */}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 24, marginTop: 8, padding: '12px 16px', background: 'var(--bg-primary)', borderRadius: 8, border: '1px solid var(--border-color)', flexWrap: 'wrap' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
+                    <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
+                    Featured Product
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
+                    <input type="checkbox" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} style={{ width: 16, height: 16, accentColor: 'var(--primary)' }} />
+                    Active Status
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text-primary)', fontWeight: 500 }}>
+                    <input
+                      type="checkbox"
+                      checked={form.isScheduled}
+                      onChange={e => {
+                        const isScheduled = e.target.checked;
+                        setForm(f => ({ ...f, isScheduled, isActive: isScheduled ? false : f.isActive }));
+                      }}
+                      style={{ width: 16, height: 16, accentColor: 'var(--primary)' }}
+                    />
+                    Schedule Product
+                  </label>
+                </div>
+
+                {form.isScheduled && (
+                  <div className="form-row" style={{ marginTop: 16, padding: '16px', background: 'var(--bg-secondary)', borderRadius: 8, border: '1px solid var(--border-color)' }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label className="form-label" style={{ color: 'var(--primary)', fontWeight: 600 }}>Publish Date & Time *</label>
+                      <input
+                        type="datetime-local"
+                        className="form-input"
+                        required={form.isScheduled}
+                        value={form.scheduledAt}
+                        onChange={e => setForm(f => ({ ...f, scheduledAt: e.target.value }))}
+                      />
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 8 }}>
+                        The product will automatically become active at this time.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div style={{ marginTop: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gridColumn: '1 / -1' }}>
+                <button type="button" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => setPreviewModalOpen(true)}>
+                  <Eye size={16} /> Preview
+                </button>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <button type="button" className="btn btn-outline" onClick={() => setModal({ open: false, product: null })}>Cancel</button>
+                  <button type="submit" className="btn btn-primary" disabled={saving}>
+                    {saving ? 'Saving...' : 'Save Product'}
                   </button>
-                  <div style={{ display: 'flex', gap: 12 }}>
-                    <button type="button" className="btn btn-outline" onClick={() => setModal({ open: false, product: null })}>Cancel</button>
-                    <button type="submit" className="btn btn-primary" disabled={saving}>
-                      {saving ? 'Saving...' : 'Save Product'}
-                    </button>
-                  </div>
                 </div>
+              </div>
             </div>
           </form>
         </div>
@@ -1110,7 +1114,7 @@ export default function PreBooking() {
         <div className="modal-overlay" style={{ zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: 'rgba(0,0,0,0.85)' }} onClick={() => setImagePreviewModal({ open: false, url: '' })}>
           <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }}>
             <img src={imagePreviewModal.url} alt="Full Preview" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: 8, boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }} />
-            <button 
+            <button
               style={{ position: 'absolute', top: -16, right: -16, background: 'var(--bg-primary)', color: 'var(--text-primary)', border: 'none', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
               onClick={(e) => { e.stopPropagation(); setImagePreviewModal({ open: false, url: '' }); }}
             >

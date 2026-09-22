@@ -13,7 +13,7 @@ export default function Categories() {
 
   // Modal States
   const [modal, setModal] = useState({ open: false, type: null, item: null });
-  
+
   // Category Form State
   const [catForm, setCatForm] = useState({ name: '', subtitle: '', description: '', isActive: true });
   const [catImage, setCatImage] = useState(null);
@@ -95,11 +95,11 @@ export default function Categories() {
   };
 
   const openCategoryEdit = (item) => {
-    setCatForm({ 
-      name: item.name || '', 
-      subtitle: item.subtitle || '', 
-      description: item.description || '', 
-      isActive: item.isActive !== undefined ? item.isActive : true 
+    setCatForm({
+      name: item.name || '',
+      subtitle: item.subtitle || '',
+      description: item.description || '',
+      isActive: item.isActive !== undefined ? item.isActive : true
     });
     setCatImage(null);
     setCatImagePreview(item.image?.url || '');
@@ -134,8 +134,8 @@ export default function Categories() {
         };
       }
 
-      const body = { 
-        name: catForm.name.trim(), 
+      const body = {
+        name: catForm.name.trim(),
         subtitle: catForm.subtitle.trim(),
         description: catForm.description.trim(),
         isActive: catForm.isActive,
@@ -185,12 +185,12 @@ export default function Categories() {
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, borderBottom: '1px solid var(--border-light)' }}>
-        <button 
+        <button
           onClick={() => setActiveTab('categories')}
-          style={{ 
-            padding: '12px 24px', 
-            background: 'none', 
-            border: 'none', 
+          style={{
+            padding: '12px 24px',
+            background: 'none',
+            border: 'none',
             borderBottom: activeTab === 'categories' ? '2px solid var(--primary)' : '2px solid transparent',
             color: activeTab === 'categories' ? 'var(--primary)' : 'var(--text-muted)',
             fontWeight: activeTab === 'categories' ? 600 : 500,
@@ -203,12 +203,12 @@ export default function Categories() {
         >
           <FolderTree size={18} /> Product Categories
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('fabrics')}
-          style={{ 
-            padding: '12px 24px', 
-            background: 'none', 
-            border: 'none', 
+          style={{
+            padding: '12px 24px',
+            background: 'none',
+            border: 'none',
             borderBottom: activeTab === 'fabrics' ? '2px solid var(--primary)' : '2px solid transparent',
             color: activeTab === 'fabrics' ? 'var(--primary)' : 'var(--text-muted)',
             fontWeight: activeTab === 'fabrics' ? 600 : 500,
@@ -235,12 +235,12 @@ export default function Categories() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
             {categories.map(item => (
-              <div 
-                key={item._id} 
-                className="card" 
-                style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
+              <div
+                key={item._id}
+                className="card"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
                   transition: 'all 0.2s ease',
                   border: item.isActive ? '1px solid var(--border-light)' : '1px dashed var(--border-light)',
                   opacity: item.isActive ? 1 : 0.75,
@@ -290,13 +290,13 @@ export default function Categories() {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
             {fabrics.map(item => (
-              <div 
-                key={item._id} 
-                className="card" 
-                style={{ 
-                  padding: '16px 20px', 
-                  display: 'flex', 
-                  flexDirection: 'column', 
+              <div
+                key={item._id}
+                className="card"
+                style={{
+                  padding: '16px 20px',
+                  display: 'flex',
+                  flexDirection: 'column',
                   gap: 12,
                   transition: 'all 0.2s ease',
                   border: item.isActive ? '1px solid var(--border-light)' : '1px dashed var(--border-light)',
@@ -336,10 +336,10 @@ export default function Categories() {
               <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
                   <label className="form-label">Fabric Name <span style={{ color: 'var(--danger)' }}>*</span></label>
-                  <input type="text" className="form-input" value={fabForm.name} onChange={e => setFabForm({...fabForm, name: e.target.value})} placeholder="e.g. Pure Silk" autoFocus required />
+                  <input type="text" className="form-input" value={fabForm.name} onChange={e => setFabForm({ ...fabForm, name: e.target.value })} placeholder="e.g. Pure Silk" autoFocus required />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <input type="checkbox" id="fab-active" checked={fabForm.isActive} onChange={e => setFabForm({...fabForm, isActive: e.target.checked})} style={{ width: 16, height: 16 }} />
+                  <input type="checkbox" id="fab-active" checked={fabForm.isActive} onChange={e => setFabForm({ ...fabForm, isActive: e.target.checked })} style={{ width: 16, height: 16 }} />
                   <label htmlFor="fab-active" style={{ cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>Active (Visible on website)</label>
                 </div>
               </div>
@@ -365,7 +365,7 @@ export default function Categories() {
               <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 16, maxHeight: '60vh', overflowY: 'auto' }}>
                 <div>
                   <label className="form-label">Category Image</label>
-                  <div 
+                  <div
                     style={{ border: '2px dashed var(--border-light)', borderRadius: 8, padding: 20, textAlign: 'center', cursor: 'pointer', position: 'relative', overflow: 'hidden', height: 160, backgroundColor: '#f9fafb' }}
                     onClick={() => fileInputRef.current?.click()}
                   >
@@ -382,18 +382,18 @@ export default function Categories() {
                 </div>
                 <div>
                   <label className="form-label">Category Name <span style={{ color: 'var(--danger)' }}>*</span></label>
-                  <input type="text" className="form-input" value={catForm.name} onChange={e => setCatForm({...catForm, name: e.target.value})} placeholder="e.g. Silk Sarees" required />
+                  <input type="text" className="form-input" value={catForm.name} onChange={e => setCatForm({ ...catForm, name: e.target.value })} placeholder="e.g. Silk Sarees" required />
                 </div>
                 <div>
                   <label className="form-label">Subtitle (Optional)</label>
-                  <input type="text" className="form-input" value={catForm.subtitle} onChange={e => setCatForm({...catForm, subtitle: e.target.value})} placeholder="e.g. Handwoven Masterpieces" />
+                  <input type="text" className="form-input" value={catForm.subtitle} onChange={e => setCatForm({ ...catForm, subtitle: e.target.value })} placeholder="e.g. Handwoven Masterpieces" />
                 </div>
                 <div>
                   <label className="form-label">Description (Optional)</label>
-                  <textarea className="form-input" value={catForm.description} onChange={e => setCatForm({...catForm, description: e.target.value})} placeholder="Write a short description..." rows={3} style={{ resize: 'vertical' }} />
+                  <textarea className="form-input" value={catForm.description} onChange={e => setCatForm({ ...catForm, description: e.target.value })} placeholder="Write a short description..." rows={3} style={{ resize: 'vertical' }} />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <input type="checkbox" id="cat-active" checked={catForm.isActive} onChange={e => setCatForm({...catForm, isActive: e.target.checked})} style={{ width: 16, height: 16 }} />
+                  <input type="checkbox" id="cat-active" checked={catForm.isActive} onChange={e => setCatForm({ ...catForm, isActive: e.target.checked })} style={{ width: 16, height: 16 }} />
                   <label htmlFor="cat-active" style={{ cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>Active (Visible on menus & shop)</label>
                 </div>
               </div>

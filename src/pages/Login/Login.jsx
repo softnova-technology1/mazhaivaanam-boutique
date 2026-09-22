@@ -86,7 +86,7 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
       }
       setLoading(false);
       if (result.success) {
-        const nextTab = localStorage.getItem('post_login_redirect') || 'shop';
+        const nextTab = localStorage.getItem('post_login_redirect') || 'home';
         localStorage.removeItem('post_login_redirect');
         setCurrentTab(nextTab);
       } else {
@@ -101,7 +101,7 @@ export const Login = ({ setCurrentTab, initialIsRegistering = false }) => {
   return (
     <div className={styles['auth-page-container']}>
       <div className={styles['auth-card']}>
-        <button className={styles['close-btn']} onClick={() => { if (setCurrentTab) setCurrentTab('shop'); }} aria-label="Close">
+        <button className={styles['close-btn']} onClick={() => { if (setCurrentTab) setCurrentTab('home'); }} aria-label="Close">
           <X size={24} />
         </button>
         

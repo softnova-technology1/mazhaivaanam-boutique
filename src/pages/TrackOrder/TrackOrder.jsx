@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { orderAPI } from '../../services/api';
 import InvoiceModal from '../../admin/components/InvoiceModal';
 import { 
@@ -32,6 +32,18 @@ export const TrackOrder = ({ setCurrentTab }) => {
   const [isSearched, setIsSearched] = useState(false);
   const [errorText, setErrorText] = useState('');
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const resultsRef = useRef(null);
+  const [scrollTrigger, setScrollTrigger] = useState(0);
+
+  // Auto-scroll to shipment results when searched / LOCATE SHIPMENT clicked
+  useEffect(() => {
+    if (scrollTrigger > 0 && isSearched && resultsRef.current) {
+      const timer = setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+      return () => clearTimeout(timer);
+    }
+  }, [scrollTrigger, isSearched, trackedOrder]);
 
   // Default mock order details (from user's template)
   const defaultMockOrder = {
@@ -76,7 +88,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
     }
   }, []);
 
-  const handleLocateShipment = async (searchId) => {
+  const handleLocateShipment = async (searchId, shouldScroll = false) => {
     setErrorText('');
     const id = searchId.trim().toUpperCase();
 
@@ -89,6 +101,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
     if (id === 'MV-98214-X') {
       setTrackedOrder(defaultMockOrder);
       setIsSearched(true);
+      if (shouldScroll) setScrollTrigger(prev => prev + 1);
       return;
     }
 
@@ -135,6 +148,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
 
         setTrackedOrder(dynamicOrder);
         setIsSearched(true);
+        if (shouldScroll) setScrollTrigger(prev => prev + 1);
         return;
       }
     } catch {
@@ -185,6 +199,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
 
       setTrackedOrder(dynamicOrder);
       setIsSearched(true);
+      if (shouldScroll) setScrollTrigger(prev => prev + 1);
       return;
     }
 
@@ -194,7 +209,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    handleLocateShipment(orderInput);
+    handleLocateShipment(orderInput, true);
   };
 
   const activeOrder = trackedOrder || defaultMockOrder;
@@ -279,7 +294,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
       {/* Tracking results section (Only visible when searched) */}
       {isSearched && (
         <>
-          <section className={styles.statusDetailsSection}>
+          <section ref={resultsRef} id="tracking-results-section" className={styles.statusDetailsSection} style={{ scrollMarginTop: '80px' }}>
             <div className={styles.detailsLayoutGrid}>
               
               <div className={styles.detailsLeftCol}>

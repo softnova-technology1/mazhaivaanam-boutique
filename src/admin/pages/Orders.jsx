@@ -167,6 +167,27 @@ export default function Orders() {
     );
   };
 
+  // Bulk Delete Orders
+  const handleBulkDelete = () => {
+    if (!selectedOrders.length) return;
+    showConfirm(
+      `⚠️ Permanently delete ${selectedOrders.length} selected order(s)? This cannot be undone!`,
+      async () => {
+        setBulkLoading(true);
+        try {
+          await orderAPI.bulkDelete(selectedOrders);
+          setSelectedOrders([]);
+          loadOrders();
+          loadStats();
+          showToast(`${selectedOrders.length} order(s) deleted permanently.`, 'success');
+        } catch (err) {
+          showToast(err.message || 'Error deleting orders', 'error');
+        }
+        setBulkLoading(false);
+      }
+    );
+  };
+
   // Export CSV
   const handleExportCSV = (exportSelected = false) => {
     const listToExport = exportSelected
@@ -326,6 +347,14 @@ export default function Orders() {
               onClick={() => handleExportCSV(true)}
             >
               <Download size={14} /> Export Selected
+            </button>
+            <button 
+              className="btn btn-sm"
+              disabled={bulkLoading}
+              onClick={handleBulkDelete}
+              style={{ background: '#dc2626', borderColor: '#dc2626', color: '#fff' }}
+            >
+              <X size={14} /> Delete Selected
             </button>
           </div>
         )}
@@ -824,36 +853,45 @@ export default function Orders() {
       {confirm && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 99998,
-          background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(3px)',
+          background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <div style={{
-            background: 'var(--bg-card, #1e1e2e)',
-            border: '1px solid var(--border-color, #2a2a36)',
+            background: '#1e1e2e',
+            border: '1px solid #3a3a4a',
             borderRadius: 14,
             padding: '32px 28px',
-            maxWidth: 400,
+            maxWidth: 420,
             width: '90%',
-            boxShadow: '0 24px 60px rgba(0,0,0,0.4)',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.6)',
             textAlign: 'center',
           }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>🔄</div>
-            <h3 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary, #fff)' }}>Bulk Status Update</h3>
-            <p style={{ margin: '0 0 24px', fontSize: '0.875rem', color: 'var(--text-secondary, #a0a0b2)', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>
+              {confirm.message?.toString().toLowerCase().includes('delete') ? '🗑️' : '🔄'}
+            </div>
+            <h3 style={{ margin: '0 0 10px', fontSize: '1.05rem', fontWeight: 700, color: '#ffffff' }}>
+              {confirm.message?.toString().toLowerCase().includes('delete') ? 'Delete Orders' : 'Bulk Status Update'}
+            </h3>
+            <p style={{ margin: '0 0 24px', fontSize: '0.9rem', color: '#d1d5db', lineHeight: 1.6 }}>
               {confirm.message}
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
               <button
                 className="btn btn-outline btn-sm"
                 onClick={() => setConfirm(null)}
-                style={{ minWidth: 90 }}
+                style={{ minWidth: 90, color: '#e5e7eb', borderColor: '#4b5563' }}
               >
                 Cancel
               </button>
               <button
                 className="btn btn-primary btn-sm"
                 onClick={() => { confirm.onConfirm(); setConfirm(null); }}
-                style={{ minWidth: 90 }}
+                style={{
+                  minWidth: 90,
+                  background: confirm.message?.toString().toLowerCase().includes('delete') ? '#dc2626' : undefined,
+                  borderColor: confirm.message?.toString().toLowerCase().includes('delete') ? '#dc2626' : undefined,
+                  color: '#fff',
+                }}
               >
                 Confirm
               </button>

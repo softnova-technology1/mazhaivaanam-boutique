@@ -48,13 +48,13 @@ const PreBooking = lazy(() => import('./pages/PreBooking/PreBooking').then(m => 
 
 function getInitialState() {
   const path = window.location.pathname;
-  let tab = 'shop';
+  let tab = 'home';
   let prod = null;
 
   if (path === '/' || path === '') {
+    tab = 'home';
+  } else if (path === '/shop' || path === '/catalog') {
     tab = 'shop';
-  } else if (path === '/catalog') {
-    tab = 'catalog';
   } else if (path.startsWith('/product/')) {
     tab = 'product-detail';
   } else {
@@ -193,9 +193,12 @@ function AppContent() {
     const handleUrlSync = () => {
       const path = window.location.pathname;
       if (path === '/' || path === '') {
+        setCurrentTab('home');
+      } else if (path === '/shop') {
         setCurrentTab('shop');
       } else if (path === '/catalog') {
-        setCurrentTab('catalog');
+        setCurrentTab('shop');
+        window.history.replaceState(null, '', '/shop' + window.location.search);
       } else if (path.startsWith('/product/')) {
         const productId = path.replace('/product/', '');
         getProductByIdOrSlug(productId)
@@ -204,10 +207,10 @@ function AppContent() {
               setSelectedProduct(prod);
               setCurrentTab('product-detail');
             } else {
-              setCurrentTab('shop');
+              setCurrentTab('home');
             }
           })
-          .catch(() => setCurrentTab('shop'));
+          .catch(() => setCurrentTab('home'));
       } else if ([
         'about', 'contact', 'cart', 'login', 'wishlist', 'checkout',
         'my-orders', 'track-order', 'support', 'privacy', 'returns', 'terms',
@@ -216,7 +219,7 @@ function AppContent() {
       ].includes(path.substring(1))) {
         setCurrentTab(path.substring(1));
       } else {
-        setCurrentTab('shop');
+        setCurrentTab('home');
       }
     };
 
@@ -234,13 +237,19 @@ function AppContent() {
     let expectedPath = '/';
     if (currentTab === 'product-detail' && selectedProduct) {
       expectedPath = `/product/${selectedProduct.id}`;
-    } else if (currentTab !== 'shop') {
+    } else if (currentTab === 'shop' || currentTab === 'catalog') {
+      expectedPath = '/shop';
+    } else if (currentTab !== 'home') {
       expectedPath = `/${currentTab}`;
     }
 
     // Only push if the path is actually different to avoid duplicates
     if (path !== expectedPath) {
-      window.history.pushState(null, '', expectedPath);
+      if (path === '/catalog' && expectedPath === '/shop') {
+        window.history.replaceState(null, '', expectedPath + window.location.search);
+      } else {
+        window.history.pushState(null, '', expectedPath);
+      }
     }
 
     // Scroll to top on page navigation
@@ -249,8 +258,9 @@ function AppContent() {
 
   const renderContent = () => {
     switch (currentTab) {
-      case 'shop':
+      case 'home':
         return <Home setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} setCatalogFilter={setCatalogFilter} />;
+      case 'shop':
       case 'catalog':
         return (
           <Catalog

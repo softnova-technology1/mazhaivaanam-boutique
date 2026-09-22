@@ -4,8 +4,8 @@ import { useStoreConfig } from '../../../context/StoreConfigContext';
 export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
   const storeConfig = useStoreConfig();
   const handleTabChange = (tab) => {
-    window.history.pushState(null, '', `/${tab}`);
-    setCurrentTab(tab);
+    const targetTab = tab === 'catalog' ? 'shop' : tab;
+    setCurrentTab(targetTab);
     window.scrollTo(0, 0);
   };
 
@@ -13,7 +13,7 @@ export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
     if (setCatalogFilter) {
       setCatalogFilter({ category, occasion: '', label: category });
     }
-    handleTabChange('catalog');
+    handleTabChange('shop');
   };
 
   return (
@@ -31,7 +31,7 @@ export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
           {/* Column 1: Brand Info */}
           <div className={styles['footer-brand']}>
             <img src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/logo/malai-vanam-footer.png" alt="Mazhai Vaanam Footer Logo" className={styles['footer-logo-img']} />
-            <h3 onClick={() => handleTabChange('shop')} style={{ cursor: 'pointer', textTransform: 'uppercase' }}>{storeConfig.storeName || 'MAZHAI VAANAM'}</h3>
+            <h3 onClick={() => handleTabChange('home')} style={{ cursor: 'pointer', textTransform: 'uppercase' }}>{storeConfig.storeName || 'MAZHAI VAANAM'}</h3>
             <p>Handpicked heritage fabrics & luxury ensembles, tailored to perfection.</p>
             <div className={styles['social-icons']}>
               {storeConfig.facebookUrl && storeConfig.facebookUrl.trim() !== '' && (

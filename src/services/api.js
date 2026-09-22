@@ -362,33 +362,52 @@ export const wishlistAPI = {
 export const addressAPI = {
   getAddresses: async () => {
     const res = await request('/addresses');
-    return res.data || [];
+    const list = res.data || [];
+    return list.map(a => ({ ...a, id: a._id || a.id, _id: a._id || a.id }));
   },
   createAddress: async (addressData) => {
+    const stateVal = addressData.state || addressData.stateName || '';
+    const payload = {
+      ...addressData,
+      state: stateVal,
+      stateName: stateVal
+    };
     const res = await request('/addresses', {
       method: 'POST',
-      body: addressData,
+      body: payload,
     });
-    return res.data;
+    const item = res.data;
+    return item ? { ...item, id: item._id || item.id, _id: item._id || item.id } : item;
   },
   updateAddress: async (id, addressData) => {
-    const res = await request(`/addresses/${id}`, {
+    const targetId = typeof id === 'object' ? (id?._id || id?.id) : id;
+    const stateVal = addressData.state || addressData.stateName || '';
+    const payload = {
+      ...addressData,
+      state: stateVal,
+      stateName: stateVal
+    };
+    const res = await request(`/addresses/${targetId}`, {
       method: 'PUT',
-      body: addressData,
+      body: payload,
     });
-    return res.data;
+    const item = res.data;
+    return item ? { ...item, id: item._id || item.id, _id: item._id || item.id } : item;
   },
   deleteAddress: async (id) => {
-    const res = await request(`/addresses/${id}`, {
+    const targetId = typeof id === 'object' ? (id?._id || id?.id) : id;
+    const res = await request(`/addresses/${targetId}`, {
       method: 'DELETE',
     });
     return res.data;
   },
   setDefault: async (id) => {
-    const res = await request(`/addresses/${id}/default`, {
+    const targetId = typeof id === 'object' ? (id?._id || id?.id) : id;
+    const res = await request(`/addresses/${targetId}/default`, {
       method: 'PUT',
     });
-    return res.data;
+    const item = res.data;
+    return item ? { ...item, id: item._id || item.id, _id: item._id || item.id } : item;
   },
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SEO from '../../components/common/SEO/SEO';
 import { useCart } from '../../hooks/useCart';
 import { useWishlist } from '../../hooks/useWishlist';
@@ -31,7 +31,15 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const getPageFromUrl = () => {
+    const params = new URLSearchParams(window.location.search);
+    const p = parseInt(params.get('page'), 10);
+    return !isNaN(p) && p > 0 ? p : 1;
+  };
+
+  const [currentPage, setCurrentPage] = useState(getPageFromUrl);
+  const isFirstFilterRun = useRef(true);
   const ITEMS_PER_PAGE = 24;
 
   // Lock body scroll when mobile filter drawer is open
@@ -177,15 +185,52 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     }
 
     setProducts(filtered);
-    setCurrentPage(1);
+    if (isFirstFilterRun.current) {
+      isFirstFilterRun.current = false;
+    } else {
+      setCurrentPage(1);
+      const url = new URL(window.location.href);
+      if (url.searchParams.has('page')) {
+        url.searchParams.delete('page');
+        const search = url.searchParams.toString();
+        const newPath = url.pathname + (search ? `?${search}` : '');
+        window.history.pushState(null, '', newPath);
+      }
+    }
   }, [masterProducts, selectedCategory, selectedFabric, selectedAvailability, maxPrice, selectedSort, searchQuery]);
+
+  // Handle browser back/forward history events for pagination
+  useEffect(() => {
+    const handlePopState = () => {
+      const page = getPageFromUrl();
+      setCurrentPage(page);
+      setTimeout(() => {
+        document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Calculate paginated products for rendering
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
   const currentProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const handlePageChange = (pageNumber) => {
+    if (pageNumber === currentPage) return;
     setCurrentPage(pageNumber);
+
+    const url = new URL(window.location.href);
+    if (pageNumber > 1) {
+      url.searchParams.set('page', pageNumber);
+    } else {
+      url.searchParams.delete('page');
+    }
+    const search = url.searchParams.toString();
+    const newPath = url.pathname + (search ? `?${search}` : '');
+    window.history.pushState({ page: pageNumber }, '', newPath);
+
     setTimeout(() => {
       document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
     }, 50);

@@ -177,19 +177,38 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
       if (!user) {
         // Not logged in — use localStorage
         const saved = localStorage.getItem('boutique_addresses');
-        if (saved) setAddresses(JSON.parse(saved));
+        if (saved) {
+          try {
+            const list = JSON.parse(saved) || [];
+            setAddresses(list.map(a => ({ ...a, id: a._id || a.id, _id: a._id || a.id })));
+          } catch {
+            setAddresses([]);
+          }
+        }
         return;
       }
       setAddressesLoading(true);
       try {
         const serverAddrs = await addressAPI.getAddresses();
-        setAddresses(serverAddrs || []);
+        const normalized = (serverAddrs || []).map(a => ({
+          ...a,
+          id: a._id || a.id,
+          _id: a._id || a.id
+        }));
+        setAddresses(normalized);
         // Keep localStorage in sync for offline
-        localStorage.setItem('boutique_addresses', JSON.stringify(serverAddrs || []));
+        localStorage.setItem('boutique_addresses', JSON.stringify(normalized));
       } catch (err) {
         // Fallback to localStorage if API fails
         const saved = localStorage.getItem('boutique_addresses');
-        if (saved) setAddresses(JSON.parse(saved));
+        if (saved) {
+          try {
+            const list = JSON.parse(saved) || [];
+            setAddresses(list.map(a => ({ ...a, id: a._id || a.id, _id: a._id || a.id })));
+          } catch {
+            setAddresses([]);
+          }
+        }
       } finally {
         setAddressesLoading(false);
       }
@@ -204,6 +223,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     addressLine: '',
     landmark: '',
     city: '',
+    state: '',
     stateName: '',
     pinCode: '',
     country: 'India',
@@ -318,10 +338,16 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   };
 
   const handleSetDefaultAddress = async (id) => {
+    const targetId = id || (typeof id === 'object' ? (id?._id || id?.id) : null);
+    if (!targetId) return;
+
     if (user) {
       try {
-        await addressAPI.setDefault(id);
-        const updated = addresses.map(addr => ({ ...addr, isDefault: addr._id === id || addr.id === id }));
+        await addressAPI.setDefault(targetId);
+        const updated = addresses.map(addr => ({
+          ...addr,
+          isDefault: (addr._id || addr.id) === targetId
+        }));
         setAddresses(updated);
         localStorage.setItem('boutique_addresses', JSON.stringify(updated));
         triggerToast('Default shipping address updated.');
@@ -329,7 +355,10 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
         triggerToast(err.message || 'Failed to update default address.');
       }
     } else {
-      const updated = addresses.map(addr => ({ ...addr, isDefault: addr.id === id }));
+      const updated = addresses.map(addr => ({
+        ...addr,
+        isDefault: (addr._id || addr.id) === targetId
+      }));
       setAddresses(updated);
       localStorage.setItem('boutique_addresses', JSON.stringify(updated));
       triggerToast('Default shipping address updated.');
@@ -337,60 +366,80 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   };
 
   const handleDeleteAddress = async (id) => {
-    const target = addresses.find(addr => (addr._id || addr.id) === id);
-    if (target?.isDefault && addresses.length > 1) {
-      triggerToast('Cannot delete default address. Set another default first.');
+    const targetId = id || (typeof id === 'object' ? (id?._id || id?.id) : null);
+    if (!targetId) {
+      triggerToast('Unable to identify address to delete.');
       return;
     }
+
+    const target = addresses.find(addr => (addr._id || addr.id) === targetId);
+
     if (user) {
       try {
-        await addressAPI.deleteAddress(id);
-        const updated = addresses.filter(addr => (addr._id || addr.id) !== id);
-        setAddresses(updated);
-        localStorage.setItem('boutique_addresses', JSON.stringify(updated));
+        await addressAPI.deleteAddress(targetId);
+        const remaining = addresses.filter(addr => (addr._id || addr.id) !== targetId);
+        // If deleted address was default and other addresses exist, promote the next one
+        if (target?.isDefault && remaining.length > 0) {
+          remaining[0].isDefault = true;
+        }
+        setAddresses(remaining);
+        localStorage.setItem('boutique_addresses', JSON.stringify(remaining));
         triggerToast('Address deleted successfully.');
       } catch (err) {
         triggerToast(err.message || 'Failed to delete address.');
       }
     } else {
-      const updated = addresses.filter(addr => addr.id !== id);
-      setAddresses(updated);
-      localStorage.setItem('boutique_addresses', JSON.stringify(updated));
+      const remaining = addresses.filter(addr => (addr._id || addr.id) !== targetId);
+      if (target?.isDefault && remaining.length > 0) {
+        remaining[0].isDefault = true;
+      }
+      setAddresses(remaining);
+      localStorage.setItem('boutique_addresses', JSON.stringify(remaining));
       triggerToast('Address deleted successfully.');
     }
   };
 
   const handleAddAddressSubmit = async (e) => {
     e.preventDefault();
-    if (!newAddress.fullName || !newAddress.addressLine || !newAddress.city || !newAddress.stateName || !newAddress.pinCode || !newAddress.phone) {
+    const stateVal = (newAddress.state || newAddress.stateName || '').trim();
+    if (!newAddress.fullName || !newAddress.addressLine || !newAddress.city || !stateVal || !newAddress.pinCode || !newAddress.phone) {
       triggerToast('Please fill out all address details.');
       return;
     }
 
+    const payload = {
+      ...newAddress,
+      state: stateVal,
+      stateName: stateVal
+    };
+
     if (user) {
       try {
-        const created = await addressAPI.createAddress(newAddress);
-        const updated = [...addresses, created];
+        const created = await addressAPI.createAddress(payload);
+        const normalized = created ? { ...created, id: created._id || created.id, _id: created._id || created.id, state: stateVal, stateName: stateVal } : created;
+        const updated = [...addresses, normalized];
         setAddresses(updated);
         localStorage.setItem('boutique_addresses', JSON.stringify(updated));
         setIsAddAddressOpen(false);
-        setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+        setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', state: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
         triggerToast('New address saved! 🏡');
       } catch (err) {
         triggerToast(err.message || 'Failed to save address.');
       }
     } else {
       // Guest — localStorage only
-      const createdAddress = { ...newAddress, id: `addr-${Date.now()}` };
+      const id = `addr-${Date.now()}`;
+      const createdAddress = { ...payload, id, _id: id };
       let updatedAddresses = [...addresses];
       if (createdAddress.isDefault) {
         updatedAddresses = updatedAddresses.map(addr => ({ ...addr, isDefault: false }));
       }
       if (updatedAddresses.length === 0) createdAddress.isDefault = true;
-      setAddresses([...updatedAddresses, createdAddress]);
-      localStorage.setItem('boutique_addresses', JSON.stringify([...updatedAddresses, createdAddress]));
+      const finalAddrs = [...updatedAddresses, createdAddress];
+      setAddresses(finalAddrs);
+      localStorage.setItem('boutique_addresses', JSON.stringify(finalAddrs));
       setIsAddAddressOpen(false);
-      setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+      setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', state: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
       triggerToast('New address saved to your notebook! 🏡');
     }
   };
@@ -848,44 +897,47 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                 <div className={styles.sectionDivider}></div>
 
                 <div className={styles.addressGrid}>
-                  {addresses.map((addr) => (
-                    <article
-                      key={addr.id}
-                      className={`${styles.addressCard} ${addr.isDefault ? styles.addressCardDefault : ''}`}
-                    >
-                      {addr.isDefault && (
-                        <span className={styles.defaultBadge}>DEFAULT SHIPPING</span>
-                      )}
-
-                      <div>
-                        <h4 className={styles.addressName}>{addr.fullName}</h4>
-                        <p className={styles.addressDetails}>
-                          {addr.addressLine}<br />
-                          {addr.landmark && <>{addr.landmark}<br /></>}
-                          {addr.city}, {addr.stateName} - {addr.pinCode}<br />
-                          {addr.country}<br />
-                          Phone: {addr.phone}
-                        </p>
-                      </div>
-
-                      <div className={styles.addressActions}>
-                        {!addr.isDefault && (
-                          <button
-                            onClick={() => handleSetDefaultAddress(addr.id)}
-                            className={`${styles.addressLinkBtn} menuLink`}
-                          >
-                            Set Default
-                          </button>
+                  {addresses.map((addr) => {
+                    const addrId = addr._id || addr.id;
+                    return (
+                      <article
+                        key={addrId}
+                        className={`${styles.addressCard} ${addr.isDefault ? styles.addressCardDefault : ''}`}
+                      >
+                        {addr.isDefault && (
+                          <span className={styles.defaultBadge}>DEFAULT SHIPPING</span>
                         )}
-                        <button
-                          onClick={() => handleDeleteAddress(addr.id)}
-                          className={`${styles.addressLinkBtn} ${styles.deleteBtn} menuLink`}
-                        >
-                          Delete Address
-                        </button>
-                      </div>
-                    </article>
-                  ))}
+
+                        <div>
+                          <h4 className={styles.addressName}>{addr.fullName}</h4>
+                          <p className={styles.addressDetails}>
+                            {addr.addressLine}<br />
+                            {addr.landmark && <>{addr.landmark}<br /></>}
+                            {addr.city}, {addr.stateName || addr.state ? `${addr.stateName || addr.state} - ` : ''}{addr.pinCode}<br />
+                            {addr.country}<br />
+                            Phone: {addr.phone}
+                          </p>
+                        </div>
+
+                        <div className={styles.addressActions}>
+                          {!addr.isDefault && (
+                            <button
+                              onClick={() => handleSetDefaultAddress(addrId)}
+                              className={`${styles.addressLinkBtn} menuLink`}
+                            >
+                              Set Default
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDeleteAddress(addrId)}
+                            className={`${styles.addressLinkBtn} ${styles.deleteBtn} menuLink`}
+                          >
+                            Delete Address
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
 
                   <button
                     onClick={() => setIsAddAddressOpen(true)}
@@ -1218,8 +1270,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                   <label className={styles.formLabel}>State</label>
                   <input
                     type="text"
-                    value={newAddress.stateName}
-                    onChange={(e) => setNewAddress({ ...newAddress, stateName: e.target.value })}
+                    value={newAddress.state || newAddress.stateName || ''}
+                    onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value, stateName: e.target.value })}
                     placeholder="e.g. Tamil Nadu"
                     className={styles.formInput}
                     required

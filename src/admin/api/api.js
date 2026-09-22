@@ -97,6 +97,8 @@ export const orderAPI = {
   getAll: (params = '') => request(`/admin/orders${params ? '?' + params : ''}`),
   updateStatus: (orderId, body) => request(`/admin/orders/${orderId}/status`, { method: 'PUT', body }),
   bulkUpdateStatus: (orderIds, status, note = '') => request('/admin/orders/bulk/status', { method: 'PUT', body: { orderIds, status, note } }),
+  delete: (orderId) => request(`/admin/orders/${orderId}`, { method: 'DELETE' }),
+  bulkDelete: (orderIds) => request('/admin/orders/bulk/delete', { method: 'POST', body: { orderIds } }),
 };
 
 // ====== INVENTORY ======

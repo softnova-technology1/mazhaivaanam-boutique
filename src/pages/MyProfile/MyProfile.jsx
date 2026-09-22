@@ -37,7 +37,7 @@ import InvoiceModal from '../../admin/components/InvoiceModal';
 import styles from './MyProfile.module.css';
 
 export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfile } = useAuth();
   const { addToCart } = useCart();
   const [activeSection, setActiveSection] = useState(initialSection);
 
@@ -118,16 +118,27 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     setCurrentTab('shop');
   };
 
-  // 1. Personal Profile State
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '';
+      return d.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
+  };
+
   // 1. Personal Profile State
   const [profile, setProfile] = useState({
     firstName: user?.firstName || user?.fullName?.split(' ')[0] || '',
     lastName: user?.lastName || user?.fullName?.split(' ').slice(1).join(' ') || '',
     email: user?.email || '',
     phone: user?.phone || '',
-    birthday: user?.birthday || '',
-    anniversary: user?.anniversary || ''
+    birthday: formatDateForInput(user?.birthday),
+    anniversary: formatDateForInput(user?.anniversary)
   });
+  const [profileSaving, setProfileSaving] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -137,8 +148,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
         lastName: user.lastName || user.fullName?.split(' ').slice(1).join(' ') || prev.lastName,
         email: user.email || prev.email,
         phone: user.phone || prev.phone,
-        birthday: user.birthday || prev.birthday,
-        anniversary: user.anniversary || prev.anniversary
+        birthday: formatDateForInput(user.birthday) || prev.birthday,
+        anniversary: formatDateForInput(user.anniversary) || prev.anniversary
       }));
     }
   }, [user]);
@@ -224,9 +235,36 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   };
 
   // Actions
-  const handleProfileSave = (e) => {
+  const handleProfileSave = async (e) => {
     e.preventDefault();
-    triggerToast('Profile updated successfully! ✨');
+    if (!profile.firstName?.trim()) {
+      triggerToast('Please enter your first name.');
+      return;
+    }
+    setProfileSaving(true);
+    try {
+      if (updateProfile) {
+        const payload = {
+          firstName: profile.firstName.trim(),
+          lastName: profile.lastName?.trim() || '',
+          phone: profile.phone?.trim() || '',
+          birthday: profile.birthday || null,
+          anniversary: profile.anniversary || null
+        };
+        const res = await updateProfile(payload);
+        if (res.success) {
+          triggerToast('Profile updated successfully! ✨');
+        } else {
+          triggerToast(res.message || 'Failed to update profile');
+        }
+      } else {
+        triggerToast('Profile updated successfully! ✨');
+      }
+    } catch (err) {
+      triggerToast('Failed to update profile');
+    } finally {
+      setProfileSaving(false);
+    }
   };
 
   const getPasswordStrength = (pwd) => {
@@ -523,8 +561,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                   </div>
 
                   <div className={`${styles.buttonRow} md:col-span-2`}>
-                    <button type="submit" className={`${styles.submitBtn} menuLink`}>
-                      Save Changes
+                    <button type="submit" disabled={profileSaving} className={`${styles.submitBtn} menuLink`}>
+                      {profileSaving ? 'Saving...' : 'Save Changes'}
                     </button>
                   </div>
                 </form>
@@ -596,7 +634,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                           {order.items?.map((item, i) => (
                             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                               <div style={{ width: 48, height: 48, borderRadius: 6, overflow: 'hidden', flexShrink: 0, background: '#111' }}>
-                                <img src={item.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={item.image || '/Images/placeholder.svg'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>{item.name}</div>

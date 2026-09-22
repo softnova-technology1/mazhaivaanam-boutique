@@ -98,6 +98,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = async (profileData) => {
+    try {
+      const updatedUser = await authAPI.updateProfile(profileData);
+      if (updatedUser) {
+        setUser(updatedUser);
+        localStorage.setItem('boutique_user', JSON.stringify(updatedUser));
+        return { success: true, user: updatedUser };
+      }
+      return { success: false, message: 'Failed to update profile' };
+    } catch (err) {
+      return { success: false, message: err.message || 'Failed to update profile' };
+    }
+  };
+
   const logout = () => {
     authAPI.logout();
     setUser(null);
@@ -124,6 +138,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        updateProfile,
       }}
     >
       {children}

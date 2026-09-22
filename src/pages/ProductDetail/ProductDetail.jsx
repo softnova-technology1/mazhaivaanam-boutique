@@ -323,7 +323,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
 
       {/* Breadcrumb Navigation */}
       <nav className={styles['breadcrumb-nav']}>
-        <button onClick={() => setCurrentTab('shop')} className={styles['breadcrumb-link']}>
+        <button onClick={() => setCurrentTab('home')} className={styles['breadcrumb-link']}>
           <Home size={12} className={styles['breadcrumb-icon']} />
           Home
         </button>
@@ -333,7 +333,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         {activeProduct.isPreorder ? (
           <button onClick={() => setCurrentTab('pre-booking')} className={styles['breadcrumb-link']}>Pre-Reservations</button>
         ) : (
-          <button onClick={() => setCurrentTab('catalog')} className={styles['breadcrumb-link']}>Shop Collections</button>
+          <button onClick={() => setCurrentTab('shop')} className={styles['breadcrumb-link']}>Shop Collections</button>
         )}
         <span className={styles['breadcrumb-separator']}>
           <ChevronRight size={10} />

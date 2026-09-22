@@ -41,7 +41,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
       // Pass the exact category name from DB so Catalog filter matches correctly
       setCatalogFilter({ category: label, occasion: '', label: label });
     }
-    setCurrentTab('catalog');
+    setCurrentTab('shop');
     setTimeout(() => {
       document.getElementById('catalog-products-section')?.scrollIntoView({ behavior: 'smooth' });
     }, 150);

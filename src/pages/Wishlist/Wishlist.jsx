@@ -137,7 +137,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
               <p>Begin curating your dream trousseau by adding your favorite handwoven sarees from our catalog.</p>
               <button 
                 className={styles['explore-weaves-btn']}
-                onClick={() => setCurrentTab('catalog')}
+                onClick={() => setCurrentTab('shop')}
               >
                 EXPLORE OUR WEAVES
               </button>
@@ -235,7 +235,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
           <p>Explore our latest arrivals in Silk, Cotton, and Bridal couture. Handcrafted specifically for the connoisseur of heritage.</p>
           <button 
             className={`${styles['wardrobe-discover-btn']} pill-btn`}
-            onClick={() => setCurrentTab('catalog')}
+            onClick={() => setCurrentTab('shop')}
           >
             <span>DISCOVER NEW ARRIVALS</span>
             <ArrowRight size={16} />

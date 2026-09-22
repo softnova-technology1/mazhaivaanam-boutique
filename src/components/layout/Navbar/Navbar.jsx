@@ -104,7 +104,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
     if (setCatalogFilter) {
       setCatalogFilter({ category, occasion, label: category || occasion || 'All Collections' });
     }
-    handleTabChange('catalog');
+    handleTabChange('shop');
     
     if (category || occasion) {
       setTimeout(() => {
@@ -123,7 +123,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
       setCatalogFilter({ category: '', occasion: '', label: `Search: ${query}` });
     }
     // Set matching search terms indirectly or reset category filters
-    handleTabChange('catalog');
+    handleTabChange('shop');
     setIsSearchOpen(false);
   };
 
@@ -132,7 +132,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
     if (setCatalogFilter) {
       setCatalogFilter({ category: '', occasion: '', label: `Search: ${tag}` });
     }
-    handleTabChange('catalog');
+    handleTabChange('shop');
     setIsSearchOpen(false);
   };
 
@@ -195,7 +195,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
             </div>
 
             {/* Logo perfectly centered */}
-            <div className={styles.centerLogo} onClick={() => handleTabChange('shop')}>
+            <div className={styles.centerLogo} onClick={() => handleTabChange('home')}>
               <img src="https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/logo/logo.png" alt="logo" className={styles.brandLogoIcon} />
               <div className={styles.brandTextGroup}>
                 <h1 className={styles.brandTitle}>
@@ -255,7 +255,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
                           <Heart size={14} className={styles.dropdownIcon} /> Wishlist
                         </button>
                         <div className={styles.dropdownDivider}></div>
-                        <button onClick={() => { logout(); handleTabChange('shop'); setIsAccountOpen(false); }} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>
+                        <button onClick={() => { logout(); handleTabChange('home'); setIsAccountOpen(false); }} className={`${styles.dropdownLink} ${styles.logoutBtn}`}>
                           <LogOut size={14} className={styles.dropdownIcon} /> Logout
                         </button>
                       </>
@@ -300,7 +300,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
           <div className={`${styles.container} ${styles.bottomContainer}`}>
             <ul className={styles.menuList}>
               <li className={styles.menuItem}>
-                <button onClick={() => handleTabChange('shop')} className={`${styles.menuLink} ${currentTab === 'shop' ? styles.active : ''}`}>Home</button>
+                <button onClick={() => handleTabChange('home')} className={`${styles.menuLink} ${currentTab === 'home' ? styles.active : ''}`}>Home</button>
               </li>
 
               {/* Collections Mega Menu hover trigger */}
@@ -335,7 +335,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
               </li>
 
               <li className={styles.menuItem}>
-                <button onClick={() => handleCatalogClick()} className={`${styles.menuLink} ${currentTab === 'catalog' ? styles.active : ''}`}>Shop</button>
+                <button onClick={() => handleCatalogClick()} className={`${styles.menuLink} ${(currentTab === 'shop' || currentTab === 'catalog') ? styles.active : ''}`}>Shop</button>
               </li>
 
               <li className={styles.menuItem}>
@@ -635,7 +635,7 @@ export const Navbar = ({ currentTab, setCurrentTab, setCatalogFilter, setSelecte
             
             <ul className={styles.drawerList}>
               <li className={styles.drawerItem}>
-                <button onClick={() => handleTabChange('shop')} className={styles.drawerLink}>Home</button>
+                <button onClick={() => handleTabChange('home')} className={styles.drawerLink}>Home</button>
               </li>
               <li className={styles.drawerItem}>
                 <button onClick={() => handleCatalogClick()} className={styles.drawerLink}>Shop</button>

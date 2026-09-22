@@ -137,7 +137,7 @@ export const Cart = ({ setCurrentTab }) => {
 
       {/* Breadcrumbs & Header */}
       <nav className={styles.breadcrumbs}>
-        <span onClick={() => setCurrentTab('shop')} style={{ cursor: 'pointer' }}>Home</span>
+        <span onClick={() => setCurrentTab('home')} style={{ cursor: 'pointer' }}>Home</span>
         <span>/</span>
         <span className={styles.activeBreadcrumb}>Shopping Bag</span>
       </nav>
@@ -159,7 +159,7 @@ export const Cart = ({ setCurrentTab }) => {
             </p>
             <button 
               className={styles.shimmerBtn} 
-              onClick={() => setCurrentTab('catalog')}
+              onClick={() => setCurrentTab('shop')}
               style={{ width: 'fit-content', minWidth: '280px', padding: '15px 30px', marginTop: '12px' }}
             >
               Explore Collections

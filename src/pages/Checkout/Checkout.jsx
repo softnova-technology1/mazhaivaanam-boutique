@@ -1044,7 +1044,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
 
               {/* Continue Shopping button */}
               <div style={{ textAlign: 'center', marginTop: '24px' }}>
-                <button className={styles.finishShoppingBtn} onClick={() => setCurrentTab('shop')}>
+                <button className={styles.finishShoppingBtn} onClick={() => setCurrentTab('home')}>
                   Return to Homepage
                   <ArrowRight size={16} />
                 </button>

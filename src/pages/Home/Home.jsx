@@ -154,7 +154,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
       setCatalogFilter({ category: category, occasion: '', label: category });
     }
     if (setCurrentTab) {
-      setCurrentTab('catalog');
+      setCurrentTab('shop');
       
       // Wait for Catalog to render, then scroll specifically to the product grid section 
       setTimeout(() => {
@@ -181,7 +181,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
               
               <div className={styles['hero-actions']}>
                 <button 
-                  onClick={() => setCurrentTab && setCurrentTab('catalog')} 
+                  onClick={() => setCurrentTab && setCurrentTab('shop')} 
                   className={`${styles['btn-explore']} btn-cloud`}
                 >
                   EXPLORE COLLECTION

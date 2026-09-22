@@ -24,12 +24,14 @@ const BREADCRUMB_MAP = {
   'my-profile': 'My Profile',
   'saved-address': 'Saved Address',
   'gift-cards': 'Gift Cards',
+  'shop': 'Shop',
   'catalog': 'Shop',
 };
 
 const OVERLAY_TABS = [
   'about',
   'contact',
+  'shop',
   'catalog',
   'new-arrivals',
   'track-order',
@@ -48,11 +50,11 @@ export const Breadcrumbs = ({
   setCatalogFilter, 
   selectedProduct 
 }) => {
-  if (currentTab === 'shop' || currentTab === 'product-detail' || currentTab === 'catalog') return null;
+  if (currentTab === 'home' || currentTab === 'shop' || currentTab === 'product-detail' || currentTab === 'catalog') return null;
 
   const handleHomeClick = () => {
     if (setCurrentTab) {
-      setCurrentTab('shop');
+      setCurrentTab('home');
     }
   };
 
@@ -61,7 +63,7 @@ export const Breadcrumbs = ({
       setCatalogFilter({ category: '', occasion: '', label: 'All Collections' });
     }
     if (setCurrentTab) {
-      setCurrentTab('catalog');
+      setCurrentTab('shop');
     }
   };
 
@@ -75,7 +77,7 @@ export const Breadcrumbs = ({
       </span>
     );
 
-    if (currentTab === 'catalog') {
+    if (currentTab === 'catalog' || currentTab === 'shop') {
       const category = catalogFilter?.category;
       if (category && category !== 'All') {
         return (
@@ -139,6 +141,7 @@ export const Breadcrumbs = ({
 
   const isOverlay = OVERLAY_TABS.includes(currentTab);
   const isGreenTheme = [
+    'shop',
     'catalog', 
     'pre-booking', 
     'best-sellers', 

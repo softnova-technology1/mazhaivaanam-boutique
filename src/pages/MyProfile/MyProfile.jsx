@@ -115,7 +115,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
       localStorage.setItem('boutique_applied_coupon', code);
       triggerToast(`Coupon ${code} activated for checkout! 🛍️`);
     }
-    setCurrentTab('catalog');
+    setCurrentTab('shop');
   };
 
   // 1. Personal Profile State
@@ -374,7 +374,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   const handleLogoutClick = () => {
     logout();
     triggerToast('Logged out of your Atelier account.');
-    setCurrentTab('shop');
+    setCurrentTab('home');
   };
 
   const faqs = [
@@ -547,7 +547,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                     <ShoppingBag size={42} style={{ color: 'var(--primary)', margin: '0 auto 12px auto', opacity: 0.6 }} />
                     <h4 style={{ fontSize: '1.1rem', color: 'var(--text-main)', marginBottom: 6 }}>No orders found yet</h4>
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 20 }}>Explore our handwoven saree atelier to place your first heirloom order.</p>
-                    <button onClick={() => setCurrentTab('catalog')} className={`${styles.submitBtn} menuLink`}>
+                    <button onClick={() => setCurrentTab('shop')} className={`${styles.submitBtn} menuLink`}>
                       Explore Sarees
                     </button>
                   </div>

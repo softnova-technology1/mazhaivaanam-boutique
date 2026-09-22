@@ -81,7 +81,7 @@ export const About = ({ setCurrentTab }) => {
 
           <div className={styles.heroActionRow}>
             <button
-              onClick={() => setCurrentTab('catalog')}
+              onClick={() => setCurrentTab('shop')}
               className={`${styles.primaryActionBtn} btn-cloud`}
             >
               Explore Collection

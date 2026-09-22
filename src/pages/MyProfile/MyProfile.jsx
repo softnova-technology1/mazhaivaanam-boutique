@@ -37,7 +37,7 @@ import InvoiceModal from '../../admin/components/InvoiceModal';
 import styles from './MyProfile.module.css';
 
 export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfile } = useAuth();
   const { addToCart } = useCart();
   const [activeSection, setActiveSection] = useState(initialSection);
 
@@ -118,16 +118,27 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     setCurrentTab('catalog');
   };
 
-  // 1. Personal Profile State
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '';
+      return d.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
+  };
+
   // 1. Personal Profile State
   const [profile, setProfile] = useState({
     firstName: user?.firstName || user?.fullName?.split(' ')[0] || '',
     lastName: user?.lastName || user?.fullName?.split(' ').slice(1).join(' ') || '',
     email: user?.email || '',
     phone: user?.phone || '',
-    birthday: user?.birthday || '',
-    anniversary: user?.anniversary || ''
+    birthday: formatDateForInput(user?.birthday),
+    anniversary: formatDateForInput(user?.anniversary)
   });
+  const [profileSaving, setProfileSaving] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -137,8 +148,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
         lastName: user.lastName || user.fullName?.split(' ').slice(1).join(' ') || prev.lastName,
         email: user.email || prev.email,
         phone: user.phone || prev.phone,
-        birthday: user.birthday || prev.birthday,
-        anniversary: user.anniversary || prev.anniversary
+        birthday: formatDateForInput(user.birthday) || prev.birthday,
+        anniversary: formatDateForInput(user.anniversary) || prev.anniversary
       }));
     }
   }, [user]);
@@ -193,7 +204,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     addressLine: '',
     landmark: '',
     city: '',
-    stateName: '',
+    state: '',
     pinCode: '',
     country: 'India',
     phone: '',
@@ -224,9 +235,36 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
   };
 
   // Actions
-  const handleProfileSave = (e) => {
+  const handleProfileSave = async (e) => {
     e.preventDefault();
-    triggerToast('Profile updated successfully! ✨');
+    if (!profile.firstName?.trim()) {
+      triggerToast('Please enter your first name.');
+      return;
+    }
+    setProfileSaving(true);
+    try {
+      if (updateProfile) {
+        const payload = {
+          firstName: profile.firstName.trim(),
+          lastName: profile.lastName?.trim() || '',
+          phone: profile.phone?.trim() || '',
+          birthday: profile.birthday || null,
+          anniversary: profile.anniversary || null
+        };
+        const res = await updateProfile(payload);
+        if (res.success) {
+          triggerToast('Profile updated successfully! ✨');
+        } else {
+          triggerToast(res.message || 'Failed to update profile');
+        }
+      } else {
+        triggerToast('Profile updated successfully! ✨');
+      }
+    } catch (err) {
+      triggerToast('Failed to update profile');
+    } finally {
+      setProfileSaving(false);
+    }
   };
 
   const getPasswordStrength = (pwd) => {
@@ -324,7 +362,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
   const handleAddAddressSubmit = async (e) => {
     e.preventDefault();
-    if (!newAddress.fullName || !newAddress.addressLine || !newAddress.city || !newAddress.stateName || !newAddress.pinCode || !newAddress.phone) {
+    if (!newAddress.fullName || !newAddress.addressLine || !newAddress.city || !newAddress.state || !newAddress.pinCode || !newAddress.phone) {
       triggerToast('Please fill out all address details.');
       return;
     }
@@ -336,7 +374,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
         setAddresses(updated);
         localStorage.setItem('boutique_addresses', JSON.stringify(updated));
         setIsAddAddressOpen(false);
-        setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+        setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', state: '', pinCode: '', country: 'India', phone: '', isDefault: false });
         triggerToast('New address saved! 🏡');
       } catch (err) {
         triggerToast(err.message || 'Failed to save address.');
@@ -352,7 +390,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
       setAddresses([...updatedAddresses, createdAddress]);
       localStorage.setItem('boutique_addresses', JSON.stringify([...updatedAddresses, createdAddress]));
       setIsAddAddressOpen(false);
-      setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+      setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', state: '', pinCode: '', country: 'India', phone: '', isDefault: false });
       triggerToast('New address saved to your notebook! 🏡');
     }
   };
@@ -523,8 +561,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                   </div>
 
                   <div className={`${styles.buttonRow} md:col-span-2`}>
-                    <button type="submit" className={`${styles.submitBtn} menuLink`}>
-                      Save Changes
+                    <button type="submit" disabled={profileSaving} className={`${styles.submitBtn} menuLink`}>
+                      {profileSaving ? 'Saving...' : 'Save Changes'}
                     </button>
                   </div>
                 </form>
@@ -824,7 +862,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                         <p className={styles.addressDetails}>
                           {addr.addressLine}<br />
                           {addr.landmark && <>{addr.landmark}<br /></>}
-                          {addr.city}, {addr.stateName} - {addr.pinCode}<br />
+                          {addr.city}, {addr.state} - {addr.pinCode}<br />
                           {addr.country}<br />
                           Phone: {addr.phone}
                         </p>
@@ -833,14 +871,14 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                       <div className={styles.addressActions}>
                         {!addr.isDefault && (
                           <button
-                            onClick={() => handleSetDefaultAddress(addr.id)}
+                            onClick={() => handleSetDefaultAddress(addr._id || addr.id)}
                             className={`${styles.addressLinkBtn} menuLink`}
                           >
                             Set Default
                           </button>
                         )}
                         <button
-                          onClick={() => handleDeleteAddress(addr.id)}
+                          onClick={() => handleDeleteAddress(addr._id || addr.id)}
                           className={`${styles.addressLinkBtn} ${styles.deleteBtn} menuLink`}
                         >
                           Delete Address
@@ -1180,8 +1218,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                   <label className={styles.formLabel}>State</label>
                   <input
                     type="text"
-                    value={newAddress.stateName}
-                    onChange={(e) => setNewAddress({ ...newAddress, stateName: e.target.value })}
+                    value={newAddress.state}
+                    onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
                     placeholder="e.g. Tamil Nadu"
                     className={styles.formInput}
                     required

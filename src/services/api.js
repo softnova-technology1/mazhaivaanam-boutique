@@ -198,6 +198,13 @@ export const authAPI = {
     const res = await request('/auth/me');
     return res.data?.user || res.data;
   },
+  updateProfile: async (profileData) => {
+    const res = await request('/auth/me', {
+      method: 'PUT',
+      body: profileData,
+    });
+    return res.data?.user || res.data;
+  },
   changePassword: async (passwordData) => {
     const res = await request('/auth/change-password', {
       method: 'PUT',

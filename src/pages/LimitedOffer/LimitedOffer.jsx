@@ -757,18 +757,11 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
               {config.curationOfJoySection.cards.map((card, idx) => (
                 <div 
                   key={idx} 
-                  className="relative group overflow-hidden rounded-full md:rounded-t-full md:rounded-b-md border border-[#D4AF37] md:border-[#D4AF37]/40 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-700 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:block bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none" 
+                  className="relative group overflow-hidden rounded-full md:rounded-2xl border border-[#D4AF37]/50 cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 w-24 h-24 mx-auto md:w-full md:h-full flex shrink-0 items-center justify-center md:flex-col bg-black/40 backdrop-blur-sm hover:bg-black/60 hover:border-[#D4AF37] hover:scale-[1.02]" 
                   onClick={() => setCurrentTab(card.linkTab || 'shop')}
                 >
-                  <img 
-                    className="hidden md:block absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                    alt={card.title} 
-                    src={card.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/diwali.png'}
-                  />
-                  <div className="hidden md:block absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-700"></div>
-                  
-                  <div className="md:absolute md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[85%] md:bg-black/40 md:backdrop-blur-md md:border border-[#D4AF37]/30 p-1 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-700 w-full h-full md:h-auto rounded-full md:rounded-none">
-                    <h3 className="font-display-lg text-[12px] md:text-[28px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-500">{card.title}</h3>
+                  <div className="md:absolute md:bottom-8 md:left-1/2 md:-translate-x-1/2 md:w-[85%] bg-black/50 backdrop-blur-md border border-[#D4AF37]/40 p-2 md:p-5 flex flex-col items-center justify-center text-center transform md:translate-y-2 group-hover:translate-y-0 transition-transform duration-500 w-full h-full md:h-auto rounded-full md:rounded-xl">
+                    <h3 className="font-display-lg text-[12px] md:text-[26px] mb-0.5 md:mb-2 text-[#FDFBF7] group-hover:text-[#D4AF37] transition-colors duration-300">{card.title}</h3>
                     <div className="flex items-center gap-1 md:gap-2">
                       <div className="w-1.5 md:w-4 h-[1px] bg-[#D4AF37]"></div>
                       <span className="font-label-caps text-[6px] md:text-[9px] tracking-[0.1em] md:tracking-[0.2em] text-[#D4AF37] whitespace-nowrap">{card.discountBadge}</span>

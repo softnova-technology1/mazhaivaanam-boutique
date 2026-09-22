@@ -711,7 +711,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                     <p style={{ fontSize: '0.88rem', color: '#696738', marginBottom: 22, maxWidth: 440, margin: '0 auto 22px auto', lineHeight: 1.5 }}>
                       You haven't collected any coupon codes yet. Spin the wheel on our Limited Offer page to win instant discount vouchers!
                     </p>
-                    <button onClick={() => setCurrentTab('limited-offers')} className={`${styles.submitBtn} menuLink`}>
+                    <button onClick={() => setCurrentTab('limited-offer')} className={`${styles.submitBtn} menuLink`}>
                       Spin & Win Coupons
                     </button>
                   </div>

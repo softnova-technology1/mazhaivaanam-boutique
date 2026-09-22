@@ -272,7 +272,10 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                       <span className={`${styles['bestseller-badge']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
                     ) : (
                       <OfferTimerBadge
-                        endDate={product.discountEndDate || product.discount?.endDate || product.limitedOfferEntry?.endDate}
+                        endDate={
+                          ((product.discountActive || product.discount?.isActive) && (product.discountEndDate || product.discount?.endDate)) ||
+                          (product.limitedOfferEntry?.isActive && product.limitedOfferEntry?.endDate) || null
+                        }
                         fallbackLabel={product.discountLabel || product.discount?.label || product.tag || 'BESTSELLER'}
                         className={styles['bestseller-badge']}
                       />

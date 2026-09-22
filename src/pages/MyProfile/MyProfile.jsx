@@ -204,7 +204,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
     addressLine: '',
     landmark: '',
     city: '',
-    state: '',
+    stateName: '',
     pinCode: '',
     country: 'India',
     phone: '',
@@ -362,7 +362,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
 
   const handleAddAddressSubmit = async (e) => {
     e.preventDefault();
-    if (!newAddress.fullName || !newAddress.addressLine || !newAddress.city || !newAddress.state || !newAddress.pinCode || !newAddress.phone) {
+    if (!newAddress.fullName || !newAddress.addressLine || !newAddress.city || !newAddress.stateName || !newAddress.pinCode || !newAddress.phone) {
       triggerToast('Please fill out all address details.');
       return;
     }
@@ -374,7 +374,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
         setAddresses(updated);
         localStorage.setItem('boutique_addresses', JSON.stringify(updated));
         setIsAddAddressOpen(false);
-        setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', state: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+        setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
         triggerToast('New address saved! 🏡');
       } catch (err) {
         triggerToast(err.message || 'Failed to save address.');
@@ -390,7 +390,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
       setAddresses([...updatedAddresses, createdAddress]);
       localStorage.setItem('boutique_addresses', JSON.stringify([...updatedAddresses, createdAddress]));
       setIsAddAddressOpen(false);
-      setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', state: '', pinCode: '', country: 'India', phone: '', isDefault: false });
+      setNewAddress({ fullName: '', addressLine: '', landmark: '', city: '', stateName: '', pinCode: '', country: 'India', phone: '', isDefault: false });
       triggerToast('New address saved to your notebook! 🏡');
     }
   };
@@ -634,7 +634,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                           {order.items?.map((item, i) => (
                             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                               <div style={{ width: 48, height: 48, borderRadius: 6, overflow: 'hidden', flexShrink: 0, background: '#111' }}>
-                                <img src={item.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={item.image || '/Images/placeholder.svg'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>{item.name}</div>
@@ -862,7 +862,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                         <p className={styles.addressDetails}>
                           {addr.addressLine}<br />
                           {addr.landmark && <>{addr.landmark}<br /></>}
-                          {addr.city}, {addr.state} - {addr.pinCode}<br />
+                          {addr.city}, {addr.stateName} - {addr.pinCode}<br />
                           {addr.country}<br />
                           Phone: {addr.phone}
                         </p>
@@ -871,14 +871,14 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                       <div className={styles.addressActions}>
                         {!addr.isDefault && (
                           <button
-                            onClick={() => handleSetDefaultAddress(addr._id || addr.id)}
+                            onClick={() => handleSetDefaultAddress(addr.id)}
                             className={`${styles.addressLinkBtn} menuLink`}
                           >
                             Set Default
                           </button>
                         )}
                         <button
-                          onClick={() => handleDeleteAddress(addr._id || addr.id)}
+                          onClick={() => handleDeleteAddress(addr.id)}
                           className={`${styles.addressLinkBtn} ${styles.deleteBtn} menuLink`}
                         >
                           Delete Address
@@ -1218,8 +1218,8 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                   <label className={styles.formLabel}>State</label>
                   <input
                     type="text"
-                    value={newAddress.state}
-                    onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
+                    value={newAddress.stateName}
+                    onChange={(e) => setNewAddress({ ...newAddress, stateName: e.target.value })}
                     placeholder="e.g. Tamil Nadu"
                     className={styles.formInput}
                     required

@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { getBestSellers } from '../../services/api';
 import { getBadgeClass } from '../../utils/badgeHelper';
-import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star, Share2, Loader2 } from 'lucide-react';
+import { LayoutGrid, Grid3X3, List, ChevronDown, ChevronUp, Heart, Star, Share2, Loader2, Search, X } from 'lucide-react';
 import { useCart } from '../../hooks/useCart';
 import { useWishlist } from '../../hooks/useWishlist';
 import { OfferTimerBadge } from '../../components/common/OfferTimerBadge/OfferTimerBadge';
@@ -71,14 +71,9 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   };
 
   const SORT_OPTIONS = [
-    { value: 'featured', label: 'Featured' },
-    { value: 'relevant', label: 'Most relevant' },
     { value: 'best-selling', label: 'Best selling' },
-    { value: 'alpha-asc', label: 'Alphabetically, A-Z' },
-    { value: 'alpha-desc', label: 'Alphabetically, Z-A' },
     { value: 'price-asc', label: 'Price, low to high' },
     { value: 'price-desc', label: 'Price, high to low' },
-    { value: 'date-asc', label: 'Date, old to new' },
     { value: 'date-desc', label: 'Date, new to old' },
   ];
 
@@ -89,6 +84,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
   };
 
   const [visibleRows, setVisibleRows] = useState(getInitialRows);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     setVisibleRows(getInitialRows());
@@ -96,6 +92,14 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
   const bestSellers = useMemo(() => {
     let products = [...liveBestSellers];
+    
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      products = products.filter(p => 
+        (p.name && p.name.toLowerCase().includes(q)) ||
+        (p.description && p.description.toLowerCase().includes(q))
+      );
+    }
     
     if (sortOption === 'price-asc') {
       products.sort((a, b) => a.price - b.price);
@@ -108,7 +112,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
     }
     
     return products;
-  }, [liveBestSellers, sortOption]);
+  }, [liveBestSellers, sortOption, searchQuery]);
 
   const getItemsPerRow = () => {
     if (gridView === 'list') return 1;
@@ -198,6 +202,25 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
             </div>
             
             <div className={styles['toolbar-right']}>
+              <div className={styles['header-search-box']}>
+                <Search size={15} className={styles['search-icon']} />
+                <input
+                  type="text"
+                  placeholder="Search masterpieces..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles['search-input']}
+                />
+                {searchQuery && (
+                  <div
+                    onClick={() => setSearchQuery('')}
+                    className={styles['search-clear-icon']}
+                    role="button"
+                  >
+                    <X size={14} />
+                  </div>
+                )}
+              </div>
               <div className={styles['view-toggles']}>
                 <button 
                   className={`${styles['icon-btn']} ${gridView === 2 || gridView === 3 || gridView === 4 ? styles.active : ''}`} 
@@ -276,7 +299,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                           ((product.discountActive || product.discount?.isActive) && (product.discountEndDate || product.discount?.endDate)) ||
                           (product.limitedOfferEntry?.isActive && product.limitedOfferEntry?.endDate) || null
                         }
-                        fallbackLabel={product.discountLabel || product.discount?.label || product.tag || 'BESTSELLER'}
+                        fallbackLabel="BESTSELLER"
                         className={styles['bestseller-badge']}
                       />
                     )}

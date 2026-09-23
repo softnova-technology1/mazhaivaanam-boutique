@@ -576,7 +576,9 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
             <p className={styles['highlights-title']}><strong>Product Highlights:</strong></p>
             <ul className={styles['highlights-list']}>
               {activeProduct.fabric && <li><strong>Fabric:</strong> {activeProduct.fabric}</li>}
+              {activeProduct.style && <li><strong>Style:</strong> {activeProduct.style}</li>}
               {activeProduct.pattern && <li><strong>Pattern / Design:</strong> {activeProduct.pattern}</li>}
+              {activeProduct.border && <li><strong>Border:</strong> {activeProduct.border}</li>}
               {activeProduct.pallu && <li><strong>Pallu:</strong> {activeProduct.pallu}</li>}
               {activeProduct.blouse && <li><strong>Blouse:</strong> {activeProduct.blouse}</li>}
               {activeProduct.sareeLength && <li><strong>Saree Length:</strong> {activeProduct.sareeLength}</li>}

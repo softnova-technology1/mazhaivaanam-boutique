@@ -187,7 +187,6 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       { label: 'Upto 3kg', uptoKg: 3.0, price: 140 },
       { label: 'Upto 4kg', uptoKg: 4.0, price: 160 },
       { label: 'Upto 5kg', uptoKg: 5.0, price: 180 },
-      { label: 'Above 5kg', uptoKg: Infinity, price: 200 },
     ],
     'Other States': [
       { label: 'Standard', uptoKg: 0.5, price: 60 },
@@ -198,7 +197,6 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       { label: 'Upto 3kg', uptoKg: 3.0, price: 145 },
       { label: 'Upto 4kg', uptoKg: 4.0, price: 170 },
       { label: 'Upto 5kg', uptoKg: 5.0, price: 190 },
-      { label: 'Above 5kg', uptoKg: Infinity, price: 220 },
     ]
   };
 
@@ -222,7 +220,19 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
     }, 0);
     const zone = resolveShippingZone();
     const rates = SHIPPING_ZONES[zone] || SHIPPING_ZONES['Tamil Nadu'];
-    const slab = rates.find(r => totalWeightKg <= r.uptoKg) || rates[0];
+    
+    let slab;
+    if (totalWeightKg > 5.0) {
+      const extraKg = Math.ceil(totalWeightKg - 5.0);
+      if (zone === 'Tamil Nadu') {
+        slab = { label: `Bulk (${totalWeightKg.toFixed(2)}kg)`, price: 180 + (extraKg * 25), uptoKg: totalWeightKg };
+      } else {
+        slab = { label: `Bulk (${totalWeightKg.toFixed(2)}kg)`, price: 190 + (extraKg * 30), uptoKg: totalWeightKg };
+      }
+    } else {
+      slab = rates.find(r => totalWeightKg <= r.uptoKg) || rates[0];
+    }
+    
     return { slab, totalWeightKg, zone };
   };
 

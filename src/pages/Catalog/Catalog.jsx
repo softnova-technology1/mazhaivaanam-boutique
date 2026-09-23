@@ -369,14 +369,9 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     style={{ width: '100%', border: 'none', background: 'transparent', outline: 'none', fontSize: '11px', fontFamily: 'Inter, sans-serif', color: 'var(--text-main)', cursor: 'pointer', appearance: 'none', fontWeight: 500 }}
                   >
                     <option value="featured">Featured</option>
-                    <option value="relevant">Most relevant</option>
                     <option value="best-selling">Best selling</option>
-                    <option value="alpha-asc">Alphabetically, A-Z</option>
-                    <option value="alpha-desc">Alphabetically, Z-A</option>
                     <option value="price-low">Price, low to high</option>
                     <option value="price-high">Price, high to low</option>
-                    <option value="date-old">Date, old to new</option>
-                    <option value="date-new">Date, new to old</option>
                   </select>
                   <ChevronDown size={14} color="var(--text-muted)" style={{ pointerEvents: 'none', marginLeft: '-20px' }} />
                 </div>
@@ -590,14 +585,9 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                   >
                     <span>
                       {selectedSort === 'featured' && 'Featured'}
-                      {selectedSort === 'relevant' && 'Most relevant'}
                       {selectedSort === 'best-selling' && 'Best selling'}
-                      {selectedSort === 'alpha-asc' && 'Alphabetically, A-Z'}
-                      {selectedSort === 'alpha-desc' && 'Alphabetically, Z-A'}
                       {selectedSort === 'price-low' && 'Price, low to high'}
                       {selectedSort === 'price-high' && 'Price, high to low'}
-                      {selectedSort === 'date-old' && 'Date, old to new'}
-                      {selectedSort === 'date-new' && 'Date, new to old'}
                     </span>
                     <ChevronDown size={14} className={`${styles['chevron-icon']} ${isSortOpen ? styles['open'] : ''}`} />
                   </button>
@@ -614,16 +604,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         Featured
                       </button>
                       <button
-                        className={`${styles['dropdown-option-item']} ${selectedSort === 'relevant' ? styles['active'] : ''}`}
-                        onClick={() => {
-                          setSelectedSort('relevant');
-                          setIsSortOpen(false);
-                        }}
-                        type="button"
-                      >
-                        Most relevant
-                      </button>
-                      <button
                         className={`${styles['dropdown-option-item']} ${selectedSort === 'best-selling' ? styles['active'] : ''}`}
                         onClick={() => {
                           setSelectedSort('best-selling');
@@ -632,26 +612,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         type="button"
                       >
                         Best selling
-                      </button>
-                      <button
-                        className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-asc' ? styles['active'] : ''}`}
-                        onClick={() => {
-                          setSelectedSort('alpha-asc');
-                          setIsSortOpen(false);
-                        }}
-                        type="button"
-                      >
-                        Alphabetically, A-Z
-                      </button>
-                      <button
-                        className={`${styles['dropdown-option-item']} ${selectedSort === 'alpha-desc' ? styles['active'] : ''}`}
-                        onClick={() => {
-                          setSelectedSort('alpha-desc');
-                          setIsSortOpen(false);
-                        }}
-                        type="button"
-                      >
-                        Alphabetically, Z-A
                       </button>
                       <button
                         className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}
@@ -672,26 +632,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         type="button"
                       >
                         Price, high to low
-                      </button>
-                      <button
-                        className={`${styles['dropdown-option-item']} ${selectedSort === 'date-old' ? styles['active'] : ''}`}
-                        onClick={() => {
-                          setSelectedSort('date-old');
-                          setIsSortOpen(false);
-                        }}
-                        type="button"
-                      >
-                        Date, old to new
-                      </button>
-                      <button
-                        className={`${styles['dropdown-option-item']} ${selectedSort === 'date-new' ? styles['active'] : ''}`}
-                        onClick={() => {
-                          setSelectedSort('date-new');
-                          setIsSortOpen(false);
-                        }}
-                        type="button"
-                      >
-                        Date, new to old
                       </button>
                     </div>
                   )}

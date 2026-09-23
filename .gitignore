@@ -8,11 +8,18 @@ dist/
 dist-ssr/
 build/
 
+# Testing & Linting
+coverage/
+.nyc_output/
+.eslintcache
+
 # Local Environment Variables
 .env
 .env.local
+.env.development
 .env.development.local
 .env.test.local
+.env.production
 .env.production.local
 
 # Logs

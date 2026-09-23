@@ -20,7 +20,7 @@ export function OfferZoneModal({ popupConfig, onClose, onExplore }) {
       onClick={onExplore}
     >
       <div 
-        className="relative max-w-[440px] w-full rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.85)] border-2 border-[#D4AF37] bg-[#121212] flex flex-col group transition-transform duration-300 cursor-pointer max-h-[92vh]"
+        className="relative max-w-[440px] w-full rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.85)] border-2 border-[#D4AF37] bg-white flex flex-col group transition-transform duration-300 cursor-pointer max-h-[92vh]"
         style={{ transform: 'translateZ(0)' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -60,26 +60,60 @@ export function OfferZoneModal({ popupConfig, onClose, onExplore }) {
         </div>
 
         {/* Bottom Footer Area — Main Heading and Description Text positioned right above the button */}
-        <div className="relative z-20 p-4 sm:p-5 bg-[#141414] border-t border-[#D4AF37]/30 flex flex-col items-center text-center">
+        <div className="relative z-20 p-4 sm:p-5 bg-white border-t border-[#D4AF37]/40 flex flex-col items-center text-center">
           {hasTitle && (
-            <h3 className="font-display-lg text-base sm:text-xl text-[#FDFBF7] font-bold leading-snug mb-1.5 tracking-wide">
+            <h3 className="font-display-lg text-base sm:text-xl text-[#1a1a1a] font-bold leading-snug mb-1.5 tracking-wide">
               {title}
             </h3>
           )}
 
           {hasDesc && (
-            <p className="text-[#FDFBF7]/85 text-xs sm:text-sm font-normal leading-relaxed mb-3 max-w-sm">
+            <p className="text-[#4a4a4a] text-xs sm:text-sm font-normal leading-relaxed mb-3 max-w-sm">
               {description}
             </p>
           )}
 
+          <style>{`
+            @keyframes goldShineSweep {
+              0% { transform: translateX(-180%) skewX(-25deg); opacity: 0; }
+              20% { opacity: 0.9; }
+              55% { transform: translateX(280%) skewX(-25deg); opacity: 0; }
+              100% { transform: translateX(280%) skewX(-25deg); opacity: 0; }
+            }
+            @keyframes goldPulseGlow {
+              0%, 100% {
+                box-shadow: 0 4px 18px rgba(184, 134, 11, 0.45), 0 0 0 1px rgba(223, 183, 72, 0.4);
+              }
+              50% {
+                box-shadow: 0 6px 26px rgba(212, 175, 55, 0.75), 0 0 16px rgba(245, 208, 97, 0.5), 0 0 0 1.5px rgba(255, 235, 150, 0.6);
+              }
+            }
+          `}</style>
+
           <button 
             type="button"
             onClick={onExplore}
-            className="w-full py-3.5 px-5 bg-gradient-to-r from-[#D4AF37] via-[#FFF8DC] to-[#D4AF37] text-[#2D3326] font-label-caps text-xs tracking-[0.18em] font-bold rounded-full shadow-[0_10px_25px_rgba(212,175,55,0.4)] hover:shadow-[0_15px_35px_rgba(212,175,55,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 uppercase cursor-pointer"
+            className="relative overflow-hidden w-full py-3.5 px-5 font-label-caps text-[13px] sm:text-sm tracking-[0.14em] font-extrabold rounded-full transition-all duration-300 flex items-center justify-center gap-2 uppercase cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+            style={{
+              background: 'linear-gradient(135deg, #7A5308 0%, #B8860B 28%, #DFB748 50%, #B8860B 72%, #7A5308 100%)',
+              animation: 'goldPulseGlow 3s infinite ease-in-out',
+              color: '#FFFFFF',
+            }}
           >
-            <span>{buttonText || 'EXPLORE OFFERS NOW'}</span>
-            <Sparkles size={15} />
+            {/* Continuous Glistening Shining Light Beam Sweep */}
+            <span 
+              className="absolute inset-0 pointer-events-none" 
+              style={{
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 75%, transparent 100%)',
+                animation: 'goldShineSweep 2.8s infinite cubic-bezier(0.4, 0, 0.2, 1)',
+                width: '60%',
+                height: '100%',
+              }} 
+            />
+            <span className="relative z-10" style={{ color: '#FFFFFF', fontWeight: 800, textShadow: '0 1px 2px rgba(40, 25, 0, 0.6)' }}>
+              {buttonText || 'EXPLORE OFFERS NOW'}
+            </span>
+            <Sparkles size={16} className="relative z-10 text-white animate-pulse" />
           </button>
         </div>
       </div>

@@ -478,7 +478,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
             />
             <div className={styles['social-img-caption']}>
               <span className={styles['caption-hashtag']}>#HeritageDrape</span>
-              <span className={styles['caption-handle']}>@ananya_r</span>
+              <span className={styles['caption-handle']}>@mazhaivaanam</span>
             </div>
           </div>
 

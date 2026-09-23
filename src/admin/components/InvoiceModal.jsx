@@ -61,6 +61,13 @@ export default function InvoiceModal({ order, onClose }) {
   });
 
   const subtotal = order.subtotal || order.items?.reduce((sum, it) => sum + ((it.price || 0) * (it.quantity || 1)), 0) || order.totalAmount || 0;
+  const mrpTotal = Number(
+    order.mrpTotal || 
+    (order.items?.reduce((sum, it) => sum + ((it.mrpPrice || it.oldPrice || it.product?.mrpPrice || it.price || 0) * (it.quantity || 1)), 0)) ||
+    ((order.totalSavings && order.totalSavings > 0) ? (subtotal + order.totalSavings) : 0) ||
+    subtotal
+  );
+  const totalSavings = Number(order.totalSavings || (mrpTotal > subtotal ? mrpTotal - subtotal : 0));
   const couponDiscount = order.couponDiscount || 0;
   let giftPackCharge = order.giftPackCharge !== undefined && order.giftPackCharge !== null && order.giftPackCharge > 0
     ? order.giftPackCharge
@@ -298,6 +305,12 @@ export default function InvoiceModal({ order, onClose }) {
 
             {/* Calculations Summary */}
             <div style={{ fontSize: '0.85rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
+                <span style={{ color: '#64748b' }}>Product MRP:</span>
+                <span style={{ fontWeight: 600, color: mrpTotal > subtotal ? '#94a3b8' : '#0f172a', textDecoration: mrpTotal > subtotal ? 'line-through' : 'none' }}>
+                  ₹{mrpTotal.toLocaleString('en-IN')}
+                </span>
+              </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
                 <span style={{ color: '#64748b' }}>Item Total (Subtotal):</span>
                 <span style={{ fontWeight: 600 }}>₹{subtotal.toLocaleString('en-IN')}</span>

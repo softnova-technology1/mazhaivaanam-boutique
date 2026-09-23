@@ -1,31 +1,90 @@
 import { useState, useEffect, useRef } from 'react';
 import { offerAPI, uploadAPI, productAPI, categoryAPI, fabricAPI } from '../api/api.js';
-import { Sparkles, Clock, Gift, Layers, Disc, Save, CheckCircle, RefreshCw, Upload, Package, Trash2, Edit2, Edit3, Plus, X, Search, FileSpreadsheet } from 'lucide-react';
+import { Sparkles, Clock, Gift, Layers, Disc, Save, CheckCircle, RefreshCw, Upload, Package, Trash2, Edit2, Edit3, Plus, X, Search, FileSpreadsheet, Info, AlertTriangle, AlertCircle } from 'lucide-react';
 import { parseImportFile, downloadSampleImportTemplate } from '../utils/importParser.js';
 
-const ImageUploaderInput = ({ label, value, onChange }) => {
+const ImageUploaderInput = ({ label, value, onChange, recommendation, isHeroBanner = false }) => {
   const [uploading, setUploading] = useState(false);
+  const [imgMeta, setImgMeta] = useState(null);
+
+  useEffect(() => {
+    if (value) {
+      const img = new Image();
+      img.onload = () => {
+        setImgMeta({
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+          isPortrait: img.naturalHeight > img.naturalWidth,
+          ratio: (img.naturalWidth / img.naturalHeight).toFixed(2)
+        });
+      };
+      img.onerror = () => setImgMeta(null);
+      img.src = value;
+    } else {
+      setImgMeta(null);
+    }
+  }, [value]);
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setUploading(true);
-    try {
-      const res = await uploadAPI.uploadImage(file);
-      if (res && res.data && res.data.url) {
-        onChange(res.data.url);
-      } else {
-        alert('Image uploaded but no URL returned');
-      }
-    } catch (err) {
-      alert('Failed to upload image: ' + err.message);
+
+    // Check size limit: Multer max is 5MB
+    const maxBytes = 5 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      alert(`⚠️ File too large! Selected image is ${(file.size / (1024 * 1024)).toFixed(1)}MB.\n\nThe maximum allowed upload limit is 5MB. Please choose a compressed or smaller image (recommended < 2MB for fast loading).`);
+      e.target.value = '';
+      return;
     }
-    setUploading(false);
+
+    const objectUrl = URL.createObjectURL(file);
+    const tempImg = new Image();
+
+    const proceedWithUpload = async () => {
+      setUploading(true);
+      try {
+        const res = await uploadAPI.uploadImage(file);
+        if (res && res.data && res.data.url) {
+          onChange(res.data.url);
+        } else {
+          alert('Image uploaded but no URL returned');
+        }
+      } catch (err) {
+        alert('Failed to upload image: ' + err.message);
+      }
+      setUploading(false);
+    };
+
+    tempImg.onload = async () => {
+      URL.revokeObjectURL(objectUrl);
+      if (isHeroBanner && tempImg.naturalHeight > tempImg.naturalWidth) {
+        const confirmMsg = `⚠️ Orientation Notice:\nThe image you selected is Portrait / Vertical (${tempImg.naturalWidth} × ${tempImg.naturalHeight} px).\n\nHero Banners span full-width on desktop and look best with Wide Landscape (16:9 or ~1920×600 px).\nA portrait image will look cropped and over-zoomed.\n\nDo you want to proceed anyway?`;
+        if (!window.confirm(confirmMsg)) {
+          e.target.value = '';
+          return;
+        }
+      }
+      await proceedWithUpload();
+    };
+
+    tempImg.onerror = async () => {
+      URL.revokeObjectURL(objectUrl);
+      await proceedWithUpload();
+    };
+
+    tempImg.src = objectUrl;
   };
 
   return (
     <div className="form-group" style={{ marginBottom: 16 }}>
-      <label className="form-label">{label}</label>
+      <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>{label}</span>
+        {recommendation?.ratio && (
+          <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--primary)', background: 'rgba(212, 175, 55, 0.1)', padding: '2px 8px', borderRadius: 4 }}>
+            📐 Ratio: {recommendation.ratio}
+          </span>
+        )}
+      </label>
       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
         <input
           type="text"
@@ -41,10 +100,67 @@ const ImageUploaderInput = ({ label, value, onChange }) => {
           <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} disabled={uploading} />
         </label>
       </div>
+
+      {/* Guidelines / Recommendation notice if passed */}
+      {recommendation && (
+        <div style={{
+          marginTop: 8,
+          background: 'rgba(212, 175, 55, 0.06)',
+          border: '1px solid rgba(212, 175, 55, 0.25)',
+          borderRadius: 6,
+          padding: '8px 12px',
+          fontSize: '0.76rem',
+          lineHeight: '1.5',
+          color: '#475569'
+        }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', fontWeight: 500 }}>
+            {recommendation.ratio && (
+              <span>📐 <strong>Aspect Ratio:</strong> <code style={{ color: '#b45309', background: 'rgba(212, 175, 55, 0.15)', padding: '1px 5px', borderRadius: 3 }}>{recommendation.ratio}</code></span>
+            )}
+            {recommendation.size && (
+              <span>📏 <strong>Best Dimensions:</strong> <strong>{recommendation.size}</strong></span>
+            )}
+            {recommendation.maxMb && (
+              <span>💾 <strong>Size Limit:</strong> Max <strong>{recommendation.maxMb}</strong> (Recommended &lt; 2MB)</span>
+            )}
+          </div>
+          {recommendation.tip && (
+            <div style={{ marginTop: 4, color: '#d97706', fontSize: '0.74rem' }}>
+              💡 {recommendation.tip}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Image Preview & Live Meta info */}
       {value && (
-        <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img src={value} alt="Preview" style={{ height: 60, borderRadius: 6, objectFit: 'cover', border: '1px solid var(--border-color)' }} />
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Image Preview</span>
+        <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 12, background: 'var(--bg-secondary)', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--border-color)' }}>
+          <img src={value} alt="Preview" style={{ height: 60, width: isHeroBanner ? 130 : 60, borderRadius: 6, objectFit: 'cover', border: '1px solid var(--border-color)' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-color)' }}>Image Preview</span>
+            {imgMeta ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: '0.73rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>{imgMeta.width} × {imgMeta.height} px</span>
+                <span style={{
+                  padding: '1px 6px',
+                  borderRadius: 4,
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  background: isHeroBanner && imgMeta.isPortrait ? '#FEE2E2' : '#E0E7FF',
+                  color: isHeroBanner && imgMeta.isPortrait ? '#DC2626' : '#3730A3'
+                }}>
+                  {imgMeta.isPortrait ? 'Portrait (Vertical)' : imgMeta.width === imgMeta.height ? 'Square (1:1)' : `Landscape (${imgMeta.ratio}:1)`}
+                </span>
+                {isHeroBanner && imgMeta.isPortrait && (
+                  <span style={{ color: '#DC2626', fontWeight: 600, fontSize: '0.72rem' }}>
+                    ⚠️ Warning: Vertical image will appear cropped/zoomed on desktop hero banner
+                  </span>
+                )}
+              </div>
+            ) : (
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Loaded from URL</span>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -58,6 +174,15 @@ const SareeImageUploaderCard = ({ title, subtitle, value, onChange, isPrimary = 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Check size limit: Multer max is 5MB
+    const maxBytes = 5 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      alert(`⚠️ File too large! Selected image is ${(file.size / (1024 * 1024)).toFixed(1)}MB.\n\nThe maximum allowed upload limit is 5MB. Please choose a smaller image (recommended < 2MB).`);
+      e.target.value = '';
+      return;
+    }
+
     setUploading(true);
     try {
       const res = await uploadAPI.uploadImage(file);
@@ -1158,6 +1283,13 @@ export default function LimitedOfferAdmin() {
               label="Hero Background Image"
               value={config.heroSection.bgImage}
               onChange={url => setConfig({ ...config, heroSection: { ...config.heroSection, bgImage: url } })}
+              isHeroBanner={true}
+              recommendation={{
+                ratio: '16:9 or 21:9 (Wide Landscape)',
+                size: '1920 × 600 px to 1920 × 800 px',
+                maxMb: '5 MB (Recommend < 2MB)',
+                tip: 'Must be a wide horizontal banner. Avoid portrait (vertical 3:4) or 1:1 square photos.'
+              }}
             />
           </div>
         )}
@@ -1257,6 +1389,12 @@ export default function LimitedOfferAdmin() {
               label="Curated Duo Banner Image"
               value={config.featuredDuoSection.image}
               onChange={url => setConfig({ ...config, featuredDuoSection: { ...config.featuredDuoSection, image: url } })}
+              recommendation={{
+                ratio: '4:5 (Vertical Portrait) or 1:1 (Square)',
+                size: '800 × 1000 px or 800 × 800 px',
+                maxMb: '5 MB (Recommend < 2MB)',
+                tip: 'Vertical portrait or square photo fits the split-card section best.'
+              }}
             />
           </div>
         )}
@@ -1307,6 +1445,12 @@ export default function LimitedOfferAdmin() {
                     const updated = [...config.curationOfJoySection.cards];
                     updated[idx].image = url;
                     setConfig({ ...config, curationOfJoySection: { ...config.curationOfJoySection, cards: updated } });
+                  }}
+                  recommendation={{
+                    ratio: '1:1 (Square) or 4:5 (Portrait)',
+                    size: '600 × 600 px or 600 × 750 px',
+                    maxMb: '5 MB (Recommend < 1MB)',
+                    tip: 'Rounded arch card backdrop image.'
                   }}
                 />
               </div>
@@ -1483,10 +1627,13 @@ export default function LimitedOfferAdmin() {
               label="Popup Card Background Image"
               value={config.offerZonePopup?.bgImage || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/limited_offer_page/limited.png'}
               onChange={url => setConfig({ ...config, offerZonePopup: { ...(config.offerZonePopup || {}), bgImage: url } })}
+              recommendation={{
+                ratio: '1:1 (Square) or 4:5 (Vertical Poster)',
+                size: '800 × 800 px or 800 × 1000 px',
+                maxMb: '5 MB',
+                tip: 'Vertical poster or square backdrop for the offer popup card.'
+              }}
             />
-            <span style={{ fontSize: '0.78rem', color: '#d97706', fontWeight: 600, marginTop: -8, marginBottom: 16, display: 'block' }}>
-              💡 Recommended Aspect Ratio: <strong>1:1 (Square)</strong> or <strong>4:5 (Vertical Poster)</strong> | Best Size: <strong>800 × 800 px</strong> or <strong>800 × 1000 px</strong> (Max 5MB)
-            </span>
           </div>
         )}
 

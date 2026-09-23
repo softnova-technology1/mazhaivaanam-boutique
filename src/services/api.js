@@ -43,7 +43,7 @@ export function normalizeProduct(p) {
     estimatedDays: p.preorderEstimatedDays ?? '',
     discount: discountLabel,
     discountLabel: p.discount?.label || customLabel || '',
-    discountEndDate: p.discount?.endDate || p.limitedOfferEntry?.endDate || p.discountEndDate || p.endDate || null,
+    discountEndDate: (Boolean(p.discount?.isActive) && p.discount?.endDate) || (Boolean(p.limitedOfferEntry?.isActive) && p.limitedOfferEntry?.endDate) || null,
     discountActive: p.discount?.isActive !== undefined ? p.discount.isActive : (p.discountActive || false),
   };
 }

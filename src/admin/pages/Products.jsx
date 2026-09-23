@@ -173,7 +173,7 @@ export default function Products() {
       sec1Preview: '',
       sec2File: null,
       sec2Preview: '',
-      weight: '', pattern: '',
+      weight: '', pattern: '', style: '',
       pallu: '', sareeLength: '', blouseLength: '', blouse: '', height: '', washCare: '',
       returnPolicy: 'Not Applicable',
       note: 'Product Color May Slightly Vary Due To Photography Lighting.'
@@ -205,6 +205,7 @@ export default function Products() {
       sec2Preview: product.images?.[2]?.url || '',
       weight: product.weight || '',
       pattern: product.pattern || '',
+      style: product.style || '',
       pallu: product.pallu || '',
       sareeLength: product.sareeLength || '',
       blouseLength: product.blouseLength || '',
@@ -237,6 +238,7 @@ export default function Products() {
         scheduledAt: form.isScheduled && form.scheduledAt ? form.scheduledAt : null,
         weight: form.weight,
         pattern: form.pattern,
+        style: form.style,
         pallu: form.pallu,
         sareeLength: form.sareeLength,
         blouseLength: form.blouseLength,
@@ -1039,21 +1041,25 @@ export default function Products() {
                     <input className="form-input" value={form.pattern} onChange={e => setForm(f => ({ ...f, pattern: e.target.value }))} placeholder="e.g. Floral Motif" />
                   </div>
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Pallu</label>
-                    <input className="form-input" value={form.pallu} onChange={e => setForm(f => ({ ...f, pallu: e.target.value }))} placeholder="e.g. Rich Brocade" />
+                    <label className="form-label">Style</label>
+                    <input className="form-input" value={form.style} onChange={e => setForm(f => ({ ...f, style: e.target.value }))} placeholder="e.g. Traditional, Elegant" />
                   </div>
                 </div>
                 <div className="form-row">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Pallu</label>
+                    <input className="form-input" value={form.pallu} onChange={e => setForm(f => ({ ...f, pallu: e.target.value }))} placeholder="e.g. Rich Brocade" />
+                  </div>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Blouse</label>
                     <input className="form-input" value={form.blouse} onChange={e => setForm(f => ({ ...f, blouse: e.target.value }))} placeholder="e.g. Running Blouse" />
                   </div>
+                </div>
+                <div className="form-row">
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Wash Care</label>
                     <input className="form-input" value={form.washCare} onChange={e => setForm(f => ({ ...f, washCare: e.target.value }))} placeholder="e.g. Dry Clean Only" />
                   </div>
-                </div>
-                <div className="form-row">
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Return/Exchange</label>
                     <input className="form-input" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))} placeholder="e.g. Not Applicable" />

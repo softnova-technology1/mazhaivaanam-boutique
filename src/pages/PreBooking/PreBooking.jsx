@@ -8,14 +8,9 @@ import { getPreorderProducts } from '../../services/api';
 
 export const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
-  { value: 'relevance', label: 'Most relevant' },
   { value: 'best-selling', label: 'Best selling' },
-  { value: 'alpha-asc', label: 'Alphabetically, A-Z' },
-  { value: 'alpha-desc', label: 'Alphabetically, Z-A' },
   { value: 'price-asc', label: 'Price, low to high' },
-  { value: 'price-desc', label: 'Price, high to low' },
-  { value: 'date-asc', label: 'Date, old to new' },
-  { value: 'date-desc', label: 'Date, new to old' },
+  { value: 'price-desc', label: 'Price, high to low' }
 ];
 
 const getProductDetails = (product) => {
@@ -508,7 +503,9 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                       <h5 className={styles['qv-highlights-title']}>Product Highlights:</h5>
                       <ul className={styles['qv-highlights-list']}>
                         {details.fabric && <li><strong>Fabric:</strong> {details.fabric}</li>}
+                        {details.style && <li><strong>Style:</strong> {details.style}</li>}
                         {details.pattern && <li><strong>Pattern / Design:</strong> {details.pattern}</li>}
+                        {details.border && <li><strong>Border:</strong> {details.border}</li>}
                         {details.pallu && <li><strong>Pallu:</strong> {details.pallu}</li>}
                         {details.blouse && <li><strong>Blouse:</strong> {details.blouse}</li>}
                         {details.sareeLength && <li><strong>Saree Length:</strong> {details.sareeLength}</li>}

@@ -67,7 +67,10 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
   const displayImage = (typeof image === 'string' && image.trim() !== '') ? image : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg';
 
   const fallbackTag = product.discountLabel || product.discount?.label || (isNew ? 'Fresh Pick' : (isLimited ? 'LIMITED EDITION' : tag));
-  const endDate = product.discountEndDate || product.discount?.endDate || product.limitedOfferEntry?.endDate;
+  const isDiscActive = Boolean(discountActive || product.discount?.isActive);
+  const isLoActive = Boolean(product.limitedOfferEntry?.isActive);
+  const endDate = (isDiscActive && (product.discountEndDate || product.discount?.endDate)) ||
+                  (isLoActive && product.limitedOfferEntry?.endDate) || null;
 
   return (
     <div className={styles['product-card']} onClick={handleCardClick}>

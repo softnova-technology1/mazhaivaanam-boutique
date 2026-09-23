@@ -426,17 +426,19 @@ export default function LimitedOfferAdmin() {
       let addedCount = 0;
 
       if (Array.isArray(createdProds) && createdProds.length > 0) {
-        for (const prod of createdProds) {
-          const pId = prod._id || prod.id;
-          if (pId) {
-            const secRes = await offerAPI.createSection({
-              name: excelOfferTitle || (selectedSectionSlot === 1 ? 'Exclusive Offers' : 'Buy 2 Get 1 Gallery'),
-              slot: selectedSectionSlot,
-              endDate: excelOfferEndDate,
-              startDate: null,
-            });
-            const secId = secRes?.data?._id || secRes?._id || secRes?.data?.data?._id;
-            if (secId) {
+        // Create a SINGLE section outside loop for all imported products
+        const secRes = await offerAPI.createSection({
+          name: excelOfferTitle || (selectedSectionSlot === 1 ? 'Exclusive Offers' : 'Buy 2 Get 1 Gallery'),
+          slot: selectedSectionSlot,
+          endDate: excelOfferEndDate,
+          startDate: null,
+        });
+        const secId = secRes?.data?._id || secRes?._id || secRes?.data?.data?._id;
+
+        if (secId) {
+          for (const prod of createdProds) {
+            const pId = prod._id || prod.id;
+            if (pId) {
               await offerAPI.addProductToSection(secId, pId);
               addedCount++;
             }
@@ -751,15 +753,30 @@ export default function LimitedOfferAdmin() {
       const res = await offerAPI.getConfig();
       if (res && res.data) {
         const d = res.data;
+        const cleanSuffix = (txt) => {
+          if (typeof txt !== 'string') return txt;
+          return txt.replace(/[-_,\s]*(Diwali|Diwalli)$/i, '').replace(/___DIWALI/gi, '').replace(/--Diwalli/gi, '').trim();
+        };
+
+        const hero = { ...(d.heroSection || {}) };
+        if (hero.title) hero.title = cleanSuffix(hero.title);
+        if (hero.titleItalic) hero.titleItalic = cleanSuffix(hero.titleItalic);
+
+        const timer = { ...(d.timerSection || {}) };
+        if (timer.description) timer.description = cleanSuffix(timer.description);
+
+        const duo = { ...(d.featuredDuoSection || {}) };
+        if (duo.description) duo.description = cleanSuffix(duo.description);
+
         setConfig(prev => ({
           isActive: d.isActive !== undefined ? d.isActive : prev.isActive,
-          heroSection: { ...prev.heroSection, ...(d.heroSection || {}) },
+          heroSection: { ...prev.heroSection, ...hero },
           timerSection: {
             ...prev.timerSection,
-            ...(d.timerSection || {}),
-            endDate: d.timerSection?.endDate ? new Date(d.timerSection.endDate).toISOString().slice(0, 16) : prev.timerSection.endDate
+            ...timer,
+            endDate: timer.endDate ? new Date(timer.endDate).toISOString().slice(0, 16) : prev.timerSection.endDate
           },
-          featuredDuoSection: { ...prev.featuredDuoSection, ...(d.featuredDuoSection || {}) },
+          featuredDuoSection: { ...prev.featuredDuoSection, ...duo },
           offerProductsSection: { ...prev.offerProductsSection, ...(d.offerProductsSection || {}) },
           eligibleGallerySection: { ...prev.eligibleGallerySection, ...(d.eligibleGallerySection || {}) },
           curationOfJoySection: {

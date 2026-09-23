@@ -103,7 +103,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
 
   useEffect(() => {
     let isMounted = true;
-    getBestSellers(4)
+    getBestSellers(50)
       .then(items => {
         if (isMounted && items) {
           setBestSellers(items);
@@ -344,16 +344,48 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           </button>
         </div>
 
-        <div className="product-grid">
-          {bestSellers.map((product) => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
-              setSelectedProduct={setSelectedProduct}
-              setCurrentTab={setCurrentTab}
-            />
-          ))}
-        </div>
+        {(() => {
+          const marqueeGroup = bestSellers.length < 5 
+            ? [...bestSellers, ...bestSellers, ...bestSellers, ...bestSellers] 
+            : bestSellers.length < 10 
+              ? [...bestSellers, ...bestSellers] 
+              : bestSellers;
+          
+          // Medium speed: ~5.5 seconds per item (approx 50-60 pixels per second)
+          const marqueeDuration = marqueeGroup.length * 5.5;
+
+          return (
+            <div className={styles['bestsellers-marquee-viewport']}>
+              <div 
+                className={styles['bestsellers-marquee-track']}
+                style={{ animationDuration: `${marqueeDuration}s` }}
+              >
+                <div className={styles['bestsellers-marquee-group']}>
+                  {marqueeGroup.map((product, idx) => (
+                    <div key={`g1-${product.id || idx}-${idx}`} style={{ flex: '0 0 260px' }}>
+                      <ProductCard 
+                        product={product} 
+                        setSelectedProduct={setSelectedProduct}
+                        setCurrentTab={setCurrentTab}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className={styles['bestsellers-marquee-group']} aria-hidden="true">
+                  {marqueeGroup.map((product, idx) => (
+                    <div key={`g2-${product.id || idx}-${idx}`} style={{ flex: '0 0 260px' }}>
+                      <ProductCard 
+                        product={product} 
+                        setSelectedProduct={setSelectedProduct}
+                        setCurrentTab={setCurrentTab}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </section>
 
       {/* 5. The Bridal Edit */}

@@ -616,25 +616,25 @@ export const LimitedOffer = ({ setCurrentTab, setSelectedProduct }) => {
             <div className="flex flex-col justify-center">
               <div className="flex items-center gap-4 mb-5">
                 <div className="w-12 h-px bg-[#D4AF37]"></div>
-                <span className="text-[#D4AF37] font-label-caps text-[10px] tracking-[0.3em] uppercase">{config.featuredDuoSection.badgeText}</span>
+                <span className="text-[#D4AF37] font-label-caps text-[9px] md:text-[10px] tracking-[0.3em] uppercase">{config.featuredDuoSection.badgeText}</span>
               </div>
               
-              <h2 className="font-display-lg text-4xl md:text-[56px] text-primary mb-3 leading-[1.1]">
+              <h2 className="font-display-lg text-2xl sm:text-3xl md:text-[46px] text-primary mb-3 leading-[1.1]">
                 {config.featuredDuoSection.heading}
               </h2>
               
-              <div className="font-label-caps text-[12px] md:text-[14px] tracking-[0.2em] text-[#B38A4A] mb-8 uppercase font-medium">
+              <div className="font-label-caps text-[10.5px] sm:text-[11.5px] md:text-[13px] tracking-[0.2em] text-[#B38A4A] mb-8 uppercase font-medium">
                 {config.featuredDuoSection.subHeading}
               </div>
               
-              <p className="text-[#4A4F40] text-base md:text-lg mb-12 leading-[1.8] max-w-lg font-light">
+              <p className="text-[#4A4F40] text-[13.5px] sm:text-sm md:text-base mb-12 leading-[1.8] max-w-lg font-light">
                 {config.featuredDuoSection.description}
               </p>
               
               <div>
                 <div 
                   onClick={() => setCurrentTab('shop')} 
-                  className="inline-flex items-center justify-center gap-4 px-12 py-4 bg-transparent border-[1.5px] border-primary text-primary font-label-caps text-[11px] tracking-[0.25em] uppercase hover:bg-primary hover:text-white transition-colors duration-500 group cursor-pointer"
+                  className="inline-flex items-center justify-center gap-4 px-12 py-4 bg-transparent border-[1.5px] border-primary text-primary font-label-caps text-[10px] md:text-[11px] tracking-[0.25em] uppercase hover:bg-primary hover:text-white transition-colors duration-500 group cursor-pointer"
                 >
                   <span>{config.featuredDuoSection.ctaText || 'Explore Collection'}</span>
                 </div>

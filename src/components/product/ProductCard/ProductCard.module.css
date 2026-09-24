@@ -363,27 +363,27 @@
   }
 
   .wishlist-btn {
-    width: 30px;
-    height: 30px;
-    bottom: 8px;
-    right: 8px;
+    width: 28px !important;
+    height: 28px !important;
+    bottom: 8px !important;
+    right: 8px !important;
   }
   
   .wishlist-btn svg {
-    width: 14px;
-    height: 14px;
+    width: 13px !important;
+    height: 13px !important;
   }
 
   .share-btn {
-    width: 30px;
-    height: 30px;
-    bottom: 44px;
-    right: 8px;
+    width: 28px !important;
+    height: 28px !important;
+    bottom: 42px !important;
+    right: 8px !important;
   }
   
   .share-btn svg {
-    width: 14px;
-    height: 14px;
+    width: 13px !important;
+    height: 13px !important;
   }
 
   .badge-tag {
@@ -391,6 +391,32 @@
     left: 8px;
     padding: 4px 8px;
     font-size: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wishlist-btn {
+    width: 26px !important;
+    height: 26px !important;
+    bottom: 6px !important;
+    right: 6px !important;
+  }
+  
+  .wishlist-btn svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .share-btn {
+    width: 26px !important;
+    height: 26px !important;
+    bottom: 36px !important;
+    right: 6px !important;
+  }
+  
+  .share-btn svg {
+    width: 12px !important;
+    height: 12px !important;
   }
 }
 

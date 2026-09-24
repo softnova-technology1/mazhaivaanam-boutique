@@ -603,20 +603,19 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
 
       {/* Dynamic Patron Reviews Section */}
       {!isPreview && (
-        <section style={{ maxWidth: 1240, margin: '50px auto 40px auto', padding: '0 20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid rgba(200,163,77,0.2)', paddingBottom: 16 }}>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
+        <section className={styles['patron-reviews-section']}>
+          <div className={styles['patron-reviews-header']}>
+            <div className={styles['patron-reviews-title-block']}>
+              <span className={styles['patron-reviews-subtitle']}>
                 Patron Voices & Feedback
               </span>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: 'var(--text-main)', marginTop: 4, marginBottom: 0 }}>
+              <h2 className={styles['patron-reviews-title']}>
                 Authentic Client Reviews {activeProduct.averageRating ? `(${activeProduct.averageRating.toFixed(1)} ★)` : ''}
               </h2>
             </div>
             <button 
-              className="btn btn-primary" 
+              className={`btn btn-primary ${styles['patron-reviews-btn']}`} 
               onClick={() => setIsReviewModalOpen(true)}
-              style={{ background: 'var(--primary)', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
             >
               Write a Review
             </button>
@@ -733,19 +732,19 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
 
       {/* 4. New Arrivals Section */}
       {(newArrivals.length > 0 || relatedProducts.length > 0) && (
-        <section style={{ maxWidth: 1240, margin: '60px auto 40px auto', padding: '0 20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28, borderBottom: '1px solid rgba(200,163,77,0.2)', paddingBottom: 16 }}>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 600 }}>
+        <section className={styles['new-arrivals-section']}>
+          <div className={styles['new-arrivals-header']}>
+            <div className={styles['new-arrivals-title-block']}>
+              <span className={styles['new-arrivals-subtitle']}>
                 Fresh From The Looms
               </span>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: 'var(--text-main)', marginTop: 4, marginBottom: 0 }}>
+              <h2 className={styles['new-arrivals-title']}>
                 New Arrivals
               </h2>
             </div>
             <button
               onClick={() => setCurrentTab('new-arrivals')}
-              style={{ background: 'transparent', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6 }}
+              className={styles['new-arrivals-explore-btn']}
             >
               Explore All New Arrivals <ArrowRight size={16} />
             </button>

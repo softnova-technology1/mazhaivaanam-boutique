@@ -126,7 +126,7 @@ export default function InvoiceModal({ order, onClose }) {
         }}
       >
         {/* Modal Action Bar (Hidden on print) */}
-        <div className="no-print" style={{ 
+        <div className="no-print invoice-action-bar" style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center', 
@@ -136,12 +136,13 @@ export default function InvoiceModal({ order, onClose }) {
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Package size={20} color="#C8A34D" />
-            <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>Tax Invoice: {invoiceNumber}</span>
+          <div className="invoice-action-left" style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+            <Package size={20} color="#C8A34D" style={{ flexShrink: 0 }} />
+            <span className="invoice-action-title" style={{ fontWeight: 600, fontSize: '0.95rem' }}>Tax Invoice: {invoiceNumber}</span>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div className="invoice-action-right" style={{ display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0 }}>
             <button 
+              className="invoice-print-btn"
               onClick={handlePrint}
               style={{
                 display: 'flex',
@@ -159,6 +160,7 @@ export default function InvoiceModal({ order, onClose }) {
               <Printer size={16} /> Print / Save PDF
             </button>
             <button 
+              className="invoice-close-btn"
               onClick={onClose} 
               style={{
                 background: 'transparent',
@@ -166,7 +168,8 @@ export default function InvoiceModal({ order, onClose }) {
                 color: '#94a3b8',
                 cursor: 'pointer',
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                padding: 4
               }}
             >
               <X size={22} />
@@ -175,28 +178,28 @@ export default function InvoiceModal({ order, onClose }) {
         </div>
 
         {/* Printable Tax Invoice Content */}
-        <div id="printable-invoice" style={{ padding: '36px 40px', background: '#ffffff', color: '#1e293b', fontFamily: "'Inter', sans-serif" }}>
+        <div id="printable-invoice" className="invoice-printable-content" style={{ padding: '36px 40px', background: '#ffffff', color: '#1e293b', fontFamily: "'Inter', sans-serif" }}>
           {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #C8A34D', paddingBottom: 20 }}>
-            <div>
-              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: '#6B102A', margin: 0, fontWeight: 700 }}>
+          <div className="invoice-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #C8A34D', paddingBottom: 20 }}>
+            <div className="invoice-boutique-info">
+              <h1 className="invoice-boutique-title" style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.8rem', color: '#6B102A', margin: 0, fontWeight: 700 }}>
                 MAZHAI VAANAM
               </h1>
-              <div style={{ fontSize: '0.75rem', letterSpacing: '0.2em', color: '#C8A34D', fontWeight: 600, marginTop: 2 }}>
+              <div className="invoice-boutique-tagline" style={{ fontSize: '0.75rem', letterSpacing: '0.2em', color: '#C8A34D', fontWeight: 600, marginTop: 2 }}>
                 LUXURY HANDLOOM BOUTIQUE
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>
+              <div className="invoice-boutique-address" style={{ fontSize: '0.8rem', color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>
                 ANA Complex, Sethu Road, <br />
                 Peravurani, Thanjavur, Tamil Nadu, India 614804<br />
                 GSTIN: <strong>33ANYPN4388D1ZH</strong> | State Code: 33<br />
                 📞 +91 8807959179 | ✉️ mazhaivaanampvi@gmail.com
               </div>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ display: 'inline-block', background: '#f8fafc', padding: '6px 14px', border: '1px solid #e2e8f0', borderRadius: 6, marginBottom: 8 }}>
-                <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a' }}>TAX INVOICE</span>
+            <div className="invoice-meta-info" style={{ textAlign: 'right' }}>
+              <div className="invoice-meta-badge-wrap" style={{ display: 'inline-block', background: '#f8fafc', padding: '6px 14px', border: '1px solid #e2e8f0', borderRadius: 6, marginBottom: 8 }}>
+                <span className="invoice-meta-badge" style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a' }}>TAX INVOICE</span>
               </div>
-              <div style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6 }}>
+              <div className="invoice-meta-details" style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6 }}>
                 <div>Invoice No: <strong>{invoiceNumber}</strong></div>
                 <div>Invoice Date: <strong>{invoiceDate}</strong></div>
                 <div>Order ID: <strong>{order.orderId || order._id}</strong></div>
@@ -207,8 +210,8 @@ export default function InvoiceModal({ order, onClose }) {
           </div>
 
           {/* Billing & Shipping Details */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, margin: '24px 0', padding: '16px 20px', background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0' }}>
-            <div>
+          <div className="invoice-addresses-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, margin: '24px 0', padding: '16px 20px', background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+            <div className="invoice-address-col invoice-address-col-billed">
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#C8A34D', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
                 BILLED TO / CUSTOMER
               </div>
@@ -221,7 +224,7 @@ export default function InvoiceModal({ order, onClose }) {
               </div>
             </div>
 
-            <div>
+            <div className="invoice-address-col invoice-address-col-shipping">
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#C8A34D', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
                 SHIPPED TO / DELIVERY ADDRESS
               </div>
@@ -246,44 +249,46 @@ export default function InvoiceModal({ order, onClose }) {
           </div>
 
           {/* Itemized Table */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 24 }}>
-            <thead>
-              <tr style={{ background: '#0f172a', color: '#ffffff', fontSize: '0.8rem', textTransform: 'uppercase' }}>
-                <th style={{ padding: '10px 12px', textAlign: 'center', width: 40 }}>#</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center', width: 50 }}>Image</th>
-                <th style={{ padding: '10px 12px', textAlign: 'left' }}>Item Description</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center', width: 140 }}>SKU</th>
-                <th style={{ padding: '10px 12px', textAlign: 'center', width: 20 }}>Qty</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right', width: 100 }}>Rate</th>
-                <th style={{ padding: '10px 12px', textAlign: 'right', width: 110 }}>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {order.items?.map((item, idx) => (
-                <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
-                  <td style={{ padding: '12px', textAlign: 'center', color: '#64748b' }}>{idx + 1}</td>
-                  <td style={{ padding: '8px', textAlign: 'center' }}>
-                    <InvoiceItemImage item={item} />
-                  </td>
-                  <td style={{ padding: '12px' }}>
-                    <div style={{ fontWeight: 600, color: '#0f172a' }}>{item.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Fabric: {item.fabric || 'Pure Handloom Silk'}</div>
-                  </td>
-                  <td style={{ padding: '12px', textAlign: 'center', color: '#000000ff', fontSize: '0.75rem' }}>{item.product?.sku || item.sku || '-'}</td>
-                  <td style={{ padding: '12px', textAlign: 'center', fontWeight: 600 }}>{item.quantity || 1}</td>
-                  <td style={{ padding: '12px', textAlign: 'right', color: '#334155' }}>₹{Number(item.price).toLocaleString('en-IN')}</td>
-                  <td style={{ padding: '12px', textAlign: 'right', fontWeight: 600, color: '#0f172a' }}>
-                    ₹{Number(item.price * (item.quantity || 1)).toLocaleString('en-IN')}
-                  </td>
+          <div className="invoice-table-wrapper">
+            <table className="invoice-table" style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 24 }}>
+              <thead>
+                <tr style={{ background: '#0f172a', color: '#ffffff', fontSize: '0.8rem', textTransform: 'uppercase' }}>
+                  <th style={{ padding: '10px 12px', textAlign: 'center', width: 40 }}>#</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'center', width: 50 }}>Image</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'left' }}>Item Description</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'center', width: 140 }}>SKU</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'center', width: 20 }}>Qty</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right', width: 100 }}>Rate</th>
+                  <th style={{ padding: '10px 12px', textAlign: 'right', width: 110 }}>Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {order.items?.map((item, idx) => (
+                  <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
+                    <td style={{ padding: '12px', textAlign: 'center', color: '#64748b' }}>{idx + 1}</td>
+                    <td style={{ padding: '8px', textAlign: 'center' }}>
+                      <InvoiceItemImage item={item} />
+                    </td>
+                    <td style={{ padding: '12px' }}>
+                      <div style={{ fontWeight: 600, color: '#0f172a' }}>{item.name}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Fabric: {item.fabric || 'Pure Handloom Silk'}</div>
+                    </td>
+                    <td style={{ padding: '12px', textAlign: 'center', color: '#000000ff', fontSize: '0.75rem' }}>{item.product?.sku || item.sku || '-'}</td>
+                    <td style={{ padding: '12px', textAlign: 'center', fontWeight: 600 }}>{item.quantity || 1}</td>
+                    <td style={{ padding: '12px', textAlign: 'right', color: '#334155' }}>₹{Number(item.price).toLocaleString('en-IN')}</td>
+                    <td style={{ padding: '12px', textAlign: 'right', fontWeight: 600, color: '#0f172a' }}>
+                      ₹{Number(item.price * (item.quantity || 1)).toLocaleString('en-IN')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* Tax Breakdown & Totals */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24, marginBottom: 16 }}>
+          <div className="invoice-summary-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24, marginBottom: 16 }}>
             {/* GST Summary & Amount in Words */}
-            <div style={{ padding: 14, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: '0.8rem' }}>
+            <div className="invoice-gst-box" style={{ padding: 14, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: '0.8rem' }}>
               <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: 6 }}>GST Tax Breakdown (5% Apparel Rate):</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', color: '#64748b', marginBottom: 3 }}>
                 <span>Taxable Value:</span>
@@ -304,7 +309,7 @@ export default function InvoiceModal({ order, onClose }) {
             </div>
 
             {/* Calculations Summary */}
-            <div style={{ fontSize: '0.85rem' }}>
+            <div className="invoice-calc-box" style={{ fontSize: '0.85rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f1f5f9' }}>
                 <span style={{ color: '#64748b' }}>Product MRP:</span>
                 <span style={{ fontWeight: 600, color: mrpTotal > subtotal ? '#94a3b8' : '#0f172a', textDecoration: mrpTotal > subtotal ? 'line-through' : 'none' }}>
@@ -346,7 +351,7 @@ export default function InvoiceModal({ order, onClose }) {
 
           {/* Full Width Gift Card Message */}
           {order.giftMessage && (
-            <div style={{ padding: '12px 16px', background: '#fffbeb', borderRadius: 8, border: '1px solid #fde68a', marginBottom: 20, width: '100%', boxSizing: 'border-box' }}>
+            <div className="invoice-gift-message-box" style={{ padding: '12px 16px', background: '#fffbeb', borderRadius: 8, border: '1px solid #fde68a', marginBottom: 20, width: '100%', boxSizing: 'border-box' }}>
               <div style={{ fontWeight: 700, color: '#b45309', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem' }}>
                 <span>🎁</span> GIFT CARD MESSAGE:
               </div>
@@ -357,22 +362,172 @@ export default function InvoiceModal({ order, onClose }) {
           )}
 
           {/* Footer & Signature */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: 20, marginTop: 30, fontSize: '0.75rem', color: '#64748b' }}>
-            <div>
+          <div className="invoice-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: 20, marginTop: 30, fontSize: '0.75rem', color: '#64748b' }}>
+            <div className="invoice-terms-box">
               <strong style={{ display: 'block', marginBottom: 0 }}>Terms & Conditions:</strong>
               <div style={{ marginBottom: 0 }}>1. We take utmost care to offer quality products; Returns/Exchanges are subject to our Return Policy and applicable conditions.</div>
               <div style={{ marginBottom: 0 }}>2. Please follow the recommended Wash & Care instructions to maintain the quality and appearance of the product.</div>
               <div>3. This is a computer-generated invoice and does not require a physical signature.</div>
             </div>
-            <div style={{ textAlign: 'center', minWidth: 180 }}>
+            <div className="invoice-signatory-box" style={{ textAlign: 'center', minWidth: 180 }}>
               <div style={{ fontFamily: "'Kaushan Script', cursive", fontSize: '1.2rem', color: '#6B102A', marginBottom: 4 }}>Mazhai Vaanam</div>
               <div style={{ borderTop: '1px solid #94a3b8', paddingTop: 4, fontWeight: 600, color: '#334155' }}>Authorized Signatory</div>
             </div>
           </div>
         </div>
 
-        {/* CSS for print mode */}
+        {/* CSS for print and mobile modes */}
         <style>{`
+          @media screen and (max-width: 768px) {
+            .modal-content.invoice-modal-container {
+              width: 95% !important;
+              max-height: 94vh !important;
+              margin: 10px auto !important;
+              border-radius: 10px !important;
+            }
+
+            .invoice-action-bar {
+              padding: 10px 14px !important;
+              gap: 8px !important;
+            }
+
+            .invoice-action-title {
+              font-size: 0.8rem !important;
+              max-width: 170px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+
+            .invoice-print-btn {
+              padding: 6px 10px !important;
+              font-size: 0.76rem !important;
+              white-space: nowrap !important;
+            }
+
+            #printable-invoice.invoice-printable-content {
+              padding: 16px 14px !important;
+            }
+
+            .invoice-header {
+              flex-direction: column !important;
+              align-items: stretch !important;
+              gap: 14px !important;
+              padding-bottom: 16px !important;
+            }
+
+            .invoice-boutique-title {
+              font-size: 1.45rem !important;
+            }
+
+            .invoice-boutique-tagline {
+              font-size: 0.68rem !important;
+            }
+
+            .invoice-boutique-address {
+              font-size: 0.74rem !important;
+              line-height: 1.45 !important;
+            }
+
+            .invoice-meta-info {
+              text-align: left !important;
+              background: #f8fafc;
+              border: 1px solid #e2e8f0;
+              border-radius: 8px;
+              padding: 12px 14px !important;
+            }
+
+            .invoice-meta-badge-wrap {
+              margin-bottom: 6px !important;
+            }
+
+            .invoice-meta-badge {
+              font-size: 0.8rem !important;
+            }
+
+            .invoice-meta-details {
+              font-size: 0.8rem !important;
+              line-height: 1.6 !important;
+            }
+
+            .invoice-addresses-grid {
+              grid-template-columns: 1fr !important;
+              gap: 14px !important;
+              margin: 16px 0 !important;
+              padding: 14px 12px !important;
+            }
+
+            .invoice-address-col-shipping {
+              border-top: 1px dashed #cbd5e1;
+              padding-top: 12px;
+            }
+
+            .invoice-table-wrapper {
+              width: 100% !important;
+              overflow-x: auto !important;
+              -webkit-overflow-scrolling: touch !important;
+              margin-bottom: 18px !important;
+              border: 1px solid #e2e8f0 !important;
+              border-radius: 8px !important;
+            }
+
+            .invoice-table-wrapper::-webkit-scrollbar {
+              height: 4px;
+            }
+
+            .invoice-table-wrapper::-webkit-scrollbar-thumb {
+              background: #cbd5e1;
+              border-radius: 4px;
+            }
+
+            .invoice-table {
+              min-width: 580px !important;
+              margin-bottom: 0 !important;
+            }
+
+            .invoice-table th,
+            .invoice-table td {
+              padding: 8px 10px !important;
+              font-size: 0.78rem !important;
+            }
+
+            .invoice-summary-grid {
+              grid-template-columns: 1fr !important;
+              gap: 14px !important;
+              margin-bottom: 14px !important;
+            }
+
+            .invoice-calc-box {
+              order: 1;
+              font-size: 0.82rem !important;
+            }
+
+            .invoice-gst-box {
+              order: 2;
+              font-size: 0.76rem !important;
+              padding: 12px !important;
+            }
+
+            .invoice-gift-message-box {
+              padding: 10px 12px !important;
+              margin-bottom: 16px !important;
+              font-size: 0.8rem !important;
+            }
+
+            .invoice-footer {
+              flex-direction: column !important;
+              align-items: stretch !important;
+              gap: 16px !important;
+              margin-top: 20px !important;
+              padding-top: 14px !important;
+              font-size: 0.72rem !important;
+            }
+
+            .invoice-signatory-box {
+              text-align: right !important;
+            }
+          }
+
           @media print {
             body * {
               visibility: hidden;

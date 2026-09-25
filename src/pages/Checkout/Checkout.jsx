@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
@@ -658,8 +659,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
         {checkoutItems.map((item) => (
           <div key={item.id || item._id} className={styles.productPreviewItem}>
             <div className={styles.previewThumb}>
-              <img
-                src={getImageUrl(item)}
+              <img src={getOptimizedImageUrl(getImageUrl(item))}
                 alt={item.name}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -1072,7 +1072,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
                   {orderCache.items.map((item) => (
                     <div key={item.id} className={styles.orderedItemRow}>
                       <div className={styles.orderedItemThumb}>
-                        <img src={item.image} alt={item.name} />
+                        <img src={getOptimizedImageUrl(item.image)} alt={item.name} />
                       </div>
                       <div className={styles.orderedItemDetails}>
                         <p className={styles.orderedItemColName}>

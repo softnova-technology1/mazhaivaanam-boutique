@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import React, { useState, useEffect } from 'react';
 import { getCollections } from '../../services/api';
 import styles from './Collections.module.css';
@@ -68,7 +69,7 @@ export const Collections = ({ setCurrentTab, setCatalogFilter }) => {
               className={`${styles['collection-card']} ${styles[collection.gridClass] || styles['card-half']}`}
               onClick={() => handleCollectionClick(collection.label || collection.name)}
             >
-              <img src={collection.image} alt={collection.label || collection.name} />
+              <img src={getOptimizedImageUrl(collection.image)} alt={collection.label || collection.name} />
               <div className={styles['card-overlay']}>
                 <div className={styles['glass-plate']}>
                   <div className={styles['glass-text']}>

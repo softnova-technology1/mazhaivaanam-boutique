@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import { useState, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
@@ -284,8 +285,7 @@ export const MyOrders = ({ setCurrentTab }) => {
                     >
                       {/* Saree Thumbnail Image */}
                       <div className={styles.productThumbBox}>
-                        <img 
-                          src={order.items[0]?.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg'} 
+                        <img src={getOptimizedImageUrl(order.items[0]?.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg')} 
                           alt={order.items[0]?.name || 'Saree thumbnail'} 
                           className={styles.productThumbImage}
                         />

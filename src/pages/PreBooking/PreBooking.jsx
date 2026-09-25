@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import React, { useState, useEffect } from 'react';
 import styles from './PreBooking.module.css';
 import { ChevronDown, ArrowRight, Grid, List, Filter, X, Star, Heart, Share2 } from 'lucide-react';
@@ -378,7 +379,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                       <Share2 size={16} stroke="var(--primary-dark)" />
                     </div>
 
-                    <img src={product.image} alt={product.name} className={styles['product-image']} />
+                    <img src={getOptimizedImageUrl(product.image)} alt={product.name} className={styles['product-image']} />
                   </div>
                   <div className={styles['product-info']}>
                     <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
@@ -435,8 +436,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                   </div>
                 )}
                 <div className={styles['main-image-container']} style={{ position: 'relative' }}>
-                  <img 
-                    src={quickViewProduct.images && quickViewProduct.images.length > 0 ? (quickViewProduct.images[activeQuickViewImage]?.url || quickViewProduct.images[activeQuickViewImage]) : quickViewProduct.image} 
+                  <img src={getOptimizedImageUrl(quickViewProduct.images && quickViewProduct.images.length > 0 ? (quickViewProduct.images[activeQuickViewImage]?.url || quickViewProduct.images[activeQuickViewImage]) : quickViewProduct.image)} 
                     alt={quickViewProduct.name} 
                     className={styles['main-image']} 
                   />

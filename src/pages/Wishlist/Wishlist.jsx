@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import { useState, useEffect } from 'react';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useCart } from '../../hooks/useCart';
@@ -163,7 +164,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
 
                     <div className={styles['product-image-container']} onClick={() => handleProductClick(item)}>
                       {hasDrop && <div className={styles['discount-badge']}>{Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)}% OFF</div>}
-                      <img src={item.image || item.images?.[0]?.url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png'} alt={item.name} className={styles['product-image']} />
+                      <img src={getOptimizedImageUrl(item.image || item.images?.[0]?.url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png')} alt={item.name} className={styles['product-image']} />
                     </div>
                     <div className={styles['product-info']}>
                       <h3 className={styles['product-name']} onClick={() => handleProductClick(item)}>
@@ -205,8 +206,7 @@ export const Wishlist = ({ setCurrentTab, setSelectedProduct }) => {
                 {[...recommendedProducts, ...recommendedProducts].map((rec, index) => (
                   <div key={`${rec.id || rec._id}-${index}`} className={styles['rec-card']}>
                     <div className={styles['rec-image-box']}>
-                      <img 
-                        src={rec.image || rec.images?.[0]?.url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png'} 
+                      <img src={getOptimizedImageUrl(rec.image || rec.images?.[0]?.url || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/saree1.png')} 
                         alt={rec.name} 
                         className={styles['rec-img']}
                         onClick={() => handleProductClick(rec)}

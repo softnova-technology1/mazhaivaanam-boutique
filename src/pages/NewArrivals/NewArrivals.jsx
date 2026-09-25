@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import React, { useState, useMemo, useEffect } from 'react';
 import { getNewArrivals } from '../../services/api';
 import { ProductCard } from '../../components/product/ProductCard/ProductCard';

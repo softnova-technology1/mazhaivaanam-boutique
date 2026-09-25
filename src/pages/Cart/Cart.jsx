@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import { useState, useRef } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
@@ -175,7 +176,7 @@ export const Cart = ({ setCurrentTab }) => {
                 {cart.map((item) => (
                   <div key={item.id} className={styles.cartItem}>
                     <div className={styles.imageContainer}>
-                      <img src={item.image} alt={item.name} className={styles.itemImage} />
+                      <img src={getOptimizedImageUrl(item.image)} alt={item.name} className={styles.itemImage} />
                     </div>
                     <div className={styles.itemDetails}>
                       <div>

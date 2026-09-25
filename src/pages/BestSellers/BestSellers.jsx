@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import React, { useMemo, useEffect, useState } from 'react';
 import { getBestSellers } from '../../services/api';
 import { getBadgeClass } from '../../utils/badgeHelper';
@@ -164,7 +165,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
                 return (
                   <div key={prod.id || prod._id} className={styles['sidebar-product-card']} onClick={() => handleProductClick({ ...prod, price: effPrice })}>
-                    <img src={prod.image} alt={prod.name} loading="lazy" />
+                    <img src={getOptimizedImageUrl(prod.image)} alt={prod.name} loading="lazy" />
                     <div className={styles['sidebar-product-info']}>
                       <h5>{prod.name}</h5>
                       <span className={styles['sidebar-price']}>
@@ -289,7 +290,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                   onClick={() => handleProductClick(itemToPass)}
                 >
                   <div className={styles['product-image-container']}>
-                    <img src={product.image} alt={product.name} loading="lazy" className={styles['product-image']} />
+                    <img src={getOptimizedImageUrl(product.image)} alt={product.name} loading="lazy" className={styles['product-image']} />
                     
                     {product.stock?.isOutOfStock ? (
                       <span className={`${styles['bestseller-badge']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>

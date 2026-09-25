@@ -1,3 +1,4 @@
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import SEO from '../../components/common/SEO/SEO';
 import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../hooks/useCart';
@@ -348,8 +349,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
         <div className={styles['gallery-column']}>
           <div className={styles['main-image-viewport']}>
             {(selectedImage || activeProduct.image || activeProduct.images?.[0]?.url) && (
-              <img
-                src={selectedImage || activeProduct.image || activeProduct.images?.[0]?.url}
+              <img src={getOptimizedImageUrl(selectedImage || activeProduct.image || activeProduct.images?.[0]?.url)}
                 alt={activeProduct.name || 'Handcrafted Saree'}
                 className={styles['main-img']}
               />
@@ -407,7 +407,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                 className={`${styles['thumb-box']} ${selectedImage === imgUrl ? styles['active-thumb'] : ''}`}
                 onClick={() => setSelectedImage(imgUrl)}
               >
-                <img src={imgUrl} alt={`View detail ${idx + 1}`} />
+                <img src={getOptimizedImageUrl(imgUrl)} alt={`View detail ${idx + 1}`} />
               </div>
             ))}
             {/* <div className={styles['thumb-drape-btn']} onClick={() => setWishlistMessage("Buffering Atelier presentation video...")}>
@@ -714,7 +714,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
               }}
             >
               <div className={styles['related-image-wrapper']}>
-                <img src={prod.image} alt={prod.name} />
+                <img src={getOptimizedImageUrl(prod.image)} alt={prod.name} />
                 {prod.tag && <span className={`${styles['related-tag']} ${getBadgeClass(prod.tag)}`}>{prod.tag}</span>}
               </div>
               <div className={styles['related-info']}>
@@ -782,8 +782,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                 }}
               >
                 <div style={{ width: '100%', height: 320, position: 'relative', overflow: 'hidden', background: '#111' }}>
-                  <img
-                    src={item.image}
+                  <img src={getOptimizedImageUrl(item.image)}
                     alt={item.name}
                     style={{ width: '100%', height: '100%', transition: 'transform 0.4s ease' }}
                   />

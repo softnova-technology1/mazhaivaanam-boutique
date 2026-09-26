@@ -2463,7 +2463,7 @@ export default function LimitedOfferAdmin() {
                       <option value="None">None</option>
                       <option value="LIMITED EDITION">LIMITED EDITION</option>
                       <option value="FESTIVAL CHOICE">FESTIVAL CHOICE</option>
-                      <option value="BESTSELLER">BESTSELLER</option>
+                      <option value="Bestseller">Bestseller</option>
                       <option value="Fresh Pick">Fresh Pick</option>
                         <option value="Traditional Charm">Traditional Charm</option>
                         <option value="TRENDING">Trending</option>

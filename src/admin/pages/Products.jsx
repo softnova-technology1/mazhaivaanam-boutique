@@ -43,8 +43,11 @@ export default function Products() {
   }, []);
 
   useEffect(() => {
-    loadProducts();
-  }, [filters.page, filters.category, filters.tag]);
+    const timer = setTimeout(() => {
+      loadProducts();
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [filters.page, filters.category, filters.tag, filters.search]);
 
   const loadProducts = async () => {
     setLoading(true);
@@ -446,7 +449,7 @@ export default function Products() {
                 <input
                   placeholder="Search products..."
                   value={filters.search}
-                  onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
+                  onChange={(e) => setFilters(f => ({ ...f, search: e.target.value, page: 1 }))}
                 />
               </form>
               <select className="form-select" value={filters.category} onChange={(e) => setFilters(f => ({ ...f, category: e.target.value, page: 1 }))}>
@@ -455,7 +458,7 @@ export default function Products() {
               </select>
               <select className="form-select" value={filters.tag} onChange={(e) => setFilters(f => ({ ...f, tag: e.target.value, page: 1 }))}>
                 <option value="">All Tags</option>
-                <option value="BESTSELLER">Bestseller</option>
+                <option value="Bestseller">Bestseller</option>
                 <option value="Fresh Pick">Fresh Pick</option>
                 <option value="Traditional Charm">Traditional Charm</option>
                 <option value="TRENDING">Trending</option>
@@ -605,7 +608,7 @@ export default function Products() {
                             <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>₹{p.price?.toLocaleString('en-IN')}</span>
                             {p.mrpPrice > p.price && <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textDecoration: 'line-through' }}>₹{p.mrpPrice?.toLocaleString('en-IN')}</div>}
                           </td>
-                          <td>{p.tag ? <span className={`badge badge-${p.tag === 'BESTSELLER' ? 'primary' : p.tag === 'NEW ARRIVAL' ? 'info' : 'warning'}`}>{p.tag}</span> : '—'}</td>
+                          <td>{p.tag ? <span className={`badge badge-${p.tag === 'Bestseller' ? 'primary' : p.tag === 'NEW ARRIVAL' ? 'info' : 'warning'}`}>{p.tag}</span> : '—'}</td>
                           <td><span className={`badge ${p.isActive ? 'badge-success' : 'badge-danger'}`}>{p.isActive ? 'Active' : 'Inactive'}</span></td>
                           <td style={{ textAlign: 'right' }}>
                             <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
@@ -616,6 +619,13 @@ export default function Products() {
                         </tr>
                       );
                     })}
+                    {products.length === 0 && !loading && (
+                      <tr>
+                        <td colSpan="8" style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
+                          No products found matching your search.
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -1012,7 +1022,7 @@ export default function Products() {
                     <label className="form-label">Tag</label>
                     <select className="form-input" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
                       <option value="">None</option>
-                      <option value="BESTSELLER">Bestseller</option>
+                      <option value="Bestseller">Bestseller</option>
                       <option value="Fresh Pick">Fresh Pick</option>
                       <option value="Traditional Charm">Traditional Charm</option>
                       <option value="TRENDING">Trending</option>

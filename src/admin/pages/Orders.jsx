@@ -22,6 +22,7 @@ export default function Orders() {
   const [dateFilter, setDateFilter] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
   const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const [expanded, setExpanded] = useState(null);
   const [updateForm, setUpdateForm] = useState({ status: '', trackingNumber: '', courier: '', note: '' });
 
@@ -52,7 +53,12 @@ export default function Orders() {
   const [selectedGiftMessage, setSelectedGiftMessage] = useState(null);
 
   useEffect(() => { loadStats(); }, []);
-  useEffect(() => { loadOrders(); }, [page, statusFilter, paymentStatusFilter, dateFilter, sortOrder]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadOrders();
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [page, statusFilter, paymentStatusFilter, dateFilter, sortOrder, searchQuery]);
 
   const loadStats = async () => {
     try {
@@ -68,6 +74,7 @@ export default function Orders() {
       if (statusFilter) params += `&status=${statusFilter}`;
       if (paymentStatusFilter) params += `&paymentStatus=${paymentStatusFilter}`;
       if (dateFilter) params += `&dateRange=${dateFilter}`;
+      if (searchQuery) params += `&search=${encodeURIComponent(searchQuery)}`;
       const res = await orderAPI.getAll(params);
       setOrders(res.data);
       setPagination(res.pagination);
@@ -281,6 +288,14 @@ export default function Orders() {
       {/* Filter and Bulk Action Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <div className="filter-bar" style={{ margin: 0, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <div className="search-bar" style={{ flex: 1, minWidth: 200, maxWidth: 300 }}>
+            <Search size={16} />
+            <input
+              placeholder="Search by Order ID, Name, Phone..."
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+            />
+          </div>
           <select className="form-select" value={paymentStatusFilter} onChange={e => { setPaymentStatusFilter(e.target.value); setPage(1); }} style={{ fontWeight: 600, borderColor: paymentStatusFilter === 'paid' ? '#16a34a' : paymentStatusFilter === 'pending' ? '#eab308' : undefined }}>
             <option value="paid">✅ Verified Paid (Fulfillment Queue)</option>
             <option value="pending">⏳ Abandoned / Payment Pending</option>

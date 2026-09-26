@@ -4,13 +4,14 @@ import { productAPI, uploadAPI, fabricAPI, categoryAPI } from '../api/api.js';
 
 import { exportToCSV } from '../utils/exportCSV.js';
 import { downloadSampleImportTemplate, parseImportFile } from '../utils/importParser.js';
-import { Plus, Search, Edit, Trash2, X, UploadCloud, Download, ArrowLeft, Eye, Star, FileSpreadsheet } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, X, UploadCloud, Download, ArrowLeft, Eye, Star, FileSpreadsheet, ShoppingBag, CheckCircle, Clock } from 'lucide-react';
 import { ProductPreview } from '../components/ProductPreview.jsx';
 
 export default function PreBooking() {
   const [products, setProducts] = useState([]);
   const [fabricsList, setFabricsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
+  const [stats, setStats] = useState({ all: 0, active: 0, scheduled: 0 });
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ page: 1, limit: 15, category: '', tag: '', search: '' });
@@ -56,6 +57,7 @@ export default function PreBooking() {
       if (filters.search) params.set('search', filters.search);
       const res = await productAPI.getAll(params.toString());
       setProducts(res.data);
+      if (res.stats) setStats(res.stats);
       setPagination(res.pagination);
       setSelectedProducts([]);
     } catch (err) { console.error(err); }
@@ -388,6 +390,39 @@ export default function PreBooking() {
         </div>
       </div>
 
+      {/* Pre-Booking Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, marginBottom: 24, marginTop: 16 }}>
+        <div style={{ background: '#fff', borderRadius: 12, padding: '20px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
+            <ShoppingBag size={24} />
+          </div>
+          <div>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>{stats.all}</h3>
+            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem' }}>All Products</p>
+          </div>
+        </div>
+
+        <div style={{ background: '#fff', borderRadius: 12, padding: '20px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(34, 197, 94, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22c55e' }}>
+            <CheckCircle size={24} />
+          </div>
+          <div>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>{stats.active}</h3>
+            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem' }}>Active Products</p>
+          </div>
+        </div>
+
+        <div style={{ background: '#fff', borderRadius: 12, padding: '20px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(234, 179, 8, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#eab308' }}>
+            <Clock size={24} />
+          </div>
+          <div>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, color: 'var(--text-main)' }}>{stats.scheduled}</h3>
+            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem' }}>Scheduled Products</p>
+          </div>
+        </div>
+      </div>
+
       {/* Filters and Bulk Action Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <div className="filter-bar" style={{ margin: 0 }}>
@@ -405,7 +440,7 @@ export default function PreBooking() {
           </select>
           <select className="form-select" value={filters.tag} onChange={(e) => setFilters(f => ({ ...f, tag: e.target.value, page: 1 }))}>
             <option value="">All Tags</option>
-            <option value="BESTSELLER">Bestseller</option>
+            <option value="Bestseller">Bestseller</option>
             <option value="Fresh Pick">Fresh Pick</option>
                         <option value="Traditional Charm">Traditional Charm</option>
                         <option value="TRENDING">Trending</option>
@@ -909,7 +944,7 @@ export default function PreBooking() {
                     <label className="form-label">Tag</label>
                     <select className="form-select" value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))}>
                       <option value="">None</option>
-                      <option value="BESTSELLER">Bestseller</option>
+                      <option value="Bestseller">Bestseller</option>
                       <option value="Fresh Pick">Fresh Pick</option>
                       <option value="Traditional Charm">Traditional Charm</option>
                       <option value="TRENDING">Trending</option>

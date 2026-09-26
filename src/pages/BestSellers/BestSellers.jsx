@@ -300,7 +300,7 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                           ((product.discountActive || product.discount?.isActive) && (product.discountEndDate || product.discount?.endDate)) ||
                           (product.limitedOfferEntry?.isActive && product.limitedOfferEntry?.endDate) || null
                         }
-                        fallbackLabel="BESTSELLER"
+                        fallbackLabel="Bestseller"
                         className={styles['bestseller-badge']}
                       />
                     )}

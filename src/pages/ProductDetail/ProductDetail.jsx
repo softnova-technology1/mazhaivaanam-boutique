@@ -72,7 +72,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
     price: 13000,
     oldPrice: 15000,
     rating: 4.9,
-    tag: "BESTSELLER",
+    tag: "Bestseller",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-hN0onELnDgdOswyfAzJdw98YnefT7Zi-Dt0g7IxzqYuKK0TaBE4ZTit86sthNhhHWaETP5U6EPkJdQ2TF8NiA7csqXaXCMDhY3VfyoT7yodibzxkenJWfVDdPFIj9YQwTe_B2qlA3e4Sg8KUXPv4QX9GkevPmAgmVVpnY1xGSJkIONEBGz60tPRpNkxygpulKi7xC5gVJ_NCnFJG5nHKVTU98HQAfzC7nM8QYjmgbIyBBYSsnJFz",
     description: "Elegant ruby red handwoven pure silk saree adorned with heritage gold zari borders and temple motifs."
   };

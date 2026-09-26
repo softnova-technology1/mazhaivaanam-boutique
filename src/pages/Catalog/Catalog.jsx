@@ -26,6 +26,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   const [selectedAvailability, setSelectedAvailability] = useState('All');
   const [maxPrice, setMaxPrice] = useState(500000);
   const [selectedSort, setSelectedSort] = useState('featured');
+  const [selectedTag, setSelectedTag] = useState('All');
+  const [isTagOpen, setIsTagOpen] = useState(false);
   const { wishlist, toggleWishlist } = useWishlist();
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
@@ -39,7 +41,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   };
 
   const [currentPage, setCurrentPage] = useState(getPageFromUrl);
-  const isFirstFilterRun = useRef(true);
+  const prevFilters = useRef({ selectedCategory, selectedFabric, selectedAvailability, maxPrice, selectedSort, searchQuery, selectedTag });
   const ITEMS_PER_PAGE = 24;
 
   // Lock body scroll when mobile filter drawer is open
@@ -96,14 +98,15 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
   }, []);
 
   useEffect(() => {
-    if (!isSortOpen && !isAvailabilityOpen) return;
+    if (!isSortOpen && !isAvailabilityOpen && !isTagOpen) return;
     const closeDropdown = () => {
       setIsSortOpen(false);
       setIsAvailabilityOpen(false);
+      setIsTagOpen(false);
     };
     document.addEventListener('click', closeDropdown);
     return () => document.removeEventListener('click', closeDropdown);
-  }, [isSortOpen, isAvailabilityOpen]);
+  }, [isSortOpen, isAvailabilityOpen, isTagOpen]);
 
   const handleProductClick = (product) => {
     if (setSelectedProduct && setCurrentTab) {
@@ -162,6 +165,11 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       }
     }
 
+    // Filter by Tag
+    if (selectedTag && selectedTag !== 'All') {
+      filtered = filtered.filter(p => p.tag && p.tag.toLowerCase() === selectedTag.toLowerCase());
+    }
+
     // Filter by Max Price
     filtered = filtered.filter(p => p.price <= maxPrice);
 
@@ -175,7 +183,14 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     } else if (selectedSort === 'alpha-desc') {
       filtered.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
     } else if (selectedSort === 'best-selling') {
-      filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      filtered.sort((a, b) => {
+        const aIsBest = a.tag === 'Bestseller' ? 1 : 0;
+        const bIsBest = b.tag === 'Bestseller' ? 1 : 0;
+        if (aIsBest !== bIsBest) return bIsBest - aIsBest;
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
     } else if (selectedSort === 'date-old') {
       filtered.sort((a, b) => {
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
@@ -192,9 +207,17 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     }
 
     setProducts(filtered);
-    if (isFirstFilterRun.current) {
-      isFirstFilterRun.current = false;
-    } else {
+    
+    const filtersChanged = 
+      prevFilters.current.selectedCategory !== selectedCategory ||
+      prevFilters.current.selectedFabric !== selectedFabric ||
+      prevFilters.current.selectedAvailability !== selectedAvailability ||
+      prevFilters.current.maxPrice !== maxPrice ||
+      prevFilters.current.selectedSort !== selectedSort ||
+      prevFilters.current.searchQuery !== searchQuery ||
+      prevFilters.current.selectedTag !== selectedTag;
+
+    if (filtersChanged) {
       setCurrentPage(1);
       const url = new URL(window.location.href);
       if (url.searchParams.has('page')) {
@@ -203,8 +226,9 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
         const newPath = url.pathname + (search ? `?${search}` : '');
         window.history.pushState(null, '', newPath);
       }
+      prevFilters.current = { selectedCategory, selectedFabric, selectedAvailability, maxPrice, selectedSort, searchQuery, selectedTag };
     }
-  }, [masterProducts, selectedCategory, selectedFabric, selectedAvailability, maxPrice, selectedSort, searchQuery]);
+  }, [masterProducts, selectedCategory, selectedFabric, selectedAvailability, maxPrice, selectedSort, searchQuery, selectedTag]);
 
   // Handle browser back/forward history events for pagination
   useEffect(() => {
@@ -376,7 +400,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     style={{ width: '100%', border: 'none', background: 'transparent', outline: 'none', fontSize: '11px', fontFamily: 'Inter, sans-serif', color: 'var(--text-main)', cursor: 'pointer', appearance: 'none', fontWeight: 500 }}
                   >
                     <option value="featured">Featured</option>
-                    <option value="best-selling">Best selling</option>
                     <option value="price-low">Price, low to high</option>
                     <option value="price-high">Price, high to low</option>
                   </select>
@@ -579,6 +602,68 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                 <Filter size={13} /> Filter & Sort
               </button>
 
+              <div className={styles['sort-selector']} style={{ marginRight: '15px' }}>
+                <span className={styles['sort-label']}>TAGS:</span>
+                <div className={styles['custom-dropdown-container']}>
+                  <button
+                    className={styles['dropdown-trigger-btn']}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsTagOpen(!isTagOpen);
+                      setIsSortOpen(false);
+                    }}
+                    type="button"
+                  >
+                    <span>{selectedTag === 'All' ? 'All Tags' : selectedTag}</span>
+                    <ChevronDown size={14} className={`${styles['chevron-icon']} ${isTagOpen ? styles['open'] : ''}`} />
+                  </button>
+                  {isTagOpen && (
+                    <div className={styles['dropdown-options-menu']}>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'All' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('All'); setIsTagOpen(false); }}
+                        type="button"
+                      >All Tags</button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'Bestseller' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('Bestseller'); setIsTagOpen(false); }}
+                        type="button"
+                      >Bestseller</button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'Fresh Pick' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('Fresh Pick'); setIsTagOpen(false); }}
+                        type="button"
+                      >Fresh Pick</button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'Traditional Charm' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('Traditional Charm'); setIsTagOpen(false); }}
+                        type="button"
+                      >Traditional Charm</button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'Trending' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('Trending'); setIsTagOpen(false); }}
+                        type="button"
+                      >Trending</button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'Elegant Pick' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('Elegant Pick'); setIsTagOpen(false); }}
+                        type="button"
+                      >Elegant Pick</button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'Limited Edition' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('Limited Edition'); setIsTagOpen(false); }}
+                        type="button"
+                      >Limited Edition</button>
+                      <button
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'Festival Choice' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('Festival Choice'); setIsTagOpen(false); }}
+                        type="button"
+                      >Festival Choice</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className={styles['sort-selector']}>
                 <span className={styles['sort-label']}>SORT BY:</span>
                 <div className={styles['custom-dropdown-container']}>
@@ -587,12 +672,12 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsSortOpen(!isSortOpen);
+                      setIsTagOpen(false);
                     }}
                     type="button"
                   >
                     <span>
                       {selectedSort === 'featured' && 'Featured'}
-                      {selectedSort === 'best-selling' && 'Best selling'}
                       {selectedSort === 'price-low' && 'Price, low to high'}
                       {selectedSort === 'price-high' && 'Price, high to low'}
                     </span>
@@ -609,16 +694,6 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         type="button"
                       >
                         Featured
-                      </button>
-                      <button
-                        className={`${styles['dropdown-option-item']} ${selectedSort === 'best-selling' ? styles['active'] : ''}`}
-                        onClick={() => {
-                          setSelectedSort('best-selling');
-                          setIsSortOpen(false);
-                        }}
-                        type="button"
-                      >
-                        Best selling
                       </button>
                       <button
                         className={`${styles['dropdown-option-item']} ${selectedSort === 'price-low' ? styles['active'] : ''}`}

@@ -9,7 +9,6 @@ import { getPreorderProducts } from '../../services/api';
 
 export const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
-  { value: 'best-selling', label: 'Best selling' },
   { value: 'price-asc', label: 'Price, low to high' },
   { value: 'price-desc', label: 'Price, high to low' }
 ];
@@ -185,9 +184,16 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
       case 'price-desc':
         filtered.sort((a, b) => b.price - a.price);
         break;
+      case 'best-selling':
+        filtered.sort((a, b) => {
+          const aIsBest = a.tag === 'Bestseller' ? 1 : 0;
+          const bIsBest = b.tag === 'Bestseller' ? 1 : 0;
+          if (aIsBest !== bIsBest) return bIsBest - aIsBest;
+          return 0;
+        });
+        break;
       case 'date-asc':
       case 'date-desc':
-      case 'best-selling':
       case 'relevance':
       case 'featured':
       default:

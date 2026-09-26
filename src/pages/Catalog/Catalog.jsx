@@ -128,17 +128,24 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
     // Filter by Search Query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(p =>
-        (p.name && p.name.toLowerCase().includes(query)) ||
-        (p.category && p.category.toLowerCase().includes(query)) ||
-        (p.fabric && p.fabric.toLowerCase().includes(query)) ||
-        (p.description && p.description.toLowerCase().includes(query))
-      );
+      filtered = filtered.filter(p => {
+        const catName = typeof p.category === 'object' ? p.category?.name : p.category;
+        return (
+          (p.name && p.name.toLowerCase().includes(query)) ||
+          (catName && String(catName).toLowerCase().includes(query)) ||
+          (p.fabric && p.fabric.toLowerCase().includes(query)) ||
+          (p.description && p.description.toLowerCase().includes(query)) ||
+          (p.shortDescription && p.shortDescription.toLowerCase().includes(query))
+        );
+      });
     }
 
     // Filter by Category
     if (selectedCategory && selectedCategory !== 'All') {
-      filtered = filtered.filter(p => p.category && p.category.toLowerCase() === selectedCategory.toLowerCase());
+      filtered = filtered.filter(p => {
+        const catName = typeof p.category === 'object' ? p.category?.name : p.category;
+        return catName && String(catName).toLowerCase() === selectedCategory.toLowerCase();
+      });
     }
 
     // Filter by Fabric

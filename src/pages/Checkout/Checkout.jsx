@@ -1128,7 +1128,7 @@ export const Checkout = ({ setCurrentTab, setSelectedProduct, directCheckoutItem
                   )}
 
                   <div className={styles.successPriceRow}>
-                    <span>Convenient Fees</span>
+                    <span>Convenience Fee</span>
                     <span>{formatCurrency(orderCache.convenienceFee !== undefined ? orderCache.convenienceFee : 2)}</span>
                   </div>
 

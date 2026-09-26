@@ -95,7 +95,7 @@ export const Footer = ({ setCurrentTab, setCatalogFilter }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Softnova Technology Pvt ltd
+                  Softnova Technology Pvt. Ltd.
                 </a>{' '}
                 &copy; {new Date().getFullYear()} Mazhai Vaanam. All rights reserved.
               </b>

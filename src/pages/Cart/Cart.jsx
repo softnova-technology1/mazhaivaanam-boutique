@@ -260,7 +260,7 @@ export const Cart = ({ setCurrentTab, setSelectedProduct }) => {
                     <span className={styles.priceValue}>{formatCurrency(subtotal)}</span>
                   </div>
                   <div className={styles.priceRow}>
-                    <span>Convenient Fees</span>
+                    <span>Convenience Fee</span>
                     <span className={styles.priceValue}>{formatCurrency(convenienceFee)}</span>
                   </div>
                   <div className={styles.priceRow}>

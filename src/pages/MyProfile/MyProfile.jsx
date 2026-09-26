@@ -792,7 +792,7 @@ export const MyProfile = ({ setCurrentTab, initialSection = 'personal' }) => {
                           {/* Top row status */}
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#C8A34D', display: 'flex', alignItems: 'center', gap: 6 }}>
-                              <Ticket size={14} /> Reward VOUCHER
+                              <Ticket size={14} /> Reward Voucher
                             </span>
                             <span style={{
                               padding: '4px 10px',

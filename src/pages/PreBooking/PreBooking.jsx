@@ -254,7 +254,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
         <section className={styles['products-panel']}>
           {/* Header Description */}
           <div className={styles['collection-header']}>
-            <h1 className={styles['collection-title']}>Pre Booking Collections</h1>
+            <h1 className={styles['collection-title']}>Pre-Booking Collections</h1>
             <div className={styles['collection-description']}>
               <p><strong>Reserve Your Favourite Saree Before It's Gone!</strong></p>
               <p>Our exclusive handloom sarees are crafted in limited quantities. Pre-book now to secure your preferred design before it sells out.</p>
@@ -402,7 +402,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                         handlePreorderClick(product);
                       }}
                     >
-                      PRE BOOK NOW
+                      PRE-BOOK NOW
                     </div>
                     <div role="button" className={styles['quick-view-btn']} onClick={(e) => { e.stopPropagation(); setQuickViewProduct(product); setQuantity(1); setActiveQuickViewImage(0); }}>
                       Quick view

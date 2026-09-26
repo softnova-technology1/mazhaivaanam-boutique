@@ -47,9 +47,9 @@ function extToMime(ext = '') {
 export async function downloadSampleImportTemplate() {
   const headers = [
     'Product Name', 'Simple Description', 'Description', 'Category', 'Fabric', 'Price (Rs)', 'MRP Price (Rs)',
-    'Stock', 'Weight', 'Tag',
+    'Stock', 'Weight', 'Height', 'Tag',
     'Image 1 URL', 'Image 2 URL', 'Image 3 URL',
-    'Pattern', 'Border', 'Pallu', 'Saree Length', 'Blouse Length',
+    'Pattern', 'Border', 'Pallu', 'Saree Length', 'Blouse Length', 'Blouse',
     'Style', 'Wash Care', 'Return Policy', 'Note'
   ];
   

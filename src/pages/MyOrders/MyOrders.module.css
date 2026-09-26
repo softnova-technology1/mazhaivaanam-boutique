@@ -187,8 +187,9 @@
   flex-direction: column;
   gap: 40px;
   position: sticky;
-  top: 100px;
+  top: max(130px, calc(50vh - 180px));
   height: max-content;
+  margin-top: 60px;
 }
 
 @media (max-width: 1024px) {
@@ -203,12 +204,15 @@
 
   .rightColumn {
     grid-column: span 1;
+    position: static;
+    margin-top: 0;
   }
 }
 
 .sectionHeaderTitle {
   font-family: var(--font-heading);
   font-size: 24px;
+  line-height: 28px;
   font-weight: 400;
   color: var(--primary);
   margin: 0 0 32px 0;

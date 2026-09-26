@@ -134,6 +134,7 @@ export default function Products() {
       { key: 'description', label: 'Description', formatter: (p) => p.description || '' },
       { key: 'weight', label: 'Weight', formatter: (p) => p.weight || '' },
       { key: 'pattern', label: 'Pattern', formatter: (p) => p.pattern || '' },
+      { key: 'border', label: 'Border', formatter: (p) => p.border || '' },
       { key: 'pallu', label: 'Pallu', formatter: (p) => p.pallu || '' },
       { key: 'sareeLength', label: 'Saree Length', formatter: (p) => p.sareeLength || '' },
       { key: 'blouseLength', label: 'Blouse Length', formatter: (p) => p.blouseLength || '' },
@@ -174,6 +175,7 @@ export default function Products() {
       sec2File: null,
       sec2Preview: '',
       weight: '', pattern: '', style: '',
+      border: '',
       pallu: '', sareeLength: '', blouseLength: '', blouse: '', height: '', washCare: '',
       returnPolicy: 'Not Applicable',
       note: 'Product Color May Slightly Vary Due To Photography Lighting.'
@@ -182,12 +184,16 @@ export default function Products() {
   };
 
   const openEdit = (product) => {
+    const rawFab = (product.fabric || '').trim();
+    const matchedFab = fabricsList.find(f => f.name.toLowerCase() === rawFab.toLowerCase());
+    const resolvedFabric = matchedFab ? matchedFab.name : rawFab;
+
     setForm({
       name: product.name,
       shortDescription: product.shortDescription || '',
       description: product.description || '',
       category: product.category?._id || product.category || '',
-      fabric: product.fabric || '',
+      fabric: resolvedFabric,
       price: product.price,
       mrpPrice: product.mrpPrice,
       stock: product.stock?.available ?? 25,
@@ -206,6 +212,7 @@ export default function Products() {
       weight: product.weight || '',
       pattern: product.pattern || '',
       style: product.style || '',
+      border: product.border || '',
       pallu: product.pallu || '',
       sareeLength: product.sareeLength || '',
       blouseLength: product.blouseLength || '',
@@ -239,6 +246,7 @@ export default function Products() {
         weight: form.weight,
         pattern: form.pattern,
         style: form.style,
+        border: form.border,
         pallu: form.pallu,
         sareeLength: form.sareeLength,
         blouseLength: form.blouseLength,
@@ -926,11 +934,14 @@ export default function Products() {
                     <label className="form-label">Fabric</label>
                     <select
                       className="form-select"
-                      value={form.fabric}
+                      value={fabricsList.find(f => f.name.toLowerCase() === (form.fabric || '').trim().toLowerCase())?.name || form.fabric || ''}
                       onChange={e => setForm(f => ({ ...f, fabric: e.target.value }))}
                     >
                       <option value="">Select Fabric</option>
                       {fabricsList.map(fab => <option key={fab._id} value={fab.name}>{fab.name}</option>)}
+                      {form.fabric && !fabricsList.some(fab => fab.name.toLowerCase() === (form.fabric || '').trim().toLowerCase()) && (
+                        <option value={form.fabric}>{form.fabric}</option>
+                      )}
                     </select>
                   </div>
                 </div>
@@ -1047,19 +1058,25 @@ export default function Products() {
                 </div>
                 <div className="form-row">
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Pallu</label>
-                    <input className="form-input" value={form.pallu} onChange={e => setForm(f => ({ ...f, pallu: e.target.value }))} placeholder="e.g. Rich Brocade" />
+                    <label className="form-label">Border</label>
+                    <input className="form-input" value={form.border} onChange={e => setForm(f => ({ ...f, border: e.target.value }))} placeholder="e.g. Contrast Zari Border" />
                   </div>
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label">Blouse</label>
-                    <input className="form-input" value={form.blouse} onChange={e => setForm(f => ({ ...f, blouse: e.target.value }))} placeholder="e.g. Running Blouse" />
+                    <label className="form-label">Pallu</label>
+                    <input className="form-input" value={form.pallu} onChange={e => setForm(f => ({ ...f, pallu: e.target.value }))} placeholder="e.g. Rich Brocade" />
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label className="form-label">Blouse</label>
+                    <input className="form-input" value={form.blouse} onChange={e => setForm(f => ({ ...f, blouse: e.target.value }))} placeholder="e.g. Running Blouse" />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Wash Care</label>
                     <input className="form-input" value={form.washCare} onChange={e => setForm(f => ({ ...f, washCare: e.target.value }))} placeholder="e.g. Dry Clean Only" />
                   </div>
+                </div>
+                <div className="form-row">
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Return/Exchange</label>
                     <input className="form-input" value={form.returnPolicy} onChange={e => setForm(f => ({ ...f, returnPolicy: e.target.value }))} placeholder="e.g. Not Applicable" />

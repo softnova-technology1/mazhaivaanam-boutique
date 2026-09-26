@@ -7,11 +7,8 @@ import InvoiceModal from '../../components/common/InvoiceModal/InvoiceModal';
 import OrderDetailsModal from '../../components/orders/OrderDetailsModal';
 import { 
   ShoppingBag, 
-  Cpu, 
-  Download, 
   RotateCw, 
   PhoneCall, 
-  Palette,
   MessageSquare,
   FileText,
   Gift
@@ -182,7 +179,6 @@ export const MyOrders = ({ setCurrentTab }) => {
   // Dynamic statistics calculations
   const totalOrders = orders.length;
   const totalSavingsSum = orders.reduce((sum, o) => sum + (o.totalSavings || 0), 0);
-  const rewardPointsSum = orders.reduce((sum, o) => sum + Math.round((o.finalAmount || 0) * 0.05), 0);
 
   return (
     <div className={styles.myOrdersPageContainer}>
@@ -207,10 +203,6 @@ export const MyOrders = ({ setCurrentTab }) => {
             <div className={styles.statBox}>
               <p className={styles.statLabel}>MONEY SAVED</p>
               <p className={styles.statValue}>{formatCurrency(totalSavingsSum)}</p>
-            </div>
-            <div className={styles.statBox}>
-              <p className={styles.statLabel}>REWARD POINTS</p>
-              <p className={styles.statValue}>{rewardPointsSum.toLocaleString('en-IN')}</p>
             </div>
           </div>
         </div>
@@ -439,58 +431,8 @@ export const MyOrders = ({ setCurrentTab }) => {
           )}
         </div>
 
-        {/* Right Column: Wardrobe Insights & Concierge */}
+        {/* Right Column: Concierge */}
         <aside className={styles.rightColumn}>
-          
-          <div className={styles.insightsCard}>
-            <h3 className={styles.insightsTitle}>Wardrobe Insights</h3>
-            
-            <div className={styles.insightsList}>
-              {/* Insights Fabric */}
-              <div>
-                <p className={styles.insightsMetaLabel}>FAVORITE FABRIC</p>
-                <div className={styles.insightBoxItem}>
-                  <div className={styles.insightIconBox}>
-                    <Cpu size={20} />
-                  </div>
-                  <div>
-                    <p className={styles.insightHeadingText}>Kanchipuram Silk</p>
-                    <p className={styles.insightSubtitleText}>6 ITEMS PURCHASED</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Insights Color */}
-              <div>
-                <p className={styles.insightsMetaLabel}>FAVORITE COLOR</p>
-                <div className={styles.insightBoxItem}>
-                  <div className={styles.insightIconBox} style={{ color: 'var(--primary)', backgroundColor: 'rgba(73, 0, 23, 0.05)' }}>
-                    <Palette size={20} />
-                  </div>
-                  <div>
-                    <p className={styles.insightHeadingText}>Royal Maroon</p>
-                    <p className={styles.insightSubtitleText}>40% OF WARDROBE</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Next tier gold progress box */}
-              <div className={styles.progressTierBox}>
-                <span className={styles.tierSubheading}>NEXT REWARD TIER</span>
-                <h4 className={styles.tierTitleName}>Heritage Gold Member</h4>
-                
-                <div className={styles.tierBarContainer}>
-                  <div className={styles.tierBarProgress} style={{ width: '75%' }}></div>
-                </div>
-                
-                <p className={styles.tierThresholdDesc}>
-                  ₹15,000 MORE TO UNLOCK EXCLUSIVE PREVIEWS
-                </p>
-              </div>
-
-            </div>
-          </div>
-
           {/* Assistance Concierge Card */}
           <div className={styles.supportCard}>
             <PhoneCall className={styles.supportIconSymbol} size={40} />

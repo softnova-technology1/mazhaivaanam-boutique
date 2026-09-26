@@ -40,6 +40,7 @@ export const ProductPreview = ({ form }) => {
     preorderDiscount: form.preorderDiscount || '',
     weight: form.weight || '',
     pattern: form.pattern || '',
+    border: form.border || '',
     pallu: form.pallu || '',
     sareeLength: form.sareeLength || '',
     blouseLength: form.blouseLength || '',

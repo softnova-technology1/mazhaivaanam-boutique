@@ -24,6 +24,7 @@ const getProductDetails = (product) => {
     p2: '',
     fabric: product.fabric,
     pattern: product.pattern,
+    border: product.border,
     pallu: product.pallu,
     blouse: product.blouse,
     sareeLength: product.sareeLength,

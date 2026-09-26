@@ -31,7 +31,15 @@ import styles from './Checkout.module.css';
 import { useStoreConfig } from '../../context/StoreConfigContext';
 import InvoiceModal from '../../components/common/InvoiceModal/InvoiceModal';
 
-export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutItem }) => {
+export const Checkout = ({ setCurrentTab, setSelectedProduct, directCheckoutItem, setDirectCheckoutItem }) => {
+  const handleProductClick = (item) => {
+    if (setSelectedProduct) {
+      setSelectedProduct(item);
+      setCurrentTab('product-detail');
+      window.scrollTo(0, 0);
+    }
+  };
+
   const { cart, cartTotal, clearCart, updateQuantity } = useCart();
   const storeConfig = useStoreConfig();
   const checkoutItems = directCheckoutItem
@@ -658,7 +666,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
       <div className={styles.productPreviewsList}>
         {checkoutItems.map((item) => (
           <div key={item.id || item._id} className={styles.productPreviewItem}>
-            <div className={styles.previewThumb}>
+            <div className={styles.previewThumb} onClick={() => handleProductClick(item)} style={{ cursor: 'pointer' }}>
               <img src={getOptimizedImageUrl(getImageUrl(item))}
                 alt={item.name}
                 onError={(e) => {
@@ -668,7 +676,7 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
               />
             </div>
             <div className={styles.previewDetails}>
-              <h4 className={styles.previewItemName}>{item.name}</h4>
+              <h4 className={styles.previewItemName} onClick={() => handleProductClick(item)} style={{ cursor: 'pointer' }}>{item.name}</h4>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Qty:</span>
                 <div className={styles.qtyControlGroup}>
@@ -1071,15 +1079,15 @@ export const Checkout = ({ setCurrentTab, directCheckoutItem, setDirectCheckoutI
                 <div className={styles.orderedItemsWrapper}>
                   {orderCache.items.map((item) => (
                     <div key={item.id} className={styles.orderedItemRow}>
-                      <div className={styles.orderedItemThumb}>
+                      <div className={styles.orderedItemThumb} onClick={() => handleProductClick(item)} style={{ cursor: "pointer" }}>
                         <img src={getOptimizedImageUrl(item.image)} alt={item.name} />
                       </div>
                       <div className={styles.orderedItemDetails}>
                         <p className={styles.orderedItemColName}>
-                          {item.category ? item.category : 'Handcrafted Atelier Series'}
+                          
                         </p>
-                        <h4>{item.name}</h4>
-                        <p className={styles.orderedItemQty}>Qty: {item.quantity.toString().padStart(2, '0')} | Size: Standard</p>
+                        <h4 onClick={() => handleProductClick(item)} style={{ cursor: "pointer" }}>{item.name}</h4>
+                        <p className={styles.orderedItemQty}>Qty: {item.quantity.toString().padStart(2, '0')}</p>
                       </div>
                     </div>
                   ))}

@@ -51,7 +51,14 @@ const getStatusBadgeLabel = (status, deliveryMode) => {
   }
 };
 
-export const MyOrders = ({ setCurrentTab }) => {
+export const MyOrders = ({ setCurrentTab, setSelectedProduct }) => {
+  const handleProductClick = (item) => {
+    if (setSelectedProduct && item) {
+      setSelectedProduct(item);
+      setCurrentTab('product-detail');
+      window.scrollTo(0, 0);
+    }
+  };
   const { addToCart } = useCart();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -276,7 +283,7 @@ export const MyOrders = ({ setCurrentTab }) => {
                       style={{ cursor: 'pointer' }}
                     >
                       {/* Saree Thumbnail Image */}
-                      <div className={styles.productThumbBox}>
+                      <div className={styles.productThumbBox} onClick={() => handleProductClick(order.items[0])} style={{ cursor: 'pointer' }}>
                         <img src={getOptimizedImageUrl(order.items[0]?.image || 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg')} 
                           alt={order.items[0]?.name || 'Saree thumbnail'} 
                           className={styles.productThumbImage}
@@ -287,7 +294,7 @@ export const MyOrders = ({ setCurrentTab }) => {
                       <div className={styles.orderCardDetails}>
                         <div>
                           <div className={styles.orderCardHeaderRow}>
-                            <h3 className={styles.productNameTitle}>
+                            <h3 className={styles.productNameTitle} onClick={() => handleProductClick(order.items[0])} style={{ cursor: 'pointer' }}>
                               {order.items[0]?.name || 'Luxury Handloom Saree'}
                               {order.items.length > 1 && ` & ${order.items.length - 1} other item(s)`}
                             </h3>

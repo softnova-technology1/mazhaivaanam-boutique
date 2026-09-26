@@ -21,7 +21,7 @@ import {
 import styles from './Cart.module.css';
 import { useStoreConfig } from '../../context/StoreConfigContext';
 
-export const Cart = ({ setCurrentTab }) => {
+export const Cart = ({ setCurrentTab, setSelectedProduct }) => {
   const { cart, updateQuantity, removeFromCart, cartTotal, addToCart, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
   const { toggleWishlist } = useWishlist();
@@ -119,6 +119,14 @@ export const Cart = ({ setCurrentTab }) => {
   const convenienceFee = cart.length > 0 ? (storeConfig?.convenienceFee !== undefined && storeConfig?.convenienceFee !== null ? Number(storeConfig?.convenienceFee) : 2) : 0;
   const finalAmount = Math.max(0, mrpTotal - totalSavings) + convenienceFee;
 
+  const handleProductClick = (item) => {
+    if (setSelectedProduct) {
+      setSelectedProduct(item);
+      setCurrentTab('product-detail');
+      window.scrollTo(0, 0);
+    }
+  };
+
   const handleCheckout = () => {
     if (isAuthenticated) {
       setCurrentTab('checkout');
@@ -175,35 +183,19 @@ export const Cart = ({ setCurrentTab }) => {
               <div className={styles.cartItemsList}>
                 {cart.map((item) => (
                   <div key={item.id} className={styles.cartItem}>
-                    <div className={styles.imageContainer}>
+                    <div className={styles.imageContainer} onClick={() => handleProductClick(item)} style={{ cursor: 'pointer' }}>
                       <img src={getOptimizedImageUrl(item.image)} alt={item.name} className={styles.itemImage} />
                     </div>
                     <div className={styles.itemDetails}>
                       <div>
                         <div className={styles.itemHeader}>
-                          <h3 className={styles.itemName}>{item.name}</h3>
+                          <h3 className={styles.itemName} onClick={() => handleProductClick(item)} style={{ cursor: 'pointer' }}>{item.name}</h3>
                           <p className={styles.itemPrice}>{formatCurrency(item.price)}</p>
                         </div>
                         <p className={styles.itemCollection}>
                           Collection: {item.category === 'Banarasi' ? 'Royal Heirlooms' : 'Prakriti Series'}
                         </p>
-                        <div className={styles.specsGrid}>
-                          <span className={styles.specLabel}>Fabric:</span>
-                          <span className={styles.specValue}>{item.fabric || 'Pure Mulberry Silk'}</span>
-                          
-                          <span className={styles.specLabel}>Border:</span>
-                          <span className={styles.specValue}>
-                            {item.category === 'Banarasi' ? 'Zari Brocade' : 'Gold Temple Border'}
-                          </span>
-                          
-                          <span className={styles.specLabel}>Color:</span>
-                          <span className={styles.specValue}>{getColorName(item.color)}</span>
-                          
-                          <span className={styles.specLabel}>Craft:</span>
-                          <span className={styles.specValue}>
-                            {item.category === 'Cotton' ? 'Handloom Weave' : 'Master Artisan Loom'}
-                          </span>
-                        </div>
+                        
                       </div>
 
                       <div className={styles.itemFooter}>

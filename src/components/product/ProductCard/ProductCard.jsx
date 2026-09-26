@@ -33,19 +33,19 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
   const handleShareClick = (e) => {
     e.stopPropagation();
     const productUrl = `${window.location.origin}/product/${product.id}`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: product.name,
         text: product.description || `Check out ${product.name} at Mazhai Vaanam!`,
         url: productUrl,
       })
-      .catch((error) => console.log('Error sharing:', error));
+        .catch((error) => console.log('Error sharing:', error));
     } else {
       navigator.clipboard.writeText(productUrl)
         .then(() => {
-          window.dispatchEvent(new CustomEvent('show-toast', { 
-            detail: { message: `Link to "${product.name}" copied to clipboard!` } 
+          window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: `Link to "${product.name}" copied to clipboard!` }
           }));
         })
         .catch((err) => {
@@ -64,22 +64,22 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
     }
   };
 
-  
+
   const displayImage = getOptimizedImageUrl((typeof image === 'string' && image.trim() !== '') ? image : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg');
 
   const fallbackTag = product.discountLabel || product.discount?.label || (isNew ? 'Fresh Pick' : (isLimited ? 'LIMITED EDITION' : tag));
   const isDiscActive = Boolean(discountActive || product.discount?.isActive);
   const isLoActive = Boolean(product.limitedOfferEntry?.isActive);
   const endDate = (isDiscActive && (product.discountEndDate || product.discount?.endDate)) ||
-                  (isLoActive && product.limitedOfferEntry?.endDate) || null;
+    (isLoActive && product.limitedOfferEntry?.endDate) || null;
 
   return (
     <div className={styles['product-card']} onClick={handleCardClick}>
       <div className={styles['image-container']}>
-        <img 
-          src={displayImage} 
-          alt={name} 
-          loading="lazy" 
+        <img
+          src={displayImage}
+          alt={name}
+          loading="lazy"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = getOptimizedImageUrl('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg');
@@ -98,31 +98,31 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
         )}
 
         {/* Share Button */}
-        <div 
-          className={styles['share-btn']} 
+        <div
+          className={styles['share-btn']}
           onClick={handleShareClick}
           role="button"
           title="Share Product"
           aria-label="Share Product"
         >
-          <Share2 
-            size={16} 
-            stroke="var(--primary-dark)" 
+          <Share2
+            size={16}
+            stroke="var(--primary-dark)"
           />
         </div>
 
         {/* Top-right/Bottom-right Wishlist Button */}
-        <div 
-          className={styles['wishlist-btn']} 
+        <div
+          className={styles['wishlist-btn']}
           onClick={handleAddToWishlist}
           role="button"
           title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
           aria-label={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         >
-          <Heart 
-            size={16} 
-            fill={isWishlisted ? "#e63946" : "none"} 
-            stroke={isWishlisted ? "#e63946" : "var(--primary-dark)"} 
+          <Heart
+            size={16}
+            fill={isWishlisted ? "#e63946" : "none"}
+            stroke={isWishlisted ? "#e63946" : "var(--primary-dark)"}
           />
         </div>
       </div>
@@ -137,7 +137,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
             {shortDescription}
           </p>
         )}
-        
+
         <div className={styles['price-row']}>
           <span className={styles['current-price']}>{formatCurrency(effectivePrice)}</span>
           {hasDiscount && (
@@ -150,7 +150,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
           )}
         </div>
         {product.stock?.isOutOfStock ? (
-          <button 
+          <button
             className={styles['add-cart-btn']}
             disabled
             style={{ backgroundColor: '#9ca3af', borderColor: '#9ca3af', color: '#fff', cursor: 'not-allowed' }}
@@ -159,7 +159,7 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
             OUT OF STOCK
           </button>
         ) : (
-          <button 
+          <button
             className={styles['add-cart-btn']}
             onClick={(e) => {
               e.stopPropagation();

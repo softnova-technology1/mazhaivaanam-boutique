@@ -192,9 +192,6 @@ export const Cart = ({ setCurrentTab, setSelectedProduct }) => {
                           <h3 className={styles.itemName} onClick={() => handleProductClick(item)} style={{ cursor: 'pointer' }}>{item.name}</h3>
                           <p className={styles.itemPrice}>{formatCurrency(item.price)}</p>
                         </div>
-                        <p className={styles.itemCollection}>
-                          Collection: {item.category === 'Banarasi' ? 'Royal Heirlooms' : 'Prakriti Series'}
-                        </p>
                         
                       </div>
 

@@ -52,12 +52,12 @@ export async function downloadSampleImportTemplate() {
     'Pattern', 'Border', 'Pallu', 'Saree Length', 'Blouse Length', 'Blouse',
     'Style', 'Wash Care', 'Return Policy', 'Note'
   ];
-  
+
   const wb = new ExcelJS.Workbook();
   const ws = wb.addWorksheet('Products');
   ws.addRow(headers);
   ws.columns = headers.map(h => ({ width: Math.max(String(h).length + 4, 16) }));
-  
+
   const buffer = await wb.xlsx.writeBuffer();
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const url = window.URL.createObjectURL(blob);
@@ -92,9 +92,17 @@ function normalizeKey(header) {
   if (h.includes('blouse')) return 'blouse';
   if (h.includes('height')) return 'height';
   if (h.includes('style')) return 'style';
+
+  // Prioritize exact matches to prevent accidental overrides
+  if (h === 'washcare' || h === 'wash') return 'washCare';
+  if (h === 'returnpolicy' || h === 'return' || h === 'returnexchange') return 'returnPolicy';
+  if (h === 'note' || h === 'notes') return 'note';
+
+  // If combined or fuzzy, check for note first, then others
+  if (h.includes('note')) return 'note';
   if (h.includes('wash')) return 'washCare';
   if (h.includes('return')) return 'returnPolicy';
-  if (h.includes('note')) return 'note';
+
   return header;
 }
 
@@ -117,7 +125,7 @@ export async function parseImportFile(file, onProgress = null) {
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.load(arrayBuffer);
       const worksheet = workbook.worksheets[0];
-      
+
       let maxCols = 0;
       worksheet.eachRow((row) => {
         if (row.values && row.values.length > maxCols) maxCols = row.values.length;

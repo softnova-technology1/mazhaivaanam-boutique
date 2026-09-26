@@ -16,7 +16,8 @@
 .product-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(200, 163, 77, 0.3); /* subtle gold border on hover */
+  border-color: rgba(200, 163, 77, 0.3);
+  /* subtle gold border on hover */
 }
 
 /* Sale Badge - Starburst like */
@@ -24,7 +25,8 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: #FBBF24; /* Gold/Yellow */
+  background-color: #FBBF24;
+  /* Gold/Yellow */
   color: #000;
   width: 55px;
   height: 55px;
@@ -39,7 +41,8 @@
 }
 
 .offer-badge:hover {
-  background-color: #d14d3b; /* Red */
+  background-color: #d14d3b;
+  /* Red */
   color: #ffffff;
 }
 
@@ -59,7 +62,8 @@
 .image-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 4/5; /* Using 4/5 prevents tall product images from getting cropped */
+  aspect-ratio: 4/5;
+  /* Using 4/5 prevents tall product images from getting cropped */
   overflow: hidden;
   border-radius: 0;
 }
@@ -76,7 +80,7 @@
 }
 
 .product-card:hover .image-container img {
-  transform: scale(1.03) translateZ(0); 
+  transform: scale(1.03) translateZ(0);
 }
 
 .badge-tag {
@@ -176,9 +180,12 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background-color: #FFF9E6; /* Soft gold background */
-  color: #B38A4A;            /* Gold text color */
-  border: 1px solid #FFE7A5; /* Gold border */
+  background-color: #FFF9E6;
+  /* Soft gold background */
+  color: #B38A4A;
+  /* Gold text color */
+  border: 1px solid #FFE7A5;
+  /* Gold border */
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 11px;
@@ -300,7 +307,7 @@
   .card-details {
     padding: 8px 8px;
   }
-  
+
   .title-row {
     margin-bottom: 2px;
     flex-wrap: nowrap;
@@ -345,7 +352,7 @@
     font-size: 10px;
     white-space: nowrap;
   }
-  
+
   .old-price {
     font-size: 8px;
     white-space: nowrap;
@@ -368,7 +375,7 @@
     bottom: 8px !important;
     right: 8px !important;
   }
-  
+
   .wishlist-btn svg {
     width: 13px !important;
     height: 13px !important;
@@ -380,7 +387,7 @@
     bottom: 42px !important;
     right: 8px !important;
   }
-  
+
   .share-btn svg {
     width: 13px !important;
     height: 13px !important;
@@ -401,7 +408,7 @@
     bottom: 6px !important;
     right: 6px !important;
   }
-  
+
   .wishlist-btn svg {
     width: 12px !important;
     height: 12px !important;
@@ -413,10 +420,9 @@
     bottom: 36px !important;
     right: 6px !important;
   }
-  
+
   .share-btn svg {
     width: 12px !important;
     height: 12px !important;
   }
 }
-

@@ -6,6 +6,7 @@ import { Heart } from 'lucide-react';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { useStoreConfig } from './context/StoreConfigContext';
 import { StoreConfigProvider } from './context/StoreConfigContext';
 import { useCart } from './hooks/useCart';
 
@@ -73,6 +74,7 @@ function getInitialState() {
 }
 
 function AppContent() {
+  const storeConfig = useStoreConfig();
   const initialState = getInitialState();
   const [currentTab, setCurrentTab] = useState(initialState.tab);
   const [catalogFilter, setCatalogFilter] = useState({ category: '', occasion: '', label: 'All Collections' });
@@ -282,17 +284,18 @@ function AppContent() {
       case 'track-order':
         return <TrackOrder setCurrentTab={setCurrentTab} />;
       case 'cart':
-        return <Cart setCurrentTab={setCurrentTab} />;
+        return <Cart setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
       case 'checkout':
         return (
           <Checkout
             setCurrentTab={setCurrentTab}
+            setSelectedProduct={setSelectedProduct}
             directCheckoutItem={directCheckoutItem}
             setDirectCheckoutItem={setDirectCheckoutItem}
           />
         );
       case 'my-orders':
-        return <MyOrders setCurrentTab={setCurrentTab} />;
+        return <MyOrders setCurrentTab={setCurrentTab} setSelectedProduct={setSelectedProduct} />;
       case 'my-profile':
         return <MyProfile setCurrentTab={setCurrentTab} />;
       case 'saved-address':
@@ -374,7 +377,7 @@ function AppContent() {
       <ScrollToTopButton />
 
       {/* Global WhatsApp Button */}
-      <WhatsAppButton />
+      <WhatsAppButton phoneNumber={storeConfig?.whatsapp?.replace(/[^0-9]/g, '') || "918807959179"} />
 
       {/* Global Toast Notification */}
       {toastMessage && (

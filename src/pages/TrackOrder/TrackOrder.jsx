@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { orderAPI } from '../../services/api';
+import { useStoreConfig } from '../../context/StoreConfigContext';
 import InvoiceModal from '../../admin/components/InvoiceModal';
 import { 
   Search, 
@@ -24,6 +25,7 @@ import {
 import styles from './TrackOrder.module.css';
 
 export const TrackOrder = ({ setCurrentTab }) => {
+  const storeConfig = useStoreConfig();
   const [orderInput, setOrderInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   
@@ -420,7 +422,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
                               📍 <strong>Store Address:</strong> ANA Complex, Sethu Road, Peravurani, Thanjavur, Tamil Nadu - 614804
                             </p>
                             <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 2 }}>
-                              📞 <strong>Contact:</strong> +91 8807959179 <br /> 🕒 <strong>Hours:</strong> Mon-Sat (10:00 AM - 8:30 PM)
+                              📞 <strong>Contact:</strong> {storeConfig?.phone || '+91 8807959179'} <br /> 🕒 <strong>Hours:</strong> Mon-Sat (10:00 AM - 8:30 PM)
                             </p>
                           </div>
                         </div>
@@ -679,7 +681,7 @@ export const TrackOrder = ({ setCurrentTab }) => {
                     </button>
 
                     <a
-                      href={`https://wa.me/911236547896?text=${whatsappMessage}`}
+                      href={`https://wa.me/${storeConfig?.whatsapp?.replace(/[^0-9]/g, '') || '918807959179'}?text=${whatsappMessage}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{

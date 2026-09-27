@@ -17,7 +17,15 @@ export default function UsersPage() {
     setLoading(true);
     try {
       const res = await userAPI.getAll();
-      setUsers(res.data);
+      const sortedUsers = res.data.sort((a, b) => {
+        const getWeight = (email) => {
+          if (email === 'mv@softnovatech2026.com') return 2;
+          if (email === 'admin@mazhaivaanam2026.com') return 1;
+          return 0;
+        };
+        return getWeight(a.email) - getWeight(b.email);
+      });
+      setUsers(sortedUsers);
     } catch (err) { console.error(err); }
     setLoading(false);
   };
@@ -79,7 +87,7 @@ export default function UsersPage() {
   };
 
   const handleSelectAll = () => {
-    const currentPageIds = paginatedUsers.map(u => u._id);
+    const currentPageIds = paginatedUsers.filter(u => u.email !== 'mv@softnovatech2026.com' && u.email !== 'admin@mazhaivaanam2026.com').map(u => u._id);
     const allSelected = currentPageIds.every(id => selectedUsers.includes(id));
     if (allSelected) {
       setSelectedUsers(prev => prev.filter(id => !currentPageIds.includes(id)));
@@ -204,15 +212,22 @@ export default function UsersPage() {
             <tbody>
               {paginatedUsers.map((user, idx) => {
                 const isSelected = selectedUsers.includes(user._id);
+                const isSuperAdmin = user.email === 'mv@softnovatech2026.com';
+                const isOwner = user.email === 'admin@mazhaivaanam2026.com';
                 return (
-                <tr key={user._id} style={{ background: isSelected ? 'rgba(200, 163, 77, 0.08)' : undefined }}>
+                <tr key={user._id} style={{ 
+                  background: isSelected ? 'rgba(200, 163, 77, 0.08)' : (isSuperAdmin ? '#fdf5e6' : undefined),
+                  borderLeft: isSuperAdmin ? '4px solid #C8A34D' : undefined
+                }}>
                   <td style={{ textAlign: 'center' }}>
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={(e) => handleSelectUser(user._id, e)}
-                      style={{ cursor: 'pointer' }}
-                    />
+                    {!(isSuperAdmin || isOwner) && (
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => handleSelectUser(user._id, e)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    )}
                   </td>
                   <td style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.85rem' }}>
                     {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
@@ -241,31 +256,37 @@ export default function UsersPage() {
                   </td>
                   <td style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{new Date(user.createdAt).toLocaleDateString('en-IN')}</td>
                   <td style={{ textAlign: 'right' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-                      <button 
-                        className="btn btn-outline btn-sm" 
-                        onClick={() => toggleRole(user)}
-                        title={user.role === 'admin' ? 'Make Customer' : 'Make Admin'}
-                      >
-                        {user.role === 'admin' ? <User size={14} /> : <Shield size={14} />}
-                      </button>
-                      <button 
-                        className="btn btn-outline btn-sm" 
-                        onClick={() => toggleStatus(user)}
-                        style={{ color: user.isActive !== false ? 'var(--warning)' : 'var(--success)' }}
-                        title={user.isActive !== false ? 'Suspend User' : 'Activate User'}
-                      >
-                        {user.isActive !== false ? <UserX size={14} /> : <UserCheck size={14} />}
-                      </button>
-                      <button 
-                        className="btn btn-outline btn-sm" 
-                        onClick={() => deleteUser(user)}
-                        style={{ color: 'var(--danger)', borderColor: 'var(--danger-border)' }}
-                        title="Delete User"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                    {!(isSuperAdmin || isOwner) ? (
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                        <button 
+                          className="btn btn-outline btn-sm" 
+                          onClick={() => toggleRole(user)}
+                          title={user.role === 'admin' ? 'Make Customer' : 'Make Admin'}
+                        >
+                          {user.role === 'admin' ? <User size={14} /> : <Shield size={14} />}
+                        </button>
+                        <button 
+                          className="btn btn-outline btn-sm" 
+                          onClick={() => toggleStatus(user)}
+                          style={{ color: user.isActive !== false ? 'var(--warning)' : 'var(--success)' }}
+                          title={user.isActive !== false ? 'Suspend User' : 'Activate User'}
+                        >
+                          {user.isActive !== false ? <UserX size={14} /> : <UserCheck size={14} />}
+                        </button>
+                        <button 
+                          className="btn btn-outline btn-sm" 
+                          onClick={() => deleteUser(user)}
+                          style={{ color: 'var(--danger)', borderColor: 'var(--danger-border)' }}
+                          title="Delete User"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '0.8rem', color: isSuperAdmin ? '#C8A34D' : 'var(--primary)', fontWeight: 700, paddingRight: 8, letterSpacing: '0.5px' }}>
+                        {isSuperAdmin ? 'DEVELOPER' : 'OWNER'}
+                      </span>
+                    )}
                   </td>
                 </tr>
                 );

@@ -88,7 +88,10 @@ export const ProductCard = ({ product, onClick, setSelectedProduct, setCurrentTa
 
         {/* Status badges */}
         {product.stock?.isOutOfStock ? (
-          <span className={`${styles['badge-tag']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
+          <OfferTimerBadge
+            fallbackLabel="OUT OF STOCK"
+            className={styles['badge-tag']}
+          />
         ) : (
           <OfferTimerBadge
             endDate={endDate}

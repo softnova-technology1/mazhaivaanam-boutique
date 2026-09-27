@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ShoppingCart, Eye, Sparkles } from 'lucide-react';
 import { getLimitedOfferProducts, getProducts } from '../../services/api';
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import styles from './LimitedOffer.module.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -86,9 +87,17 @@ function TimedProductCard({ product, onView, onBuy, isCarousel, hideTag = false 
     >
       {/* Image area */}
       <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', overflow: 'hidden', background: '#f5f0e8' }}>
-        <img src={img} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s' }}
+        <img 
+          src={getOptimizedImageUrl((typeof img === 'string' && img.trim() !== '') ? img : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg')} 
+          alt={product.name} 
+          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s' }}
           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
-          onMouseLeave={e => e.currentTarget.style.transform = ''} />
+          onMouseLeave={e => e.currentTarget.style.transform = ''}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = getOptimizedImageUrl('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg');
+          }}
+        />
 
         {/* Tag badge top-left */}
         {!hideTag && tag && (

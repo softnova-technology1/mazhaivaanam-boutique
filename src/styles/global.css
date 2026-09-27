@@ -331,6 +331,13 @@ a {
   border-radius: 4px !important;
 }
 
+.badge-out-of-stock {
+  background-color: #dc2626 !important; /* Solid Red */
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+  border-radius: 4px !important;
+}
+
 .badge-fresh-pick {
   background-color: #9b84b5 !important; /* Premium Soft Lavender */
   color: #ffffff !important; 

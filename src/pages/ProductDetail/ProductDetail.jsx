@@ -459,7 +459,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                   </div>
                   <div className={styles['price-card-row']}>
                     <span style={{ color: '#C55A44', fontWeight: 'bold' }}>Special Pre-Order Offer</span>
-                    <span style={{ color: '#C55A44', fontWeight: 'bold' }}>{formatCurrency(activeProduct.price * quantity)}</span>
+                    <span style={{ color: '#C55A44', fontWeight: 'bold' }}>{formatCurrency(effectiveProductPrice * quantity)}</span>
                   </div>
                   <div className={styles['price-card-footer']}>
                     <div className={styles['savings-banner']} style={{ backgroundColor: 'rgba(181, 137, 61, 0.1)' }}>
@@ -469,7 +469,7 @@ export const ProductDetail = ({ product, setCurrentTab, setSelectedProduct, setD
                     <div className={styles['final-price-box']}>
                       <p className={styles['final-price-lbl']}>FINAL TOTAL PRICE</p>
                       <p className={styles['final-price-amt']}>
-                        {formatCurrency(activeProduct.price * quantity)}
+                        {formatCurrency(effectiveProductPrice * quantity)}
                       </p>
                     </div>
                   </div>

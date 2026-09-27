@@ -186,8 +186,8 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
         break;
       case 'best-selling':
         filtered.sort((a, b) => {
-          const aIsBest = a.tag === 'Bestseller' ? 1 : 0;
-          const bIsBest = b.tag === 'Bestseller' ? 1 : 0;
+          const aIsBest = a.tag === 'BESTSELLER' ? 1 : 0;
+          const bIsBest = b.tag === 'BESTSELLER' ? 1 : 0;
           if (aIsBest !== bIsBest) return bIsBest - aIsBest;
           return 0;
         });
@@ -357,9 +357,16 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
             </div>
           ) : (
             <div className={`${styles['product-grid']} ${viewMode === 'list' ? styles['list-view'] : ''}`}>
-              {sortedProducts.map((product) => (
-                <div key={product.id} className={styles['product-card']}>
-                  <div className={styles['product-image-container']} onClick={() => handlePreorderClick(product)}>
+              {sortedProducts.map((product) => {
+                const effPrice = (product.discountActive && product.discountedPrice) || (product.discountedPrice && product.discountedPrice < product.price)
+                  ? product.discountedPrice
+                  : product.price;
+                const origMrp = (product.mrpPrice && product.mrpPrice > effPrice) ? product.mrpPrice : (product.oldPrice && product.oldPrice > effPrice) ? product.oldPrice : (effPrice < product.price ? product.price : null);
+                const hasDisc = Boolean(origMrp && origMrp > effPrice);
+
+                return (
+                  <div key={product.id} className={styles['product-card']}>
+                  <div className={styles['product-image-container']} onClick={() => handlePreorderClick({ ...product, price: effPrice })}>
                     {product.discount && <div className={styles['discount-badge']}>{product.discount}</div>}
                     {product.estimatedDays && (
                       <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'rgba(255, 255, 255, 0.95)', color: 'var(--primary-dark)', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, zIndex: 2, border: '1px solid rgba(200, 163, 77, 0.3)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
@@ -386,10 +393,18 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                       <Share2 size={16} stroke="var(--primary-dark)" />
                     </div>
 
-                    <img src={getOptimizedImageUrl(product.image)} alt={product.name} className={styles['product-image']} />
+                    <img 
+                      src={getOptimizedImageUrl((typeof product.image === 'string' && product.image.trim() !== '') ? product.image : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg')} 
+                      alt={product.name} 
+                      className={styles['product-image']} 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = getOptimizedImageUrl('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg');
+                      }}
+                    />
                   </div>
                   <div className={styles['product-info']}>
-                    <h3 className={styles['product-name']} onClick={() => handlePreorderClick(product)}>
+                    <h3 className={styles['product-name']} onClick={() => handlePreorderClick({ ...product, price: effPrice })}>
                       {product.name} | {product.sku}
                     </h3>
                     <p className={styles['product-desc']}>{product.description}</p>
@@ -397,15 +412,15 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                     
 
                     <div className={styles['product-price-row']}>
-                      <span className={styles['current-price']}>{formatCurrency(product.price)}</span>
-                      {product.oldPrice > product.price && <span className={styles['old-price']}>{formatCurrency(product.oldPrice)}</span>}
+                      <span className={styles['current-price']}>{formatCurrency(effPrice)}</span>
+                      {hasDisc && <span className={styles['old-price']}>{formatCurrency(origMrp)}</span>}
                     </div>
                     <div 
                       role="button" 
                       className={styles['prebook-btn']} 
                       onClick={(e) => {
                         e.stopPropagation();
-                        handlePreorderClick(product);
+                        handlePreorderClick({ ...product, price: effPrice });
                       }}
                     >
                       PRE-BOOK NOW
@@ -415,7 +430,8 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>
@@ -470,6 +486,13 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                 </div>
               </div>
               
+              {(() => {
+                const qvEffPrice = (quickViewProduct.discountActive && quickViewProduct.discountedPrice) || (quickViewProduct.discountedPrice && quickViewProduct.discountedPrice < quickViewProduct.price)
+                  ? quickViewProduct.discountedPrice
+                  : quickViewProduct.price;
+                const qvOrigMrp = (quickViewProduct.mrpPrice && quickViewProduct.mrpPrice > qvEffPrice) ? quickViewProduct.mrpPrice : (quickViewProduct.oldPrice && quickViewProduct.oldPrice > qvEffPrice) ? quickViewProduct.oldPrice : (qvEffPrice < quickViewProduct.price ? quickViewProduct.price : null);
+                
+                return (
               <div className={styles['quick-view-details']}>
                 <div className={styles['qv-scrollable-content']}>
                   <div className={styles['qv-collection-title']}>MAZHAI VAANAM PRE BOOKING COLLECTIONS</div>
@@ -487,9 +510,9 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                   
                   <div className={styles['qv-price-row']} style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
                     <span className={styles['qv-label']}>Price:</span>
-                    <span className={styles['qv-current-price']}>{formatCurrency(quickViewProduct.price)}</span>
-                    {quickViewProduct.oldPrice && quickViewProduct.oldPrice > quickViewProduct.price && (
-                      <span className={styles['qv-old-price']}>{formatCurrency(quickViewProduct.oldPrice)}</span>
+                    <span className={styles['qv-current-price']}>{formatCurrency(qvEffPrice)}</span>
+                    {qvOrigMrp && qvOrigMrp > qvEffPrice && (
+                      <span className={styles['qv-old-price']}>{formatCurrency(qvOrigMrp)}</span>
                     )}
                   </div>
                   
@@ -534,7 +557,7 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                     role="button"
                     className={styles['qv-prebook-btn']}
                     onClick={() => {
-                      addToCart(quickViewProduct, quantity);
+                      addToCart({ ...quickViewProduct, price: qvEffPrice }, quantity);
                       setQuickViewProduct(null);
                     }}
                   >
@@ -545,10 +568,10 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                     className={styles['qv-view-details-btn']}
                     onClick={() => {
                       if (setDirectCheckoutItem) {
-                        setDirectCheckoutItem({ ...quickViewProduct, quantity });
+                        setDirectCheckoutItem({ ...quickViewProduct, price: qvEffPrice, quantity });
                       }
                       if (setSelectedProduct && setCurrentTab) {
-                        setSelectedProduct(quickViewProduct);
+                        setSelectedProduct({ ...quickViewProduct, price: qvEffPrice });
                         setCurrentTab('checkout');
                       }
                       setQuickViewProduct(null);
@@ -558,6 +581,8 @@ export const PreBooking = ({ setCurrentTab, setSelectedProduct, setDirectCheckou
                   </div>
                 </div>
               </div>
+              );
+              })()}
             </div>
           </div>
         </div>

@@ -54,7 +54,7 @@ export default function Discounts() {
 
   useEffect(() => {
     loadProducts();
-  }, [filters.status, filters.category]);
+  }, [filters.status, filters.category, filters.search]);
 
   const loadProducts = async () => {
     setLoading(true);

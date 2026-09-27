@@ -165,7 +165,15 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
 
                 return (
                   <div key={prod.id || prod._id} className={styles['sidebar-product-card']} onClick={() => handleProductClick({ ...prod, price: effPrice })}>
-                    <img src={getOptimizedImageUrl(prod.image)} alt={prod.name} loading="lazy" />
+                    <img 
+                      src={getOptimizedImageUrl((typeof prod.image === 'string' && prod.image.trim() !== '') ? prod.image : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg')} 
+                      alt={prod.name} 
+                      loading="lazy" 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = getOptimizedImageUrl('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg');
+                      }}
+                    />
                     <div className={styles['sidebar-product-info']}>
                       <h5>{prod.name}</h5>
                       <span className={styles['sidebar-price']}>
@@ -290,10 +298,22 @@ export const BestSellers = ({ setCurrentTab, setSelectedProduct }) => {
                   onClick={() => handleProductClick(itemToPass)}
                 >
                   <div className={styles['product-image-container']}>
-                    <img src={getOptimizedImageUrl(product.image)} alt={product.name} loading="lazy" className={styles['product-image']} />
+                    <img 
+                      src={getOptimizedImageUrl((typeof product.image === 'string' && product.image.trim() !== '') ? product.image : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg')} 
+                      alt={product.name} 
+                      loading="lazy" 
+                      className={styles['product-image']} 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = getOptimizedImageUrl('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg');
+                      }}
+                    />
                     
                     {product.stock?.isOutOfStock ? (
-                      <span className={`${styles['bestseller-badge']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
+                      <OfferTimerBadge
+                        fallbackLabel="OUT OF STOCK"
+                        className={styles['bestseller-badge']}
+                      />
                     ) : (
                       <OfferTimerBadge
                         endDate={

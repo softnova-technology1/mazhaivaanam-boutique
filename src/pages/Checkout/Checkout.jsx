@@ -94,6 +94,11 @@ export const Checkout = ({ setCurrentTab, setSelectedProduct, directCheckoutItem
   useEffect(() => {
     // Load saved addresses — from backend if logged in, localStorage fallback
     const loadAddresses = async () => {
+      if (user) {
+        setFullName(prev => prev || user.name || (user.firstName ? user.firstName + ' ' + (user.lastName || '') : '') || '');
+        setEmail(prev => prev || user.email || '');
+        if (user.phone) setPhone(prev => prev || user.phone);
+      }
       try {
         if (user) {
           const serverAddrs = await addressAPI.getAddresses();
@@ -1027,38 +1032,6 @@ export const Checkout = ({ setCurrentTab, setSelectedProduct, directCheckoutItem
                 </div>
               </div>
 
-              {/* Points Box & Quote */}
-              <div className={styles.rewardsQuoteBlock}>
-
-                {/* Rewards Card */}
-                <div className={styles.rewardsCard}>
-                  <div className={styles.rewardsHeader}>
-                    <Star size={24} className={styles.rewardsStarIcon} />
-                    <h3>Silk Points</h3>
-                  </div>
-                  <p>
-                    Congratulations! You've earned <span className={styles.rewardsPointsText}>{Math.round(orderCache.finalAmount * 0.1)} Silk Points</span> from this purchase. Use them on your next heirloom piece.
-                  </p>
-                  <span
-                    onClick={() => alert("Rewards portal: points active!")}
-                    className={styles.rewardsPortalLink}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    View Rewards Portal
-                  </span>
-                </div>
-
-                {/* Weaver quote */}
-                <div className={styles.weaverQuoteCard}>
-                  <Quote size={40} className={styles.quoteIconSymbol} />
-                  <p>
-                    "Welcome to the Mazhai Vaanam family. Each thread of your {orderCache.items[0]?.name || 'handcrafted'} Saree has been woven with passion and decades of heritage. We hope this piece brings as much joy to your celebrations as it did to our weavers."
-                  </p>
-                  <p className={styles.quoteSignature}>— The Mazhai Vaanam Atelier</p>
-                </div>
-
-              </div>
 
               {/* Continue Shopping button */}
               <div style={{ textAlign: 'center', marginTop: '24px' }}>

@@ -120,9 +120,9 @@ export const Support = () => {
               <h3 className={styles.editorialHeaderNum}>01 / Shopping Guide</h3>
               <h4 className={styles.editorialColHeadline}>Discovering Heritage</h4>
               <ul className={styles.editorialLinksStack}>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Silk fabrics guides loaded."); }}>How to choose the right silk for your occasion</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Weaving techniques details."); }}>Understanding our weaving techniques</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("GI Tags certificates."); }}>Authenticity certificates &amp; GI Tags</a></li>
+                <li>How to choose the right silk for your occasion</li>
+                <li>Understanding our weaving techniques</li>
+                <li>Authenticity certificates &amp; GI Tags</li>
               </ul>
             </div>
 
@@ -131,9 +131,9 @@ export const Support = () => {
               <h3 className={styles.editorialHeaderNum}>02 / Orders &amp; Delivery</h3>
               <h4 className={styles.editorialColHeadline}>Timely Elegance</h4>
               <ul className={styles.editorialLinksStack}>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Custom orders settings."); }}>Modifying your custom order</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Bridal wear expedited shipping."); }}>Expedited shipping for bridal wear</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Secure courier insurance."); }}>Insurance and safe handling during transit</a></li>
+                <li>Modifying your custom order</li>
+                <li>Expedited shipping for bridal wear</li>
+                <li>Insurance and safe handling during transit</li>
               </ul>
             </div>
 
@@ -142,9 +142,9 @@ export const Support = () => {
               <h3 className={styles.editorialHeaderNum}>03 / Payments</h3>
               <h4 className={styles.editorialColHeadline}>Secure Transactions</h4>
               <ul className={styles.editorialLinksStack}>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Global payment details."); }}>Accepted payment methods globally</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Instalments setups."); }}>Interest-free bespoke installment plans</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Duties and tax info."); }}>Tax and customs duties for global orders</a></li>
+                <li>Accepted payment methods globally</li>
+                <li>Interest-free bespoke installment plans</li>
+                <li>Tax and customs duties for global orders</li>
               </ul>
             </div>
 
@@ -153,9 +153,9 @@ export const Support = () => {
               <h3 className={styles.editorialHeaderNum}>04 / Returns</h3>
               <h4 className={styles.editorialColHeadline}>Graceful Exchanges</h4>
               <ul className={styles.editorialLinksStack}>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Ready to wear returns policy."); }}>Eligibility for returns on ready-to-wear</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Pickups scheduled."); }}>Return shipping process and pick-ups</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Exchanges guidelines."); }}>Exchange policy for non-bespoke items</a></li>
+                <li>Eligibility for returns on ready-to-wear</li>
+                <li>Return shipping process and pick-ups</li>
+                <li>Exchange policy for non-bespoke items</li>
               </ul>
             </div>
 

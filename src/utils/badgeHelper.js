@@ -11,6 +11,9 @@ export const getBadgeClass = (text) => {
   if (val.includes('BEST') || val.includes('FAV') || val.includes('POPULAR')) {
     return 'badge-bestseller';
   }
+  if (val.includes('OUT OF STOCK')) {
+    return 'badge-out-of-stock';
+  }
   if (val.includes('FRESH') || val.includes('NEW') || val.includes('ARRIV')) {
     return 'badge-fresh-pick';
   }

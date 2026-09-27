@@ -7,6 +7,7 @@ import { getBadgeClass } from '../../utils/badgeHelper';
 import { Heart, Star, ChevronDown, Search, ArrowRight, Share2, Filter, X, Loader2 } from 'lucide-react';
 import { getProducts, getFabrics, getCategories } from '../../services/api';
 import { OfferTimerBadge } from '../../components/common/OfferTimerBadge/OfferTimerBadge';
+import { getOptimizedImageUrl } from '../../utils/imageUtils';
 import styles from './Catalog.module.css';
 
 // Export empty fallback for backward compatibility
@@ -184,8 +185,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
       filtered.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
     } else if (selectedSort === 'best-selling') {
       filtered.sort((a, b) => {
-        const aIsBest = a.tag === 'Bestseller' ? 1 : 0;
-        const bIsBest = b.tag === 'Bestseller' ? 1 : 0;
+        const aIsBest = a.tag === 'BESTSELLER' ? 1 : 0;
+        const bIsBest = b.tag === 'BESTSELLER' ? 1 : 0;
         if (aIsBest !== bIsBest) return bIsBest - aIsBest;
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -625,8 +626,8 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         type="button"
                       >All Tags</button>
                       <button
-                        className={`${styles['dropdown-option-item']} ${selectedTag === 'Bestseller' ? styles['active'] : ''}`}
-                        onClick={() => { setSelectedTag('Bestseller'); setIsTagOpen(false); }}
+                        className={`${styles['dropdown-option-item']} ${selectedTag === 'BESTSELLER' ? styles['active'] : ''}`}
+                        onClick={() => { setSelectedTag('BESTSELLER'); setIsTagOpen(false); }}
                         type="button"
                       >Bestseller</button>
                       <button
@@ -764,9 +765,20 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                         style={{ cursor: 'pointer' }}
                         onClick={() => handleProductClick(itemWithDiscountPrice)}
                       >
-                        <img src={product.image} alt={product.name} loading="lazy" />
+                        <img 
+                          src={getOptimizedImageUrl((typeof product.image === 'string' && product.image.trim() !== '') ? product.image : 'https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg')} 
+                          alt={product.name} 
+                          loading="lazy" 
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = getOptimizedImageUrl('https://mazhaivaanam2026pvi.s3.ap-southeast-1.amazonaws.com/Images/placeholder.svg');
+                          }}
+                        />
                         {product.stock?.isOutOfStock ? (
-                          <span className={`${styles['badge-tag']}`} style={{ backgroundColor: '#dc2626', color: '#fff' }}>OUT OF STOCK</span>
+                          <OfferTimerBadge
+                            fallbackLabel="OUT OF STOCK"
+                            className={styles['badge-tag']}
+                          />
                         ) : (
                           <OfferTimerBadge
                             endDate={

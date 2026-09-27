@@ -196,8 +196,8 @@ export default function InvoiceModal({ order, onClose }) {
               </div>
             </div>
             <div className="invoice-meta-info" style={{ textAlign: 'right' }}>
-              <div className="invoice-meta-badge-wrap" style={{ display: 'inline-block', background: '#f8fafc', padding: '6px 14px', border: '1px solid #e2e8f0', borderRadius: 6, marginBottom: 8 }}>
-                <span className="invoice-meta-badge" style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a' }}>TAX INVOICE</span>
+              <div style={{ display: 'inline-block', background: '#f8fafc', padding: '6px 14px', border: '1px solid #e2e8f0', borderRadius: 6, marginBottom: 8, whiteSpace: 'nowrap' }}>
+                <span className="invoice-meta-badge" style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', textShadow: 'none' }}>TAX INVOICE</span>
               </div>
               <div className="invoice-meta-details" style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6 }}>
                 <div>Invoice No: <strong>{invoiceNumber}</strong></div>
@@ -531,6 +531,18 @@ export default function InvoiceModal({ order, onClose }) {
           @media print {
             body * {
               visibility: hidden;
+            }
+            #root {
+              display: none !important;
+            }
+            .modal-overlay {
+              position: absolute !important;
+              background: none !important;
+            }
+            .modal-content {
+              box-shadow: none !important;
+              max-height: none !important;
+              overflow: visible !important;
             }
             #printable-invoice, #printable-invoice * {
               visibility: visible;

@@ -937,7 +937,7 @@ export default function Products() {
                     <label className="form-label">Category</label>
                     <select className="form-select" required value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
                       <option value="">Select Category</option>
-                      {categoriesList.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
+                      {categoriesList.filter(cat => cat.name !== 'Pre-Booking').map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
                     </select>
                   </div>
                   <div className="form-group">

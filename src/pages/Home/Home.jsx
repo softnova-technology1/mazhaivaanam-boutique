@@ -591,7 +591,7 @@ export const Home = ({ setCurrentTab, setSelectedProduct, setCatalogFilter }) =>
           <p>Be the first to discover our new collections, artisan stories, and heritage previews directly inside our exclusive WhatsApp group.</p>
           <div className="flex justify-center mt-6">
             <a 
-              href="https://chat.whatsapp.com/GzB9oJp0gNfIq2W5N7tK2P" 
+              href="https://chat.whatsapp.com/HAshtvyEbk587xJbYZN0sd?s=cl&p=a&mlu=4&ilr=4" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2"

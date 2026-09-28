@@ -234,7 +234,7 @@ export default function Categories() {
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
-            {categories.map(item => (
+            {categories.filter(item => item.name !== 'Pre-Booking').map(item => (
               <div
                 key={item._id}
                 className="card"

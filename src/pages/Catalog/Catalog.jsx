@@ -426,7 +426,7 @@ export const Catalog = ({ activeFilter, setActiveFilter, setCurrentTab, setSelec
                      All
                    </button>
                    {/* Dynamic categories */}
-                   {categories.length > 0 ? categories.map(catName => {
+                   {categories.length > 0 ? categories.filter(catName => catName !== 'Pre-Booking').map(catName => {
                      const isSelected = selectedCategory === catName;
                      return (
                        <button
